@@ -158,11 +158,9 @@ public class AdapterNode {
                 Populate the other elements with null until we
                 have the correct size.
                 */
-                while (children.size() < index) {
-                    children.add(null);
-                }
+                ensureChildrenSize(index+1);
                 child = rootDocument.newAdapterNode(this, domNode.getChildNodes().item(index));
-                children.add(child);
+                children.add(index, child);
             }
         }
        return child;
@@ -389,6 +387,8 @@ public class AdapterNode {
                 }
             } else {
                 domNode.appendChild(node.getNode());
+                //ensure we have the right size.
+                ensureChildrenSize(childCount());
                 children.add(node);
                 node.setParent(this);
                 fireNodeAdded(this, node);
@@ -612,6 +612,12 @@ public class AdapterNode {
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
             listener.attributeChanged(source, attr);
+        }
+    }//}}}
+    
+    private void ensureChildrenSize(int size) {//{{{
+        while (children.size() < size) {
+            children.add(null);
         }
     }//}}}
     
