@@ -1,2 +1,11 @@
-The serialization in jsXe needs to be fixed. It creates valid XML but it isn't
-formatted correctly.
+TODO:
+
+-Fix the Options dialog to have a view specific part and a jsXe application specific part. This will allow users to set options for the view as well as options for the program itself.
+-Create a history class for the DefaultView that keeps track of the current state of the view and can be used to restore it later.
+-Change the DOMSerializer class to conform to the DOM3 standard DOMWriter class.
+-allow for selecting multiple files when opening
+-allow for opening files with wellformedness errors in source view. This way users can fix wellformedness errors in the editor.
+-Add a context menu so you can add and delete nodes etc.
+-fix updating of the tree when users are changing a text node.
+-fix error handling so that errors are handled better when read errors occur etc.
+
