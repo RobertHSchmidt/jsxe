@@ -7,6 +7,8 @@
       then the serializer could never write out whitespace in element content
       without invalidating the document. See
       http://xml.apache.org/xerces2-j/javadocs/dom3-api/index.html Section 2.10
+    * Removed the whitespace in element content checkbox from the options since
+      it's ignored
 
 8/19/2004   version 0.2 pre20   Ian Lewis <IanLewis@member.fsf.org>
 
