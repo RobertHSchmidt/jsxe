@@ -282,25 +282,6 @@ public class jsXe {
         
     }//}}}
     
-    public static boolean openXMLDocuments(TabbedView view, String args[]) {//{{{
-    
-        boolean success = false;
-        for (int i = 0; i < args.length; i++) {
-            //success becomes true if at least one document is opened
-            //successfully.
-            if (args[i] != null) {
-                try {
-                    success = success || openXMLDocument(view, new File(args[i]));
-                } catch (IOException ioe) {
-                    //I/O error doesn't change value of success
-                    JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        }
-        return success;
-    
-    }//}}}
-    
     public static boolean closeXMLDocument(TabbedView view, XMLDocument document) {//{{{
         view.removeDocument(document);
         XMLDocuments.remove(document);
@@ -392,6 +373,25 @@ public class jsXe {
     }//}}}
     
     // Private static members {{{
+    
+    private static boolean openXMLDocuments(TabbedView view, String args[]) {//{{{
+    
+        boolean success = false;
+        for (int i = 0; i < args.length; i++) {
+            //success becomes true if at least one document is opened
+            //successfully.
+            if (args[i] != null) {
+                try {
+                    success = success || openXMLDocument(view, new File(args[i]));
+                } catch (IOException ioe) {
+                    //I/O error doesn't change value of success
+                    JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        }
+        return success;
+    
+    }//}}}
     
     private static void initDefaultProps() {//{{{
         
