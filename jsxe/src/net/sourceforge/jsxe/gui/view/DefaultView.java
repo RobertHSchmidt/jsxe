@@ -156,9 +156,11 @@ public class DefaultView extends DocumentView {
         return menus;
     }//}}}
     
-    public XMLDocument getCurrentDocument() {//{{{
+    public XMLDocument getXMLDocument() {//{{{
         return currentdoc;
     }//}}}
+    
+    //{{{ Private Members
     
     private boolean canEditInJTree(AdapterNode node) {//{{{
         boolean value = false;
@@ -170,9 +172,11 @@ public class DefaultView extends DocumentView {
     }//}}}
     
     private class DefaultTreeSelectionListener implements TreeSelectionListener {//{{{
+        
         DefaultTreeSelectionListener(Component p) {
             parent=p;
         }
+        
         public void valueChanged(TreeSelectionEvent e) {
             TreePath selPath = e.getPath();
             AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
@@ -192,10 +196,11 @@ public class DefaultView extends DocumentView {
                 htmlPane.setText("");
             }
         }
+        
         private Component parent;
+        
     }//}}}
     
-    //{{{ Private Members
     private JTree tree = new JTree();
     //htmlPane will one day be more true to its name. I wanted to
     //use the JEditorPane to add support for viewing graphics in
