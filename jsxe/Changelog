@@ -1,3 +1,7 @@
+03/02/2005  version 0.3 pre13   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added logging functionality.
+
 03/01/2005  version 0.3 pre12   Ian Lewis <IanLewis@member.fsf.org>
 
     * Small additions to XMLDocument to prepare for DTD support.
