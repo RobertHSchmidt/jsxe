@@ -41,7 +41,6 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.gui.OptionsPanel;
-import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
@@ -94,7 +93,7 @@ public class SourceView extends JPanel implements DocumentView {
      * @param document the document to open.
      * @throws IOException if the document cannot be viewed using this view
      */
-    public SourceView(TabbedView view, XMLDocument document) throws IOException {
+    public SourceView(XMLDocument document) throws IOException {
         
         textarea = new JTextArea("");
         textarea.setTabSize(4);
@@ -107,14 +106,14 @@ public class SourceView extends JPanel implements DocumentView {
         setLayout(new BorderLayout());
         add(scrollPane, BorderLayout.CENTER);
         
-        setXMLDocument(view, document);
+        setXMLDocument(document);
     }//}}}
     
     //{{{ DocumentView methods
     
     //{{{ close()
     
-    public boolean close(TabbedView view) {
+    public boolean close() {
         m_document.removeXMLDocumentListener(docListener);
         return true;
     }//}}}
@@ -185,7 +184,7 @@ public class SourceView extends JPanel implements DocumentView {
     
     //{{{ setXMLDocument()
     
-    public void setXMLDocument(TabbedView view, XMLDocument document) throws IOException {
+    public void setXMLDocument(XMLDocument document) throws IOException {
         
         if (m_document != null) {
             m_document.removeXMLDocumentListener(docListener);

@@ -103,7 +103,7 @@ public class DefaultView extends JPanel implements DocumentView {
      * @param document the document that this view shows
      * @throws IOException if the document cannot be viewed using this view.
      */
-    public DefaultView(TabbedView view, XMLDocument document) throws IOException {
+    public DefaultView(XMLDocument document) throws IOException {
         
         setLayout(new BorderLayout());
         
@@ -138,7 +138,7 @@ public class DefaultView extends JPanel implements DocumentView {
         
         //}}}
         
-        setXMLDocument(view, document);
+        setXMLDocument(document);
     }//}}}
     
     //{{{ setVisible()
@@ -168,7 +168,7 @@ public class DefaultView extends JPanel implements DocumentView {
 
     //{{{ close()
     
-    public boolean close(TabbedView view) {
+    public boolean close() {
         
         //m_document should only be null if setXMLDocument was never called.
         if (m_document != null) {
@@ -251,7 +251,7 @@ public class DefaultView extends JPanel implements DocumentView {
     
     //{{{ setXMLDocument()
     
-    public void setXMLDocument(TabbedView view, XMLDocument document) throws IOException {
+    public void setXMLDocument(XMLDocument document) throws IOException {
         
         try {
             document.checkWellFormedness();
@@ -594,14 +594,6 @@ public class DefaultView extends JPanel implements DocumentView {
             */
             
             tree.updateUI();
-            
-            //Make root element node expanded.
-           // TreePath path = new TreePath(new Object[] { m_buffer.getXMLDocument().getAdapterNode(), m_buffer.getXMLDocument().getRootElementNode() });
-           // tree.expandPath(path);
-            
-            //clear the html pane
-            htmlPane.setDocument(new DefaultViewDocument(m_document.getAdapterNode()));
-            htmlPane.setEditable(false);
         }//}}}
         
     };//}}}

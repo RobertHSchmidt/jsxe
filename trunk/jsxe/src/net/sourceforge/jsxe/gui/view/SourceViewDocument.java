@@ -40,11 +40,8 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
-import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
 //{{{ AWT components
@@ -103,11 +100,7 @@ public class SourceViewDocument extends DefaultStyledDocument {
                 //given time.
                 super.insertString(0, document.getText(0, document.getLength()), new SimpleAttributeSet());
                 
-            } catch (BadLocationException ble) {
-                //This should never happen. If it does however jsXe will
-                //act abnormally so... crash.
-                jsXe.exiterror(null, ble.toString(), 1);
-            }
+            } catch (BadLocationException ble) {}
         }
     }//}}}
 
@@ -122,11 +115,7 @@ public class SourceViewDocument extends DefaultStyledDocument {
             m_document.insertText(offs, str);
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
-        } catch (IOException ioe) {
-            //This should never happen. If it does however jsXe will
-            //act abnormally so crash.
-            jsXe.exiterror(null, ioe.toString(), 1);
-        }
+        } catch (IOException ioe) {}
 
     }//}}}
 
@@ -139,11 +128,7 @@ public class SourceViewDocument extends DefaultStyledDocument {
             m_document.removeText(offs, len);
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
-        } catch (IOException ioe) {
-            //This should never happen. If it does however jsXe will
-            //act abnormally so crash.
-            jsXe.exiterror(null, ioe.toString(), 1);
-        }
+        } catch (IOException ioe) {}
         
     }//}}}
 

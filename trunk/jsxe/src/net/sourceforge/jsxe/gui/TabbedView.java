@@ -153,7 +153,7 @@ public class TabbedView extends JFrame {
     //{{{ getDocumentBuffer()
     
     public DocumentBuffer getDocumentBuffer() {
-        return jsXe.getDocumentBuffers()[tabbedPane.getSelectedIndex()];
+        return jsXe.getBufferForDocument(((DocumentView)tabbedPane.getSelectedComponent()).getXMLDocument());
     }//}}}
     
     //{{{ getDocumentView()
@@ -290,7 +290,7 @@ public class TabbedView extends JFrame {
                     DocumentView docView = (DocumentView)tabbedPane.getComponentAt(i);
                     
                     //only close if we _mean_ it.
-                    if (docView.close(this)) {
+                    if (docView.close()) {
                         tabbedPane.remove(i);
                         //if the tab removed is not the rightmost tab
                         //stateChanged is not called for some
@@ -476,7 +476,7 @@ public class TabbedView extends JFrame {
         if (oldView != null) {
             
             //close the previous view
-            oldView.close(this);
+            oldView.close();
             
             DocumentBuffer currentBuffer = getDocumentBuffer();
             

@@ -79,10 +79,10 @@ public class DocumentViewFactory {
     public DocumentView newDocumentView(TabbedView view, XMLDocument document) throws IOException, UnrecognizedDocViewException {
         //Document type validation is pretty simple right now
         if (viewType == "tree") {
-            return new DefaultView(view, document);
+            return new DefaultView(document);
         } else {
             if (viewType == "source") {
-                return new SourceView(view, document);
+                return new SourceView(document);
             } else {
                 throw new UnrecognizedDocViewException();
             }

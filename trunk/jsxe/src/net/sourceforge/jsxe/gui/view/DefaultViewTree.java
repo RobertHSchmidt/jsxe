@@ -35,9 +35,7 @@ package net.sourceforge.jsxe.gui.view;
 //{{{ imports
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.dom.*;
-import net.sourceforge.jsxe.gui.*;
 //}}}
 
 //{{{ Swing components
@@ -173,12 +171,12 @@ public class DefaultViewTree extends JTree implements Autoscroll {
     //}}}
     
     //{{{ Private static members
-    private static final ImageIcon m_elementIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Element.png"), "Element");
-    private static final ImageIcon m_textIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Text.png"), "Text");
-    private static final ImageIcon m_CDATAIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/CDATA.png"), "CDATA");
-    private static final ImageIcon m_commentIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Comment.png"), "Comment");
-   // private static final ImageIcon m_externalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/ExternalEntity.png"), "External Entity");
-    private static final ImageIcon m_internalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/InternalEntity.png"), "Internal Entity");
+    private static final ImageIcon m_elementIcon = new ImageIcon(DefaultView.class.getResource("/net/sourceforge/jsxe/icons/Element.png"), "Element");
+    private static final ImageIcon m_textIcon = new ImageIcon(DefaultView.class.getResource("/net/sourceforge/jsxe/icons/Text.png"), "Text");
+    private static final ImageIcon m_CDATAIcon = new ImageIcon(DefaultView.class.getResource("/net/sourceforge/jsxe/icons/CDATA.png"), "CDATA");
+    private static final ImageIcon m_commentIcon = new ImageIcon(DefaultView.class.getResource("/net/sourceforge/jsxe/icons/Comment.png"), "Comment");
+   // private static final ImageIcon m_externalEntityIcon = new ImageIcon(DefaultView.class.getResource("/net/sourceforge/jsxe/icons/ExternalEntity.png"), "External Entity");
+    private static final ImageIcon m_internalEntityIcon = new ImageIcon(DefaultView.class.getResource("/net/sourceforge/jsxe/icons/InternalEntity.png"), "Internal Entity");
     
     private static final int m_AUTOSCROLL_MARGIN = 12;
     
@@ -596,9 +594,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     Transferable transferable = new TransferableNode(node);
                     m_dragSource.startDrag(dge, DragSource.DefaultCopyNoDrop, transferable, m_treeDSListener);
                 }
-            } catch( InvalidDnDOperationException idoe) {
-                jsXe.exiterror(null, idoe.getMessage(), 1);
-            }
+            } catch( InvalidDnDOperationException idoe) {}
         }//}}}
         
     }//}}}
@@ -713,11 +709,8 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             Object data = null;
             try {
                 data = dtde.getTransferable().getTransferData(chosen);
-            } catch (UnsupportedFlavorException ufe) {
-                jsXe.exiterror(null, ufe.getMessage(), 1);
-            } catch (IOException ioe) {
-                jsXe.exiterror(null, ioe.getMessage(), 1);
-            }
+            } catch (UnsupportedFlavorException ufe) {}
+              catch (IOException ioe) {}
             
             if (data == null)
                 throw new NullPointerException();
@@ -783,7 +776,6 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 dtde.rejectDrop();
                 JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
             }
-            
             m_dragOverTarget = null;
             paintImmediately(m_cueLine);
             dtde.dropComplete(true);

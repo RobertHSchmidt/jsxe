@@ -34,23 +34,20 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.gui.view;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.OptionsPanel;
-import net.sourceforge.jsxe.gui.TabbedView;
+//}}}
+
+//{{{ AWT classes
+import java.awt.Component;
 //}}}
 
 //{{{ Swing classes
 import javax.swing.*;
 //}}}
 
-import java.awt.Component;
 
 //{{{ Java base classes
 import java.io.IOException;
@@ -73,9 +70,8 @@ public interface DocumentView {
      * Closes the current view. This method is called whenever the view is
      * being discarded. This is usually used to save properties associated
      * with this view.
-     * @param view The TabbedView that is closing this view
      */
-    public boolean close(TabbedView view);
+    public boolean close();
     //}}}
     
     //{{{ getDescription()
@@ -141,7 +137,7 @@ public interface DocumentView {
      * @param document the new document to view
      * @throws IOException if the document cannot be viewed using this view
      */
-    public void setXMLDocument(TabbedView view, XMLDocument document) throws IOException;
+    public void setXMLDocument(XMLDocument document) throws IOException;
     //}}}
 
 }

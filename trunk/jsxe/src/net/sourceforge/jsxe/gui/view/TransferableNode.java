@@ -36,7 +36,6 @@ package net.sourceforge.jsxe.gui.view;
 //{{{ imports
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.dom.AdapterNode;
 //}}}
 
@@ -114,9 +113,7 @@ public class TransferableNode implements Transferable {
         DataFlavor flav = null;
         try {
             flav = new DataFlavor(Class.forName("net.sourceforge.jsxe.gui.view.DefaultViewTreeNode"), "XML Node");
-        } catch (ClassNotFoundException e) {
-            jsXe.exiterror(null, e.getMessage(), 1);
-        }
+        } catch (ClassNotFoundException e) {}
         nodeFlavor = flav;
     }
     

@@ -1,6 +1,18 @@
-06/18/2004  version 0.2 pre7    Ian Lewis <IanLewis@member.fsf.org>
+06/22/2004  version 0.2 pre9    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug that caused the right hand text pane to clear when trying to
+      edit using it. When dragging and dropping a node the node stays selected
+      but is not highlighted however. This may be confusing to users.
+
+06/18/2004  version 0.2 pre8    Ian Lewis <IanLewis@member.fsf.org>
 
     * Made some changes to make the DefaultView less dependent on jsXe classes
+
+06/12/2004  version 0.2 pre7    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Removed references to the TabbedView and most jsXe application references.
+    * Fixed a bug that causing jsXe to not update the title properly when a
+      document was closed.
 
 06/08/2004  version 0.2 pre6    Ian Lewis <IanLewis@member.fsf.org>
 

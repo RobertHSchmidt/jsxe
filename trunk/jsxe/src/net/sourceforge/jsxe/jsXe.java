@@ -86,6 +86,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.Iterator;
 //}}}
 
 //}}}
@@ -398,6 +399,23 @@ public class jsXe {
             buffers[i] = (DocumentBuffer)m_buffers.get(i);
         }
         return buffers;
+    }//}}}
+    
+    //{{{ getBufferForDocument()
+    /**
+     * Gets the DocumentBuffer for the document.
+     * @param doc the XMLDocument
+     * @return the DocumentBuffer for the XMLDocument or null if there is none registered
+     */
+    public static DocumentBuffer getBufferForDocument(XMLDocument doc) {
+        Iterator bufferItr = m_buffers.iterator();
+        while (bufferItr.hasNext()) {
+            DocumentBuffer buf = (DocumentBuffer)bufferItr.next();
+            if (buf.getXMLDocument() == doc) {
+                return buf;
+            }
+        }
+        return null;
     }//}}}
     
     //{{{ getIcon()

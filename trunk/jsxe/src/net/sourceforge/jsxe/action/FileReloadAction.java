@@ -80,7 +80,7 @@ public class FileReloadAction extends AbstractAction {
             DocumentView documentView = m_view.getDocumentView();
             DocumentBuffer buffer = m_view.getDocumentBuffer();
             buffer.reload(m_view);
-            documentView.setXMLDocument(m_view, buffer.getXMLDocument()); //reload the buffer in the documentView
+            documentView.setXMLDocument(buffer.getXMLDocument()); //reload the buffer in the documentView
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(m_view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
         }
