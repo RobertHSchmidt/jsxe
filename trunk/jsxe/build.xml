@@ -10,8 +10,15 @@
     <tstamp/>
   </target>
   
-	<target name="compile" depends="init">
-    <javac srcdir="." deprecation="on" includeJavaRuntime="yes">
+  <path id="classpath">
+    <pathelement location="."/>
+    <pathelement location="lib/xml-apis.jar"/>
+    <pathelement location="lib/xercesImpl.jar"/>
+  </path>
+  
+  <target name="compile" depends="init">
+    <javac srcdir="." deprecation="on" debug="true" includeJavaRuntime="yes">
+      <classpath refid="classpath"/>
       <include name="net/sourceforge/jsxe/**/*.java"/>
     </javac>
   </target>
