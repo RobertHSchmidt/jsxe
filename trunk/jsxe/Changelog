@@ -1,4 +1,4 @@
-05/22/2004  version 0.3 pre2    Ian Lewis <IanLewis@member.fsf.org>
+05/22/2004  version 0.2 pre2    Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug that caused non-dirty, non-untitled document to save when
       they were closed.
@@ -8,14 +8,18 @@
       time.
     * Tooltip for processing instructions is now correct.
     * Changed the text for some nodes in the tree.
+    * Changed versioning yet again so that we go 0.1.xx for build versions to
+      0.1 beta since 1 should be the first minor version we have a beta for.
+      Now 0.2 pre1 is the first development version preceding 0.2 beta, or
+      second minor release.
 
-05/18/2004  version 0.3 pre1    Ian Lewis <IanLewis@member.fsf.org>
+05/18/2004  version 0.2 pre1    Ian Lewis <IanLewis@member.fsf.org>
 
     * Moved logic for the file chooser dialogs to a new jsxeFileDialog class
 
-05/17/2004  version 0.2 beta    Ian Lewis <IanLewis@member.fsf.org>
+05/17/2004  version 0.1 beta    Ian Lewis <IanLewis@member.fsf.org>
 
-    * Code fixed for version 0.2 beta
+    * Code fixed for version 0.1 beta
     * changed version naming scheme. Development versions are now the next
       major.minor version with a preXX at the end (eg. 0.2 pre75). Mostly done
       so it's easier to put the version in the build file and have it make
