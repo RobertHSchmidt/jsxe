@@ -10,6 +10,9 @@
       if necessary. It does, however, lose the first key when you start typing.
     * The Move No Drop cursor is now displayed when dragging a node over a
       drop target that rejects it.
+    * The SourceView search and replace dialog now closes if you change views.
+      The sourceview also reuses the dialog if it's open already when you hit
+      the find menu item.
 
 8/11/2004   version 0.2 pre17   Ian Lewis <IanLewis@member.fsf.org>
 

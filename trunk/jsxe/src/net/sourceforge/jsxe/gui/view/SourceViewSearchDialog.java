@@ -75,15 +75,42 @@ public class SourceViewSearchDialog extends EnhancedDialog {
     //{{{ Private static members
     private static int m_dialogHeight = 200;
     private static int m_dialogWidth = 350;
+    private static SourceViewSearchDialog m_dialog = null;
+    //}}}
+    
+    //{{{ Public static members
+    
+    //{{{ getSearchDialog()
+    
+    public static SourceViewSearchDialog getSearchDialog() {
+        return m_dialog;
+    }//}}}
+    
+    //{{{ showSearchDialog()
+    
+    public static void showSearchDialog(SourceView view) {
+        if (m_dialog == null) {
+            //Assumed that a view is added to a frame.
+            Container parent = view.getParent();
+            while (!(parent instanceof Frame)) {
+                parent = parent.getParent();
+            }
+            Frame frame = (Frame)parent;
+            //display find dialog
+            m_dialog = new SourceViewSearchDialog(frame, view);
+        }
+        m_dialog.setVisible(true);
+    }//}}}
+    
     //}}}
     
     //{{{ SourceViewSearchDialog constructor
     
-    public SourceViewSearchDialog(Frame parentFrame, SourceView view, JTextArea textArea) {
+    public SourceViewSearchDialog(Frame parentFrame, SourceView view) {
         super(parentFrame, "Search and Replace", false);
         
         m_view = view;
-        m_textArea = textArea;
+        m_textArea = m_view.getTextArea();
         
         JPanel frame = new JPanel();
         getContentPane().add(frame,BorderLayout.CENTER);
@@ -177,6 +204,13 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
         getRootPane().setDefaultButton(findButton);
         
+    }//}}}
+    
+    //{{{ dispose()
+    
+    public void dispose() {
+        m_dialog = null;
+        super.dispose();
     }//}}}
     
     //{{{ ok()
