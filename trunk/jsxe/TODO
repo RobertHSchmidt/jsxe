@@ -23,8 +23,6 @@ TODO:
     
 * Version 0.2 beta
     
-    * Add option for the maximum number of recently used files to remember.
-    
     * Add support for checking if a file is in the BufferHistory and use the
       info stored there to open the file
     

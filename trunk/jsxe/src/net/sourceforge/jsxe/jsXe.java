@@ -56,6 +56,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.filechooser.FileFilter;
 //}}}
 
@@ -64,6 +66,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 //}}}
@@ -88,6 +91,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Iterator;
+import java.util.Vector;
 //}}}
 
 //}}}
@@ -739,12 +743,64 @@ public class jsXe {
         //{{{ jsXeOptionsPanel constructor
         
         public jsXeOptionsPanel() {
-            super();
+            
+            GridBagLayout layout = new GridBagLayout();
+            GridBagConstraints constraints = new GridBagConstraints();
+            
+            setLayout(layout);
+            
+            int gridY = 0;
+            
+            int maxRecentFiles = 20;
+            try {
+                maxRecentFiles = Integer.parseInt(jsXe.getProperty("max.recent.files"));
+            } catch (NumberFormatException nfe) {
+                try {
+                    maxRecentFiles = Integer.parseInt(jsXe.getDefaultProperty("max.recent.files"));
+                } catch (NumberFormatException nfe2) {}
+            }
+            
+            JLabel maxRecentFilesLabel = new JLabel("Recent files to remember:");
+            
+            Vector sizes = new Vector(3);
+            sizes.add("10");
+            sizes.add("20");
+            sizes.add("30");
+            maxRecentFilesComboBox = new JComboBox(sizes);
+            maxRecentFilesComboBox.setEditable(true);
+            maxRecentFilesComboBox.setSelectedItem(Integer.toString(maxRecentFiles));
+            
+            constraints.gridy      = gridY;
+            constraints.gridx      = 0;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
+            layout.setConstraints(maxRecentFilesLabel, constraints);
+            add(maxRecentFilesLabel);
+            
+            constraints.gridy      = gridY++;
+            constraints.gridx      = 1;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
+            layout.setConstraints(maxRecentFilesComboBox, constraints);
+            add(maxRecentFilesComboBox);
         }//}}}
         
         //{{{ saveOptions()
         public void saveOptions() {
-            
+            try {
+                //don't need to set dirty, no change to text
+                jsXe.setProperty(XMLDocument.INDENT, (new Integer(maxRecentFilesComboBox.getSelectedItem().toString())).toString());
+            } catch (NumberFormatException nfe) {
+                //Bad input, don't save.
+            }
         }//}}}
         
         //{{{ getTitle()
@@ -752,6 +808,10 @@ public class jsXe {
         public String getTitle() {
             return "jsXe Global Options";
         }//}}}
+        
+        //{{{ Private Members
+        private JComboBox maxRecentFilesComboBox;
+        //}}}
         
     }//}}}
     
