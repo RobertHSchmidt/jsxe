@@ -299,8 +299,8 @@ public class DefaultView extends JPanel implements DocumentView {
     
     //{{{ setDocumentBuffer()
     
-    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {
-        XMLDocument document = buffer.getXMLDocument();
+    public void setDocumentBuffer(DocumentBuffer document) throws IOException {
+        
         try {
             document.checkWellFormedness();
         } catch (Exception e) {
@@ -343,8 +343,8 @@ public class DefaultView extends JPanel implements DocumentView {
        // TreePath path = new TreePath(new Object[] { , document.getRootElementNode() });
        // tree.expandPath(path);
         
-        m_document = buffer;
-        m_document.getXMLDocument().addXMLDocumentListener(m_documentListener);
+        m_document = document;
+        m_document.addXMLDocumentListener(m_documentListener);
     } //}}}
     
     //}}}
@@ -384,11 +384,11 @@ public class DefaultView extends JPanel implements DocumentView {
             int gridY = 0;
             
             boolean showCommentNodes = Boolean.valueOf(m_document.getProperty(SHOW_COMMENTS, "false")).booleanValue();
-            boolean showEmptyNodes = Boolean.valueOf(m_document.getProperty(SHOW_EMPTY_NODES, "false")).booleanValue();
+           // boolean showEmptyNodes = Boolean.valueOf(m_document.getProperty(SHOW_EMPTY_NODES, "false")).booleanValue();
             boolean continuousLayout = Boolean.valueOf(m_document.getProperty(CONTINUOUS_LAYOUT, "false")).booleanValue();
             
             showCommentsCheckBox = new JCheckBox("Show comment nodes",showCommentNodes);
-            showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
+           // showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
             ContinuousLayoutCheckBox = new JCheckBox("Continuous layout for split-panes",continuousLayout);
             
             constraints.gridy      = gridY++;
@@ -402,16 +402,16 @@ public class DefaultView extends JPanel implements DocumentView {
             layout.setConstraints(showCommentsCheckBox, constraints);
             add(showCommentsCheckBox);
             
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 1;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
+           // constraints.gridy      = gridY++;
+           // constraints.gridx      = 1;
+           // constraints.gridheight = 1;
+           // constraints.gridwidth  = 1;
+           // constraints.weightx    = 1.0f;
+           // constraints.fill       = GridBagConstraints.BOTH;
+           // constraints.insets     = new Insets(1,0,1,0);
             
-            layout.setConstraints(showEmptyNodesCheckBox, constraints);
-            add(showEmptyNodesCheckBox);
+           // layout.setConstraints(showEmptyNodesCheckBox, constraints);
+           // add(showEmptyNodesCheckBox);
             
             constraints.gridy      = gridY++;
             constraints.gridx      = 1;
@@ -429,7 +429,7 @@ public class DefaultView extends JPanel implements DocumentView {
         
         public void saveOptions() {
             m_document.setProperty(SHOW_COMMENTS,(new Boolean(showCommentsCheckBox.isSelected())).toString());
-            m_document.setProperty(SHOW_EMPTY_NODES,(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
+           // m_document.setProperty(SHOW_EMPTY_NODES,(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
             
             boolean layout = ContinuousLayoutCheckBox.isSelected();
             m_document.setProperty(CONTINUOUS_LAYOUT,(new Boolean(layout)).toString());
@@ -447,7 +447,7 @@ public class DefaultView extends JPanel implements DocumentView {
         //{{{ Private Members
         
         private JCheckBox showCommentsCheckBox;
-        private JCheckBox showEmptyNodesCheckBox;
+       // private JCheckBox showEmptyNodesCheckBox;
         private JCheckBox ContinuousLayoutCheckBox;
         
         //}}}

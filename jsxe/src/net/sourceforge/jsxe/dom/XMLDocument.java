@@ -131,7 +131,7 @@ public class XMLDocument {
      * @param reader the Reader object to read the XML document from.
      * @throws IOException if there was a problem reading the document
      */
-    XMLDocument(Reader reader) throws IOException {
+    public XMLDocument(Reader reader) throws IOException {
         setDefaultProperties();
         setModel(reader);
     }//}}}
@@ -145,7 +145,7 @@ public class XMLDocument {
      *                 entities.
      * @throws IOException if there was a problem reading the document
      */
-    XMLDocument(Reader reader, EntityResolver resolver) throws IOException {
+    public XMLDocument(Reader reader, EntityResolver resolver) throws IOException {
         m_entityResolver = resolver;
         setDefaultProperties();
         setModel(reader);
