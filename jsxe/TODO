@@ -1,9 +1,8 @@
 TODO:
 
-    * Document methods with javadoc.
+    * Slowly document methods with javadoc.
     
-    * Add funtionality for dirty files.
-        * Create a robust change-event system?
+    * Slowly prefix instance variables with m_ as a naming convention.
     
     * Allow for selecting multiple files when opening.
     

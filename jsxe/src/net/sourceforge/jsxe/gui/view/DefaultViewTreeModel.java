@@ -94,7 +94,6 @@ public class DefaultViewTreeModel implements TreeModel {
     protected DefaultViewTreeModel(Component parent, XMLDocument doc) {//{{{
         document = doc;
         view = parent;
-        documentNode = document.getAdapterNode();
     }//}}}
 
     // {{{ Implemented TreeModel methods
@@ -162,7 +161,7 @@ public class DefaultViewTreeModel implements TreeModel {
     }//}}}
     
     public Object getRoot() {//{{{
-        return documentNode;
+        return document.getAdapterNode();
     }//}}}
     
     public boolean isLeaf(Object aNode) {//{{{
@@ -231,7 +230,6 @@ public class DefaultViewTreeModel implements TreeModel {
     
     Component view;
     
-    private AdapterNode documentNode;
     private XMLDocument document;
     private Vector treeListenerList = new Vector();
     //}}}

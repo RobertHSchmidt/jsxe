@@ -102,15 +102,14 @@ public class SourceViewDocument extends DefaultStyledDocument {
 
         try {
             super.insertString(offs, str, a);
-           // document.setModel(super.getText(0,super.getLength()));
+            document.setModel(super.getText(0,super.getLength()));
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
+        } catch (IOException ioe) {
+            //This should never happen. If it does however jsXe will
+            //act abnormally so crash.
+            jsXe.exiterror(view, ioe.toString(), 1);
         }
-       // catch (IOException ioe) {
-       //     //This should never happen. If it does however jsXe will
-       //     //act abnormally so crash.
-       //     jsXe.exiterror(view, ioe.toString(), 1);
-       // }
 
     }//}}}
 
@@ -118,15 +117,14 @@ public class SourceViewDocument extends DefaultStyledDocument {
         
         try {
             super.remove(offs, len);
-           // document.setModel(super.getText(0,super.getLength()));
+            document.setModel(super.getText(0,super.getLength()));
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
+        } catch (IOException ioe) {
+            //This should never happen. If it does however jsXe will
+            //act abnormally so crash.
+            jsXe.exiterror(view, ioe.toString(), 1);
         }
-       // catch (IOException ioe) {
-       //     //This should never happen. If it does however jsXe will
-       //     //act abnormally so crash.
-       //     jsXe.exiterror(view, ioe.toString(), 1);
-       // }
         
     }//}}}
 

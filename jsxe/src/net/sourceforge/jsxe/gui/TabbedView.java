@@ -41,7 +41,9 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.gui.view.DocumentView;
 import net.sourceforge.jsxe.gui.view.DocumentViewFactory;
 import net.sourceforge.jsxe.action.FileCloseAction;
@@ -150,6 +152,34 @@ public class TabbedView extends JFrame {
         if (doc != null) {
             DocumentViewFactory factory = DocumentViewFactory.newInstance();
             DocumentView newDocView = factory.newDocumentView();
+            doc.addXMLDocumentListener(new XMLDocumentListener() {
+                
+                public void propertiesChanged(XMLDocument source, String propertyKey) {//{{{
+                    if (propertyKey.equals("dirty")) {
+                        //It's dirtyness has changed
+                        //change the tab title
+                        String name = source.getName();
+                        
+                        if (isDirty(source)) {
+                            //Mark the tab title as dirty
+                            name = "*" + name;
+                        }
+                        
+                        XMLDocument[] docs = jsXe.getXMLDocuments();
+                        for (int i=0; i < docs.length; i++) {
+                            if (docs[i] == source) {
+                                tabbedPane.setTitleAt(i, name);
+                            }
+                        }
+                        
+                    }
+                }//}}}
+                
+                public void structureChanged(XMLDocument source, AdapterNode location) {}
+                
+                public void fileChanged(XMLDocument source) {};
+                
+            });
             newDocView.setDocument(this,doc);
             tabbedPane.add(doc.getName(), newDocView);
             tabbedPane.setSelectedComponent(newDocView);
@@ -186,11 +216,17 @@ public class TabbedView extends JFrame {
             XMLDocument[] docs = jsXe.getXMLDocuments();
             for (int i=0; i < docs.length; i++) {
                 if (docs[i] == doc) {
-                    tabbedPane.remove(i);
-                    //if the tab removed is not the rightmost tab
-                    //stateChanged is not called for some
-                    //reason.
-                    updateTitle();
+                    
+                    DocumentView docView = (DocumentView)tabbedPane.getComponentAt(i);
+                    
+                    //only close if we _mean_ it.
+                    if (docView.close(this)) {
+                        tabbedPane.remove(i);
+                        //if the tab removed is not the rightmost tab
+                        //stateChanged is not called for some
+                        //reason so we must update the title.
+                        updateTitle();
+                    }
                 }
             }
         }
@@ -210,24 +246,26 @@ public class TabbedView extends JFrame {
     public void update() {//{{{
         updateTitle();
         XMLDocument[] docs = jsXe.getXMLDocuments();
-        for (int i=0; i<docs.length;i++) {
-            tabbedPane.setTitleAt(i, docs[i].getName());
-        }
+       // for (int i=0; i<docs.length;i++) {
+       //     tabbedPane.setTitleAt(i, docs[i].getName());
+       // }
+        tabbedPane.updateUI();
     }//}}}
     
     /**
      * Closes the view.
+     * @return true if you really want to close.
      */
-    public void close() {//{{{
+    public boolean close() {//{{{
         
         XMLDocument[] docs = jsXe.getXMLDocuments();
         DocumentView currentDocView = null;
         
         //sequentially close all the document views
         for (int i=0; i < docs.length; i++) {
-            currentDocView = (DocumentView)tabbedPane.getComponentAt(0);
-            currentDocView.close(this);
-            tabbedPane.remove(0);
+            if (!jsXe.closeXMLDocument(this, docs[i])) {
+                return false;
+            }
         }
         
         //save properties
@@ -237,11 +275,23 @@ public class TabbedView extends JFrame {
         jsXe.setProperty("tabbedview.height",Integer.toString((int)bounds.getHeight()));
         jsXe.setProperty("tabbedview.x",Integer.toString((int)bounds.getX()));
         jsXe.setProperty("tabbedview.y",Integer.toString((int)bounds.getY()));
+        
+        return true;
     }//}}}
     
     //{{{ Private members
+    /**
+     * Returns true if the XMLDocument is dirty.
+     */
+    private static boolean isDirty(XMLDocument doc) {
+        return (Boolean.valueOf(doc.getProperty("dirty"))).booleanValue();
+    }
     
-    private void updateTitle() {
+    /**
+     * Updates the frame title. Useful when the tab has changed to a
+     * different open document..
+     */
+    private void updateTitle() {//{{{
         DocumentView currentDocView = getDocumentView();
         if (currentDocView != null) {
             XMLDocument document = currentDocView.getXMLDocument();
@@ -253,7 +303,7 @@ public class TabbedView extends JFrame {
         } else {
             setTitle(jsXe.getAppTitle());
         }
-    }
+    }//}}}
     
     /**
      * Updates the menubar. Useful when the DocumentView has changed.

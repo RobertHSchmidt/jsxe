@@ -53,7 +53,8 @@ public interface XMLDocumentListener {
      * @param source The source XMLDocument
      * @param location The AdapterNode location where the change occurred.
      *                 If a node was removed then this is the parent of the
-     *                 node that was removed.
+     *                 node that was removed. This could be null if the location
+     *                 is unknown.
      */
     public void structureChanged(XMLDocument source, AdapterNode location);
     
