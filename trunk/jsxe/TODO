@@ -7,7 +7,9 @@ TODO:
       the DOM is changed. Also add property change listeners so that views can
       be updated when properties (options) change. Update the views to register
       listeners with the XMLDocuments and AdapterNodes so they update themselves
-      when they change.
+      when they change. How should I do this? How can I use the Document
+      interface to register change listeners? Can I create my own implementation
+      of the Document interface without having to write a DOMBuilder?
     
     * Currently AdapterNodes only wrap the Node interface and create new
       instances of itself when queried. Have AdapterNode implement the TreeNode
