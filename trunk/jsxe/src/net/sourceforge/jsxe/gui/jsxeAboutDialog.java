@@ -71,7 +71,7 @@ public class jsxeAboutDialog extends AbstractAction {
         "Authors: Ian Lewis <IanLewis@members.fsf.org>\n\n"+
         "Released under the terms of the GNU General Public License";
         
-        Object[] okButton = {"Ok"};
+        Object[] okButton = {"Close"};
         JOptionPane.showOptionDialog(
             view,
             aboutMsg,
