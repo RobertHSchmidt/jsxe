@@ -5,6 +5,8 @@
       to be thrown.
     * Fixed various bugs. Moved logic for opening save dialogs to the
       DocumentBuffer class.
+    * Fixed a bug in the inserting of nodes in the DefaultViewTreeNode class
+      The setParent method wasn't setting the correct parent.
 
 05/07/2004  version 0.1.71  Ian Lewis <IanLewis@member.fsf.org>
 

@@ -109,6 +109,113 @@ public class DefaultViewTree extends JTree {
         
     }//}}}
     
+   // //{{{ expandPath()
+   // 
+   // public void expandPath(TreePath path) {
+   //     System.out.println("expandPath");
+   //     try {
+   //         DefaultViewTreeNode node = (DefaultViewTreeNode)path.getLastPathComponent();
+   //         node.setExpanded(true);
+   //         super.expandPath(path);
+   //     } catch (ClassCastException e) {
+   //         super.expandPath(path);
+   //     }
+   // }//}}}
+   // 
+   // //{{{ expandRow()
+   // 
+   // public void expandRow(int row) {
+   //     System.out.println("expandRow");
+   //     expandPath(getPathForRow(row));
+   // }//}}}
+   // 
+   // //{{{ collapsePath()
+   // 
+   // public void collapsePath(TreePath path) {
+   //     System.out.println("collapsePath");
+   //     try {
+   //         DefaultViewTreeNode node = (DefaultViewTreeNode)path.getLastPathComponent();
+   //         node.setExpanded(false);
+   //         super.collapsePath(path);
+   //     } catch (ClassCastException e) {
+   //         super.collapsePath(path);
+   //     }
+   // }//}}}
+   // 
+   // //{{{ collapseRow()
+   // 
+   // public void collapseRow(int row) {
+   //     System.out.println("collapseRow");
+   //     collapsePath(getPathForRow(row));
+   // }//}}}
+   // 
+   // //{{{ isExpanded()
+   // 
+   // public boolean isExpanded(TreePath path) {
+   //     System.out.println("isExpanded");
+   //     try {
+   //         return ((DefaultViewTreeNode)path.getLastPathComponent()).isExpanded();
+   //     } catch (ClassCastException e) {
+   //         return super.isExpanded(path);
+   //     }
+   // }//}}}
+   // 
+   // //{{{ isExpanded()
+   // 
+   // public boolean isExpanded(int row) {
+   //     System.out.println("isExpanded2");
+   //     return isExpanded(getPathForRow(row));
+   // }//}}}
+   // 
+   // //{{{ isCollapsed()
+   // 
+   // public boolean isCollapsed(TreePath path) {
+   //     System.out.println("isCollapsed");
+   //     return !isExpanded(path);
+   // }//}}}
+   // 
+   // //{{{ isCollapsed()
+   // 
+   // public boolean isCollapsed(int row) {
+   //     System.out.println("isCollapsed2");
+   //     return isCollapsed(getPathForRow(row));
+   // }//}}}
+   // 
+   // //{{{ isVisible()
+   // 
+   // public boolean isVisible(TreePath path) {
+   //     System.out.println("isVisible");
+   //     try {
+   //         Object[] path2 = path.getPath();
+   //         //If all parents are expanded
+   //         for (int i=0; i<path2.length-1; i++) {
+   //             DefaultViewTreeNode node = (DefaultViewTreeNode)path2[i];
+   //             if (!node.isExpanded()) {
+   //                 return false;
+   //             }
+   //         }
+   //         return true;
+   //     } catch (ClassCastException e) {
+   //         return super.isVisible(path);
+   //     }
+   // }//}}}
+   // 
+   // //{{{ makeVisible()
+   // 
+   // public void makeVisible(TreePath path) {
+   //     System.out.println("makeVisible");
+   //     try {
+   //         Object[] path2 = path.getPath();
+   //         //If all parents are expanded
+   //         for (int i=0; i<path2.length-1; i++) {
+   //             DefaultViewTreeNode node = (DefaultViewTreeNode)path2[i];
+   //             node.setExpanded(true);
+   //         }
+   //     } catch (ClassCastException e) {
+   //         super.makeVisible(path);
+   //     }
+   // }//}}}
+    
     //{{{ Private members
     
     //{{{ isEditable()
@@ -125,6 +232,12 @@ public class DefaultViewTree extends JTree {
             return false;
         }
     }//}}}
+    
+    //{{{ refreshExpandedStates()
+    
+   // private void refreshExpandedStates(TreePath path) {
+   //     
+   // }//}}}
     
     //{{{ TreePopupListener class
     
