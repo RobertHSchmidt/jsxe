@@ -1,6 +1,6 @@
 TODO:
 
--Fix the Options dialog to have a view specific part and a jsXe application specific part. This will allow users to set options for the view as well as options for the program itself.
+-Document methods with javadoc.
 -Create a history class for the DefaultView that keeps track of the current state of the view and can be used to restore it later.
 -Change the DOMSerializer class to conform to the DOM3 standard DOMWriter class.
 -allow for selecting multiple files when opening

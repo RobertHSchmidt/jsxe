@@ -49,4 +49,6 @@ public abstract class OptionsPanel extends JPanel {
     
     public abstract void saveOptions();
     
+    public abstract String getTitle();
+    
 }

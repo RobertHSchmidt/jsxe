@@ -106,8 +106,8 @@ public class DefaultViewTreeModel implements TreeModel {
     public Object getChild(Object parent, int index) {//{{{
         AdapterNode node = (AdapterNode) parent;
         
-        boolean showComments = Boolean.valueOf(document.getProperty("show.comment.nodes", "false")).booleanValue();
-        boolean showEmpty    = Boolean.valueOf(document.getProperty("show.empty.nodes", "false")).booleanValue();
+        boolean showComments = Boolean.valueOf(document.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
+        boolean showEmpty    = Boolean.valueOf(document.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
         
         boolean found = false;
         

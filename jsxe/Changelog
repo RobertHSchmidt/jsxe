@@ -1,0 +1,6 @@
+
+07/09/2003  version 0.1.1   Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Initial Release. Simple functions are implemented for tree view, add
+      element and text nodes, remove nodes etc. Source view is a normal text
+      area with which you can edit the source of the XML document.
