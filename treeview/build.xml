@@ -31,8 +31,8 @@
     <property name="javac.source" value="1.3"/>
 		<property name="javadoc.link" value="http://java.sun.com/j2se/1.3/docs/api/"/>
     <property name="main.class" value="treeview.TreeViewPlugin"/>
-		<property name="major.version" value="00"/>
-		<property name="minor.version" value="03"/>
+		<property name="major.version" value="0"/>
+		<property name="minor.version" value="3"/>
     <property name="build.version" value="15"/>
 		<property name="app.version" value="${major.version}.${minor.version} pre${build.version}"/>
 		<property name="app_version" value="${major.version}_${minor.version}pre${build.version}"/>
