@@ -25,7 +25,7 @@ TODO:
     
     * Remove all references to jsXe classes in the DocumentViews.
     
-    * Add the ability for XMLDocuments to have a structure for non-well parsed
+    * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother?
     
     * Add a command line option so that a user can specify the view to open
@@ -54,10 +54,7 @@ TODO:
     
     * Change the way the TabbedView keeps track of the DocumentViews and
       DocumentBuffers so that it's easier to get the DocumentBuffer for a
-      
-    
-    * Add the ability for XMLDocuments to have a structure for non-well parsed
-      documents.
+      particular XMLDocument
     
     * Add a command line option so that a user can specify the view to open
       the document with. This will allow you to open large document in the
@@ -95,8 +92,6 @@ TODO:
     
     * Implement a find dialog (for the source view at least).
     
-    * Refactor the class structure and DocumentView classes
-    
     * Fix the options dialog and make it look better. Maybe split into two
       dialogs, global options and view/document specific? Maybe even three
       dialogs, one for global options, one for view options, one for document
@@ -120,6 +115,7 @@ TODO:
       of nodes to show.
     
     * Add full support for namespaces. (adding, editing, serialization, etc.)
+      New Cell Renderer for nodes that edits namespaces separately?
     
     * Redo the interface for XMLDocuments and AdapterNodes so that DOM
       implementation used in a more limited way? Implement Document editing
@@ -163,10 +159,13 @@ TODO:
       document at once. This can let you edit a document using one view and
       view it using another. Views should be able to update automatically using
       some sort of listener interface.  This will be another option to allow users
-      to see more than one view of the document at the same time.
+      to see more than one view of the document at the same time. How would you
+      handle editing using a view that uses source and one that uses the tree
+      structure at the same time?
     
     * Create a feature to edit source for 1 node only? (Not sure how to do this
       given current design. How would I allow the source view to do that?)
+      Should I bother?
     
     * Create an interface for the main view in jsXe where the TabbedView
       implements it. Other views can then be created to allow a more
@@ -175,17 +174,13 @@ TODO:
     * Implement syntax highlighting for the SourceView.
     
     * Enhance the source view with element completion and other cool stuff. See
-      the XML plugin for jEdit for ideas.
+      the XML plugin for jEdit for ideas. How would I display well-formedness
+      errors.
     
-    * Create a history class for the DefaultView that keeps track of the current
-      state of the view and can be used to restore it later. Save the history
-      in options files so that jsXe can restore them later.
-    
-    * Fix updating of the tree when users are changing a text node.
-    
-    * Add support for DTDs and add feedback about whether the current document
-      can be validated by the DTD and what needs to be done to the document
-      before it will comply with the DTD.
+    * Add support for DTDs and Schema and add feedback about whether the
+      current document can be validated by the DTD and what needs to be done to
+      the document before it will comply with the DTD. Create interfaces to
+      coincide with the XMLDocument interfaces that handles various Schema.
     
 * Version 0.5 beta
     
@@ -197,8 +192,6 @@ TODO:
     * Create an install program for jsXe.
     
     * Create a help system for jsXe.
-    
-    * Implement validation against DTDs and different forms of Schema.
     
 * Version 0.6 beta
     
