@@ -76,6 +76,13 @@ import java.util.StringTokenizer;
 
 //}}}
 
+/**
+ * The Document model used by the SourceView for displaying the text of
+ * an XML document.
+ * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
+ * @version $Id$
+ * @see SourceView
+ */
 public class SourceViewDocument extends DefaultStyledDocument {
 
     //{{{ SourceViewDocument constructor

@@ -44,6 +44,12 @@ import org.apache.xerces.dom3.DOMError;
 
 //}}}
 
+/**
+ * Signals that a serialization error of some kind has occurred.
+ * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
+ * @version $Id$
+ * @see DOMSerializer
+ */
 public class DOMSerializerException extends Exception {
     
     //{{{ DOMSerializerException constructor

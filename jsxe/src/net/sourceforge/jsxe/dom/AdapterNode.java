@@ -61,10 +61,13 @@ import org.w3c.dom.NodeList;
  * interface by wrapping around existing nodes created after a document is
  * parsed. It provides some extra event functionality and some methods for
  * editing nodes in a DOM tree.</p>
+ * <p>Because AdapterNodes are part of an XMLDocument they must be created
+ * by their owning XMLDocument object via the newAdapterNode methods</p>
  * 
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @author Bilel Remmache (<a href="mailto:rbilel@users.sourceforge.net">rbilel@users.sourceforge.net</a>)
  * @version $Id$
+ * @see XMLDocument
  */
 public class AdapterNode {
     

@@ -37,6 +37,7 @@ package net.sourceforge.jsxe;
  * Defines an interface for objects that are notified when DocumentBuffers have changed.
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @see DocumentBuffer
  */
 public interface DocumentBufferListener {
     

@@ -72,6 +72,13 @@ import java.util.ListIterator;
 
 //}}}
 
+/**
+ * The TableModel used with the table used to display attributes 
+ * in the lower left of the DefaultView
+ * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
+ * @version $Id$
+ * @see DefaultView
+ */
 public class DefaultViewTableModel implements TableModel {
     
     //{{{ DefaultViewTableModel constructor

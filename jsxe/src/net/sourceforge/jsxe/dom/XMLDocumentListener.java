@@ -38,6 +38,7 @@ package net.sourceforge.jsxe.dom;
  * XMLDocumentListener is used to notify objects of a change to the XMLDocument.
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @see XMLDocument
  */
 public interface XMLDocumentListener {
     

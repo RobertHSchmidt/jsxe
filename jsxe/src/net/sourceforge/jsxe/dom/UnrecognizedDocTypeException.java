@@ -33,6 +33,12 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package net.sourceforge.jsxe.dom;
 
+/**
+ * Signals that an UnrecognizedDocumentType has been requested
+ * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
+ * @version $Id$
+ * @see XMLDocumentFactory
+ */
 public class UnrecognizedDocTypeException extends RuntimeException {
 
     //{{{ UnrecognizedDocTypeException constructor

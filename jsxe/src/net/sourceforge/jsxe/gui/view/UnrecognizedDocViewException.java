@@ -33,6 +33,12 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package net.sourceforge.jsxe.gui.view;
 
+/**
+ * Signals that an unrecognized DocumentView has been requested.
+ * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
+ * @version $Id$
+ * @see DocumentView
+ */
 public class UnrecognizedDocViewException extends RuntimeException {
 
     //{{{ UnrecognizedDocViewException constructor
