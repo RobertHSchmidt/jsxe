@@ -19,6 +19,9 @@
 
 package net.sourceforge.jsxe.gui;
 
+import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.OperatingSystem;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
@@ -29,6 +32,7 @@ import java.awt.*;
  * Enter is pressed) and cancel() (called when Escape is pressed, or window
  * is closed).
  * @author Slava Pestov
+ * @author Ian Lewis
  * @version $Id$
  */
 public abstract class EnhancedDialog extends JDialog
@@ -157,4 +161,106 @@ public abstract class EnhancedDialog extends JDialog
 			cancel();
 		}
 	}
+    
+        //{{{ loadGeometry()
+    /**
+     * Loads a windows's geometry from the properties.
+     * The geometry is loaded from the <code><i>name</i>.x</code>,
+     * <code><i>name</i>.y</code>, <code><i>name</i>.width</code> and
+     * <code><i>name</i>.height</code> properties.
+     *
+     * @param win The window
+     * @param name The window name
+     */
+    public static void loadGeometry(Window win, String name)
+    {
+        int x, y, width, height;
+
+        Dimension size = win.getSize();
+        Dimension screen = win.getToolkit().getScreenSize();
+
+        width = jsXe.getIntegerProperty(name + ".width",size.width);
+        height = jsXe.getIntegerProperty(name + ".height",size.height);
+
+        Component parent = win.getParent();
+        if(parent == null)
+        {
+            x = (screen.width - width) / 2;
+            y = (screen.height - height) / 2;
+        }
+        else
+        {
+            Rectangle bounds = parent.getBounds();
+            x = bounds.x + (bounds.width - width) / 2;
+            y = bounds.y + (bounds.height - height) / 2;
+        }
+
+        x = jsXe.getIntegerProperty(name + ".x",x);
+        y = jsXe.getIntegerProperty(name + ".y",y);
+
+        // Make sure the window is displayed in visible region
+        Rectangle osbounds = OperatingSystem.getScreenBounds();
+        
+        if(x < osbounds.x || x+width > osbounds.width)
+        {
+            if (width > osbounds.width)
+                width = osbounds.width;
+            x = (osbounds.width - width) / 2;
+        }
+        if(y < osbounds.y || y+height > osbounds.height)
+        {
+            if (height >= osbounds.height)
+                height = osbounds.height;
+            y = (osbounds.height - height) / 2;
+        }
+
+        Rectangle desired = new Rectangle(x,y,width,height);
+        win.setBounds(desired);
+
+        if((win instanceof Frame) && OperatingSystem.hasJava14())
+        {
+            int extState = jsXe.getIntegerProperty(name +   ".extendedState", Frame.NORMAL);
+
+            try
+            {
+                java.lang.reflect.Method meth = Frame.class.getMethod("setExtendedState", new Class[] {int.class});
+
+                meth.invoke(win, new Object[] {new Integer(extState)});
+            }
+            catch(Exception e) {}
+        }
+    } //}}}
+    
+    //{{{ saveGeometry() method
+    /**
+     * Saves a window's geometry to the properties.
+     * The geometry is saved to the <code><i>name</i>.x</code>,
+     * <code><i>name</i>.y</code>, <code><i>name</i>.width</code> and
+     * <code><i>name</i>.height</code> properties.
+     * @param win The window
+     * @param name The window name
+     */
+    public static void saveGeometry(Window win, String name)
+    {
+        if ((win instanceof Frame) && OperatingSystem.hasJava14()) {
+            try {
+                java.lang.reflect.Method meth = Frame.class.getMethod("getExtendedState",   new Class[0]);
+
+                Integer extState = (Integer)meth.invoke(win, new Object[0]);
+
+                jsXe.setIntegerProperty(name + ".extendedState", extState.intValue());
+
+                if (extState.intValue() != Frame.NORMAL) {
+                    return;
+                }
+            }
+            catch(Exception e) {}
+        }
+
+        Rectangle bounds = win.getBounds();
+        jsXe.setIntegerProperty(name + ".x",bounds.x);
+        jsXe.setIntegerProperty(name + ".y",bounds.y);
+        jsXe.setIntegerProperty(name + ".width",bounds.width);
+        jsXe.setIntegerProperty(name + ".height",bounds.height);
+    } //}}}
 }
