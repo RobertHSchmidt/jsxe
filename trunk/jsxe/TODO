@@ -12,6 +12,13 @@ TODO:
       be thrown out? Then other classes would extend XMLDocument and have
       methods specific to their application of XML?
     
+    * Tree cell rendrerer looks kinda wierd sometimes. The lines connecting
+      nodes are now sometimes drawn on top of the swivel open/close icons in
+      the tree. Not sure why this is but it should probably be fixed.
+    
+    * Make sure jsXe can deal with all types of XML nodes.
+        * Add support for creating every type of XML node.
+    
     * Make the XML document declaration header non-editable in source-view mode.
       Update it when the user changes it in the options panel. (how?)
     
@@ -27,9 +34,6 @@ TODO:
     
     * Add drag & drop functionality to the default view.
     
-    * Make sure jsXe can deal with all types of XML nodes.
-        * Add support for creating every type of XML node.
-        
     * Add minimal support for namespaces.
     
     * Release new version (0.2.0), jsXe needs to be at least usable.
@@ -46,9 +50,6 @@ TODO:
     * Redo the interface for XMLDocuments and AdapterNodes so that DOM
       implementation used in a more limited way? Implement Document editing
       methods? Can I eventually make my own DOM implementation?
-    
-    * Change icons in tree in DocumentView to be different for different types
-      of XML nodes.
     
     * Implement undo for the DefaultView and SourceView.
     

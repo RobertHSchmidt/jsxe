@@ -63,6 +63,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.ImageIcon;
+import javax.swing.ToolTipManager;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.TableModelEvent;
@@ -74,6 +76,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultMutableTreeNode;
 //}}}
 
 //{{{ AWT components
@@ -83,6 +87,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Component;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -144,6 +149,8 @@ public class DefaultView extends DocumentView {
         attributesTable.addMouseListener(new TablePopupListener());
 
         setDocumentBuffer(buffer);
+        tree.setCellRenderer(new DefaultViewTreeCellRenderer());
+        ToolTipManager.sharedInstance().registerComponent(tree);
     } //}}}
     
     public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {//{{{
@@ -539,6 +546,50 @@ public class DefaultView extends DocumentView {
         }
     }//}}}
     
+    public class DefaultViewTreeCellRenderer extends DefaultTreeCellRenderer {//{{{
+        
+        public Component getTreeCellRendererComponent(JTree tree, 
+            Object value, boolean selected, boolean expanded,
+            boolean leaf, int row, boolean hasFocus) {//{{{
+            
+           // Object obj = ((DefaultMutableTreeNode)value).getUserObject();
+           // System.out.println(obj.getClass().getName());
+           // System.out.println(obj.toString());
+            AdapterNode node = (AdapterNode)value;
+            setText(node.toString());
+            this.selected = selected;
+            
+            switch (node.getNodeType()) {
+                case Node.ELEMENT_NODE:
+                    setIcon(m_elementIcon);
+                    setToolTipText("Element Node");
+                    break;
+                case Node.TEXT_NODE:
+                    setIcon(m_textIcon);
+                    setToolTipText("Text Node");
+                    break;
+                case Node.CDATA_SECTION_NODE:
+                    setIcon(m_CDATAIcon);
+                    setToolTipText("CDATA Section");
+                    break;
+                case Node.COMMENT_NODE:
+                    setIcon(m_commentIcon);
+                    setToolTipText("Comment Node");
+                    break;
+                case Node.ENTITY_REFERENCE_NODE:
+                    setIcon(m_externalEntityIcon);
+                    setToolTipText("Entity Reference");
+                    break;
+                default:
+                    setIcon(leafIcon);
+                    setToolTipText("");
+            }
+            
+            return this;
+        }//}}}
+        
+    }//}}}
+    
     private void updateTree() {//{{{
         //We must settle for this but this doesn't
         //update the tree properly. When the text node
@@ -577,6 +628,13 @@ public class DefaultView extends DocumentView {
     private JSplitPane horizSplitPane;
     private DocumentBuffer m_buffer;
     
+    private static final ImageIcon m_elementIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Element.png"), "Element");
+    private static final ImageIcon m_textIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Text.png"), "Text");
+    private static final ImageIcon m_CDATAIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/CDATA.png"), "CDATA");
+    private static final ImageIcon m_commentIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Comment.png"), "Comment");
+    private static final ImageIcon m_externalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/ExternalEntity.png"), "External Entity");
+   // private static final ImageIcon m_internalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/InternalEntity.png"), "Internal Entity");
+   
     private static final String viewname="documentview.default";
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {
