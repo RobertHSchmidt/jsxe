@@ -23,6 +23,9 @@ TODO:
     
 * Version 0.2 beta
     
+    * Implement storing actions in an ActionSet or something so that actions
+      can be retrieved easily.
+    
     * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother? Maybe not since some views will require
       documents to be well formed.
@@ -82,9 +85,6 @@ TODO:
       options. Maybe make it like jEdit with a tree thing that displays
       option categories. So that way jsXe can have separate options for
       serialization and visualization and ...
-    
-    * Implement storing actions in an ActionSet or something so that actions
-      can be retrieved easily.
     
     * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
       support for this. jsXe needs to recognize when a document has a DTD and

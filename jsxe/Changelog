@@ -1,3 +1,10 @@
+07/25/2004  version 0.2 pre13   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Implemented actions by putting them in ActionSets and having them be
+      registered with the jsXe application. This will allow implementation of
+      a feature to allow users to set key mnemonics (shortcuts) to actions
+      easier.
+
 07/24/2004  version 0.2 pre12   Ian Lewis <IanLewis@member.fsf.org>
 
     * The recent files menu now will form multiple consecutive menus if there
