@@ -115,7 +115,7 @@
     </copy>
     
     <propertyfile file="${build.dest}/net/sourceforge/jsxe/build.properties" comment="jsXe's build properties">
-      <entry key="app.name" value="${app.name}"/>
+      <entry key="application.name" value="${app.name}"/>
       <entry key="build.time" type="date" value="now" pattern="dd/MM/yyyy HH:mm"/>
       <entry key="build.type" value="development"/>
       <entry key="major.version" value="${major.version}"/>
