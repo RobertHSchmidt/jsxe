@@ -98,33 +98,6 @@ public class AdapterNode {
         rootDocument = xmlDocument;
     }//}}}
     
-    //{{{ toString()
-    
-    public String toString() {
-        String s = new String();
-        if (domNode.getNodeType() == Node.DOCUMENT_NODE)
-            return "Document Root";
-        String nodeName = domNode.getNodeName();
-        if (! nodeName.startsWith("#")) {   
-            s += nodeName;
-        }
-        if (domNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-            s += " ";
-        }
-        if (domNode.getNodeValue() != null) {
-            String t = domNode.getNodeValue().trim();
-            int x = t.indexOf("\n");
-            if (x >= 0) {
-                t = t.substring(0, x);
-            }
-            if (t.length() > 20) {
-                t = t.substring(0, 20) + "...";
-            }
-            s += t;
-        }
-        return s;
-    }//}}}
-    
     //{{{ index()
     /**
      * <p>Returns the index of the given AdapterNode if it is a child.</p>
@@ -336,48 +309,8 @@ public class AdapterNode {
      *                      readonly or if the previous parent of the node being
      *                      inserted is readonly.
      */
-    public AdapterNode addAdapterNode(String name, String value, short type) throws DOMException {
-        
-        Node newNode = null;
-        Document document = domNode.getOwnerDocument();
-        
-        //Only handle text and element nodes right now.
-        switch(type) {
-            case Node.ELEMENT_NODE:
-                newNode = document.createElementNS("", name);
-                break;
-            case Node.TEXT_NODE:
-                newNode = document.createTextNode(value);
-                break;
-            case Node.CDATA_SECTION_NODE:
-                newNode = document.createCDATASection(value);     
-                break;
-            case Node.COMMENT_NODE:
-                newNode = document.createComment(value);
-                break;
-            case Node.PROCESSING_INSTRUCTION_NODE:
-                newNode = document.createProcessingInstruction(name, value);
-                break;
-            case Node.ENTITY_REFERENCE_NODE:
-                if (domNode.getOwnerDocument().getDoctype() ==  null) {
-                    throw new DOMException(DOMException.NOT_FOUND_ERR, "No DTD defined");
-                } else {
-                    if (domNode.getOwnerDocument().getDoctype().getEntities().getNamedItem(name) != null) {
-                        newNode = document.createEntityReference(name);
-                    } else {
-                        throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+name+"\""+" is not declared in the DTD");
-                    }
-                }
-                break;
-            case Node.DOCUMENT_TYPE_NODE:
-                throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, "DOM level 2 does not allow modification of the document type node");
-            default:
-                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "An attempt was made to add a node that was not supported.");
-        }
-        
-        AdapterNode newAdapterNode = rootDocument.newAdapterNode(this, newNode);
-        //add to this AdapterNode and the DOM.
-        return addAdapterNode(newAdapterNode);
+    public AdapterNode addAdapterNode(String name, String value, short type, int index) throws DOMException {
+        return addAdapterNodeAt(rootDocument.newAdapterNode(this, name, value, type), index);
     }//}}}
     
     //{{{ addAdapterNode()
@@ -419,12 +352,10 @@ public class AdapterNode {
     public AdapterNode addAdapterNodeAt(AdapterNode node, int location) throws DOMException {
         if (node != null) {
             if (location >= 0 && location <= childCount()) {
-                
                 if (children.indexOf(node) == location) {
                     //node is already in the location specified
                     return node;
                 }
-                
                 //add to this AdapterNode and the DOM.
                 if (node.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE) {
                     //Add all children of the document fragment
@@ -551,7 +482,7 @@ public class AdapterNode {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
         }
     }//}}}
-    
+                                                        
     //{{{ removeAttribute()
     /**
      * <p>Removes an attribute by name.</p>
@@ -643,7 +574,7 @@ public class AdapterNode {
      * <p>Sets the parent node of this AdapterNode.</p>
      * @param parent the new parent for this AdapterNode
      */
-    void setParent(AdapterNode parent) {
+    public void setParent(AdapterNode parent) {
         if (parent != parentNode) {
             if (parentNode != null) {
                 parentNode.removeChild(this);

@@ -1,3 +1,9 @@
+05/07/2004  version 0.1.71  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added a layer between the AdapterNode and the GUI. The DefaultViewTreeNode
+      class contains properties for use with the GUI. AdapterNode now doesn't
+      any GUI specific code in it.
+
 04/23/2004  version 0.1.70  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed some syncing problems with the XMLDocument and client classes

@@ -94,6 +94,7 @@ public class DefaultViewTreeModel implements TreeModel {
     
     protected DefaultViewTreeModel(Component parent, DocumentBuffer doc) {//{{{
         m_buffer = doc;
+        m_rootTreeNode = new DefaultViewTreeNode(m_buffer.getXMLDocument());
         view = parent;
     }//}}}
 
@@ -106,7 +107,7 @@ public class DefaultViewTreeModel implements TreeModel {
     }//}}}
     
     public Object getChild(Object parent, int index) {//{{{
-        AdapterNode node = (AdapterNode) parent;
+        DefaultViewTreeNode node = (DefaultViewTreeNode) parent;
         
         boolean showComments = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
         boolean showEmpty    = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
@@ -120,28 +121,29 @@ public class DefaultViewTreeModel implements TreeModel {
         //This should be changed later to make use of a node filter
         //or something similar.
         for (int i=0; i<=index; i++) {
-            AdapterNode child = node.child(i);
+            DefaultViewTreeNode child = (DefaultViewTreeNode)node.getChildAt(i);
+            AdapterNode adapter = child.getAdapterNode();
             
             if (child != null) {
-                if (!showComments && child.getNodeType()==Node.COMMENT_NODE) {
+                if (!showComments && adapter.getNodeType()==Node.COMMENT_NODE) {
                     index++;
                 }
-                if (!showEmpty && child.getNodeType()==Node.TEXT_NODE && child.getNodeValue().trim().equals("")) {
+                if (!showEmpty && adapter.getNodeType()==Node.TEXT_NODE && adapter.getNodeValue().trim().equals("")) {
                     index++;
                 }
-                if (child.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
+                if (adapter.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
                     index++;
                 }
             }
             
         }
         
-        return node.child(index);
+        return node.getChildAt(index);
     }//}}}
     
     public int getChildCount(Object parent) {//{{{
-        AdapterNode node = (AdapterNode) parent;
-        int totalcount = node.childCount();
+        DefaultViewTreeNode node = (DefaultViewTreeNode)parent;
+        int totalcount = node.getChildCount();
         int count = 0;
         for (int i=0; i<totalcount; i++) {
             if (getChild(parent, i)!=null)
@@ -151,27 +153,27 @@ public class DefaultViewTreeModel implements TreeModel {
     }//}}}
     
     public int getIndexOfChild(Object parent, Object child) {//{{{
-        AdapterNode node = (AdapterNode) parent;
+        DefaultViewTreeNode node = (DefaultViewTreeNode) parent;
+        AdapterNode adapter = node.getAdapterNode();
         
         boolean showComments = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
         boolean showEmpty    = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
         
-        if (!showComments && node.getNodeType()==Node.COMMENT_NODE)
+        if (!showComments && adapter.getNodeType()==Node.COMMENT_NODE)
             return -1;
-        if (!showEmpty && node.getNodeType()==Node.TEXT_NODE && node.getNodeValue().trim()=="")
+        if (!showEmpty && adapter.getNodeType()==Node.TEXT_NODE && adapter.getNodeValue().trim()=="")
             return -1;
         
-        return node.index((AdapterNode) child);
+        return node.getIndex((DefaultViewTreeNode)child);
     }//}}}
     
     public Object getRoot() {//{{{
-        return m_buffer.getXMLDocument().getAdapterNode();
+        return m_rootTreeNode;
     }//}}}
     
     public boolean isLeaf(Object aNode) {//{{{
         // Return true for any node with no children
-        AdapterNode node = (AdapterNode) aNode;
-        return (node.childCount() <= 0);
+        return ((DefaultViewTreeNode)aNode).isLeaf();
     }//}}}
     
     public void removeTreeModelListener(TreeModelListener listener) {//{{{
@@ -183,7 +185,7 @@ public class DefaultViewTreeModel implements TreeModel {
     public void valueForPathChanged(TreePath path, Object newValue) {//{{{
         try {
             //get the nodes needed
-            AdapterNode node = (AdapterNode)path.getLastPathComponent();
+            AdapterNode node = ((DefaultViewTreeNode)path.getLastPathComponent()).getAdapterNode();
             node.setNodeName(newValue.toString());
             //notify the listeners that tree nodes have changed
             fireTreeNodesChanged(new TreeModelEvent(this, path));
@@ -235,6 +237,7 @@ public class DefaultViewTreeModel implements TreeModel {
     Component view;
     
     private DocumentBuffer m_buffer;
+    private DefaultViewTreeNode m_rootTreeNode;
     private Vector treeListenerList = new Vector();
     //}}}
 }
