@@ -26,9 +26,6 @@ TODO:
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
     
-    * Move the soft tabs options to the document options from the source view
-      options.
-    
     * Add support for dependency tracking of plugins. Some plugins may be
       dependent on others and so this may affect the order that they are
       loaded and error checking. Some plugins will require specific versions of

@@ -201,13 +201,13 @@ public class jsXe {
             }
         }
         
-        String jsXeHome = System.getProperty("jedit.home");
+        String jsXeHome = System.getProperty("jsxe.home");
         if(jsXeHome == null) {
             String classpath = System.getProperty("java.class.path");
             int index = classpath.toLowerCase().indexOf("jsxe.jar");
             int start = classpath.lastIndexOf(File.pathSeparator,index) + 1;
             // if started with java -jar jsxe.jar
-            if(classpath.equalsIgnoreCase("jedit.jar")) {
+            if(classpath.equalsIgnoreCase("jsxe.jar")) {
                 jsXeHome = System.getProperty("user.dir");
             } else {
                 if(index > start) {
