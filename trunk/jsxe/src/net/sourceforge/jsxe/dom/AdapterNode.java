@@ -142,6 +142,10 @@ public class AdapterNode {
         return domNode.getNodeType();
     }//}}}
     
+    public AdapterNode getParentNode() {//{{{
+        return new AdapterNode(domNode.getParentNode());
+    }//}}}
+    
     public NamedNodeMap getAttributes() {//{{{
         return domNode.getAttributes();
     }//}}}
