@@ -53,8 +53,7 @@ import java.io.StringReader;
 
 public class XMLDocumentFactory {
     
-    private XMLDocumentFactory() {//{{{
-    }//}}}
+    private XMLDocumentFactory() {}
     
     public static XMLDocumentFactory newInstance() {//{{{
         return new XMLDocumentFactory();

@@ -157,7 +157,7 @@ public class AdapterNode {
         
         switch(type) {
             case Node.ELEMENT_NODE:
-                newNode = document.createElement(name);
+                newNode = document.createElementNS("", name);
                 domNode.appendChild(newNode);
                 break;
             case Node.TEXT_NODE:
