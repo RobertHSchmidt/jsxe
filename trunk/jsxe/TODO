@@ -34,6 +34,9 @@ TODO:
       isCollapsed() methods in the DefaultViewTree so that they reflect the
       new fuctionality.
     
+    * Move code that saves and closes a DocumentBuffer to the DocumentBuffer
+      class itself, from the jsXe class and SaveAction classes.
+    
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
     
 * Version 0.3.0

@@ -94,7 +94,7 @@ import org.xml.sax.InputSource;
  */
 public class DocumentBuffer {
     
-    //{{{ DocumentBuffer
+    //{{{ DocumentBuffer constructor
     /**
      * Creates a new DocumentBuffer for a file on disk. The name of the
      * DocumentBuffer is taken from the filename.
@@ -112,7 +112,7 @@ public class DocumentBuffer {
         m_document.addXMLDocumentListener(m_bufferDocListener);
     }//}}}
     
-    //{{{ DocumentBuffer
+    //{{{ DocumentBuffer constructor
     /**
      * Creates a new untitled DocumentBuffer. The buffer is initialized from
      * the reader given and takes the name Untitled-X, where X is the highest
@@ -133,6 +133,11 @@ public class DocumentBuffer {
     
     //{{{ addDocumentBufferListener()
     
+    /**
+     * Adds a listener to this document buffer that is notified when the
+     * buffer is changed.
+     * @param listener the listener that is notified when the buffer is changed
+     */
     public void addDocumentBufferListener(DocumentBufferListener listener) {
         if (listener != null) {
             if (!m_listeners.contains(listener)) {
@@ -143,6 +148,11 @@ public class DocumentBuffer {
     
     //{{{ removeDocumentBufferListener()
     
+    /**
+     * Removes a listener from this buffer. The listener will no longer recieve
+     * notifications when the buffer changes.
+     * @param listener the listener to remove
+     */
     public void removeDocumentBufferListener(DocumentBufferListener listener) {
         if (listener != null) {
             m_listeners.remove(m_listeners.indexOf(listener));
@@ -151,84 +161,157 @@ public class DocumentBuffer {
     
     //{{{ getName(}
     
+    /**
+     * Gets the name of the buffer.
+     *
+     * @return the name of the buffer
+     */
     public String getName() {
         return m_name;
     }//}}}
     
     //{{{ getFile()
     
+    /**
+     * Gets the File for this DocumentBuffer.
+     * @return the File where the document was stored on disk or null if the
+     *         document is untitled and does not exist on disk.
+     */
     public File getFile() {
         return m_file;
     }//}}}
     
     //{{{ setProperty()
     
+    /**
+     * Sets a property with the DocumentBuffer. This can be anything the
+     * application requires.
+     * @param key the key to the property
+     * @param value the value for the property
+     * @return the value for the property that was set
+     */
     public String setProperty(String key, String value) {
         return m_document.setProperty(key, value);
     }//}}}
     
     //{{{ getProperty()
     
+    /**
+     * Gets a property for this DocumentBuffer
+     * @param key the key to the property requested
+     * @return the value for the property requested
+     */
     public String getProperty(String key) {
         return m_document.getProperty(key);
     }//}}}
     
     //{{{ getProperty()
     
+    /**
+     * Gets a property for this DocumentBuffer given a default value.
+     * @param key the key to the property requested
+     * @return the value for the property requested or defaultValue if the
+     *         property is not set
+     */
     public String getProperty(String key, String defaultValue) {
         return m_document.getProperty(key, defaultValue);
     }//}}}
     
     //{{{ getXMLDocument()
     
+    /**
+     * Gets the XMLDocument object for this DocumentBuffer. This object is
+     * used by the DocumentBuffer to interact with the XML document in memory.
+     * @return the XMLDocument for this DocumentBuffer
+     */
     public XMLDocument getXMLDocument() {
         return m_document;
     }//}}}
     
     //{{{ isDirty()
     
+    /**
+     * Gets whether the DocumentBuffer is dirty.
+     * @return true if the information in the document in memory is newer than
+     *         that of the document on disk.
+     */
     public boolean isDirty() {
         return (Boolean.valueOf(getProperty("dirty"))).booleanValue();
     }//}}}
     
     //{{{ isUntitled()
     
+    /**
+     * Gets whether this DocumentBuffer is untitled.
+     * @return true if the document has no corresponding file on disk.
+     */
     public boolean isUntitled() {
         return (m_file == null);
     }//}}}
     
     //{{{ save()
     
+    /**
+     * Saves the document buffer to disk in the current file. If the document
+     * is untitled the user is prompted for a file to save to.
+     *
+     * @return true if the save was successful and the used did not intervene.
+     *         false if the user canceled the save.
+     * @throws IOException if the document could not be written due to an I/O
+     *                     error.
+     */
     public boolean save() throws IOException {
         return saveAs(getFile());
     }//}}}
     
     //{{{ saveAs()
     
+    /**
+     * Saves the document to the given file. If the file is null then the user
+     * is prompted for a file to save to.
+     * 
+     * @param file the file to save the document to.
+     * @return true if the document was saved successfully the user did not
+     *         intervene
+     * @throws IOException if the document could not be written due to an I/O
+     *                     error.
+     */
     public boolean saveAs(File file) throws IOException {
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            m_document.serialize(out);
-            
-            if (!getName().equals(file.getName())) {
-                setName(file.getName());
-                fireNameChanged();
+        if (file != null) {
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                m_document.serialize(out);
+                
+                if (!getName().equals(file.getName())) {
+                    setName(file.getName());
+                    fireNameChanged();
+                }
+                
+                m_file = file;
+                setDirty(false);
+                
+                fireBufferSaved();
+                
+                return true;
+                
+            } catch (SecurityException se) {
+                throw new IOException(se.getMessage());
             }
-            
-            m_file = file;
-            setDirty(false);
-            
-            fireBufferSaved();
-            
-            return true;
-            
-        } catch (SecurityException se) {
-            throw new IOException(se.getMessage());
+        } else {
+            throw new IOException("Cannot save: no file specified");
         }
     }//}}}
     
     //{{{ equalsOnDisk()
     
+    /**
+     * Indicates if the file given is the same file on disk as the file
+     * used by this DocumentBuffer are the same file on disk.
+     * @param file the File to compare this DocumentBuffer's file against
+     * @return true if the file given is the same file on disk as the file used
+     *         by this DocumentBuffer
+     * @throws IOException if the files cannot be compared due to an I/O error
+     */
     public boolean equalsOnDisk(File file) throws IOException {
         if (getFile() != null && file != null) {
             boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
@@ -254,13 +337,25 @@ public class DocumentBuffer {
     }//}}}
     
     //{{{ equalsOnDisk()
-    
+    /**
+     * Indicates if the DocumentBuffer given represents the same file on disk as
+     * the file used by this DocumentBuffer.
+     * @param the DocumentBuffer whose file to compare
+     * @return true if the DocumentBuffer given uses the same file on disk as
+     *         the file used by this DocumentBuffer
+     * @throws IOException if the files cannot be compared due to an I/O error
+     */
     public boolean equalsOnDisk(DocumentBuffer buffer) throws IOException {
         return equalsOnDisk(buffer.getFile());
     }//}}}
     
     //{{{ getOptionsPanel()
     
+    /**
+     * Gets the panel for editing options for this DocumentBuffer.
+     * @return the options panel used to edit options specific to this
+     *         DocumentBuffer
+     */
     public OptionsPanel getOptionsPanel() {
         return new DocumentBufferOptionsPanel();
     }//}}}

@@ -59,6 +59,7 @@ import javax.swing.filechooser.FileFilter;
  */
 public class CustomFileFilter extends FileFilter {
     
+    //{{{ CustomFileFilter constructor
     /**
      * Creates a CustomFileFilter given a Collection containing the file extensions
      * that the file filter accepts. If the Collection does not contain strings
@@ -67,12 +68,14 @@ public class CustomFileFilter extends FileFilter {
      *             extensions that this file filter accepts.
      * @param desc The description for this file filter.
      */
-    public CustomFileFilter(Collection exts, String desc) {//{{{
+    public CustomFileFilter(Collection exts, String desc) {
         extensions = exts;
         description = desc;
     }//}}}
     
-    public boolean accept(File f) {//{{{
+    //{{{ accept()
+    
+    public boolean accept(File f) {
         if(f != null) {
             if(f.isDirectory()) {
                 return true;
@@ -88,13 +91,17 @@ public class CustomFileFilter extends FileFilter {
         return false;
     }//}}}
     
-    public String getDescription() {//{{{
+    //{{{ getDescription()
+    
+    public String getDescription() {
         return description;
     }//}}}
     
     //{{{ Private members
     
-    private String getExtension(File f) {//{{{
+    //{{{ getExtension()
+    
+    private String getExtension(File f) {
         if(f != null) {
             String filename = f.getName();
             int i = filename.lastIndexOf('.');
