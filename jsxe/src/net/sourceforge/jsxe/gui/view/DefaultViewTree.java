@@ -74,7 +74,7 @@ import java.util.*;
  * @version $Id$
  * @see DefaultView
  */
-public class DefaultViewTree extends JTree {
+public class DefaultViewTree extends JTree implements Autoscroll {
     
     //{{{ DefaultViewTree constructor
     /**
@@ -130,6 +130,48 @@ public class DefaultViewTree extends JTree {
         
     }//}}}
     
+    //{{{ Autoscroll methods
+    
+    //{{{ autoscroll()
+    
+    public void autoscroll(Point cursorLocn) {
+        int row = getRowForLocation(cursorLocn.x, cursorLocn.y);
+        
+        if (row < 0) {
+            return;
+        }
+        
+        Rectangle bounds = getBounds();
+        
+        if (cursorLocn.y + bounds.y <= m_AUTOSCROLL_MARGIN) {
+            if (row <= 0) {
+                row = 0;
+            } else {
+                row -=1;
+            }
+        } else {
+            if (row < getRowCount() - 1) {
+                row += 1;
+            }
+        }
+        scrollRowToVisible(row);
+    }//}}}
+    
+    //{{{ getAutoscrollInsets()
+    
+    public Insets getAutoscrollInsets() {
+        
+        Rectangle outerBounds = getBounds();
+        Rectangle innerBounds = getParent().getBounds();
+        int top = innerBounds.y - outerBounds.y + m_AUTOSCROLL_MARGIN;
+        int left = innerBounds.x - outerBounds.x + m_AUTOSCROLL_MARGIN;
+        int bottom = outerBounds.height - innerBounds.height - innerBounds.y + outerBounds.y + m_AUTOSCROLL_MARGIN;
+        int right = outerBounds.width - innerBounds.width - innerBounds.x + outerBounds.y + m_AUTOSCROLL_MARGIN;
+        return new Insets(top, left, bottom, right);
+    }//}}}
+    
+    //}}}
+    
     //{{{ Private static members
     private static final ImageIcon m_elementIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Element.png"), "Element");
     private static final ImageIcon m_textIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Text.png"), "Text");
@@ -137,6 +179,8 @@ public class DefaultViewTree extends JTree {
     private static final ImageIcon m_commentIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Comment.png"), "Comment");
    // private static final ImageIcon m_externalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/ExternalEntity.png"), "External Entity");
     private static final ImageIcon m_internalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/InternalEntity.png"), "Internal Entity");
+    
+    private static final int m_AUTOSCROLL_MARGIN = 12;
     
     //{{{ isEditable()
     /**
@@ -152,6 +196,7 @@ public class DefaultViewTree extends JTree {
             return false;
         }
     }//}}}
+
     //}}}
     
     //{{{ Private members
@@ -604,7 +649,27 @@ public class DefaultViewTree extends JTree {
     
     //{{{ DefaultViewDropTargetListener class
     
-    private class TreeDropTargetListener implements DropTargetListener {
+    private class DefaultViewDropTargetListener implements DropTargetListener {
+        
+        //{{{ DefaultViewDropTargetListener constructor
+        
+        public DefaultViewDropTargetListener() {
+            m_m_timerHover = new javax.swing.Timer(m_HOVER_TIME_BEFORE_EXPAND, new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					if (isRootVisible() && getRowForPath(m_m_lastPath) == 0) {
+						return;	// Do nothing if we are hovering over the root node
+					}
+                    if (isExpanded(m_m_lastPath)) {
+						collapsePath(m_m_lastPath);
+                    } else {
+						expandPath(m_m_lastPath);
+                    }
+				}
+			});
+			m_m_timerHover.setRepeats(false);	// Set timer to one-shot mode
+        }//}}}
         
         //{{{ dragEnter()
         
@@ -620,6 +685,7 @@ public class DefaultViewTree extends JTree {
         //{{{ drop()
         
         public void drop(DropTargetDropEvent dtde) {
+            m_m_timerHover.stop(); // prevent timer from collapsing/expanding node
             
             if (!dtde.isDataFlavorSupported(TransferableNode.nodeFlavor)) {
                 dtde.rejectDrop();
@@ -649,7 +715,7 @@ public class DefaultViewTree extends JTree {
             DefaultViewTreeNode node = (DefaultViewTreeNode)data;
             Point loc = dtde.getLocation();
             
-            TreePath path = getPathForLocation(loc.x, loc.y);
+            TreePath path = getClosestPathForLocation(loc.x, loc.y);
             if (path == null) {
                 dtde.rejectDrop();
                 return;
@@ -723,8 +789,12 @@ public class DefaultViewTree extends JTree {
             }
             
             Point loc = dtde.getLocation();
-            TreePath path = getPathForLocation(loc.x, loc.y);
-            
+           // TreePath path = getPathForLocation(loc.x, loc.y);
+            TreePath path = getClosestPathForLocation(loc.x, loc.y);
+            if (path != m_m_lastPath) {
+                m_m_lastPath = path;
+                m_m_timerHover.restart();
+            }
             m_dragOverTarget = null;
             paintImmediately(m_cueLine);
             if (path != null) {
@@ -785,6 +855,10 @@ public class DefaultViewTree extends JTree {
             //Set the node that is dragged over to null
             m_dragOverTarget = null;
         }//}}}
+
+        //{{{ Private static members
+        private static final int m_HOVER_TIME_BEFORE_EXPAND = 1500;
+        //}}}
         
         //{{{ Private Members
         
@@ -803,6 +877,9 @@ public class DefaultViewTree extends JTree {
             return true;
         }//}}}
         
+        private javax.swing.Timer m_m_timerHover;
+        private TreePath m_m_lastPath;
+        
         //}}}
         
     }//}}}
@@ -814,7 +891,7 @@ public class DefaultViewTree extends JTree {
     private DragGestureListener m_treeDGListener = new TreeDragGestureListener();
     private DragSourceListener m_treeDSListener = new DefaultViewDragSourceListener();
     private DropTarget m_dropTarget;
-    private DropTargetListener m_treeDTListener = new TreeDropTargetListener();
+    private DropTargetListener m_treeDTListener = new DefaultViewDropTargetListener();
     private int m_acceptableActions = DnDConstants.ACTION_MOVE;
     
     private Rectangle m_cueLine = new Rectangle();
@@ -827,4 +904,5 @@ public class DefaultViewTree extends JTree {
     //}}}
 
     //}}}
+
 }
