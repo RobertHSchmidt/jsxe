@@ -229,10 +229,34 @@ public class SourceView extends JPanel implements DocumentView {
     
     //}}}
     
-    //{{{ getTextPane()
+    //{{{ getCaretPosition()
     
     public int getCaretPosition() {
         return textarea.getCaretPosition();
+    }//}}}
+    
+    //{{{ getSelectedText()
+    
+    public String getSelectedText() {
+        return textarea.getSelectedText();
+    }//}}}
+    
+    //{{{ getSelectionStart()
+    
+    public int getSelectionStart() {
+        return textarea.getSelectionStart();
+    }//}}}
+    
+    //{{{ getSelectionEnd()
+    
+    public int getSelectionEnd() {
+        return textarea.getSelectionEnd();
+    }//}}}
+    
+    //{{{ replace()
+    
+    public void replace(String str, int start, int end) {
+        textarea.replaceRange(str, start, end);
     }//}}}
     
     //{{{ selectText()
