@@ -246,6 +246,10 @@ public class DefaultXMLDocument extends XMLDocument {
         listeners.add(listener);
     }//}}}
     
+    public void removeXMLDocumentListener(XMLDocumentListener listener) {//{{{
+        listeners.remove(listeners.indexOf(listener));
+    }//}}}
+    
     //{{{ Private members
     
     private String getUntitledLabel() {//{{{
@@ -278,13 +282,13 @@ public class DefaultXMLDocument extends XMLDocument {
         }
     }//}}}
     
-    private void fireStructureChanged(AdapterNode location) {//{{{
-        ListIterator iterator = listeners.listIterator();
-        while (iterator.hasNext()) {
-            XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
-            listener.structureChanged(this, location);
-        }
-    }//}}}
+   // private void fireStructureChanged(AdapterNode location) {//{{{
+   //     ListIterator iterator = listeners.listIterator();
+   //     while (iterator.hasNext()) {
+   //         XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
+   //         listener.structureChanged(this, location);
+   //     }
+   // }//}}}
     
     private void fireFileChanged() {//{{{
         ListIterator iterator = listeners.listIterator();

@@ -7,8 +7,9 @@ jsXe is the Java Simple XML Editor
 jsXe is a gui application that creates a tree view of an XML document.
 The user can then edit this tree and the content in the tree.
 
-This file contains the Node class that will be used by the DomTreeAdapter
-class to adapt a DOM into the model for a viewabel JTree.
+This file contains the Node class that will be used by jsXe
+to adapt a DOM into the model for a viewable JTree. This class also
+provides persistent objects for editing a DOM.
 
 This file written by Ian Lewis (IanLewis@member.fsf.org)
 Copyright (C) 2002 Ian Lewis
@@ -56,13 +57,19 @@ import org.w3c.dom.NodeList;
 
 public class AdapterNode {
     
-    public AdapterNode(Node node) {//{{{
+    public AdapterNode(Document document) {//{{{
+        domNode = document;
+        parentNode = null;
+    }//}}}
+    
+    private AdapterNode(AdapterNode parent, Node node) {//{{{
         domNode = node;
+        parentNode = parent;
     }//}}}
     
     public String toString() {//{{{
         String s = new String();
-        if (typeName[domNode.getNodeType()].equals("Document"))
+        if (domNode.getNodeType() == Node.DOCUMENT_NODE)
             return "Document Root";
         String nodeName = domNode.getNodeName();
         if (! nodeName.startsWith("#")) {	
@@ -88,12 +95,42 @@ public class AdapterNode {
         return -1;
     }//}}}
     
-    public AdapterNode child(int searchIndex) {//{{{
-        Node node = domNode.getChildNodes().item(searchIndex);
-        if (node == null)
-            return null;
-        else
-            return new AdapterNode(node);
+    /**
+     * Gets the child node at the given index.
+     * @param index the index of the requested node.
+     * @return an AdapterNode representing the node at the given index,
+     *         null if the index is out of bounds.
+     */
+    public AdapterNode child(int index) {//{{{
+        /*
+        Only populate the children list if asked for the
+        Adapter. Once asked for however the object should
+        be persistent.
+        */
+        AdapterNode child = null;
+        if (index < domNode.getChildNodes().getLength()) {
+            if (index < children.size()) {
+                try {
+                    child = (AdapterNode)children.get(index);
+                    if (child == null) {
+                        //the size was ok but no AdapterNode was at this index
+                        child = new AdapterNode(this, domNode.getChildNodes().item(index));
+                        children.set(index, child);
+                    }
+                } catch (IndexOutOfBoundsException ioobe) {}
+            } else {
+                /*
+                Populate the other elements with null until we
+                have the correct size.
+                */
+                while (children.size() < index) {
+                    children.add(null);
+                }
+                child = new AdapterNode(this, domNode.getChildNodes().item(index));
+                children.add(child);
+            }
+        }
+       return child;
     }//}}}
     
     public int childCount() {//{{{
@@ -106,7 +143,7 @@ public class AdapterNode {
     
     public void setNodeName(String newValue) throws DOMException {//{{{
         //Verify that this really is a change
-        if (typeName[domNode.getNodeType()].equals("Element") && !domNode.getNodeName().equals(newValue)) {
+        if (domNode.getNodeType() == Node.ELEMENT_NODE && !domNode.getNodeName().equals(newValue)) {
             //get the nodes needed
             Node parent = domNode.getParentNode();
             NodeList children = domNode.getChildNodes();
@@ -138,7 +175,7 @@ public class AdapterNode {
         return domNode.getNodeValue();
     }//}}}
     
-    public void setNodeValue(String str) {//{{{
+    public void setNodeValue(String str) throws DOMException {//{{{
         domNode.setNodeValue(str);
     }//}}}
     
@@ -147,7 +184,7 @@ public class AdapterNode {
     }//}}}
     
     public AdapterNode getParentNode() {//{{{
-        return new AdapterNode(domNode.getParentNode());
+        return parentNode;
     }//}}}
     
     public NamedNodeMap getAttributes() {//{{{
@@ -159,14 +196,13 @@ public class AdapterNode {
         Node newNode = null;
         Document document = domNode.getOwnerDocument();
         
+        //Only handle text and element nodes right now.
         switch(type) {
             case Node.ELEMENT_NODE:
                 newNode = document.createElementNS("", name);
-                domNode.appendChild(newNode);
                 break;
             case Node.TEXT_NODE:
                 newNode = document.createTextNode(value);
-                domNode.appendChild(newNode);
                 break;
            // case Node.CDATA_SECTION_NODE:
            //     
@@ -187,27 +223,32 @@ public class AdapterNode {
                 throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element and Text Nodes can be added at this time.");
         }
         
-        return new AdapterNode(newNode);
+        AdapterNode newAdapterNode = new AdapterNode(this, newNode);
+        //add to this AdapterNode and the DOM.
+        domNode.appendChild(newNode);
+        children.add(newAdapterNode);
+        return newAdapterNode;
     }//}}}
     
     public void remove() throws DOMException {//{{{
         Node parent = domNode.getParentNode();
         parent.removeChild(domNode);
+        parentNode.remove(this);
     }//}}}
     
     public void remove(AdapterNode child) throws DOMException {//{{{
         domNode.removeChild(child.getNode());
     }//}}}
     
-    public void addAttribute(String name, String value) throws DOMException {//{{{
-        if (typeName[domNode.getNodeType()].equals("Element")) {
+    public void setAttribute(String name, String value) throws DOMException {//{{{
+        if (domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)domNode;
             element.setAttribute(name,value);
         }
     }//}}}
     
     public void removeAttributeAt(int index) throws DOMException {//{{{
-        if (typeName[domNode.getNodeType()].equals("Element")) {
+        if (domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)domNode;
             NamedNodeMap attrs = element.getAttributes();
             Node attr = attrs.item(index);
@@ -281,21 +322,9 @@ public class AdapterNode {
    //     }
    // }//}}}
     
-    private final String[] typeName = {
-        "none",
-        "Element",
-        "Attr",
-        "Text",
-        "CDATA",
-        "EntityRef",
-        "Entity",
-        "ProcInstr",
-        "Comment",
-        "Document",
-        "DocType",
-        "DocFragment",
-        "Notation",
-    };
+    private AdapterNode parentNode;
+    private ArrayList children = new ArrayList();
+    
     private Node domNode;
     private ArrayList listeners;
     //}}}

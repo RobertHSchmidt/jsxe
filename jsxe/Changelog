@@ -1,3 +1,8 @@
+10/08/2003  version 0.1.16  Ian Lewis  <IanLewis@member.fsf.org>
+
+    * Made AdapterNodes persistent. Now the JTree functions like it
+      should when updateUI is called on it.
+
 09/07/2003  version 0.1.15  Ian Lewis  <IanLewis@member.fsf.org>
 
     * Added functionality to the XMLDocument interface for adding listeners
