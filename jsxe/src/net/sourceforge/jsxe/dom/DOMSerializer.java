@@ -49,6 +49,7 @@ import org.w3c.dom.DocumentType;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.ls.DOMWriter;
 //}}}
 
 //{{{ Java base classes
@@ -62,7 +63,7 @@ import java.io.Writer;
 
 //}}}
 
-public class DOMSerializer {
+public class DOMSerializer implements DOMWriter {
     
     public DOMSerializer(boolean formatting) {//{{{
         formatText = formatting;
