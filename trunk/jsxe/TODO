@@ -36,6 +36,9 @@ TODO:
     
     * Make sure jsXe can deal with all types of XML nodes.
     
+    * Change icons in tree in DocumentView to be different for different types
+      of XML nodes.
+    
     * Release a new version with the new features.
     
     * Allow GUI models to register change listeners with XMLDocuments and
@@ -54,9 +57,6 @@ TODO:
     * Implement undo for the DefaultView and SourceView.
     
     * Implement syntax highlighting for the SourceView.
-    
-    * Change icons in tree in DocumentView to be different for different types
-      of XML nodes.
     
     * Add drag & drop functionality to the default view.
     

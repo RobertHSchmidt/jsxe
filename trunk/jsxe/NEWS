@@ -1,4 +1,10 @@
 
+    * Fixed a bug that caused uncaught exceptions when saving a file as an
+      already open file.
+
+    * Fixed a bug when writing files that causes characters like < > ' to not
+      be written properly.
+
 07/09/2003  version 0.1.1
 
     * Initial Release. Simple functions are implemented for tree view, add
