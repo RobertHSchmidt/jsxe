@@ -19,3 +19,9 @@ If org.xml.sax and org.w3c.dom are not included with your java version you must
 make sure that xerces is in your classpath. Like,
 
     java -cp xml-apis.jar;xercesImpl.jar -jar jsXe.jar
+
+for Windows or 
+
+    java -cp xml-apis.jar:xercesImpl.jar -jar jsXe.jar
+
+for *nix.
