@@ -198,7 +198,7 @@ public class jsXe {
        //     JARClassLoader loader = new JARClassLoader();
        //     ArrayList list = loader.addDirectory(settingsDirectory+"/plugins");
        //     if (list.size() != 0) {
-       //         System.out.println("COULD NOT LOAD: "+list.get(1).toString());
+       //         System.out.println("COULD NOT LOAD: "+list.get(0).toString());
        //     } else {
        //         Class cls = loader.loadClass("test.DOMTest");
        //         Class cls2 = loader.loadClass("test.DOMTest2");
