@@ -44,13 +44,18 @@ import javax.swing.Action;
  * @version $Id$
  */
 public class ActionSet {
+   
+   //{{{ ActionSet constructor
+   
    /**
     * Creates a new action set.
     */
    public ActionSet() {
       this(null);
-   }
+   }//}}}
 
+   //{{{ ActionSet constructor
+   
    /**
     * Creates a new action set.
     * @param label The label for the action set
@@ -58,23 +63,29 @@ public class ActionSet {
    public ActionSet(String label) {
       this.label = label;
       actions = new Hashtable();
-   }
+   }//}}}
 
+   //{{{ getLabel()
+   
    /**
     * Return the action source label.
     */
    public String getLabel() {
       return label;
-   }
+   }//}}}
 
+   //{{{ setLabel()
+   
    /**
     * Sets the action source label.
     * @param label The label
     */
    public void setLabel(String label) {
       this.label = label;
-   }
+   }//}}}
 
+   //{{{ addAction()
+   
    /**
     * Adds an action to the action set.
     * @param name the internal name for the action
@@ -82,38 +93,48 @@ public class ActionSet {
     */
    public void addAction(String name, Action action) {
       actions.put(name,action);
-   }
+   }//}}}
 
+   //{{{ removeAction()
+   
    /**
     * Removes an action from the action set.
     * @param name The internal action name
     */
    public void removeAction(String name) {
       actions.remove(name);
-   }
+   }//}}}
 
+   //{{{ removeAllActions()
+   
    /**
     * Removes all actions from the action set.
     */
    public void removeAllActions() {
       actions.clear();
-   }
+   }//}}}
 
+   //{{{ getAction()
+   
    /**
     * Returns an action with the specified name.
     * @param name The action name
     */
    public Action getAction(String name) {
       return (Action)actions.get(name);
-   }
+   }//}}}
 
+   //{{{ getActionCount()
+   
    /**
     * Returns the number of actions in the set.
     */
    public int getActionCount() {
       return actions.size();
-   }
+   }//}}}
 
+   //{{{ getActions()
+   
    /**
     * Returns an array of all actions in this action set.
     */
@@ -125,19 +146,23 @@ public class ActionSet {
          retVal[i++] = (Action)enum.nextElement();
       }
       return retVal;
-   }
+   }//}}}
 
+   //{{{ contains()
+   
    /**
     * Returns if this action set contains the specified action.
     * @param action The action
     */
    public boolean contains(Action action) {
       return actions.contains(action);
-   }
+   }//}}}
 
+   //{{{ toString()
+   
    public String toString() {
       return label;
-   }
+   }//}}}
 
    // package-private members
   // void getActions(Vector vec) {
@@ -147,7 +172,8 @@ public class ActionSet {
   //    }
   // }
 
-   // private members
+   //{{{ Private Members
    private String label;
    private Hashtable actions;
+   //}}}
 }
