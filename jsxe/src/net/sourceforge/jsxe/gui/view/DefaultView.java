@@ -194,6 +194,13 @@ public class DefaultView extends DocumentView {
     }//}}}
     
     private void updateTree() {//{{{
+        //We must settle for this but this doesn't
+        //update the tree properly. When the text node
+        //is changed the tree cell size doesn't change
+        //resulting in ... characters in the tree.
+        //Being able to update the tree the way we want
+        //to is going to be require more complex use of
+        //tree rendering I think.
         tree.treeDidChange();
     }//}}}
     
