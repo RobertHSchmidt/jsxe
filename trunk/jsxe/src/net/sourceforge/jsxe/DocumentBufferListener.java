@@ -33,6 +33,9 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package net.sourceforge.jsxe;
 
+import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.dom.AdapterNode;
+
 /**
  * Defines an interface for objects that are notified when DocumentBuffers have changed.
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
@@ -67,4 +70,7 @@ public interface DocumentBufferListener {
      */
     public void bufferSaved(DocumentBuffer source);//}}}
     
+    //{{{ statusChanged()
+    
+    public void statusChanged(DocumentBuffer source, int statusType, boolean oldStatus);//}}}
 }

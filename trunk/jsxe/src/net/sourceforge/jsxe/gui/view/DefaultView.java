@@ -343,9 +343,6 @@ public class DefaultView extends JPanel implements DocumentView {
        // TreePath path = new TreePath(new Object[] { , document.getRootElementNode() });
        // tree.expandPath(path);
         
-        if (m_document != null) {
-            m_document.getXMLDocument().removeXMLDocumentListener(m_documentListener);
-        }
         m_document = buffer;
         m_document.getXMLDocument().addXMLDocumentListener(m_documentListener);
     } //}}}

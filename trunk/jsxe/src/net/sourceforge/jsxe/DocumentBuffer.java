@@ -100,6 +100,8 @@ import org.xml.sax.InputSource;
  */
 public class DocumentBuffer {
     
+    public static final int DIRTY = 1;
+    
     //{{{ DocumentBuffer constructor
     /**
      * Creates a new DocumentBuffer for a jsXe's default document. The buffer
@@ -168,7 +170,7 @@ public class DocumentBuffer {
      * @throws IOException if the user chooses to save and the file could not be saved
      */
     public boolean close(TabbedView view) throws IOException {
-        if (isDirty()) {
+        if (getStatus(DIRTY)) {
             
              //If it's dirty ask if you want to save.
             String msg = getName()+" unsaved! Save it now?";
@@ -298,12 +300,15 @@ public class DocumentBuffer {
     //{{{ isDirty()
     
     /**
-     * Gets whether the DocumentBuffer is dirty.
-     * @return true if the information in the document in memory is newer than
-     *         that of the document on disk.
+     * Gets a status for the DocumentBuffer, such as if it is dirty.
+     * @return true if the status for the type is set to true, false otherwise
      */
-    public boolean isDirty() {
-        return (Boolean.valueOf(getProperty("dirty"))).booleanValue();
+    public boolean getStatus(int statusType) {
+        boolean status = false;
+        if (statusType == DocumentBuffer.DIRTY) {
+            status = m_dirty;
+        }
+        return status;
     }//}}}
     
     //{{{ isUntitled()
@@ -327,7 +332,7 @@ public class DocumentBuffer {
      */ 
     public boolean reload(TabbedView view) throws IOException {
         boolean stillReload = true;
-        if (isDirty()) {
+        if (getStatus(DIRTY)) {
             
              //If it's dirty ask if you want to save.
             String msg = getName()+" unsaved!\n You will lose all unsaved changes if you reload!\n\nContinue?";
@@ -539,7 +544,9 @@ public class DocumentBuffer {
     //{{{ setDirty()
     
     private void setDirty(boolean dirty) {
-        setProperty("dirty", Boolean.toString(dirty));
+        boolean oldDirty = m_dirty;
+        m_dirty=dirty;
+        fireStatusChanged(DIRTY, oldDirty);
     }//}}}
     
     //{{{ setName()
@@ -778,6 +785,16 @@ public class DocumentBuffer {
         }
     }//}}}
     
+    //{{{ fireStatusChanged()
+    
+    public void fireStatusChanged(int status, boolean oldStatus) {
+        ListIterator iterator = m_listeners.listIterator();
+        while (iterator.hasNext()) {
+            DocumentBufferListener listener = (DocumentBufferListener)iterator.next();
+            listener.statusChanged(this, status, oldStatus);
+        }
+    }//}}}
+    
     //{{{ readFile()
     
     public void readFile(Reader reader) throws IOException {
@@ -845,6 +862,7 @@ public class DocumentBuffer {
     private String m_name;
     private File m_file;
     private ArrayList m_listeners = new ArrayList();
+    private boolean m_dirty=false;
     
     //}}}
 }
