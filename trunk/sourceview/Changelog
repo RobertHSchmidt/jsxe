@@ -1,4 +1,9 @@
-01/08/2004  version 0.3 pre9    Ian Lewis <IanLewis@member.fsf.org>
+02/16/2005  version 0.3 pre11   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated to use the XMLDocument.IS_USING_SOFT_TABS property instead of
+      the sourceview SOFT_TABS property.
+
+01/08/2005  version 0.3 pre9    Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated so that getVersion() works properly;
 
