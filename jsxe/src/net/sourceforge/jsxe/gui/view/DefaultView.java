@@ -113,7 +113,7 @@ public class DefaultView extends DocumentView {
         setDocumentBuffer(buffer);
     }//}}}
     
-    //{{{ setDocumentBuffer
+    //{{{ setDocumentBuffer()
     
     public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {
         
