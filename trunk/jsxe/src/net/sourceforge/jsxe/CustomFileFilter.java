@@ -80,8 +80,7 @@ public class CustomFileFilter extends FileFilter {
             String ext = getExtension(f);
             Iterator iterator = extensions.iterator();
             while (iterator.hasNext()) {
-                String ext2 = iterator.next().toString();
-                if(ext!=null && ext.compareTo(ext2)==0) {
+                if(iterator.next().toString().equals(ext)) {
                     return true;
                 }
             }

@@ -1,3 +1,8 @@
+11/19/2003  version 0.1.43  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug in the CustomFileFilter class that caused it to go into
+      an infinite loop with files with no extension.
+
 11/15/2003  version 0.1.42  Ian Lewis <IanLewis@member.fsf.org>
 
     * Changed the XMLDocument and DefaultXMLDocument classes to handle insertion
