@@ -59,11 +59,5 @@ public abstract class DocumentView extends JPanel {
     
     public abstract JMenu[] getMenus();
     
-    public XMLDocument getXMLDocument() {//{{{
-        return currentdoc;
-    }//}}}
-
-    //{{{ Private members
-    private static XMLDocument currentdoc;
-    //}}}
+    public abstract XMLDocument getXMLDocument();
 }
