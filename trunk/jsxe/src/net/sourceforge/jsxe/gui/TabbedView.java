@@ -7,8 +7,8 @@ jsXe is the Java Simple XML Editor
 jsXe is a gui application that creates a tree view of an XML document.
 The user can then edit this tree and the content in the tree.
 
-This file contains the code for the frame in Jsxe that contains all the gui
-components.
+This file contains the code for the frame in jsXe that contains
+the JTabbedPane handles the DocumentViews.
 
 This file written by ian Lewis (iml001@bridgewater.edu)
 Copyright (C) 2002 ian Lewis
@@ -41,6 +41,9 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.gui.view.DocumentView;
+import net.sourceforge.jsxe.gui.view.DocumentViewFactory;
 import net.sourceforge.jsxe.action.FileCloseAction;
 import net.sourceforge.jsxe.action.FileExitAction;
 import net.sourceforge.jsxe.action.FileNewAction;
@@ -48,8 +51,7 @@ import net.sourceforge.jsxe.action.FileOpenAction;
 import net.sourceforge.jsxe.action.FileSaveAction;
 import net.sourceforge.jsxe.action.FileSaveAsAction;
 import net.sourceforge.jsxe.action.ToolsOptionsAction;
-import net.sourceforge.jsxe.action.ToolsViewSourceAction;
-import net.sourceforge.jsxe.dom.DOMAdapter;
+//import net.sourceforge.jsxe.action.ToolsViewSourceAction;
 //}}}
 
 //{{{ Swing components
@@ -80,7 +82,99 @@ public class TabbedView extends JFrame {
     
     public TabbedView(int width, int height) {//{{{
         
-        //{{{ Construct the Menu Bar
+        DocumentViewFactory factory = DocumentViewFactory.newInstance();
+        docview = factory.newDocumentView();
+        
+        updateMenuBar();
+        
+        tabbedPane.addChangeListener(//{{{
+            new ChangeListener() {
+                public void stateChanged(ChangeEvent e) {
+                    //This could be called after removing the only tab
+                    XMLDocument[] docs = jsXe.getXMLDocuments();
+                    if (docs.length != 0) {
+                        setDocument(docs[tabbedPane.getSelectedIndex()]);
+                        ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
+                        updateTitle();
+                    }
+                }
+           });//}}}
+        
+        tabbedPane.setPreferredSize(new Dimension(width, height));
+        
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(tabbedPane, BorderLayout.CENTER);
+        pack();
+        
+        //Set window options
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        setIconImage(jsXe.getIcon().getImage());
+    }//}}}
+    
+    public DocumentView getDocumentView() {//{{{
+        return docview;
+    }//}}}
+    
+    public void addDocument(XMLDocument doc) {//{{{
+        if (doc != null) {
+            docview.setDocument(this,doc);
+            JPanel dummypanel = new JPanel(new BorderLayout());
+            dummypanel.add(docview, BorderLayout.CENTER);
+            tabbedPane.add(doc.getName(), dummypanel);
+            tabbedPane.setSelectedComponent(dummypanel);
+            updateTitle();
+        }
+    }//}}}
+    
+    public void setDocument(XMLDocument doc) {//{{{
+        if (doc != null) {
+            XMLDocument[] docs = jsXe.getXMLDocuments();
+            for (int i=0; i < docs.length; i++) {
+                if (docs[i] == doc) {
+                    docview.setDocument(this,doc);
+                    tabbedPane.setSelectedIndex(i);
+                }
+            }
+            updateTitle();
+        }
+    }//}}}
+    
+    public void removeDocument(XMLDocument doc) {//{{{
+        if (doc != null) {
+            XMLDocument[] docs = jsXe.getXMLDocuments();
+            for (int i=0; i < docs.length; i++) {
+                if (docs[i] == doc) {
+                    tabbedPane.remove(i);
+                    //if the tab removed is not the rightmost tab
+                    //stateChanged is not called for some
+                    //reason.
+                    if (i != docs.length-1) {
+                        setDocument(docs[tabbedPane.getSelectedIndex()]);
+                        ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
+                        updateTitle();
+                    }
+                }
+            }
+        }
+    }//}}}
+    
+    public int getDocumentCount() {//{{{
+        return tabbedPane.getTabCount();
+    }//}}}
+    
+    public void updateTitle() {//{{{
+        XMLDocument document = docview.getXMLDocument();
+        String name = "";
+        if (document != null) {
+            name = document.getName();
+        }
+        setTitle(jsXe.getAppTitle() + " - " + name);;
+    }//}}}
+    
+    //{{{ Private members
+    
+    private void updateMenuBar() {//{{{
         JMenuBar menubar = new JMenuBar();
         
         //{{{ Add File Menu
@@ -101,140 +195,30 @@ public class TabbedView extends JFrame {
             fileMenu.add( menuItem );
         menubar.add(fileMenu);//}}}
         
-        /*//{{{ Add Edit Menu
-        JMenu editMenu = new JMenu("Edit");
-            menuItem = new JMenuItem("Undo");
-            menuItem.addActionListener( new EditUndoAction() );
-            editMenu.add( menuItem );
-            menuItem = new JMenuItem("Redo");
-            menuItem.addActionListener( new EditRedoAction() );
-            editMenu.add( menuItem );
-            editMenu.addSeparator();
-            menuItem = new JMenuItem("Cut");
-            menuItem.addActionListener( new EditCutAction() );
-            editMenu.add( menuItem );
-            menuItem = new JMenuItem("Copy");
-            menuItem.addActionListener( new EditCopyAction() );
-            editMenu.add( menuItem );
-            menuItem = new JMenuItem("Paste");
-            menuItem.addActionListener( new EditPasteAction() );
-            editMenu.add( menuItem );
-        menubar.add(editMenu);//}}}*/
+        //{{{ Add View Specific Menus
+            JMenu[] menus = docview.getMenus();
+            for (int i=0;i<menus.length;i++) {
+                menubar.add(menus[i]);
+            }
+        //}}}
         
         //{{{ Add Tools Menu
         JMenu toolsMenu = new JMenu("Tools");
             menuItem = new JMenuItem(new ToolsOptionsAction(this));
             toolsMenu.add( menuItem );
-            menuItem = new JMenuItem(new ToolsViewSourceAction(this));
-            toolsMenu.add( menuItem );
         menubar.add(toolsMenu);//}}}
         
-        //Add Help Menu {{{
+        //{{{ Add Help Menu
         JMenu helpMenu = new JMenu("Help");
             menuItem = new JMenuItem(new jsxeAboutDialog(this));
             helpMenu.add( menuItem );
         menubar.add(helpMenu);//}}}
         
         setJMenuBar(menubar);
-        //}}}
-        
-        docpanel = DocumentPanel.getDocumentPanel(this, null);
-        
-        tabbedPane.addChangeListener(//{{{
-            new ChangeListener() {
-                public void stateChanged(ChangeEvent e) {
-                    //This could be called after removing the only tab
-                    if (adapterList.size() != 0) {
-                        setAdapter((DOMAdapter)adapterList.get(tabbedPane.getSelectedIndex()));
-                        DOMAdapter adapter = docpanel.getDOMAdapter();
-                        ((JPanel)tabbedPane.getSelectedComponent()).add(docpanel);
-                        String name = "";
-                        if (adapter != null) {
-                            name = adapter.getName();
-                        }
-                        setTitle(AppTitle + " - " + name);
-                    }
-                }
-        });//}}}
-        
-        tabbedPane.setPreferredSize(new Dimension(width, height));
-        
-        getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(tabbedPane, BorderLayout.CENTER);
-        pack();
-        
-        //Set window options
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        setIconImage(jsXe.getIcon().getImage());
     }//}}}
     
-    public DocumentPanel getDocumentPanel() {//{{{
-        return docpanel;
-    }//}}}
-    
-    public void setAdapter(DOMAdapter adapter) {//{{{
-        if (adapter != null) {
-            docpanel = DocumentPanel.getDocumentPanel(this, adapter);
-            if (!adapterList.contains(adapter)) {
-                adapterList.add(adapter);
-                JPanel dummypanel = new JPanel(new BorderLayout());
-                dummypanel.add(docpanel, BorderLayout.CENTER);
-                tabbedPane.add(adapter.getName(), dummypanel);
-            }
-        tabbedPane.setSelectedIndex(adapterList.indexOf(adapter));
-        setTitle(AppTitle + " - " + docpanel.getDOMAdapter().getName());
-        }
-    }//}}}
-    
-    public void close(DOMAdapter adapter) {//{{{
-        if (adapterList.contains(adapter)) {
-            int index = adapterList.indexOf(adapter);
-            adapterList.remove(adapter);
-            tabbedPane.remove(index);
-            //if the document is not the rightmost tab
-            //stateChanged is not called.
-            if (index != adapterList.size()) {
-                setAdapter((DOMAdapter)adapterList.get(tabbedPane.getSelectedIndex()));
-                adapter = docpanel.getDOMAdapter();
-                ((JPanel)tabbedPane.getSelectedComponent()).add(docpanel);
-                String name = "";
-                if (adapter != null) {
-                    name = adapter.getName();
-                }
-                setTitle(AppTitle + " - " + name);
-            }
-        }
-    }//}}}
-    
-    public String getUntitledLabel() {//{{{
-        int untitledNo = 0;
-        for (int i=0; i < adapterList.size(); i++) {
-            DOMAdapter adapter = (DOMAdapter)adapterList.elementAt(i);
-            if ( adapter.getName().startsWith("Untitled-")) {
-                // Kinda stolen from jEdit
-                try {
-					untitledNo = Math.max(untitledNo,Integer.parseInt(adapter.getName().substring(9)));
-                }
-				catch(NumberFormatException nf) {}
-            }
-        }
-        return "Untitled-" + Integer.toString(untitledNo+1);
-    }//}}}
-    
-    public int getDocumentCount() {//{{{
-        return adapterList.size();
-    }//}}}
-    
-    /*
-    *************************************************
-    Data Fields
-    *************************************************
-    *///{{{
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-    private DocumentPanel docpanel;
+    private DocumentView docview;
     private JPanel panel;
-    private Vector adapterList = new Vector(10,1);
-    private static final String AppTitle = "jsXe";
     //}}}
 }

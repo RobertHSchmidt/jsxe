@@ -49,6 +49,7 @@ import javax.swing.JOptionPane;
 //}}}
 
 //{{{ AWT components
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 //}}}
 
@@ -56,17 +57,17 @@ import java.awt.event.ActionEvent;
 
 public class jsxeAboutDialog extends AbstractAction {
     
-    public jsxeAboutDialog(TabbedView parent) {//{{{
+    public jsxeAboutDialog(Component parent) {//{{{
         putValue(Action.NAME, "About jsXe...");
         view = parent;
     }//}}}
     
     public void actionPerformed(ActionEvent e) {//{{{
         String aboutMsg = 
-        "jsXe " + jsXe.getVersion()+"\n"+
+        jsXe.getAppTitle() + " " + jsXe.getVersion()+"\n"+
         "Java Simple XML Editor\n"+
         "Copyright (C) 2002 ian Lewis\n\n"+
-        "jsXe is an XML editor written using swing and JAXP 1.1\n\n"+
+        jsXe.getAppTitle() + " is an XML editor written using swing and JAXP 1.1\n\n"+
         "Authors: ian Lewis <iml001@bridgewater.edu>\n\n"+
         "Released under the terms of the GNU General Public License";
         
@@ -82,11 +83,7 @@ public class jsxeAboutDialog extends AbstractAction {
             okButton[0]);
     }//}}}
     
-    /*
-    *************************************************
-    Data Fields
-    *************************************************
-    *///{{{
-    private TabbedView view;
+    //{{{ Private Members
+    private Component view;
     //}}}
 }

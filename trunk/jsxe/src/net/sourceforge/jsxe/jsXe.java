@@ -37,9 +37,10 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.gui.CustomFileFilter;
 import net.sourceforge.jsxe.gui.TabbedView;
-import net.sourceforge.jsxe.dom.DOMAdapter;
+import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.dom.XMLDocumentFactory;
+import net.sourceforge.jsxe.dom.UnrecognizedDocTypeException;
 //}}}
 
 //{{{ Swing Classes
@@ -55,6 +56,7 @@ import java.awt.Toolkit;
 
 //{{{ Java Base classes
 import java.io.File;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Vector;
@@ -81,25 +83,27 @@ public class jsXe {
         windowWidth = (int)(screenSize.getWidth() / 2);
         windowHeight = (int)(3 * screenSize.getHeight() / 4);
         
-        view = new TabbedView(windowWidth, windowHeight);
+        TabbedView tabbedview = new TabbedView(windowWidth, windowHeight);
         
         if (args.length >= 1) {
-            if (!openXMLDocuments(view, args)) {
-                openXMLDocument(view, DefaultDocument);
+            if (!openXMLDocuments(tabbedview, args)) {
+                if (!openXMLDocument(tabbedview, DefaultDocument))
+                    System.out.println("ERROR opening default document");;
             }
         } else {
-            openXMLDocument(view, DefaultDocument);
+            if (!openXMLDocument(tabbedview, DefaultDocument))
+                System.out.println("ERROR opening default document");
         }
-        view.show();
+        tabbedview.show();
     }//}}}
     
     public static String getVersion() {//{{{
         return MajorVersion + "." + MinorVersion + "." + BuildVersion + " " + BuildType;
     }//}}}
     
-    public static void showOpenFileDialog(TabbedView view) {//{{{
+    public static boolean showOpenFileDialog(TabbedView view) {//{{{
             // if current file is null, defaults to home directory
-            JFileChooser loadDialog = new JFileChooser(view.getDocumentPanel().getDOMAdapter().getFile());
+            JFileChooser loadDialog = new JFileChooser(view.getDocumentView().getXMLDocument().getFile());
             //Add a filter to display only XML files
             Vector extentionList = new Vector();
             extentionList.add(new String("xml"));
@@ -129,18 +133,70 @@ public class jsXe {
             
             int returnVal = loadDialog.showOpenDialog(view);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
-                openXMLDocument(view, loadDialog.getSelectedFile());
+                return openXMLDocument(view, loadDialog.getSelectedFile());
             }
+            return true;
     }//}}}
     
     public static boolean openXMLDocument(TabbedView view, File file) {//{{{
-        DOMAdapter adapter = DOMAdapter.getDOMAdapter(view, file);
-        if (adapter != null) {
-            view.setAdapter(adapter);
-            return true;
-        } else {
+        
+        if (file == null)
             return false;
+        
+        boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
+			|| File.separatorChar == ':' /* Windows or MacOS */);
+        
+        //Check if the file is already open, if so
+        //change focus to that file
+        for(int i=0; i < XMLDocuments.size();i++) {
+            
+            XMLDocument doc = (XMLDocument)XMLDocuments.get(i);
+            if (caseInsensitiveFilesystem) {
+                
+                try {
+                    if (file.getCanonicalPath().equalsIgnoreCase(doc.getFile().getCanonicalPath())) {
+                        view.setDocument(doc);
+                        return true;
+                    }
+                } catch (IOException ioe) {
+                    return false;
+                }
+                
+            } else {
+                
+                try {
+                    if (file.getCanonicalPath().equals(doc.getFile().getCanonicalPath())) {
+                        view.setDocument(doc);
+                        return true;
+                    }
+                } catch (IOException ioe) {
+                    return false;
+                }
+            }
         }
+        
+        //At this point we know the file is not open
+        //we need to open it.
+        //right now unrecognized doc exceptions should not be thrown.
+        XMLDocumentFactory factory = XMLDocumentFactory.newInstance();
+        try {
+            XMLDocument document = factory.newXMLDocument(file);
+            
+            if (document != null) {
+                //for now do not open the file unless it validates.
+                if (!document.validate(view)) {
+                    return false;
+                }
+                view.addDocument(document);
+                XMLDocuments.add(document);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (UnrecognizedDocTypeException udte) {}
+        
+        return false;
+        
     }//}}}
     
     public static boolean openXMLDocument(TabbedView view, String doc) {//{{{
@@ -148,13 +204,28 @@ public class jsXe {
     }//}}}
     
     public static boolean openXMLDocument(TabbedView view, Reader reader) {//{{{
-        DOMAdapter adapter = DOMAdapter.getDOMAdapter(view, reader);
-        if (adapter != null) {
-            view.setAdapter(adapter);
-            return true;
-        } else {
-            return false;
-        }
+        //We are assuming the contents of the reader do not
+        //exist on disk and therefore could not be opened already.
+        //right now unrecognized doc exceptions should not be thrown.
+        XMLDocumentFactory factory = XMLDocumentFactory.newInstance();
+        try {
+            XMLDocument document = factory.newXMLDocument(reader);
+            if (document != null) {
+                //for now do not open the file unless it validates.
+                if (!document.validate(view)) {
+                    return false;
+                }
+                
+                XMLDocuments.add(document);
+                view.addDocument(document);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (UnrecognizedDocTypeException udte) {}
+        
+        return false;
+        
     }//}}}
     
     public static boolean openXMLDocuments(TabbedView view, String args[]) {//{{{
@@ -171,8 +242,9 @@ public class jsXe {
     
     }//}}}
     
-    public static boolean closeXMLDocument(TabbedView view, DOMAdapter adapter) {//{{{
-        view.close(adapter);
+    public static boolean closeXMLDocument(TabbedView view, XMLDocument document) {//{{{
+        view.removeDocument(document);
+        XMLDocuments.remove(document);
         if (view.getDocumentCount() == 0)
             openXMLDocument(view, DefaultDocument);
         return true;
@@ -180,6 +252,14 @@ public class jsXe {
     
     public static String getDefaultDocument() {//{{{
         return DefaultDocument;
+    }//}}}
+    
+    public static XMLDocument[] getXMLDocuments() {//{{{
+        XMLDocument[] documents = new XMLDocument[XMLDocuments.size()];
+        for (int i=0; i < XMLDocuments.size(); i++) {
+            documents[i] = (XMLDocument)XMLDocuments.get(i);
+        }
+        return documents;
     }//}}}
     
     //this is bad implementation. It will be changed... eventually.
@@ -191,19 +271,20 @@ public class jsXe {
         return jsXeIcon;
     }//}}}
     
-    /*
-    *************************************************
-    Data Fields
-    *************************************************
-    *///{{{
-    private static TabbedView view;
-    private static String MajorVersion = "00";
-    private static String MinorVersion = "01";
-    private static String BuildVersion = "01";
-    private static String BuildType    = "alpha";
+    public static String getAppTitle() {//{{{
+        return AppTitle;
+    }//}}}
+    
+    // Private static members {{{    
+    private static final String MajorVersion = "00";
+    private static final String MinorVersion = "01";
+    private static final String BuildVersion = "01";
+    private static final String BuildType    = "alpha";
+    private static Vector XMLDocuments = new Vector();
     private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?><default_element>default_node</default_element>";
     private static int windowWidth=600;
     private static int windowHeight=600;
-    private static ImageIcon jsXeIcon = new ImageIcon("net/sourceforge/jsxe/icons/jsxe.jpg", "jsXe");
+    private static final ImageIcon jsXeIcon = new ImageIcon("net/sourceforge/jsxe/icons/jsxe.jpg", "jsXe");
+    private static final String AppTitle = "jsXe";
     //}}}
 }

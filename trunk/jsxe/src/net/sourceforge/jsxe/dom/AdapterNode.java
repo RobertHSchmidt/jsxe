@@ -90,14 +90,6 @@ public class AdapterNode {
         return domNode.getChildNodes().getLength();
     }//}}}
     
-    public boolean canEditInJTree() {//{{{
-        boolean value = false;
-        short nodeType = domNode.getNodeType();
-        if (nodeType == Node.ELEMENT_NODE)
-            value = true;
-        return value;
-    }//}}}
-    
     public Node getNode() {//{{{
         return domNode;
     }//}}}
@@ -114,11 +106,7 @@ public class AdapterNode {
         return domNode.getNodeType();
     }//}}}
     
-        /*
-    *************************************************
-    Private Data Fields
-    *************************************************
-    *///{{{
+    //{{{ Private members
     private final String[] typeName = {
         "none",
         "Element",
@@ -136,5 +124,4 @@ public class AdapterNode {
     };
     private Node domNode;
     //}}}
-    
 }
