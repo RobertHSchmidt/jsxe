@@ -120,7 +120,7 @@ public class SchemaViewModel {
      * from the model before calling this method.
      */
     private void parseNode(DefaultMutableTreeNode parent, AdapterNode node, int level) {
-        Log.log(Log.DEBUG,this,"Parsing node: "+node.getNodeName());
+        
         DefaultMutableTreeNode newParent = parent;
         int newLevel = level;
         if (m_rootNames.contains(node.getNodeName())) {
