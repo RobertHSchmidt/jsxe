@@ -4,11 +4,6 @@ TODO:
     
     * Slowly prefix instance variables with m_ as a naming convention.
     
-    * Investigate this CPU use thing and the File Dialogs. In Windows the
-      CPU usage goes up to 100% and hangs if you try to browse a drive root. Not
-      sure why this is because I'm using the standard swing file browser. Check
-      out the CustomFileFilter class to see if there is a problem there.
-    
     * Update the DOM3 classes to the current version of the DOM3 interfaces.
       (2.6.0) DOMSerializer needs to be renamed. DOMSerializerConfiguration
       needs to be updated to support the parameters specified in DOM3 javadoc
