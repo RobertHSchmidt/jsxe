@@ -1,3 +1,7 @@
+03/15/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated the parser and layout management for the graph cells.
+
 03/14/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added some more code to make the graph cells look nicer when you move them
