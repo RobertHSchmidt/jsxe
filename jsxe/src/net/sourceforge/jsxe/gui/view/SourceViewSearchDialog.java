@@ -52,6 +52,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JDialog;
+import javax.swing.JTextArea;
 import javax.swing.AbstractAction;
 import javax.swing.border.Border;
 import javax.swing.text.Segment;
@@ -77,10 +78,11 @@ public class SourceViewSearchDialog extends JDialog {
     
     //{{{ SourceViewSearchDialog constructor
     
-    public SourceViewSearchDialog(Frame parentFrame, SourceView view) {
+    public SourceViewSearchDialog(Frame parentFrame, SourceView view, JTextArea textArea) {
         super(parentFrame, "Search and Replace", false);
         
         m_view = view;
+        m_textArea = textArea;
         
         JPanel frame = new JPanel();
         getContentPane().add(frame,BorderLayout.CENTER);
@@ -233,17 +235,17 @@ public class SourceViewSearchDialog extends JDialog {
             
             //replace previous text
             if (doReplace) {
-                String selText = m_view.getSelectedText();
+                String selText = m_textArea.getSelectedText();
                 String replaceString = matcher.substitute(selText);
-                int selStart = m_view.getSelectionStart();
-                int selEnd = m_view.getSelectionEnd();
-                m_view.replace(replaceString, selStart, selEnd);
+                int selStart = m_textArea.getSelectionStart();
+                int selEnd = m_textArea.getSelectionEnd();
+                m_textArea.replaceRange(replaceString, selStart, selEnd);
             }
             
             DocumentBuffer buffer = m_view.getDocumentBuffer();
             XMLDocument doc = buffer.getXMLDocument();
             Segment seg = doc.getSegment(0, doc.getLength());
-            int caretPosition = m_view.getCaretPosition();
+            int caretPosition = m_textArea.getCaretPosition();
             CharIndexedSegment charSeg = new CharIndexedSegment(seg, caretPosition);
             
             int[] match = matcher.nextMatch(charSeg, false, true, true, false);
@@ -253,7 +255,9 @@ public class SourceViewSearchDialog extends JDialog {
             if (match != null) {
                 int start = match[0]+caretPosition;
                 int end = match[1]+caretPosition;
-                m_view.selectText(start, end);
+                m_textArea.requestFocus();
+                m_textArea.setCaretPosition(start);
+                m_textArea.moveCaretPosition(end);
             }
             
             requestFocus();
@@ -266,6 +270,7 @@ public class SourceViewSearchDialog extends JDialog {
     private SourceView m_view;
     private JComboBox m_findComboBox;
     private JComboBox m_replaceComboBox;
+    private JTextArea m_textArea;
     
     //}}}
 }
