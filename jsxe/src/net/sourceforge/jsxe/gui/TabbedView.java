@@ -483,8 +483,12 @@ public class TabbedView extends JFrame {
         m_viewMenu.setMnemonic('V');
         Enumeration viewTypes = DocumentViewFactory.getAvailableViewTypes();
         while (viewTypes.hasMoreElements()) {
-            menuItem = new JMenuItem(new SetViewAction(viewTypes.nextElement().toString()));
-            m_viewMenu.add( menuItem );
+            try {
+                menuItem = new JMenuItem(new SetViewAction(viewTypes.nextElement().toString()));
+                m_viewMenu.add( menuItem );
+            } catch (UnrecognizedDocViewException e) {
+                jsXe.exiterror(this, e.getMessage(), 1);
+            }
         }
         //}}}
         
@@ -560,10 +564,10 @@ public class TabbedView extends JFrame {
         
         //{{{ SetDefaultViewAction constructor
         
-        public SetViewAction(String viewname) {
+        public SetViewAction(String viewname) throws UnrecognizedDocViewException {
             
             //need to get the human readable name.
-            putValue(Action.NAME, viewname);
+            putValue(Action.NAME, DocumentViewFactory.getHumanReadableName(viewname));
             m_viewName = viewname;
         }//}}}
         

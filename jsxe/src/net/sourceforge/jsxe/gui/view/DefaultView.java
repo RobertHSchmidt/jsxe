@@ -209,6 +209,12 @@ public class DefaultView extends JPanel implements DocumentView {
    //     super.setVisible(b);
    // }//}}}
     
+    //{{{ getHumanReadableName()
+    
+    public static String getHumanReadableName() {
+        return "Tree View";
+    }//}}}
+    
     //{{{ DocumentView methods
 
     //{{{ close()
@@ -246,12 +252,6 @@ public class DefaultView extends JPanel implements DocumentView {
         return this;
     }//}}}
 
-    //{{{ getHumanReadableName()
-    
-    public String getHumanReadableName() {
-        return "Tree View";
-    }//}}}
-    
     //{{{ getMenus()
     
     public JMenu[] getMenus() {
