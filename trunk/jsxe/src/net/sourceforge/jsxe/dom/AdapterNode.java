@@ -628,17 +628,30 @@ public class AdapterNode {
             String prefix = getNSPrefixFromQualifiedName(attr);
             String localName = getLocalNameFromQualifiedName(attr);
             
-            //check if we are removing a namespace declaration
-            //this is a somewhat expensive operation
+            //Check if we are removing a namespace declaration
+            //This is a somewhat expensive operation, may need to
+            //optimize in the future
             if ("xmlns".equals(prefix)) {
-                //if so then check if there are nodes using the namespace
+                //check if there are nodes using the namespace
                 String uri = lookupNamespaceURI(localName);
                 //check this element's namespace
                 if (!uri.equals(element.getNamespaceURI())) {
                     //check for decendent elements with this namespace
-                    NodeList list = element.getElementsByTagNameNS(uri, "*");
-                    if (list.getLength() != 0) {
-                        throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to remove a namespace declaration when nodes exist that use it");
+                    NodeList list = element.getElementsByTagName("*");
+                    //check if an attribute with this NS is used
+                    for (int i=0; i<list.getLength(); i++) {
+                        Node ele = list.item(i);
+                        if (uri.equals(ele.getNamespaceURI())) {
+                            throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to remove a namespace declaration when nodes exist that use it");
+                        }
+                        //now check the attributes
+                        NamedNodeMap attrs = ele.getAttributes();
+                        for (int j=0; j<attrs.getLength(); j++) {
+                            Node foundAttr = attrs.item(i);
+                            if (uri.equals(foundAttr.getNamespaceURI())) {
+                                throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to remove a namespace declaration when nodes exist that use it");
+                            }
+                        }
                     }
                 } else {
                     throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to remove a namespace declaration when nodes exist that use it");
