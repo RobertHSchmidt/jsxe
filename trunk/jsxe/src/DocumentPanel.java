@@ -112,7 +112,7 @@ public class DocumentPanel extends JPanel {
         JScrollPane htmlView = new JScrollPane(htmlPane);
 
         //create a table model
-        attributesTable = new JTable(attrTableModel);
+        //attributesTable = new JTable(attrTableModel);
         JScrollPane attrView = new JScrollPane(attributesTable);
 
         //layout of the panes is defined by splitpanes
@@ -121,8 +121,8 @@ public class DocumentPanel extends JPanel {
         horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, vertSplitPane, htmlView ); 
         horizSplitPane.setContinuousLayout(true);
 
-        vertSplitPane.setDividerLocation(size.height / 2);
-        horizSplitPane.setDividerLocation(size.width / 2);
+        vertSplitPane.setDividerLocation(size.height/2);
+        horizSplitPane.setDividerLocation(size.width/2);
 
         tree.addTreeSelectionListener(//{{{
             new TreeSelectionListener() {
@@ -135,7 +135,7 @@ public class DocumentPanel extends JPanel {
                         htmlPane.setText("");
                     //if the selected node can be edited in the tree
                     tree.setEditable(selectedNode.canEditInJTree());
-                    attrTableModel.update(selectedNode);
+                    currentAdapter.updateTable(selectedNode);
                     attributesTable.updateUI();
                     previousSelection = selPath;
                 }
@@ -150,15 +150,13 @@ public class DocumentPanel extends JPanel {
         //addTreeModelListener does not add the listener
         //if it is already added.
         adapter.addTreeModelListener(treeListener);
+        adapter.addTableModelListener(tableListener);
         tree.setModel(adapter);
-        // we know this is an AttributesTableModel
-        AttributesTableModel attrModel = (AttributesTableModel)attributesTable.getModel();
-        //add the listener to the AttributesTableModel
-        attrModel.addTableModelListener(tableListener);
+        attributesTable.setModel(adapter);
         //Clear the attributes table and right hand pane
         //of previous values.
-        while(attrModel.getRowCount()>0) {
-            attrModel.removeRow(0);
+        while(adapter.getRowCount()>0) {
+            adapter.removeRow(0);
         }
         htmlPane.setText("");
         //update the UI so that the components
@@ -194,8 +192,8 @@ public class DocumentPanel extends JPanel {
     private static TreePath previousSelection;
     private static DOMAdapter currentAdapter;
     private static JEditorPane htmlPane = new JEditorPane("text/plain","");
-    private static JTable attributesTable;
-    private AttributesTableModel attrTableModel = new AttributesTableModel();
+    private static JTable attributesTable = new JTable();
+    //private AttributesTableModel attrTableModel = new AttributesTableModel();
     private static JSplitPane vertSplitPane;
     private static JSplitPane horizSplitPane;
     private static DocumentPanel instance = new DocumentPanel(jsXe.getStartingSize());
