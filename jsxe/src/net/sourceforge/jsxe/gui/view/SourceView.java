@@ -133,24 +133,24 @@ public class SourceView extends DocumentView {
     }//}}}
     
     public void close(TabbedView view) {//{{{
+        
         currentdoc.setModel(textarea.getText());
-        try {
-            currentdoc.validate();
-        } catch(SAXParseException spe) {
-            if (!jsXe.isExiting())
+        
+        if (!jsXe.isExiting()) {
+            try {
+                currentdoc.validate();
+            } catch(SAXParseException spe) {
                 JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-        }
-        catch (SAXException sxe) {
-            if (!jsXe.isExiting())
+            }
+            catch (SAXException sxe) {
                 JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-        }
-        catch (ParserConfigurationException pce) {
-            if (!jsXe.isExiting())
+            }
+            catch (ParserConfigurationException pce) {
                 JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-        }
-        catch (IOException ioe) {
-            if (!jsXe.isExiting())
+            }
+            catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            }
         }
     }//}}}
     
