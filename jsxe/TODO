@@ -20,6 +20,10 @@ TODO:
         xml-declaration
         check-character-normalization
     
+    * Need to mark an open document as dirty if any options that change the
+      output have changed, like ws in element content, format output, and
+      encoding.
+    
     * Fix the tree node editing compatibility with drag n drop. If you select a
       node then click again to drag it drags and begins editing at the same time
       which causes problems.
