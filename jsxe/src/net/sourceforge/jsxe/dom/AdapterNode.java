@@ -160,7 +160,7 @@ public class AdapterNode {
                 */
                 ensureChildrenSize(index+1);
                 child = rootDocument.newAdapterNode(this, domNode.getChildNodes().item(index));
-                children.add(index, child);
+                children.set(index, child);
             }
         }
        return child;
@@ -388,13 +388,12 @@ public class AdapterNode {
             } else {
                 domNode.appendChild(node.getNode());
                 //ensure we have the right size.
-                ensureChildrenSize(childCount());
+                ensureChildrenSize(childCount()-1);
                 children.add(node);
                 node.setParent(this);
                 fireNodeAdded(this, node);
             }
         }
-        
         return node;
     }//}}}
     
