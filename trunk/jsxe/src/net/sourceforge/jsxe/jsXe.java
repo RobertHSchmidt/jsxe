@@ -209,25 +209,11 @@ public class jsXe {
         }
         
         
-        Iterator viewItr = m_pluginLoader.getViewPlugins().iterator();
-        while (viewItr.hasNext()) {
+        Iterator pluginItr = m_pluginLoader.getAllPlugins().iterator();
+        while (pluginItr.hasNext()) {
             
             //load properties into jsXe's properties
-            ActionPlugin plugin = (ActionPlugin)viewItr.next();
-            Properties props = plugin.getProperties();
-            Enumeration names = props.propertyNames();
-            while (names.hasMoreElements()) {
-                String name = names.nextElement().toString();
-                setProperty(name, props.getProperty(name));
-            }
-            
-            addActionSet(plugin.getActionSet());
-        }
-        
-        // do the same for action plugins
-        Iterator actionItr = m_pluginLoader.getActionPlugins().iterator();
-        while (actionItr.hasNext()) {
-            ActionPlugin plugin = (ActionPlugin)actionItr.next();
+            ActionPlugin plugin = (ActionPlugin)pluginItr.next();
             Properties props = plugin.getProperties();
             Enumeration names = props.propertyNames();
             while (names.hasMoreElements()) {

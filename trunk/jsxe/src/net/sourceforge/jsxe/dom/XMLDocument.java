@@ -63,19 +63,10 @@ import org.apache.xerces.dom3.DOMErrorHandler;
 //}}}
 
 //{{{ Java base classes
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.Reader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.ListIterator;
 import java.util.Properties;
 import javax.swing.text.Segment;
@@ -207,35 +198,36 @@ public class XMLDocument {
      * @return the old value of the property
      */
     public String setProperty(String key, String value) {
-        
         String oldValue = getProperty(key);
-        String returnValue = oldValue;
-        
-        if (oldValue == null || !oldValue.equals(value)) {
-            // do this first so NullPointerExceptions are thrown
-            returnValue = (String)props.setProperty(key, value);
-            
-            if (key == ENCODING) {
-                m_syncedWithContent = false;
-            }
-            if (key == FORMAT_XML) {
-                m_syncedWithContent = false;
-                if (Boolean.valueOf(value).booleanValue()) {
-                    setProperty(WS_IN_ELEMENT_CONTENT, "false");
-                }
-            }
-            if (key == WS_IN_ELEMENT_CONTENT) {
-                m_syncedWithContent = false;
-                if (Boolean.valueOf(value).booleanValue()) {
-                    setProperty(FORMAT_XML, "false");
-                }
-            }
-            firePropertiesChanged(key);
-            return returnValue;
-            
+        if (!value.equals(oldValue)) {
+            _setProperty(key, value);
+            firePropertiesChanged();
         }
-        
-        return returnValue;
+        return oldValue;
+    }//}}}
+    
+    //{{{ mergeProperties()
+    /**
+     * Merges a set of properties into this object overwriting any
+     * existing values. Think of this as a batch call to setProperties()
+     * but XMLDocumentListeners will be notified only once of a change in
+     * properties.
+     * @param properties the properties to merge in
+     */
+    public void mergeProperties(Properties properties) {
+        Enumeration names = properties.propertyNames();
+        boolean changed = false;
+        while (names.hasMoreElements()) {
+            String name = names.nextElement().toString();
+            String newValue = properties.getProperty(name);
+            if (!newValue.equals(getProperty(name))) {
+                changed = true;
+                _setProperty(name, newValue);
+            }
+        }
+        if (changed) {
+            firePropertiesChanged();
+        }
     }//}}}
     
     //{{{ getProperties()
@@ -626,11 +618,11 @@ public class XMLDocument {
     
     //{{{ firePropertiesChanged()
     
-    private void firePropertiesChanged(String key) {
+    private void firePropertiesChanged() {
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
             XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
-            listener.propertiesChanged(this, key);
+            listener.propertiesChanged(this);
         }
     }//}}}
     
@@ -652,6 +644,37 @@ public class XMLDocument {
         m_adapterNode = new AdapterNode(this, m_document);
         m_adapterNode.addAdapterNodeListener(docAdapterListener);
         m_syncedWithContent = false;
+    }//}}}
+    
+    //{{{ _setProperty()
+    private String _setProperty(String key, String value) {    
+        String oldValue = getProperty(key);
+        String returnValue = oldValue;
+        
+        if (oldValue == null || !oldValue.equals(value)) {
+            // do this first so NullPointerExceptions are thrown
+            returnValue = (String)props.setProperty(key, value);
+            
+            if (key == ENCODING) {
+                m_syncedWithContent = false;
+            }
+            if (key == FORMAT_XML) {
+                m_syncedWithContent = false;
+                if (Boolean.valueOf(value).booleanValue()) {
+                    setProperty(WS_IN_ELEMENT_CONTENT, "false");
+                }
+            }
+            if (key == WS_IN_ELEMENT_CONTENT) {
+                m_syncedWithContent = false;
+                if (Boolean.valueOf(value).booleanValue()) {
+                    setProperty(FORMAT_XML, "false");
+                }
+            }
+            return returnValue;
+            
+        }
+        
+        return returnValue;
     }//}}}
     
     //{{{ syncContentWithDOM()

@@ -98,15 +98,6 @@ public interface DocumentView {
     public JMenu[] getMenus();
     //}}}
     
-    //{{{ getOptionsPanel()
-    /**
-     * Gets the view's options panel. This is used when displaying options
-     * that are associated with this view.
-     * @return the OptionsPanel for this view
-     */
-    public OptionsPanel getOptionsPanel();
-    //}}}
-    
     //{{{ getViewName()
     /**
      * Gets the name of the view used when the DocumentViewFactory selects

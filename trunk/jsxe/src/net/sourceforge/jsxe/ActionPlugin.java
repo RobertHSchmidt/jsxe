@@ -150,7 +150,7 @@ public abstract class ActionPlugin {
      * implementation returns null.
      * @return an OptionsPanel for editing this plugin's options
      */
-    public OptionsPanel getOptionsPanel() {
+    public OptionsPanel getOptionsPanel(DocumentBuffer buffer) {
         return null;
     }//}}}
     
