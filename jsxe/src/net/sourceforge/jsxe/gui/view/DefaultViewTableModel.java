@@ -205,7 +205,6 @@ public class DefaultViewTableModel implements TableModel {
             int attrlength = attrs.getLength();
             
             //remove old attributes
-            System.out.println(attrlength+" attributes to remove.");
             for(int i = 0; i < attrlength; i++) {
                 Node attr = attrs.item(0);
                 node.removeAttribute(attr.getNodeName());
