@@ -69,6 +69,7 @@ public class ToolsOptionsAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {
         GlobalOptionsDialog options = new GlobalOptionsDialog(view);
+       // net.sourceforge.jsxe.gui.DocumentOptionsDialog options = new net.sourceforge.jsxe.gui.DocumentOptionsDialog(view, view.getDocumentView().getDocumentBuffer());
        // options.show();
     }//}}}
     

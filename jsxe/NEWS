@@ -1,3 +1,42 @@
+10/07/2004  version 0.2 pre24
+
+    * Fixed a bug that kept files open too long by not closing the Reader
+      object used to read them.
+    * Changed the layout of the options dialog by taking some jEdit code.
+      Should be more flexable for adding different options categories etc. Not
+      to mention that it would look better.
+    * Documents opened directly into the source view are no longer formatted
+      automatically when the format-pretty-print property is true. This
+      prevents loading documents where whitespace is matters without marking
+      them dirty.
+    * The serializer now ignores the element-content-whitespace parameter since
+      the parameter only makes sense when the document is validated by DTD or
+      Schema that specifies that an element MUST have only child elements
+      (element-content). Also if the DOM validates this info when being edited
+      then the serializer could never write out whitespace in element content
+      without invalidating the document. See
+      http://xml.apache.org/xerces2-j/javadocs/dom3-api/index.html Section 2.10
+    * Removed the whitespace in element content checkbox from the options since
+      it's ignored
+    * Removed the show whitespace only nodes check box since showing
+      whitespace only nodes in conjunction with formatting options makes
+      synchronization between options and the document difficult.
+
+8/19/2004   version 0.2 pre20   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug that caused a document to be loaded dirty because the fact
+      that it was dirty was saved to the recent files list
+    * The Move No Drop cursor is now displayed when dragging a node over a
+      drop target that rejects it.
+    * The SourceView search and replace dialog now closes if you change views.
+      The sourceview also reuses the dialog if it's open already when you hit
+      the find menu item.
+    * Fixed a bug that caused jsXe to not allow you to open documents that
+      were not well formed.
+    * Implemented the soft-tabs feature in the source view.
+    * Added a very preliminary search and replace dialog to the source view.
+      jsXe now requires the gnu.regexp package
+
 07/24/2004  version 0.2 pre12
 
     * Added support for a recent files list that can allow users to open

@@ -49,7 +49,7 @@ public class GlobalOptionsDialog extends OptionsDialog {
     private DocumentBuffer m_buffer;
     private OptionGroup m_defaultGroup;
     
-    //{{{ GlobalOptionsDialog
+    //{{{ GlobalOptionsDialog constructor
     
     public GlobalOptionsDialog(TabbedView view) {
         super(view, "global","Global Options", jsXe.getProperty("global.last"));

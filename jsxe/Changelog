@@ -1,4 +1,9 @@
-10/2/2004    version 0.2 pre24   Ian Lewis <IanLewis@member.fsf.org>
+10/8/2004   version 0.2 pre25   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed bug that didn't update the tab width for the source view when
+      you changed it in the options
+
+10/2/2004   version 0.2 pre24   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added support for properties to remember the size and layout of the
       new options panel
@@ -15,8 +20,8 @@
 
 9/21/2004   version 0.2 pre22   Ian Lewis <IanLewis@member.fsf.org>
 
-    * Documents loaded directly into the source view are not formatted
-      automatically even if the format-pretty-print property is true. This
+    * Documents opened directly into the source view are no longer formatted
+      automatically when the format-pretty-print property is true. This
       prevents loading documents where whitespace is matters without marking
       them dirty.
     * Views now remove listeners that they add to the DocumentBuffer

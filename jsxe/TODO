@@ -23,6 +23,9 @@ TODO:
     
 * Version 0.2 beta
     
+    * Fix bug where the jsXe doesn't load the menus for the view when opening
+      a file.
+    
     * Need to set up default document properties for each view and default
       app properties for each view. Default document properties get set
       to the document each time one is loaded. Default app properties get set
@@ -37,9 +40,6 @@ TODO:
       support for this. jsXe needs to recognize when a document has a DTD and
       deal with serializing to it if necessary. Investigate XNI or whatever
       that is part of the xerces distribution as a way to do this.
-    
-    * Use the Nodefilter interface with the DefaultView to determine which types
-      of nodes to show.
     
 * Version 0.3 beta (Plugin Support)
     
