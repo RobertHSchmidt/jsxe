@@ -94,204 +94,209 @@ public class jsXe {
      */
     public static void main(String args[]) {
         
-        //{{{ Check the java version
-        String javaVersion = System.getProperty("java.version");
-		if(javaVersion.compareTo("1.3") < 0)
-		{
-			System.err.println(getAppTitle() + ": ERROR: " + getAppTitle() + getVersion());
-            System.err.println(getAppTitle() + ": ERROR: You are running Java version " + javaVersion + ".");
-			System.err.println(getAppTitle() + ": ERROR:" + getAppTitle()+" requires Java 1.3 or later.");
-			System.exit(1);
-		}//}}}
-        
-        //{{{ start logging
-        String homeDir = System.getProperty("user.home");
-        String fileSep = System.getProperty("file.separator");
-        
-        String settingsDirectory = homeDir+fileSep+".jsxe";
-
-        Log.init(true, Log.ERROR);
-        
         try {
-            BufferedWriter stream = new BufferedWriter(new FileWriter(settingsDirectory+fileSep+"jsXe.log"));
             
-            stream.write("Log file created on " + new Date());
-            stream.write(System.getProperty("line.separator"));
+            //{{{ Check the java version
+            String javaVersion = System.getProperty("java.version");
+            if(javaVersion.compareTo("1.3") < 0)
+            {
+                System.err.println(getAppTitle() + ": ERROR: " + getAppTitle() + getVersion());
+                System.err.println(getAppTitle() + ": ERROR: You are running Java version " + javaVersion + ".");
+                System.err.println(getAppTitle() + ": ERROR:" + getAppTitle()+" requires Java 1.3 or later.");
+                System.exit(1);
+            }//}}}
             
-            Log.setLogWriter(stream);
-        } catch (IOException ioe) {
-            Log.log(Log.ERROR, jsXe.class, ioe);
-        }
-        //}}}
-        
-        //{{{ get and load the configuration files
-        initDefaultProps();
-        
-        File _settingsDirectory = new File(settingsDirectory);
-        if(!_settingsDirectory.exists())
-		    _settingsDirectory.mkdirs();
-        String pluginsDirectory = settingsDirectory+"/jars";
-        File _pluginsDirectory = new File(pluginsDirectory);
-        if(!_pluginsDirectory.exists())
-		    _pluginsDirectory.mkdirs();
-        
-        File properties = new File(settingsDirectory,"properties");
-        try {
-            FileInputStream filestream = new FileInputStream(properties);
-            props.load(filestream);
-        } catch (FileNotFoundException fnfe) {
+            //{{{ start logging
+            String homeDir = System.getProperty("user.home");
+            String fileSep = System.getProperty("file.separator");
             
-            //Don't do anything right now
+            String settingsDirectory = homeDir+fileSep+".jsxe";
+    
+            Log.init(true, Log.ERROR);
             
-        } catch (IOException ioe) {
-            System.err.println(getAppTitle() + ": I/O ERROR: Could not open settings file");
-            System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
-        }
-        
-        //Load the recent files list
-        File recentFiles = new File(settingsDirectory, "recent.xml");
-        m_bufferHistory = new BufferHistory();
-        try {
-            m_bufferHistory.load(recentFiles);
-        } catch (IOException ioe) {
-            System.err.println(getAppTitle() + ": I/O ERROR: Could not open recent files list");
-            System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
-        } catch (SAXException saxe) {
-            System.err.println(getAppTitle() + ": I/O ERROR: recent.xml not formatted properly");
-            System.err.println(getAppTitle() + ": I/O ERROR: "+saxe.toString());
-        } catch (ParserConfigurationException pce) {
-            System.err.println(getAppTitle() + ": I/O ERROR: Could not parse recent.xml");
-            System.err.println(getAppTitle() + ": I/O ERROR: "+pce.toString());
-        }
-        //}}}
-        
-        //{{{ parse command line arguments
-        String viewname = null;
-        ArrayList files = new ArrayList();
-        for (int i=0; i<args.length; i++) {
-            if (args[i].equals("--help") || args[i].equals("-h")) {
-                printUsage();
-                System.exit(0);
+            try {
+                BufferedWriter stream = new BufferedWriter(new FileWriter(settingsDirectory+fileSep+"jsXe.log"));
+                
+                stream.write("Log file created on " + new Date());
+                stream.write(System.getProperty("line.separator"));
+                
+                Log.setLogWriter(stream);
+            } catch (IOException ioe) {
+                Log.log(Log.ERROR, jsXe.class, ioe);
             }
-            if (args[i].equals("--version") || args[i].equals("-V")) {
-                System.out.println(getVersion());
-                System.exit(0);
+            //}}}
+            
+            //{{{ get and load the configuration files
+            initDefaultProps();
+            
+            File _settingsDirectory = new File(settingsDirectory);
+            if(!_settingsDirectory.exists())
+                _settingsDirectory.mkdirs();
+            String pluginsDirectory = settingsDirectory+"/jars";
+            File _pluginsDirectory = new File(pluginsDirectory);
+            if(!_pluginsDirectory.exists())
+                _pluginsDirectory.mkdirs();
+            
+            File properties = new File(settingsDirectory,"properties");
+            try {
+                FileInputStream filestream = new FileInputStream(properties);
+                props.load(filestream);
+            } catch (FileNotFoundException fnfe) {
+                
+                //Don't do anything right now
+                
+            } catch (IOException ioe) {
+                System.err.println(getAppTitle() + ": I/O ERROR: Could not open settings file");
+                System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
             }
-           // if (args[i].startsWith("--view") || args[i].startsWith("-v")) {
-           //     if (i+1<args.length) {
-           //         viewname = args[++i];
-           //     } else {
-           //         System.out.println(getAppTitle()+": No view name specified.");
-           //         System.exit(1);
-           //     }
-           // } else {
-                files.add(args[i]);
-           // }
-        }
-        //}}}
-        
-        //{{{ load plugins
-        
-        m_pluginLoader = new JARClassLoader();
-        ArrayList pluginErrors = m_pluginLoader.addDirectory(pluginsDirectory);
-        
-        String jsXeHome = System.getProperty("jsxe.home");
-        if(jsXeHome == null) {
-            String classpath = System.getProperty("java.class.path");
-            int index = classpath.toLowerCase().indexOf("jsxe.jar");
-            int start = classpath.lastIndexOf(File.pathSeparator,index) + 1;
-            // if started with java -jar jsxe.jar
-            if(classpath.equalsIgnoreCase("jsxe.jar")) {
-                jsXeHome = System.getProperty("user.dir");
-            } else {
-                if(index > start) {
-                    jsXeHome = classpath.substring(start, index - 1);
-                } else {
-                    // use user.dir as last resort
-                    jsXeHome = System.getProperty("user.dir");
+            
+            //Load the recent files list
+            File recentFiles = new File(settingsDirectory, "recent.xml");
+            m_bufferHistory = new BufferHistory();
+            try {
+                m_bufferHistory.load(recentFiles);
+            } catch (IOException ioe) {
+                System.err.println(getAppTitle() + ": I/O ERROR: Could not open recent files list");
+                System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
+            } catch (SAXException saxe) {
+                System.err.println(getAppTitle() + ": I/O ERROR: recent.xml not formatted properly");
+                System.err.println(getAppTitle() + ": I/O ERROR: "+saxe.toString());
+            } catch (ParserConfigurationException pce) {
+                System.err.println(getAppTitle() + ": I/O ERROR: Could not parse recent.xml");
+                System.err.println(getAppTitle() + ": I/O ERROR: "+pce.toString());
+            }
+            //}}}
+            
+            //{{{ parse command line arguments
+            String viewname = null;
+            ArrayList files = new ArrayList();
+            for (int i=0; i<args.length; i++) {
+                if (args[i].equals("--help") || args[i].equals("-h")) {
+                    printUsage();
+                    System.exit(0);
                 }
+                if (args[i].equals("--version") || args[i].equals("-V")) {
+                    System.out.println(getVersion());
+                    System.exit(0);
+                }
+               // if (args[i].startsWith("--view") || args[i].startsWith("-v")) {
+               //     if (i+1<args.length) {
+               //         viewname = args[++i];
+               //     } else {
+               //         System.out.println(getAppTitle()+": No view name specified.");
+               //         System.exit(1);
+               //     }
+               // } else {
+                    files.add(args[i]);
+               // }
             }
-        }
-        //add the jsXe home to the plugins directory
-        pluginErrors.addAll(m_pluginLoader.addDirectory(jsXeHome+"/jars"));
-        //}}}
-        
-        //{{{ start plugins
-        
-        pluginErrors.addAll(m_pluginLoader.startPlugins());
-        
-        if (pluginErrors.size() != 0) {
-            for (int i=0; i<pluginErrors.size(); i++) {
-                Object error = pluginErrors.get(i);
-                if ((error instanceof IOException) || (error instanceof PluginDependencyException)) {
-                    Log.log(Log.ERROR, jsXe.class, ((Exception)error).getMessage());
+            //}}}
+            
+            //{{{ load plugins
+            
+            m_pluginLoader = new JARClassLoader();
+            ArrayList pluginErrors = m_pluginLoader.addDirectory(pluginsDirectory);
+            
+            String jsXeHome = System.getProperty("jsxe.home");
+            if(jsXeHome == null) {
+                String classpath = System.getProperty("java.class.path");
+                int index = classpath.toLowerCase().indexOf("jsxe.jar");
+                int start = classpath.lastIndexOf(File.pathSeparator,index) + 1;
+                // if started with java -jar jsxe.jar
+                if(classpath.equalsIgnoreCase("jsxe.jar")) {
+                    jsXeHome = System.getProperty("user.dir");
                 } else {
-                    if (error instanceof PluginLoadException) {
-                        Log.log(Log.WARNING, jsXe.class, ((PluginLoadException)error).getMessage());
+                    if(index > start) {
+                        jsXeHome = classpath.substring(start, index - 1);
                     } else {
-                        Log.log(Log.WARNING, jsXe.class, error.toString());
+                        // use user.dir as last resort
+                        jsXeHome = System.getProperty("user.dir");
                     }
                 }
             }
-        }
-        
-        
-        Iterator pluginItr = m_pluginLoader.getAllPlugins().iterator();
-        while (pluginItr.hasNext()) {
+            //add the jsXe home to the plugins directory
+            pluginErrors.addAll(m_pluginLoader.addDirectory(jsXeHome+"/jars"));
+            //}}}
             
-            //load properties into jsXe's properties
-            ActionPlugin plugin = (ActionPlugin)pluginItr.next();
-            Properties props = plugin.getProperties();
-            Enumeration names = props.propertyNames();
-            while (names.hasMoreElements()) {
-                String name = names.nextElement().toString();
-                setProperty(name, props.getProperty(name));
-            }
+            //{{{ start plugins
             
-            addActionSet(plugin.getActionSet());
-        }
-        
-        //}}}
-        
-        //{{{ create the TabbedView
-        
-        TabbedView tabbedview = null;
-        DocumentBuffer defaultBuffer = null;
-        try {
-            defaultBuffer = new DocumentBuffer(new StringReader(getDefaultDocument()));
-            m_buffers.add(defaultBuffer);
-            if (viewname == null) {
-                tabbedview = new TabbedView(defaultBuffer);
-            } else {
-                try {
-                    tabbedview = new TabbedView(defaultBuffer, viewname);
-                } catch (UnrecognizedPluginException e) {
-                    Log.log(Log.ERROR, jsXe.class, e);
-                    System.exit(1);
+            Log.log(Log.NOTICE, jsXe.class, "Starting plugins");
+            pluginErrors.addAll(m_pluginLoader.startPlugins());
+            
+            if (pluginErrors.size() != 0) {
+                for (int i=0; i<pluginErrors.size(); i++) {
+                    Object error = pluginErrors.get(i);
+                    if ((error instanceof IOException) || (error instanceof PluginDependencyException)) {
+                        Log.log(Log.ERROR, jsXe.class, ((Exception)error).getMessage());
+                    } else {
+                        if (error instanceof PluginLoadException) {
+                            Log.log(Log.WARNING, jsXe.class, ((PluginLoadException)error).getMessage());
+                        } else {
+                            Log.log(Log.WARNING, jsXe.class, error.toString());
+                        }
+                    }
                 }
             }
             
-        } catch (IOException ioe) {
-            Log.log(Log.ERROR, jsXe.class, ioe);
-            JOptionPane.showMessageDialog(null, ioe.getMessage()+".", "I/O Error", JOptionPane.WARNING_MESSAGE);
-            System.exit(0);
-        }
-        //}}}
-        
-        //{{{ Parse files to open on the command line
-        if (files.size() > 0) {
-            if (openXMLDocuments(tabbedview, (String[])files.toArray(new String[] {}))) {
-                try {
-                    closeDocumentBuffer(tabbedview, defaultBuffer);
-                } catch (IOException ioe) {
-                    //it can't be saved. it's not dirty.
+            
+            Iterator pluginItr = m_pluginLoader.getAllPlugins().iterator();
+            while (pluginItr.hasNext()) {
+                
+                //load properties into jsXe's properties
+                ActionPlugin plugin = (ActionPlugin)pluginItr.next();
+                Properties props = plugin.getProperties();
+                Enumeration names = props.propertyNames();
+                while (names.hasMoreElements()) {
+                    String name = names.nextElement().toString();
+                    setProperty(name, props.getProperty(name));
+                }
+                
+                addActionSet(plugin.getActionSet());
+            }
+            
+            //}}}
+            
+            //{{{ create the TabbedView
+            
+            TabbedView tabbedview = null;
+            DocumentBuffer defaultBuffer = null;
+            try {
+                defaultBuffer = new DocumentBuffer(new StringReader(getDefaultDocument()));
+                m_buffers.add(defaultBuffer);
+                if (viewname == null) {
+                    tabbedview = new TabbedView(defaultBuffer);
+                } else {
+                    try {
+                        tabbedview = new TabbedView(defaultBuffer, viewname);
+                    } catch (UnrecognizedPluginException e) {
+                        Log.log(Log.ERROR, jsXe.class, e);
+                        System.exit(1);
+                    }
+                }
+                
+            } catch (IOException ioe) {
+                Log.log(Log.ERROR, jsXe.class, ioe);
+                JOptionPane.showMessageDialog(null, ioe.getMessage()+".", "I/O Error", JOptionPane.WARNING_MESSAGE);
+                System.exit(0);
+            }
+            //}}}
+            
+            //{{{ Parse files to open on the command line
+            if (files.size() > 0) {
+                if (openXMLDocuments(tabbedview, (String[])files.toArray(new String[] {}))) {
+                    try {
+                        closeDocumentBuffer(tabbedview, defaultBuffer);
+                    } catch (IOException ioe) {
+                        //it can't be saved. it's not dirty.
+                    }
                 }
             }
+            //}}}
+            
+            tabbedview.setVisible(true);
+        } catch (Throwable e) {
+            exiterror(null, e, 1);
         }
-        //}}}
-        
-        tabbedview.setVisible(true);
-        
     }//}}}
     
     //{{{ getVersion()
@@ -514,7 +519,7 @@ public class jsXe {
                     return buffer;
                 }
             } catch (IOException ioe) {
-                exiterror(null, ioe.getMessage(), 1);
+                exiterror(null, ioe, 1);
             }
             
         }
@@ -658,20 +663,20 @@ public class jsXe {
      * Called when crashing jsXe. jsXe prints an error message and
      * exits with the error code specifed.
      * @param view The view from which the exit was called.
-     * @param errormsg The error message to display.
+     * @param error The error. Either a string or Exception.
      * @param errorcode The errorcode to exit with.
      */
-    public static void exiterror(TabbedView view, String errormsg, int errorcode) {
+    public static void exiterror(TabbedView view, Object error, int errorcode) {
         String errorhdr = "jsXe has encountered a fatal error and is unable to continue.\n";
         errorhdr        +="This is most likely a bug and should be reported to the jsXe\n";
         errorhdr        +="developers. Please fill out a full bug report at\n";
         errorhdr        +="http://www.sourceforge.net/projects/jsxe/\n\n";
         
         Log.log(Log.ERROR, jsXe.class, errorhdr);
-        Log.log(Log.ERROR, jsXe.class, errormsg);
+        Log.log(Log.ERROR, jsXe.class, error);
         
         if (view != null) {
-            JOptionPane.showMessageDialog(view, errorhdr + errormsg, "Fatal Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, errorhdr + error, "Fatal Error", JOptionPane.WARNING_MESSAGE);
         }
         
         //stop logging
@@ -855,10 +860,9 @@ public class jsXe {
         try {
             defaultProps.load(inputstream);
         } catch (IOException ioe) {
-            System.err.println(getAppTitle() + ": Internal ERROR: Could not open default settings file");
-            System.err.println(getAppTitle() + ": Internal ERROR: "+ioe.toString());
-            System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
-            exiterror(null, ioe.getMessage(), 1);
+            Log.log(Log.ERROR, jsXe.class, "**** Could not open default settings file ****");
+            Log.log(Log.ERROR, jsXe.class, "**** jsXe was probably not built correctly ****");
+            exiterror(null, ioe, 1);
         }
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int windowWidth = (int)(screenSize.getWidth() / 2);
@@ -881,7 +885,7 @@ public class jsXe {
             System.err.println(getAppTitle() + ": Internal ERROR: Could not open default settings file");
             System.err.println(getAppTitle() + ": Internal ERROR: "+ioe.toString());
             System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
-            exiterror(null, ioe.getMessage(), 1);
+            exiterror(null, ioe, 1);
         }
         //}}}
         
