@@ -69,7 +69,8 @@ public class jsxeAboutDialog extends AbstractAction {
         "Copyright (C) 2002 Ian Lewis\n\n"+
         jsXe.getAppTitle() + " is an XML editor written using swing and JAXP 1.1\n\n"+
         "Authors: Ian Lewis <IanLewis@members.fsf.org>\n\n"+
-        "Released under the terms of the GNU General Public License";
+        "Released under the terms of the GNU General Public License\n\n"+
+        "http://jsxe.sourceforge.net/";
         
         Object[] okButton = {"Close"};
         JOptionPane.showOptionDialog(
