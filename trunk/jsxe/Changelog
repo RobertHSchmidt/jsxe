@@ -3,6 +3,10 @@
     * Fixed a build problem that was introduced into cvs.
     * Fixed bug where jsxe generated NumberFormatExceptions if user defined
       saved properties were incorrectly formatted.
+    * When a document is opened the document root element is now expanded
+      by default.
+    * When dragging and dropping and/or adding nodes the nodes that whose
+      locations have changed are always visible after the change.
 
 04/21/2004  version 0.1.67  Ian Lewis <IanLewis@member.fsf.org>
 

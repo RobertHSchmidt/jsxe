@@ -229,6 +229,23 @@ public class XMLDocument {
         return props.getProperty(key, defaultValue);
     }//}}}
     
+    //{{{ getRootElementNode()
+    
+    public AdapterNode getRootElementNode() {
+        int childCount = m_adapterNode.childCount();
+        AdapterNode rootElement = m_adapterNode.child(0);
+        if (rootElement != null) {
+            for (int i=1; i<childCount && rootElement.getNodeType() != Node.ELEMENT_NODE; i++) {
+                rootElement = m_adapterNode.child(i);
+            }
+        } else {
+            //this should never happen so if it does hopefully it will crash
+            //something.
+            rootElement = null;
+        }
+        return rootElement;
+    }//}}}
+    
     //{{{ getAdapterNode()
     /**
      * Returns the AdapterNode object for the root of the XML document.

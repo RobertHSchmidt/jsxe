@@ -182,6 +182,10 @@ public class DefaultView extends DocumentView {
         tree.updateUI();
         updateUI();
         
+        //Make root element node expanded.
+        TreePath path = new TreePath(new Object[] { document.getAdapterNode(), document.getRootElementNode() });
+        tree.expandPath(path);
+        
         m_buffer = buffer;
     } //}}}
     
