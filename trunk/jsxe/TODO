@@ -21,23 +21,6 @@ TODO:
 
     & Serialized XML should be 100% well-formed and parsable.
     
-* Version 0.2 beta
-    
-    * Need to set up default document properties for each view and default
-      app properties for each view. Default document properties get set
-      to the document each time one is loaded. Default app properties get set
-      when the view is loaded.
-    
-    * Make the XML document declaration header non-editable in source-view
-      mode. (how?) Update it when the user changes options in the options panel.
-      Maybe make a non-editable text-panel or label above the source area and
-      only show the part after the header?
-    
-    * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
-      support for this. jsXe needs to recognize when a document has a DTD and
-      deal with serializing to it if necessary. Investigate XNI or whatever
-      that is part of the xerces distribution as a way to do this.
-    
 * Version 0.3 beta (Plugin Support)
     
     * Revamp the DOM objects.
@@ -49,6 +32,8 @@ TODO:
           the Adapter objects.
         * Update the package structures to be a bit better before releasing next
           beta version
+    
+    * Add an 'ignore case' option to the find dialog in the source view.
     
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
@@ -63,6 +48,11 @@ TODO:
     * Add a way for jsXe to try to open a document in any of the installed views
       before it shows errors saying it cannot open the document given that views
       are now plugins.
+    
+    * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
+      support for this. jsXe needs to recognize when a document has a DTD and
+      deal with serializing to it if necessary. Investigate XNI or whatever
+      that is part of the xerces distribution as a way to do this.
     
     * Look into Marathon as a possible testing tool for jsXe. It seems to allow
       you to create unit test scripts for Java/Swing GUI apps.
