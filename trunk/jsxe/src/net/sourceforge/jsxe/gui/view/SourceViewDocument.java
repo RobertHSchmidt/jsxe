@@ -86,8 +86,6 @@ public class SourceViewDocument extends DefaultStyledDocument {
             DOMSerializer serializer = new DOMSerializer(false);
             try {
                 
-                //We can just get the reader for the document and
-                //set the model using that.
                 //serializer.serialize(document.getDocument(), writer);
                 super.insertString(0, document.getSource(), new SimpleAttributeSet());
                 
