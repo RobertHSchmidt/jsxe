@@ -59,7 +59,6 @@ public class FileExitAction extends AbstractAction {
     
     public FileExitAction(TabbedView parent) {//{{{
         putValue(Action.NAME, "Exit");
-        putValue(Action.SHORT_DESCRIPTION, "Exit jsXe");
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl Q"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("X").getKeyCode()));
         view = parent;

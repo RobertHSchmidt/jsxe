@@ -59,7 +59,6 @@ public class ToolsOptionsAction extends AbstractAction {
     
     public ToolsOptionsAction(TabbedView parent) {//{{{
         putValue(Action.NAME, "Options...");
-        putValue(Action.SHORT_DESCRIPTION, "Open jsXe's Options Dialog");
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
         view = parent;
     }//}}}

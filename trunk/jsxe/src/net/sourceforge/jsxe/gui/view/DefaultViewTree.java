@@ -87,15 +87,17 @@ public class DefaultViewTree extends JTree {
         //}}}
         
         addMouseListener(new TreePopupListener());
-        addTreeSelectionListener(new TreeSelectionListener() {//{{{
-            public void valueChanged(TreeSelectionEvent e) {
-                TreePath selPath = e.getPath();
-                AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                if ( selectedNode != null ) {
-                    setEditable(isEditable(selectedNode));
-                }
-            }
-        });//}}}
+        setEditable(false);
+       // addTreeSelectionListener(new TreeSelectionListener() {//{{{
+       //     public void valueChanged(TreeSelectionEvent e) {
+       //         TreePath selPath = e.getPath();
+       //         AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+       //         if ( selectedNode != null ) {
+       //             setEditable(isEditable(selectedNode));
+       //         }
+       //     }
+       // });//}}}
+        
         
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         
@@ -117,7 +119,11 @@ public class DefaultViewTree extends JTree {
      * @return true if the node can be edited in this tree
      */
     private static boolean isEditable(AdapterNode node) {
-        return (node.getNodeType() == Node.ELEMENT_NODE);
+        if (node != null) {
+            return (node.getNodeType() == Node.ELEMENT_NODE);
+        } else {
+            return false;
+        }
     }//}}}
     
     //{{{ TreePopupListener class
@@ -152,10 +158,18 @@ public class DefaultViewTree extends JTree {
                 boolean addNodeShown = false;
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                    popupMenuItem = new JMenuItem(new AddElementNodeAction());
+                    popupMenuItem = new JMenuItem(new AddNodeAction("New_Element", "", Node.ELEMENT_NODE));
                     addNodeItem.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem(new AddTextNodeAction());
+                    popupMenuItem = new JMenuItem(new AddNodeAction("", "New Text Node", Node.TEXT_NODE));
                     addNodeItem.add(popupMenuItem);
+                    popupMenuItem = new JMenuItem(new AddNodeAction("", "New CDATA Node", Node.CDATA_SECTION_NODE));
+                    addNodeItem.add(popupMenuItem);
+                    popupMenuItem = new JMenuItem(new AddNodeAction("", "New Comment Node", Node.COMMENT_NODE));
+                    addNodeItem.add(popupMenuItem);
+                   // popupMenuItem = new JMenuItem(new AddNodeAction("BLAH", "New Processing Instruction", Node.PROCESSING_INSTRUCTION_NODE));
+                   // addNodeItem.add(popupMenuItem);
+                   // popupMenuItem = new JMenuItem(new AddNodeAction("New_Entity", "", Node.ENTITY_REFERENCE_NODE));
+                   // addNodeItem.add(popupMenuItem);
                     addNodeShown = true;
                     showpopup = true;
                 }
@@ -180,15 +194,48 @@ public class DefaultViewTree extends JTree {
     }//}}}
 
     //{{{ Actions
+
+    //{{{ AddNodeAction
     
-    //{{{ AddElementNodeAction class
-    
-    private class AddElementNodeAction extends AbstractAction {
+    private class AddNodeAction extends AbstractAction {
         
-        //{{{ AddElementNodeAction constructor
+        //{{{ AddNodeAction constructor
         
-        public AddElementNodeAction() {
-            putValue(Action.NAME, "Element Node");
+        public AddNodeAction(String name, String value, short nodeType) {
+            m_name     = name;
+            m_value    = value;
+            m_nodeType = nodeType;
+            String actionName;
+            //{{{ set the Action.NAME
+            switch (nodeType) {
+                case Node.CDATA_SECTION_NODE:
+                    actionName = "CDATA Section";
+                    break;
+                case Node.COMMENT_NODE:
+                    actionName = "Comment";
+                    break;
+                case Node.ENTITY_NODE:
+                    actionName = "Entity";
+                    break;
+                case Node.ENTITY_REFERENCE_NODE:
+                    actionName = "Entity Reference";
+                    break;
+                case Node.ELEMENT_NODE:
+                    actionName = "Element Node";
+                    break;
+                case Node.NOTATION_NODE:
+                    actionName = "Notation Node";
+                    break;
+                case Node.PROCESSING_INSTRUCTION_NODE:
+                    actionName = "Processing Instruction";
+                    break;
+                case Node.TEXT_NODE:
+                    actionName = "Text Node";
+                    break;
+                default:
+                    actionName = "XML Node";
+            }
+            putValue(Action.NAME, actionName);//}}}
         }//}}}
         
         //{{{ actionPerformed()
@@ -198,7 +245,7 @@ public class DefaultViewTree extends JTree {
                 TreePath selPath = getLeadSelectionPath();
                 if (selPath != null) {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    AdapterNode newNode = selectedNode.addAdapterNode("New_Element", "", Node.ELEMENT_NODE);
+                    selectedNode.addAdapterNode(m_name, m_value, m_nodeType);
                     setExpandedState(selPath, true);
                     //The TreeModel doesn't automatically treeNodesInserted() yet
                    // updateComponents();
@@ -209,6 +256,11 @@ public class DefaultViewTree extends JTree {
             }
         }//}}}
         
+        //{{{ Private members
+        private short m_nodeType;
+        private String m_name;
+        private String m_value;
+        //}}}
     }//}}}
     
     //{{{ RenameElementAction class
@@ -226,38 +278,19 @@ public class DefaultViewTree extends JTree {
         public void actionPerformed(ActionEvent e) {
             TreePath selPath = getLeadSelectionPath();
             if (selPath != null) {
+                //When editing is finished go back to uneditable
+                getCellEditor().addCellEditorListener(new CellEditorListener() {//{{{
+                    public void editingCanceled(ChangeEvent e) {
+                        setEditable(false);
+                        getCellEditor().removeCellEditorListener(this);
+                    }
+                    public void editingStopped(ChangeEvent e) {
+                        setEditable(false);
+                        getCellEditor().removeCellEditorListener(this);
+                    }
+                });//}}}
+                setEditable(true);
                 startEditingAtPath(selPath);
-            }
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ AddTextNodeAction class
-    
-    private class AddTextNodeAction extends AbstractAction {
-        
-        ///{{{ AddTextNodeAction constructor
-        
-        public AddTextNodeAction() {
-            putValue(Action.NAME, "Text Node");
-        }
-        //}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            try {
-                TreePath selPath = getLeadSelectionPath();
-                if (selPath != null) {
-                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    selectedNode.addAdapterNode("", "New Text Node", Node.TEXT_NODE);
-                    setExpandedState(selPath, true);
-                    //The TreeModel doesn't automatically treeNodesInserted() yet
-                   // updateComponents();
-                    updateUI();
-                }
-            } catch (DOMException dome) {
-                JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
             }
         }//}}}
         
@@ -570,6 +603,7 @@ public class DefaultViewTree extends JTree {
                 return;
             }
             AdapterNode parentNode = (AdapterNode)path.getLastPathComponent();
+            TreePath dropPath = null;
             
             try {
                 //Find out the relative location where I dropped.
@@ -581,6 +615,7 @@ public class DefaultViewTree extends JTree {
                         if (trueParent != null) {
                             trueParent.addAdapterNodeAt(node, trueParent.index(parentNode));
                            // setExpandedState(path.getParentPath(), true);
+                            dropPath = path;
                         } else {
                             throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
                         }
@@ -591,8 +626,7 @@ public class DefaultViewTree extends JTree {
                     if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
                         //insert in the node
                         parentNode.addAdapterNode(node);
-                        
-                       // makeVisible(path.pathByAddingChild(node));
+                        dropPath = path.pathByAddingChild(node);
                     } else {
                         if (parentNode != null) {
                             //insert after the node dropped on
@@ -600,6 +634,7 @@ public class DefaultViewTree extends JTree {
                             if (trueParent != null) {
                                 trueParent.addAdapterNodeAt(node, trueParent.index(parentNode)+1);
                                // setExpandedState(path.getParentPath(), true);
+                                dropPath = path;
                             } else {
                                 throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
                             }
@@ -618,6 +653,7 @@ public class DefaultViewTree extends JTree {
             paintImmediately(m_cueLine);
             dtde.dropComplete(true);
             updateUI();
+           // makeVisible(dropPath);
         }//}}}
         
         //{{{ dragOver()

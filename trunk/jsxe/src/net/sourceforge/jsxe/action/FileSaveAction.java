@@ -73,7 +73,6 @@ public class FileSaveAction extends AbstractAction {
     
     public FileSaveAction(TabbedView parent) {//{{{
         putValue(Action.NAME, "Save");
-        putValue(Action.SHORT_DESCRIPTION, "Save an XML Document");
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl S"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("S").getKeyCode()));
         view = parent;

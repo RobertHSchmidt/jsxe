@@ -1,3 +1,9 @@
+04/21/2004  version 0.1.67  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Made it so that element nodes can't be edited in the JTree unless
+      you select 'Rename Node' from the context menu. This is done because of
+      some problems with compatiblity between the editing and drag and drop.
+
 04/20/2004  version 0.1.66  Ian Lewis <IanLewis@member.fsf.org>
 
     * Made split panes in the default tree view one touch expandable.
