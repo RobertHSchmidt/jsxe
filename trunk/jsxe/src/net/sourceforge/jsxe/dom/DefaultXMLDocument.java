@@ -105,7 +105,7 @@ public class DefaultXMLDocument extends XMLDocument {
             JOptionPane.showMessageDialog(parent, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
         }
         catch (IOException ioe) {
-            JOptionPane.showMessageDialog(parent, ioe, "IO Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(parent, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
         }
         return false;
     }//}}}
