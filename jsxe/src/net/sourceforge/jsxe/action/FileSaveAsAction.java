@@ -120,24 +120,45 @@ public class FileSaveAsAction extends AbstractAction {
             try {
                 
                 File selectedFile = saveDialog.getSelectedFile();
-                
-                DocumentBuffer buffer = jsXe.getOpenBuffer(selectedFile);
-                
-                //If the document is already open and
-                //it isn't the current document
-                if (buffer != null && !buffer.equalsOnDisk(currentBuffer)) {
+                boolean reallySave = true;
+                if (selectedFile.exists()) {
+                    //If it's dirty ask if you want to save.
+                    String msg = "The file "+selectedFile.getName()+" already exists. Are you sure you want to overwrite it?";
+                    String title = "File Exists";
+                    int optionType = JOptionPane.YES_NO_OPTION;
+                    int messageType = JOptionPane.WARNING_MESSAGE;
                     
-                    //If the saved-to document is already open we
-                    //need to close that tab and save this tab
-                    //as that one.
-                    
-                    jsXe.closeDocumentBuffer(view, buffer);
-                    currentBuffer.saveAs(selectedFile);
-                    
-                } else {
-                    currentBuffer.saveAs(selectedFile);
+                    returnVal = JOptionPane.showConfirmDialog(view,
+                                        msg,
+                                        title,
+                                        optionType,
+                                        messageType);
+                    if (returnVal != JOptionPane.YES_OPTION) {
+                        reallySave = false;
+                    }
                 }
-                view.update();
+                
+                if (reallySave) {
+                    
+                    DocumentBuffer buffer = jsXe.getOpenBuffer(selectedFile);
+                    
+                    //If the document is already open and
+                    //it isn't the current document
+                    if (buffer != null && !buffer.equalsOnDisk(currentBuffer)) {
+                        
+                        //If the saved-to document is already open we
+                        //need to close that tab and save this tab
+                        //as that one.
+                        
+                        jsXe.closeDocumentBuffer(view, buffer);
+                        currentBuffer.saveAs(selectedFile);
+                        
+                    } else {
+                        currentBuffer.saveAs(selectedFile);
+                    }
+                    view.update();
+                    
+                }
                 
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);

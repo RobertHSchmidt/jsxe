@@ -1,6 +1,7 @@
 12/19/2003  version 0.1.47  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a minor bug in the logic to update tab titles.
+    * jsXe now asks you if you really want to overwrite existing files on disk.
 
 12/18/2003  version 0.1.46  Ian Lewis <IanLewis@member.fsf.org>
 
