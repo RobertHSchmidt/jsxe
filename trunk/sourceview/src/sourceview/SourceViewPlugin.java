@@ -52,27 +52,6 @@ import java.util.Properties;
 
 public class SourceViewPlugin extends ViewPlugin {
     
-    public static final String PLUGIN_NAME = "source";
-    private static final String HUMAN_READABLE_NAME = "Source View";
-    private static final String VERSION;
-    private static final String DESCRIPTION = "Edit an XML document's source";
-    
-    static {
-        InputStream propsStream = SourceViewPlugin.class.getResourceAsStream("/sourceview/build.properties");
-        Properties buildProps = new Properties();
-        try {
-            buildProps.load(propsStream);
-        } catch (IOException ioe) {}
-        
-        VERSION = buildProps.getProperty("major.version")+"."+buildProps.getProperty("minor.version")+" pre"+buildProps.getProperty("build.version");
-    }
-    
-    //{{{ SourceViewPlugin
-    
-    public SourceViewPlugin() {
-        super(PLUGIN_NAME, HUMAN_READABLE_NAME, VERSION, DESCRIPTION);
-    }//}}}
-    
     //{{{ newDocumentView()
     
     public DocumentView newDocumentView(DocumentBuffer document) throws IOException {

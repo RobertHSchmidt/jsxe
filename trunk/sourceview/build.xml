@@ -11,6 +11,8 @@
 	<target name="init">
 		<tstamp/>
 		<property name="app.name" value="sourceview"/>
+    <property name="readable.name" value="Source View"/>
+    <property name="description" value="Edit an XML document's source"/>
 		<property name="root.dir" value="."/>
     <property name="build.dir" value="${root.dir}/build"/>
 		<property name="src.dir" value="${root.dir}/src"/>
@@ -44,7 +46,7 @@
 			<pathelement location="${src.dir}"/>
       <pathelement location="${jsxe.jar}"/>
 		</path>
-		<echo message="${app.name} ${app.version}"/>
+		<echo message="${readable.name} ${app.version}"/>
 		<echo message="----------------------------------------------------------"/>
 	</target>
 	<!-- }}} -->
@@ -106,7 +108,11 @@
 				<include name="**/*.png"/>
 			</fileset>
 		</copy>
-		<propertyfile comment="${app.name}&apos;s build properties" file="${build.dest}/sourceview/build.properties">
+		
+    <!-- copy dependencies file -->
+    <copy file="dependency.props" todir="${build.dest}"/>
+    
+    <propertyfile comment="${app.name}&apos;s build properties" file="${build.dest}/sourceview/build.properties">
 			<entry key="application.name" value="${app.name}"/>
 			<entry key="build.time" pattern="dd/MM/yyyy HH:mm" type="date" value="now"/>
 			<entry key="major.version" value="${major.version}"/>
@@ -121,6 +127,13 @@
       <section name="common">
         <attribute name="Implementation-Title" value="${app.name}"/>
         <attribute name="Implementation-Version" value="${implementation.version}"/>
+        <!-- plugin attributes -->
+        <attribute name="jsxe-plugin-name" value="${app.name}"/>
+        <attribute name="jsxe-plugin-human-readable-name" value="${readable.name}"/>
+        <attribute name="jsxe-plugin-version" value="${implementation.version}"/>
+        <attribute name="jsxe-plugin-url" value="http://jsxe.sourceforge.net/"/>
+        <attribute name="jsxe-plugin-class" value="${main.class}"/>
+        <attribute name="jsxe-plugin-description" value="${description}"/>
       </section>
     </manifest>
     
