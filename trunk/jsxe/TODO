@@ -25,9 +25,8 @@ TODO:
 
     * Dependency tracking for plugins
         * Update JARClassLoader to load plugins and check dependencies
-        * Update JARClassLoader.startPlugins() to return an Arraylist of
-          exceptions or Strings. The exceptions might be dependency errors.
-        * Update jsXe.java to handle the errors created by startPlugins.
+        * Update jsXe.java to handle the errors created by startPlugins. It
+          should show a dialog containing the serious errors.
         * Update plugins to use new interface.
             * Remove version and name methods. Set the name and version in
               the manifest.
