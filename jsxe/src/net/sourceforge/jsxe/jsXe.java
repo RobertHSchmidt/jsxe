@@ -151,10 +151,10 @@ public class jsXe {
     
     public static boolean showOpenFileDialog(TabbedView view) throws IOException {//{{{
             // if current file is null, defaults to home directory
-            DocumentView blah = view.getDocumentView();
-            XMLDocument blah2 = blah.getXMLDocument();
-            File blah3 = blah2.getFile();
-            JFileChooser loadDialog = new JFileChooser(blah3);
+            DocumentView docView = view.getDocumentView();
+            XMLDocument doc = docView.getXMLDocument();
+            File docFile = doc.getFile();
+            JFileChooser loadDialog = new JFileChooser(docFile);
             //Add a filter to display only XML files
             Vector extentionList = new Vector();
             extentionList.add(new String("xml"));
