@@ -69,11 +69,10 @@ import javax.swing.event.ChangeEvent;
 //{{{ AWT components
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Point;
+import java.awt.Rectangle;
 //}}}
 
 //{{{ Java base classes
-//import java.io.File;
 import java.util.Vector;
 //}}}
 
@@ -108,7 +107,7 @@ public class TabbedView extends JFrame {
                 }
            });//}}}
         
-        tabbedPane.setPreferredSize(new Dimension(width, height));
+       // tabbedPane.setPreferredSize(new Dimension(width, height));
         
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(tabbedPane, BorderLayout.CENTER);
@@ -119,7 +118,7 @@ public class TabbedView extends JFrame {
         
         setIconImage(jsXe.getIcon().getImage());
         
-        setLocation(x,y);
+        setBounds(new Rectangle(x, y, width, height));
     }//}}}
     
     public DocumentView getDocumentView() {//{{{
@@ -127,6 +126,7 @@ public class TabbedView extends JFrame {
     }//}}}
     
     public void addDocument(XMLDocument doc) {//{{{
+        Rectangle bounds = getBounds();
         if (doc != null) {
             docview.setDocument(this,doc);
             JPanel dummypanel = new JPanel(new BorderLayout());
@@ -184,13 +184,17 @@ public class TabbedView extends JFrame {
     }//}}}
     
     public void close() {//{{{
+        
+        //close the document view
+        docview.close();
+        
         //save properties
-        Point loc = getLocation();
-        Dimension size = getSize();
-        jsXe.setProperty("tabbedview.width",Integer.toString((int)size.getWidth()));
-        jsXe.setProperty("tabbedview.height",Integer.toString((int)size.getHeight()));
-        jsXe.setProperty("tabbedview.x",Integer.toString((int)loc.getX()));
-        jsXe.setProperty("tabbedview.y",Integer.toString((int)loc.getY()));
+        Rectangle bounds = getBounds();
+        
+        jsXe.setProperty("tabbedview.width",Integer.toString((int)bounds.getWidth()));
+        jsXe.setProperty("tabbedview.height",Integer.toString((int)bounds.getHeight()));
+        jsXe.setProperty("tabbedview.x",Integer.toString((int)bounds.getX()));
+        jsXe.setProperty("tabbedview.y",Integer.toString((int)bounds.getY()));
     }//}}}
     
     //{{{ Private members
