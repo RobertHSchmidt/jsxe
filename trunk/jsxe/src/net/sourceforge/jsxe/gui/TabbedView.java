@@ -117,7 +117,7 @@ public class TabbedView extends JFrame {
     //{{{ getDocumentBuffer()
     
     public DocumentBuffer getDocumentBuffer() {
-        return ((DocumentView)tabbedPane.getSelectedComponent()).getDocumentBuffer();
+        return getDocumentView().getDocumentBuffer();
     }//}}}
     
     //{{{ getDocumentView()
@@ -133,6 +133,26 @@ public class TabbedView extends JFrame {
         } else {
             return null;
         }
+    }//}}}
+    
+    //{{{ getDocumentView()
+    /**
+     * Gets the DocumentView for a currently opened DocumentBuffer.
+     * DocumentBuffers should always be open as they cannot be created outside
+     * of opening a document via jsXe.openXMLDocument()
+     * @return the DocumentView object
+     */
+    public DocumentView getDocumentView(DocumentBuffer buffer) {
+        if (buffer != null) {
+            int docViewCount = m_documentViews.size();
+            for (int i=0; i<docViewCount; i++) {
+                DocumentView docView = (DocumentView)m_documentViews.get(i);
+                if (docView.getDocumentBuffer() == buffer) {
+                    return docView;
+                }
+            }
+        }
+        return null;
     }//}}}
     
     //{{{ addDocumentBuffer()
@@ -161,8 +181,6 @@ public class TabbedView extends JFrame {
         } else {
             throw new UnrecognizedPluginException(documentViewName);
         }
-        
-        return;
     }//}}}
     
     //{{{ addDocumentBuffer()
@@ -235,13 +253,13 @@ public class TabbedView extends JFrame {
      */
     public boolean removeDocumentBuffer(DocumentBuffer buffer) {
         if (buffer != null) {
-            buffer.removeDocumentBufferListener(m_docBufListener);
             int docViewCount = m_documentViews.size();
             for (int i=0; i<docViewCount; i++) {
                 DocumentView docView = (DocumentView)m_documentViews.get(i);
                 if (docView.getDocumentBuffer() == buffer) {
                     //only close if we _mean_ it.
                     if (docView.close()) {
+                        buffer.removeDocumentBufferListener(m_docBufListener);
                         tabbedPane.remove(i);
                         m_documentViews.remove(docView);
                         //if the tab removed is not the rightmost tab

@@ -94,10 +94,9 @@ public interface DocumentView {
     /**
      * Gets the name of the view used when the DocumentViewFactory selects
      * a view to create.
-     * @deprecated use {@link net.sourceforge.jsxe.ActionPlugin#getName()} instead
      * @return the name of the view
      */
-    public String getViewName();
+    public ViewPlugin getViewPlugin();
     //}}}
     
     //{{{ getDocumentBuffer()
