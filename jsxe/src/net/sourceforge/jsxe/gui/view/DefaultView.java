@@ -46,10 +46,12 @@ belongs to.
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
 //{{{ Swing components
+import javax.swing.JCheckBox;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -166,7 +168,7 @@ public class DefaultView extends DocumentView {
         attributesTable.updateUI();
         tree.updateUI();
         updateUI();
-        currentdoc = document;
+        currentDoc = document;
     } //}}}
     
     public JMenu[] getMenus() {//{{{
@@ -196,13 +198,17 @@ public class DefaultView extends DocumentView {
         return null;
     }//}}}
     
+    public OptionsPanel getOptionsPanel() {//{{{
+        return new DefaultViewOptionsPanel();
+    }//}}}
+    
     public XMLDocument getXMLDocument() {//{{{
-        return currentdoc;
+        return currentDoc;
     }//}}}
     
     public void close(TabbedView view) {//{{{
         //do nothing if there is no current document.
-        if (currentdoc != null) {
+        if (currentDoc != null) {
             String vert = Integer.toString(vertSplitPane.getDividerLocation());
             String horiz = Integer.toString(horizSplitPane.getDividerLocation());
             
@@ -230,6 +236,29 @@ public class DefaultView extends DocumentView {
         //to is going to be require more complex use of
         //tree rendering I think.
         tree.treeDidChange();
+    }//}}}
+    
+    private class DefaultViewOptionsPanel extends OptionsPanel {//{{{
+        
+        public DefaultViewOptionsPanel() {
+            boolean showCommentNodes = Boolean.valueOf(currentDoc.getProperty("show.comment.nodes", "false")).booleanValue();
+            boolean showEmptyNodes = Boolean.valueOf(currentDoc.getProperty("show.empty.nodes", "false")).booleanValue();
+            
+            showCommentsCheckBox = new JCheckBox("Show comment nodes",showCommentNodes);
+            showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
+            
+            add(showCommentsCheckBox);
+            add(showEmptyNodesCheckBox);
+        }
+        
+        public void saveOptions() {
+            currentDoc.setProperty("show.comment.nodes",Boolean.toString(showCommentsCheckBox.isSelected()));
+            currentDoc.setProperty("show.empty.nodes",Boolean.toString(showEmptyNodesCheckBox.isSelected()));
+        }
+        
+        private JCheckBox showCommentsCheckBox;
+        private JCheckBox showEmptyNodesCheckBox;
+        
     }//}}}
     
     private class DefaultTreeSelectionListener implements TreeSelectionListener {//{{{
@@ -269,7 +298,7 @@ public class DefaultView extends DocumentView {
         
     }//}}}
     
-    class PopupListener extends MouseAdapter {//{{{
+    private class PopupListener extends MouseAdapter {//{{{
         public void mousePressed(MouseEvent e) {
             maybeShowPopup(e);
         }
@@ -292,7 +321,8 @@ public class DefaultView extends DocumentView {
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
     private JPopupMenu popup;
-    private XMLDocument currentdoc;
+    private XMLDocument currentDoc;
+    
     private static final String viewname="documentview.default";
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {

@@ -43,6 +43,7 @@ belongs to.
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.DOMSerializer;
+import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -119,6 +120,10 @@ public class SourceView extends DocumentView {
         
         menus[0] = menu;
         return menus;
+    }//}}}
+    
+    public OptionsPanel getOptionsPanel() {//{{{
+        return null;
     }//}}}
     
     public void setDocument(TabbedView view, XMLDocument document) throws IOException {//{{{

@@ -1,18 +1,17 @@
 /*
-DocumentView.java
+OptionsPanel.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
 jsXe is the Java Simple XML Editor
-jsXe is a gui application that can edit an XML document and create a tree view.
-The user can then edit this tree and the content in the tree and save the
-document.
+jsXe is a gui application that creates a tree view of an XML document.
+The user can then edit this tree and the content in the tree.
 
-This file contains the abstract class that defines the interface for
-views that are used by jsXe.
+This file contains the OptionsPanel class that defines a panel in the options
+dialog.
 
 This file written by ian Lewis (iml001@bridgewater.edu)
-Copyright (C) 2002 by ian Lewis
+Copyright (C) 2002 ian Lewis
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -31,7 +30,7 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package net.sourceforge.jsxe.gui.view;
+package net.sourceforge.jsxe.gui;
 
 //{{{ imports
 /*
@@ -40,34 +39,14 @@ it is easy to see which package it
 belongs to.
 */
 
-//{{{ jsXe classes
-import net.sourceforge.jsxe.dom.XMLDocument;
-import net.sourceforge.jsxe.gui.OptionsPanel;
-import net.sourceforge.jsxe.gui.TabbedView;
-//}}}
-
 //{{{ Swing components
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 //}}}
 
-//{{{ Java base classes
-import java.io.IOException;
 //}}}
 
-//}}}
-
-public abstract class DocumentView extends JPanel {
-
-    public abstract void setDocument(TabbedView view, XMLDocument document) throws IOException;
+public abstract class OptionsPanel extends JPanel {
     
-    public abstract JMenu[] getMenus();
+    public abstract void saveOptions();
     
-    public abstract OptionsPanel getOptionsPanel();
-    
-    public abstract XMLDocument getXMLDocument();
-
-    public abstract void close(TabbedView view);
-
 }

@@ -72,9 +72,8 @@ public class OptionsDialog extends JDialog {
         document = panel.getXMLDocument();
         
         //Create components
-        JPanel OptionsNorthPanel = new JPanel();
-        JPanel OptionsSouthPanel = new JPanel();
-        formatCheckBox = new JCheckBox("Format XML Output", (Boolean.valueOf(document.getProperty("format.output"))).booleanValue());
+        OptionsPanel OptionsNorthPanel = panel.getOptionsPanel();
+        OptionsSouthPanel = new JPanel();
         JButton OKButton = new JButton("OK");
         JButton CancelButton = new JButton("Cancel");
         Border border = BorderFactory.createEmptyBorder(10,10,10,10);
@@ -90,11 +89,10 @@ public class OptionsDialog extends JDialog {
         
         //add components to build the dialog
         OptionsNorthPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        //formatting isn't supported right now because it doesn't work right
-       // OptionsNorthPanel.add(formatCheckBox);
+        
         OptionsSouthPanel.add(OKButton);
         OptionsSouthPanel.add(CancelButton);
-        getContentPane().add(OptionsNorthPanel, BorderLayout.NORTH);
+        getContentPane().add(OptionsNorthPanel, BorderLayout.CENTER);
         getContentPane().add(OptionsSouthPanel, BorderLayout.SOUTH);
     } //}}}
     
@@ -105,8 +103,8 @@ public class OptionsDialog extends JDialog {
             parent = p;
         }
         public void actionPerformed(ActionEvent e) {
+            OptionsNorthPanel.saveOptions();
             parent.dispose();
-            document.setProperty("format.output", (new Boolean(formatCheckBox.isSelected())).toString());
         }
         private Dialog parent;
     } //}}}
@@ -121,9 +119,11 @@ public class OptionsDialog extends JDialog {
         private Dialog parent;
     } //}}}
     
-    private int dialogWidth=200;
-    private int dialogHeight=200;
-    private JCheckBox formatCheckBox;
+    private int dialogWidth=400;
+    private int dialogHeight=400;
     private XMLDocument document;
+    private OptionsPanel OptionsNorthPanel;
+    private JPanel OptionsSouthPanel;
     //}}}
+    
 }
