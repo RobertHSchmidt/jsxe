@@ -37,6 +37,7 @@ package net.sourceforge.jsxe.gui;
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.JARClassLoader;
 import net.sourceforge.jsxe.ActionPlugin;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Swing classes
@@ -99,7 +100,12 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         model.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         model.addListSelectionListener(new ListSelectionListener() {//{{{
             public void valueChanged(ListSelectionEvent e) {
-                descArea.setText(jsXe.getPluginLoader().getPluginProperty(m_pluginNames.get(e.getLastIndex()).toString(), JARClassLoader.PLUGIN_DESCRIPTION));
+                DefaultListSelectionModel model = (DefaultListSelectionModel)e.getSource();
+                for (int i=0;i<m_pluginNames.size();i++) {
+                    if (model.isSelectedIndex(i)) {
+                        descArea.setText(jsXe.getPluginLoader().getPluginProperty(m_pluginNames.get(i).toString(), JARClassLoader.PLUGIN_DESCRIPTION));
+                    }
+                }
             }
         });//}}}
         
