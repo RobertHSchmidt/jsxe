@@ -6,6 +6,9 @@ TODO:
       interface. For encoding use the java.io.OutputStreamWriter class. Add an
       encoding option to the option dialog.
     
+    * Research the EntityResolver class and see if it can be used to resolve
+      DTD files.
+    
     * Build an adapter for DocumentBuilder so that it implements the DOM3
       standard DOMBuilder interface?
     
@@ -22,7 +25,18 @@ TODO:
     * Allow for opening files with wellformedness errors in source view. This
       way users can fix wellformedness errors in the editor.
     
+    * Currently AdapterNodes only wrap the Node interface and create new
+      instances of itself when queried. Have AdapterNode implement the Node
+      interface. This will allow the TreeModel to have a static model i.e. The
+      instances of AdapterNode won't change everytime the TreeModel is queried
+      by the JTree. e.g. Currently when I create a TreePath and call updateUI
+      the TreePath is no longer valid because it contains objects no longer in
+      the TreeModel. So when updating the UI I can't tell which Nodes were
+      previously visable.
+    
     * Make sure jsXe can deal with all types of XML nodes.
+    
+    * Release a new version with the new features.
     
     * Allow GUI models to register change listeners with XMLDocuments and
       AdapterNodes. This will allow GUI models to be updated automatically when
