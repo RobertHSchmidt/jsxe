@@ -42,9 +42,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
-import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
 //{{{ Java base classes
@@ -76,7 +74,7 @@ public class DocumentViewFactory {
     
     //{{{ newDocumentView()
     
-    public DocumentView newDocumentView(TabbedView view, XMLDocument document) throws IOException, UnrecognizedDocViewException {
+    public DocumentView newDocumentView(XMLDocument document) throws IOException, UnrecognizedDocViewException {
         //Document type validation is pretty simple right now
         if (viewType == "tree") {
             return new DefaultView(document);
