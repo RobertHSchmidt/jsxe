@@ -52,25 +52,6 @@ import java.util.Properties;
 public class TreeViewPlugin extends ViewPlugin {
     
     public static final String PLUGIN_NAME = "tree";
-    private static final String HUMAN_READABLE_NAME = "Tree View";
-    private static final String VERSION;
-    private static final String DESCRIPTION = "Edit an XML document as a tree";
-    
-    static {
-        InputStream propsStream = TreeViewPlugin.class.getResourceAsStream("/treeview/build.properties");
-        Properties buildProps = new Properties();
-        try {
-            buildProps.load(propsStream);
-        } catch (IOException ioe) {}
-        
-        VERSION = buildProps.getProperty("major.version")+"."+buildProps.getProperty("minor.version")+" pre"+buildProps.getProperty("build.version");
-    }
-    
-    //{{{ TreeViewPlugin
-    
-    public TreeViewPlugin() {
-        super(PLUGIN_NAME, HUMAN_READABLE_NAME, VERSION, DESCRIPTION);
-    }//}}}
     
     //{{{ newDocumentView()
     

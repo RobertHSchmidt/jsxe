@@ -11,6 +11,8 @@
 	<target name="init">
 		<tstamp/>
 		<property name="app.name" value="treeview"/>
+    <property name="readable.name" value="Tree View"/>
+    <property name="description" value="Edit an XML document as a tree"/>
 		<property name="root.dir" value="."/>
     <property name="build.dir" value="${root.dir}/build"/>
 		<property name="src.dir" value="${root.dir}/src"/>
@@ -91,13 +93,14 @@
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Compiles the program ============================= -->
-	<target depends="prepare-src" name="compile" description="compile treeView">
+	<target depends="prepare-src" name="compile" description="compile Tree View">
 		<mkdir dir="${build.dest}"/>
 		<javac debug="${javac.debug}" deprecation="${javac.deprecation}" includeJavaRuntime="${javac.include.runtime}" optimize="${javac.optimize}" source="${javac.source}" destdir="${build.dest}" srcdir="${build.src}">
 			<classpath refid="classpath"/>
 			<include name="**/*.java"/>
 		</javac>
-		<copy todir="${build.dest}">
+		
+    <copy todir="${build.dest}">
 			<fileset dir="${build.src}">
 				<include name="**/*.props"/>
 				<include name="**/*.properties"/>
@@ -106,21 +109,20 @@
 				<include name="**/*.png"/>
 			</fileset>
 		</copy>
-		<propertyfile comment="${app.name}&apos;s build properties" file="${build.dest}/treeview/build.properties">
-			<entry key="application.name" value="${app.name}"/>
-			<entry key="build.time" pattern="dd/MM/yyyy HH:mm" type="date" value="now"/>
-			<entry key="major.version" value="${major.version}"/>
-			<entry key="minor.version" value="${minor.version}"/>
-			<entry key="build.version" value="${build.version}"/>
-		</propertyfile>
     
     <!-- create jar manifest -->
     <manifest file="${app.name}.manifest">
       <attribute name="Built-By" value="${user.name}"/>
-      <attribute name="Main-Class" value="${main.class}"/>
       <section name="common">
         <attribute name="Implementation-Title" value="${app.name}"/>
         <attribute name="Implementation-Version" value="${implementation.version}"/>
+        <!-- plugin attributes -->
+        <attribute name="jsxe-plugin-name" value="${app.name}"/>
+        <attribute name="jsxe-plugin-human-readable-name" value="${readable.name}"/>
+        <attribute name="jsxe-plugin-version" value="${implementation.version}"/>
+        <attribute name="jsxe-plugin-url" value="http://jsxe.sourceforge.net/"/>
+        <attribute name="jsxe-plugin-class" value="${main.class}"/>
+        <attribute name="jsxe-plugin-description" value="${description}"/>
       </section>
     </manifest>
     
