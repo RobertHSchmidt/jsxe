@@ -1,3 +1,8 @@
+12/20/2003  version 0.1.48  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Merged some of Bilel's changes to AdapterNode making it better able to
+      handle more XML node types.
+
 12/19/2003  version 0.1.47  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a minor bug in the logic to update tab titles.
