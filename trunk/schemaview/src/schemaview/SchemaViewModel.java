@@ -67,9 +67,25 @@ import org.jgraph.event.*;
 
 //}}}
 
+/**
+ * The Graph Model used by the Schema View to display schema objects.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class SchemaViewModel extends DefaultGraphModel {
     
     //{{{ SchemaViewModel constructor
+    /**
+     * Creates a new SchemaViewModel based on an entire schema document.
+     * This will a bit over-bearing especially when adding references to
+     * the view. The SchemaViewModel will eventually work on invidiual schema objects.
+     *
+     * This class does not currently try to validate that the schema is correct. It
+     * just looks for the specific node types it wants to show.
+     *
+     * @param document the schema document
+     * @throws IOException if there is a problem loading the schema
+     */
     public SchemaViewModel(XMLDocument document) throws IOException {
         m_document = document;
         
@@ -105,7 +121,10 @@ public class SchemaViewModel extends DefaultGraphModel {
     }//}}}
     
     //{{{ SchemaGraphCell class
-    
+    /**
+     * A graph cell representing as schema object. This concept 
+     * may be expanded in the future to support more options.
+     */
     public static class SchemaGraphCell extends DefaultGraphCell {
         
         //{{{ SchemaGraphCell constructor
