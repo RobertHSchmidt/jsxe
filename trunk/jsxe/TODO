@@ -28,8 +28,6 @@ TODO:
     * Fix problems with the JTree not expanding nodes when other nodes are added
       via drag n drop.
     
-    * Make sure badly formed user properties files don't crash jsxe.
-    
     * Make it so that the document root element node is expanded after opening
       a document.
     
