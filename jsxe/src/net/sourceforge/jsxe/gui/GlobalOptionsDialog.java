@@ -40,7 +40,6 @@ belongs to.
 */
 import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.options.*;
-import net.sourceforge.jsxe.gui.view.*;
 
 //}}}
 

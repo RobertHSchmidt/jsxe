@@ -40,9 +40,7 @@ belongs to.
 import net.sourceforge.jsxe.action.FileSaveAction;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.OptionsPanel;
-import net.sourceforge.jsxe.gui.view.DocumentView;
-import net.sourceforge.jsxe.gui.view.DocumentViewFactory;
-import net.sourceforge.jsxe.gui.view.UnrecognizedDocViewException;
+import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.jsxeFileDialog;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
@@ -133,7 +131,8 @@ public class jsXe {
         File _settingsDirectory = new File(settingsDirectory);
         if(!_settingsDirectory.exists())
 		    _settingsDirectory.mkdirs();
-        File _pluginsDirectory = new File(settingsDirectory+"/plugins");
+        String pluginsDirectory = settingsDirectory+"/plugins";
+        File _pluginsDirectory = new File(pluginsDirectory);
         if(!_pluginsDirectory.exists())
 		    _pluginsDirectory.mkdirs();
         
@@ -215,6 +214,21 @@ public class jsXe {
        //     System.out.println(e.getMessage());
        // }
         
+       m_pluginLoader = new JARClassLoader();
+       ArrayList errors = m_pluginLoader.addDirectory(pluginsDirectory);
+       if (errors.size() != 0) {
+           for (int i=0; i<errors.size(); i++) {
+               System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
+           }
+       }
+       
+       errors = m_pluginLoader.startPlugins();
+       if (errors.size() != 0) {
+           for (int i=0; i<errors.size(); i++) {
+               System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
+           }
+       }
+        
         //Code to load plugins here.
         
         //}}}
@@ -231,14 +245,15 @@ public class jsXe {
             } else {
                 try {
                     tabbedview = new TabbedView(defaultBuffer, viewname);
-                } catch (UnrecognizedDocViewException e) {
+                } catch (UnrecognizedPluginException e) {
                     System.out.println("jsXe: "+e.getMessage());
                     System.exit(1);
                 }
             }
             
         } catch (IOException ioe) {
-            exiterror(tabbedview, "Could not open default document", 1);
+            JOptionPane.showMessageDialog(null, ioe.getMessage()+".", "I/O Error", JOptionPane.WARNING_MESSAGE);
+            System.exit(0);
         }
         //}}}
         
@@ -387,6 +402,12 @@ public class jsXe {
                     try {
                         view.addDocumentBuffer(buffer, viewName);
                     } catch (IOException ioe) {
+                        /*
+                        we can't open in the view we want try to open in
+                        all views
+                        */
+                        view.addDocumentBuffer(buffer);
+                    } catch (UnrecognizedPluginException e) {
                         /*
                         we can't open in the view we want try to open in
                         all views
@@ -755,6 +776,14 @@ public class jsXe {
         return jsXeOptions;
     }//}}}
     
+    //{{{ getPluginLoader()
+    /**
+     * Gets the loader 
+     */
+    public static JARClassLoader getPluginLoader() {
+        return m_pluginLoader;
+    }//}}}
+    
     //{{{ isExiting()
     /**
      * Indicates whether jsXe is exiting i.e. in the exit method.
@@ -975,6 +1004,7 @@ public class jsXe {
     private static Properties props = new Properties();
     private static BufferHistory m_bufferHistory;
     private static ArrayList m_actionSets = new ArrayList();
+    private static JARClassLoader m_pluginLoader;
     
     private static OptionsPanel jsXeOptions;
     //}}}

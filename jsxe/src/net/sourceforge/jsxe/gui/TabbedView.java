@@ -40,14 +40,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.ActionSet;
-import net.sourceforge.jsxe.BufferHistory;
-import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.DocumentBufferListener;
-import net.sourceforge.jsxe.gui.view.DocumentView;
-import net.sourceforge.jsxe.gui.view.DocumentViewFactory;
-import net.sourceforge.jsxe.gui.view.UnrecognizedDocViewException;
+import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.action.*;
 //import net.sourceforge.jsxe.action.ToolsViewSourceAction;
 //}}}
@@ -114,7 +107,7 @@ public class TabbedView extends JFrame {
      * @param buffer the buffer to use initially
      * @param documentViewName the document view name
      */
-    public TabbedView(DocumentBuffer buffer, String documentViewName) throws IOException, UnrecognizedDocViewException {
+    public TabbedView(DocumentBuffer buffer, String documentViewName) throws IOException, UnrecognizedPluginException {
         
         init();
         
@@ -148,21 +141,26 @@ public class TabbedView extends JFrame {
      * the document in jsXe.
      * @param buffer The DocumentBuffer to add to the view
      * @throws IOException if the buffer could not be opened
+     * @throws UnrecognizedPluginException if the plugin requested doesn't exist or is not loaded
      */
-    public void addDocumentBuffer(DocumentBuffer buffer, String documentViewName) throws IOException {
-        DocumentViewFactory factory = DocumentViewFactory.newInstance();
-        factory.setDocumentViewType(documentViewName);
+    public void addDocumentBuffer(DocumentBuffer buffer, String documentViewName) throws IOException, UnrecognizedPluginException {
         
-        DocumentView newDocView = factory.newDocumentView(buffer);
+        ViewPlugin plugin = jsXe.getPluginLoader().getViewPlugin(documentViewName);
         
-        buffer.addDocumentBufferListener(m_docBufListener);
+        if (plugin != null) {
+            DocumentView newDocView = plugin.newDocumentView(buffer);
         
-        m_documentViews.add(newDocView);
-        Component comp = newDocView.getDocumentViewComponent();
-        tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), comp);
-        tabbedPane.setSelectedComponent(comp);
-        
-        updateTitle();
+            buffer.addDocumentBufferListener(m_docBufListener);
+            
+            m_documentViews.add(newDocView);
+            Component comp = newDocView.getDocumentViewComponent();
+            tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), comp);
+            tabbedPane.setSelectedComponent(comp);
+            
+            updateTitle();
+        } else {
+            throw new UnrecognizedPluginException(documentViewName);
+        }
         
         return;
     }//}}}
@@ -177,13 +175,13 @@ public class TabbedView extends JFrame {
      */
     public void addDocumentBuffer(DocumentBuffer buffer) throws IOException {
         if (buffer != null) {
-            DocumentViewFactory factory = DocumentViewFactory.newInstance();
-            Enumeration types = factory.getAvailableViewTypes();
+            
+            Iterator types = jsXe.getPluginLoader().getViewPluginNames();
             
             String error = null;
             
-            while (types.hasMoreElements()) {
-                String viewName = types.nextElement().toString();
+            while (types.hasNext()) {
+                String viewName = types.next().toString();
                 try {
                     addDocumentBuffer(buffer, viewName);
                     return;
@@ -196,8 +194,11 @@ public class TabbedView extends JFrame {
                 }
             }
             
-            String msg = "Could not open buffer in document views:\n\n"+error;
-            throw new IOException("Could not open buffer in any installed document views\n\n" + error);
+            String msg = "Could not open buffer in any installed document views";
+            if (error != null) {
+                msg=msg+"\n\n"+error;
+            }
+            throw new IOException(msg);
             
         }
     }//}}}
@@ -297,7 +298,7 @@ public class TabbedView extends JFrame {
         return true;
     }//}}}
     
-     //{{{ updateTitle()
+    //{{{ updateTitle()
     /**
      * Updates the frame title. Useful when the tab has changed to a
      * different open document..
@@ -481,12 +482,12 @@ public class TabbedView extends JFrame {
         //{{{ Create View Menu
         m_viewMenu = new JMenu("View");
         m_viewMenu.setMnemonic('V');
-        Enumeration viewTypes = DocumentViewFactory.getAvailableViewTypes();
-        while (viewTypes.hasMoreElements()) {
+        ArrayList views = jsXe.getPluginLoader().getViewPlugins();
+        for (int i=0; i<views.size(); i++) {
             try {
-                menuItem = new JMenuItem(new SetViewAction(viewTypes.nextElement().toString()));
+                menuItem = new JMenuItem(new SetViewAction((ViewPlugin)views.get(i)));
                 m_viewMenu.add( menuItem );
-            } catch (UnrecognizedDocViewException e) {
+            } catch (UnrecognizedPluginException e) {
                 jsXe.exiterror(this, e.getMessage(), 1);
             }
         }
@@ -559,16 +560,16 @@ public class TabbedView extends JFrame {
     private class SetViewAction extends AbstractAction {
         
         //{{{ Instance variables
-        private String m_viewName;
+        private ViewPlugin m_view;
         //}}}
         
         //{{{ SetDefaultViewAction constructor
         
-        public SetViewAction(String viewname) throws UnrecognizedDocViewException {
+        public SetViewAction(ViewPlugin view) throws UnrecognizedPluginException {
             
             //need to get the human readable name.
-            putValue(Action.NAME, DocumentViewFactory.getHumanReadableName(viewname));
-            m_viewName = viewname;
+            m_view = view;
+            putValue(Action.NAME, m_view.getHumanReadableName());
         }//}}}
         
         //{{{ actionPerformed()
@@ -577,9 +578,7 @@ public class TabbedView extends JFrame {
             
             DocumentBuffer buffer = getDocumentBuffer();
             try {
-                DocumentViewFactory factory = DocumentViewFactory.newInstance();
-                factory.setDocumentViewType(m_viewName);
-                DocumentView view = factory.newDocumentView(buffer);
+                DocumentView view = m_view.newDocumentView(buffer);
                 setDocumentView(view);
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);

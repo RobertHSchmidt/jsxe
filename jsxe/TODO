@@ -26,16 +26,24 @@ TODO:
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
     
-    * Implement plugin support for views with BeanShell. Make DocumentViews
-      into plugins that are loaded at runtime. DefaultView and SourceView will
-      be distributed with jsXe as the default views.
+    * jsXe should load the properties from a plugin into jsXe's properties.
     
-    * Create an interface for other plugins like Load and save plugins. Plugins
-      shouldn't have to be DocumentViews. They could have other purposes.
+    * jsXe needs to support ActionPlugins
     
-    * Add a way for jsXe to try to open a document in any of the installed views
-      before it shows errors saying it cannot open the document given that views
-      are now plugins.
+    * Update the options dialog to show options from all installed views
+    
+    * jsXe should have a plugin manager window to display plugin information.
+    
+    * jsXe should load plugins from both ~/.jsxe/plugins and the install
+      directory. The install directory can be located by checking the
+      System.getProperty("jsxe.home") for JSXE_HOME environment variable (i
+      think), or looking for jsXe.jar in the classpath. See jEdit.java,
+      line 2633 (4.1), for an example.
+    
+    * Add support for dependency tracking of plugins. Some plugins may be
+      dependent on others and so this may affect the order that they are
+      loaded and error checking. Some plugins will require specific versions of
+      jsXe as well.
     
     * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
       support for this. jsXe needs to recognize when a document has a DTD and
