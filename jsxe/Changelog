@@ -4,6 +4,8 @@
       weird behaviour out of the JTree when using the previous CellRenderer. I
       created a new one that simply renders Element node icons since they are
       the only editable nodes in the JTree.
+    * Updated the DOMSerializerConfiguration class to support all the DOM3 LS
+      parameters (even if the DOMSerializer itself doesn't yet).
 
 12/20/2003  version 0.1.48  Ian Lewis <IanLewis@member.fsf.org>
 

@@ -610,6 +610,10 @@ public class DOMSerializer implements LSSerializer {
         
     }//}}}
     
+   // private String normalizeCharacters(String text) {//{{{
+   //     return null;
+   // }//}}}
+    
     private DOMSerializerConfiguration config;
     private LSSerializerFilter m_filter;
     private String m_newLine;

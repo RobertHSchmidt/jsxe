@@ -53,6 +53,7 @@ import org.apache.xerces.dom3.DOMStringList;
 //{{{ Java classes
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 //}}}
 
 //}}}
@@ -75,45 +76,42 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         setFeature("cdata-sections",                true);
         setFeature("comments",                      true);
         setFeature("datatype-normalization",        false);
-        setFeature("discard-default-content",       true);
         setFeature("entities",                      false);
-        setFeature("format-pretty-print",           false);
-        setFeature("well-formed",                   true);
         //infoset is not present because it is determined
         //by checking the values of other features.
         setFeature("namespaces",                    true);
         setFeature("namespace-declarations",        true);
-        setFeature("normalize-characters",          false);
+        setFeature("normalize-characters",          true);
         setFeature("split-cdata-sections",          true);
         setFeature("validate",                      false);
         setFeature("validate-if-schema",            false);
+        setFeature("well-formed",                   true);
         setFeature("element-content-whitespace",    true);
+        
+        //LSSeraializer features
+        setFeature("discard-default-content",       true);
+        setFeature("format-pretty-print",           false);
+        setFeature("ignore-unknown-character-denormalizations", true);
+        setFeature("xml-declaration",               true);
+        
+        //DOMSerializer parameters
+        setFeature("soft-tabs",                     false);
+        setParameter("indent",                      new Integer(4));
     }//}}}
     
     public DOMSerializerConfiguration(DOMConfiguration config) throws DOMException {//{{{
-        //set the default parameters for DOMConfiguration
-        setParameter("error-handler",                 config.getParameter("error-handler"));
-        
-        //set the default boolean parameters for a DOMConfiguration
-        setParameter("canonical-form",                config.getParameter("canonical-form"));
-        setParameter("cdata-sections",                config.getParameter("cdata-sections"));
-        setParameter("comments",                      config.getParameter("comments"));
-        setParameter("datatype-normalization",        config.getParameter("datatype-normalization"));
-        setParameter("discard-default-content",       config.getParameter("discard-default-content"));
-        setParameter("entities",                      config.getParameter("entities"));
-        setParameter("infoset",                       config.getParameter("infoset"));
-        setParameter("namespaces",                    config.getParameter("namespaces"));
-        setParameter("namespace-declarations",        config.getParameter("namespace-declarations"));
-        setParameter("normalize-characters",          config.getParameter("normalize-characters"));
-        setParameter("split-cdata-sections",          config.getParameter("split-cdata-sections"));
-        setParameter("validate",                      config.getParameter("validate"));
-        setParameter("validate-if-schema",            config.getParameter("validate-if-schema"));
-        setParameter("well-formed",                   config.getParameter("well-formed"));
-        setParameter("element-content-whitespace",    config.getParameter("element-content-whitespace"));
-        setParameter("format-pretty-print",           config.getParameter("format-pretty-print"));
+        Iterator iterator = m_supportedParameters.iterator();
+        while (iterator.hasNext()) {
+            String param = iterator.next().toString();
+            setParameter(param, config.getParameter(param));
+        }
     }//}}}
     
     public boolean canSetParameter(String name, Object value) {///{{{
+        
+        if (value == null) {
+            return (m_supportedParameters.indexOf(name) != -1);
+        }
         
         if (value instanceof Boolean) {
             boolean booleanValue = ((Boolean)value).booleanValue();
@@ -133,10 +131,10 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
             if (name.equals("datatype-normalization")) {
                 return true;
             }
-            if (name.equals("discard-default-content")) {
+            if (name.equals("entities")) {
                 return true;
             }
-            if (name.equals("entities")) {
+            if (name.equals("well-formed")) {
                 return true;
             }
             if (name.equals("infoset")) {
@@ -149,7 +147,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
                 return true;
             }
             if (name.equals("normalize-characters")) {
-                return !booleanValue;
+                return true;
             }
             if (name.equals("split-cdata-sections")) {
                 return true;
@@ -163,10 +161,17 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
             if (name.equals("element-content-whitespace")) {
                 return true;
             }
-            if (name.equals("well-formed")) {
+            
+            if (name.equals("discard-default-content")) {
                 return true;
             }
             if (name.equals("format-pretty-print")) {
+                return true;
+            }
+            if (name.equals("ignore-unknown-character-denormalizations")) {
+                return booleanValue;
+            }
+            if (name.equals("xml-declaration")) {
                 return true;
             }
             return false;
@@ -341,7 +346,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
 
     static {//{{{
         //create a vector of the supported parameters
-        m_supportedParameters = new ArrayList(21);
+        m_supportedParameters = new ArrayList(22);
         
         //DOMConfiguration defined parameters
         m_supportedParameters.add("canonical-form");
@@ -368,6 +373,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         m_supportedParameters.add("xml-declaration");
         
         //Additional parameters supported by DOMSerializerConfiguration
+        m_supportedParameters.add("soft-tabs");
         m_supportedParameters.add("indent");
     }//}}}
 }
