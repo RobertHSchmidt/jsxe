@@ -65,6 +65,7 @@ import java.awt.event.ActionEvent;
 //}}}
 
 //{{{ Java base classes
+import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
 //}}}
@@ -80,9 +81,9 @@ public class FileSaveAsAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {//{{{
         
-        XMLDocument doc = view.getDocumentView().getXMLDocument();
+        XMLDocument currentdoc = view.getDocumentView().getXMLDocument();
         //  if XMLFile is null, defaults to home directory
-        JFileChooser saveDialog = new JFileChooser(doc.getFile());
+        JFileChooser saveDialog = new JFileChooser(currentdoc.getFile());
         saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
         saveDialog.setDialogTitle("Save As");
         
@@ -117,7 +118,15 @@ public class FileSaveAsAction extends AbstractAction {
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             try {
                 
-                doc.saveAs(saveDialog.getSelectedFile());
+                File selectedFile = saveDialog.getSelectedFile();
+                
+                XMLDocument doc = jsXe.getOpenXMLDocument(selectedFile);
+                if (doc != null) {
+                    jsXe.closeXMLDocument(view, doc);
+                    currentdoc.saveAs(selectedFile);
+                } else {
+                    currentdoc.saveAs(selectedFile);
+                }
                 view.update();
                 
             } catch(SAXParseException spe) {

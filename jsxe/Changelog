@@ -7,6 +7,8 @@
       of gui implementation.
     * Fixed a bug where jsXe didn't update the XMLDocument name in the
       TabbedView.
+    * Fixed a bug that caused problems when saving as a file that was already
+      open.
 
 7/16/2003   version 0.1.2   Ian Lewis   <IanLewis@member.fsf.org>
 

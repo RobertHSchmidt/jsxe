@@ -115,7 +115,7 @@ public class TabbedView extends JFrame {
                     //it's possible to change to another file
                     //that is using another view.
                     updateMenuBar();
-                    update();
+                    updateTitle();
                 }
            });//}}}
         
@@ -153,7 +153,7 @@ public class TabbedView extends JFrame {
             newDocView.setDocument(this,doc);
             tabbedPane.add(doc.getName(), newDocView);
             tabbedPane.setSelectedComponent(newDocView);
-            update();
+            updateTitle();
             updateMenuBar();
         }
     }//}}}
@@ -171,7 +171,7 @@ public class TabbedView extends JFrame {
                     tabbedPane.setSelectedIndex(i);
                 }
             }
-            update();
+            updateTitle();
             updateMenuBar();
         }
     }//}}}
@@ -190,7 +190,7 @@ public class TabbedView extends JFrame {
                     //if the tab removed is not the rightmost tab
                     //stateChanged is not called for some
                     //reason.
-                    update();
+                    updateTitle();
                 }
             }
         }
@@ -208,20 +208,10 @@ public class TabbedView extends JFrame {
      * Updates the view.
      */
     public void update() {//{{{
-        DocumentView currentDocView = getDocumentView();
-        if (currentDocView != null) {
-            XMLDocument document = currentDocView.getXMLDocument();
-            String name = "";
-            if (document != null) {
-                name = document.getName();
-            }
-            setTitle(jsXe.getAppTitle() + " - " + name);
-            XMLDocument[] docs = jsXe.getXMLDocuments();
-            for (int i=0; i<docs.length;i++) {
-                tabbedPane.setTitleAt(i, docs[i].getName());
-            }
-        } else {
-            setTitle(jsXe.getAppTitle());
+        updateTitle();
+        XMLDocument[] docs = jsXe.getXMLDocuments();
+        for (int i=0; i<docs.length;i++) {
+            tabbedPane.setTitleAt(i, docs[i].getName());
         }
     }//}}}
     
@@ -250,6 +240,20 @@ public class TabbedView extends JFrame {
     }//}}}
     
     //{{{ Private members
+    
+    private void updateTitle() {
+        DocumentView currentDocView = getDocumentView();
+        if (currentDocView != null) {
+            XMLDocument document = currentDocView.getXMLDocument();
+            String name = "";
+            if (document != null) {
+                name = document.getName();
+            }
+            setTitle(jsXe.getAppTitle() + " - " + name);
+        } else {
+            setTitle(jsXe.getAppTitle());
+        }
+    }
     
     /**
      * Updates the menubar. Useful when the DocumentView has changed.
