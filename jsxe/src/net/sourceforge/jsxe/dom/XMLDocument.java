@@ -604,20 +604,20 @@ public class XMLDocument {
         //check the wellformedness
         m_parsedMode = false;
         
-        try {
-            checkWellFormedness();
-        } catch (SAXException saxe) {
-            //nothing wrong here.
-            //document is just not well-formed.
-        } catch (ParserConfigurationException pce) {
-            throw new IOException(pce.getMessage());
-        } catch (IOException ioe) {
-            /*
-            do nothing since this can't happen
-            unless the DTD couldn't be found or something
-            Treat it as if it wasn't well-formed.
-            */
-        }
+       // try {
+       //     checkWellFormedness();
+       // } catch (SAXException saxe) {
+       //     //nothing wrong here.
+       //     //document is just not well-formed.
+       // } catch (ParserConfigurationException pce) {
+       //     throw new IOException(pce.getMessage());
+       // } catch (IOException ioe) {
+       //     /*
+       //     do nothing since this can't happen
+       //     unless the DTD couldn't be found or something
+       //     Treat it as if it wasn't well-formed.
+       //     */
+       // }
     }//}}}
     
     //{{{ setDefaultProperties()

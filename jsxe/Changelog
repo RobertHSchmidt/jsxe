@@ -1,3 +1,10 @@
+9/21/2004   version 0.2 pre22   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Documents loaded directly into the source view are not formatted
+      automatically even if the format-pretty-print property is true. This
+      prevents loading documents where whitespace is matters without marking
+      them dirty.
+
 8/25/2004   version 0.2 pre21   Ian Lewis <IanLewis@member.fsf.org>
 
     * The serializer now ignores the element-content-whitespace parameter since

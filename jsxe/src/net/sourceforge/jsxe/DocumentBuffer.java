@@ -498,9 +498,11 @@ public class DocumentBuffer extends XMLDocument {
     //{{{ setDirty()
     
     private void setDirty(boolean dirty) {
-        boolean oldDirty = m_dirty;
-        m_dirty=dirty;
-        fireStatusChanged(DIRTY, oldDirty);
+        if (dirty != m_dirty) {
+            boolean oldDirty = m_dirty;
+            m_dirty=dirty;
+            fireStatusChanged(DIRTY, oldDirty);
+        }
     }//}}}
     
     //{{{ setName()
