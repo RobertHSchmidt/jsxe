@@ -69,19 +69,6 @@ import org.jgraph.event.*;
 
 public class SchemaViewModel extends DefaultGraphModel {
     
-    //{{{ Private static members
-    private static final ArrayList m_rootNames = new ArrayList();
-    
-    static {
-        m_rootNames.add("xsd:simpleType");
-        m_rootNames.add("xsd:complexType");
-        m_rootNames.add("xsd:element");
-        m_rootNames.add("xsd:group");
-        m_rootNames.add("xsd:sequence");
-        m_rootNames.add("xsd:choice");
-    }
-    //}}}
-    
     //{{{ SchemaViewModel constructor
     public SchemaViewModel(XMLDocument document) throws IOException {
         m_document = document;
@@ -90,6 +77,14 @@ public class SchemaViewModel extends DefaultGraphModel {
         
         String uri = element.getNamespaceURI();
         if (uri != null && uri.equals("http://www.w3.org/2001/XMLSchema")) {
+            String schemaPrefix = element.getPrefix();
+            m_rootNames.add(schemaPrefix+":"+"simpleType");
+            m_rootNames.add(schemaPrefix+":"+"complexType");
+            m_rootNames.add(schemaPrefix+":"+"element");
+            m_rootNames.add(schemaPrefix+":"+"group");
+            m_rootNames.add(schemaPrefix+":"+"sequence");
+            m_rootNames.add(schemaPrefix+":"+"choice");
+            
             parse();
             layout();
         } else {
@@ -304,6 +299,9 @@ public class SchemaViewModel extends DefaultGraphModel {
      * The atribute set populated during parse
      */
     private HashMap m_attrib;
+    
+    //node names to check for.
+    private final ArrayList m_rootNames = new ArrayList();
     
     //}}}
 }
