@@ -293,6 +293,7 @@ public class jsXe {
                     success = success || openXMLDocument(view, new File(args[i]));
                 } catch (IOException ioe) {
                     //I/O error doesn't change value of success
+                    JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
                 }
             }
         }
