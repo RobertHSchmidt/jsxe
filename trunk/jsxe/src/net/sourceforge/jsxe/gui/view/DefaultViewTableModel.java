@@ -135,21 +135,16 @@ public class DefaultViewTableModel implements TableModel {
         }
         //If setting a value on the last row
         if (rowIndex+1 == getRowCount()) {
-            //We can't create a new attribute value before
-            //a name.
+            //we must be editing an attribute name.
             if (!aValue.equals("")) {
-               // if (rowIndex >= data[columnIndex].size()) {
-               //     data[columnIndex].add(aValue.toString());
-               // } else {
-                    data[columnIndex].setElementAt(aValue.toString(),rowIndex);
-               //     if (rowIndex+1 == data[columnIndex].size()) {
-                        data[0].add("");
-                        data[1].add("");
-               //     }
-               // }
+                data[columnIndex].setElementAt(aValue.toString(),rowIndex);
+                data[0].add("");
+                data[1].add("");
+                
                 updateAttributes();
                 fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
             }
+        
         //Otherwise we are editing an existing attribute.
         } else {
             //We don't want to allow the user to set an attribute
@@ -210,8 +205,10 @@ public class DefaultViewTableModel implements TableModel {
             int attrlength = attrs.getLength();
             
             //remove old attributes
+            System.out.println(attrlength+" attributes to remove.");
             for(int i = 0; i < attrlength; i++) {
-                node.removeAttribute(attrs.item(i).getNodeName());
+                Node attr = attrs.item(0);
+                node.removeAttribute(attr.getNodeName());
             }
             
             //add attributes to reflect what's in the table..
@@ -222,11 +219,8 @@ public class DefaultViewTableModel implements TableModel {
             
         } catch (DOMException dome) {
            JOptionPane.showMessageDialog(view, dome, "Attribute Error", JOptionPane.WARNING_MESSAGE);
-           //Need to do this because the table will contain incorrect values
-           //if there is an error. An example would be if someone put in an invalid
-           //character in an attribute name.
-           updateTable(currentNode);
         }
+        updateTable(currentNode);
     }//}}}
     
     private AdapterNode currentNode;
