@@ -488,16 +488,21 @@ public class DefaultViewTree extends JTree {
             TreePath path = getPathForLocation(loc.x, loc.y);
             AdapterNode parentNode = (AdapterNode)path.getLastPathComponent();
             
-            try {
-                parentNode.addAdapterNode(node);
-                dtde.acceptDrop(m_acceptableActions);
-            } catch (DOMException dome) {
+            if (node.getParentNode() != parentNode) {
+                try {
+                    parentNode.addAdapterNode(node);
+                    dtde.acceptDrop(m_acceptableActions);
+                } catch (DOMException dome) {
+                    dtde.rejectDrop();
+                    JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+                }
+                
+                dtde.dropComplete(true);
+                updateUI();
+            } else {
                 dtde.rejectDrop();
-                JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+                return;
             }
-            
-            dtde.dropComplete(true);
-            updateUI();
         }//}}}
         
         //{{{ dragOver

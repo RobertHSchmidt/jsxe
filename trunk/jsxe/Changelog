@@ -1,9 +1,15 @@
+03/18/2004  version 0.1.57  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added check so that dragging and dropping a node on it's parent doesn't
+      do anything and the buffer is not marked dirty (since nothing really
+      changed).
+
 02/29/2004  version 0.1.56  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added preliminary drag n drop support for the tree in the default view.
       You can now drag nodes from one parent to another in the tree view. You
       can also drag a node to any thing that accepts text from a drag n drop
-      operation..
+      operation.
 
 02/27/2004  version 0.1.55  Ian Lewis <IanLewis@member.fsf.org>
 

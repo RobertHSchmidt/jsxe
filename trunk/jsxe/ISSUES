@@ -7,6 +7,6 @@
       Document interface to register change listeners? Can I create my own
       implementation of the Document interface without having to write a
       DOMBuilder?
-    
-    * CVS in windows seems to have problems with corrupted binary files (jpg
-      etc.)
+
+    * Having problems with java and XIM in linux. I need to figure out why I'm
+      getting exceptions thrown when using XIM.
