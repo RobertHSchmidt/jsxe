@@ -50,11 +50,14 @@ import java.io.IOException;
 public class TreeViewPlugin extends ViewPlugin {
     
     public static final String PLUGIN_NAME = "tree";
+    private static final String HUMAN_READABLE_NAME = "Tree View";
+    private static final String VERSION = "0.1";
+    private static final String DESCRIPTION = "";
     
     //{{{ TreeViewPlugin
     
     public TreeViewPlugin() {
-        super(NAME, HUMAN_READABLE_NAME, VERSION, DESCRIPTION);
+        super(PLUGIN_NAME, HUMAN_READABLE_NAME, VERSION, DESCRIPTION);
     }//}}}
     
     //{{{ newDocumentView()
@@ -69,12 +72,4 @@ public class TreeViewPlugin extends ViewPlugin {
         return new DefaultViewOptionsPanel(buffer);
     }//}}}
     
-    //{{{ Private members
-    
-    private static String NAME = "tree";
-    private static String HUMAN_READABLE_NAME = "Tree View";
-    private static String VERSION = "0.1";
-    private static String DESCRIPTION = "";
-    
-    //}}}
 }
