@@ -104,6 +104,8 @@ TODO:
     
 * Version 0.3 beta
     
+    * Implement cut, copy, paste in the DefaultView
+    
     * Allow Views to be split so that one DocumentView can be displayed left/top
       and one on the right/bottom. Views should be able to update automatically
       using some sort of listener interface.
