@@ -32,11 +32,16 @@ TODO:
     
     * Add drag & drop functionality to the default view.
     
-    * Release new version (0.2.0).
+    * Make sure jsXe can deal with all types of XML nodes.
+        * Add support for creating every type of XML node.
+        
+    * Add minimal support for namespaces.
+    
+    * Release new version (0.2.0), jsXe needs to be at least usable.
     
     * Build an adapter for DocumentBuilder so that it implements the DOM3
       standard DOMBuilder interface? Maybe use it with DOMSerializer to created
-      filtered documents? Or use a TreeWalker to serialize?
+      filtered documents? Or use a TreeWalker to serialize (how)?
     
     * Use the Nodefilter interface with the DefaultView to determine which types
       of nodes to show.
@@ -47,13 +52,8 @@ TODO:
       implementation used in a more limited way? Implement Document editing
       methods? Can I eventually make my own DOM implementation?
     
-    * Make sure jsXe can deal with all types of XML nodes.
-        * Add support for creating every type of XML node.
-    
     * Change icons in tree in DocumentView to be different for different types
       of XML nodes.
-    
-    * Release new version (0.3.0).
     
     * Implement undo for the DefaultView and SourceView.
     
@@ -61,7 +61,7 @@ TODO:
       DefaultXMLDocument classes. Should use char arrays instead of String
       objects. Implement a much more efficient way of storing the text source.
     
-    * Release new minor version (0.4.0)
+    * Release new minor version (0.3.0)
     
     * Implement BeanShell support. This is required for dynamic actions like
       those in jEdit.
@@ -79,7 +79,7 @@ TODO:
     * Make sure all instance variables are prefixed with m_ and are named in a
       consistent manner.
     
-    * Release new version (0.5.0)
+    * Release new version (0.4.0)
     
     * Create a feature to edit source for 1 node only. (Not sure how to do this
       given current design. How would I allow the source view to do that?)
@@ -99,13 +99,7 @@ TODO:
       can be validated by the DTD and what needs to be done to the document
       before it will comply with the DTD.
     
-    * Release new version (0.6.0).
-    
-    * Add a way for jsXe to try to open a document in any of the installed views
-      before it shows errors saying it cannot open the document. i.e. If a
-      document is not validated try to open it in the requested view and if that
-      fails then open it in one of the remaining installed views until it works
-      or you run out of views.
+    * Release new version (0.5.0).
     
     * Implement some version of the DOM Document interfaces and add features
       such as the registering of listeners that can tell when the structure
@@ -114,13 +108,11 @@ TODO:
     
     * Create an install program for jsXe.
     
-    * Release new version (0.7.0)
+    * Create a help system for jsXe.
     
     * Implement validation against DTDs and different forms of Schema.
     
-    * Create a help system for jsXe.
-    
-    * Release new version (0.8.0)
+    * Release new version (0.6.0)
     
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
@@ -129,11 +121,22 @@ TODO:
       that are loaded at runtime. DefaultView and SourceView will be distributed
       with jsXe as the default views.
     
-    * Release new version (0.9.0)
+    * Add a way for jsXe to try to open a document in any of the installed views
+      before it shows errors saying it cannot open the document. i.e. If a
+      document is not validated try to open it in the requested view and if that
+      fails then open it in one of the remaining installed views until it works
+      or you run out of views.
     
     * Implement the xsl transformation feature as a plugin.
     
-    * Rewrite existing views as plugins.
+    * Rewrite existing views as plugins (maybe default view and source view are
+      built in?)
+    
+    * Add a way for jsXe to try to open a document in any of the installed views
+      before it shows errors saying it cannot open the document. i.e. If a
+      document is not validated try to open it in the requested view and if that
+      fails then open it in one of the remaining installed views until it works
+      or you run out of views.
     
     * Create a view that uses the view from pollo and implements the
       DocumentView interface.
@@ -141,4 +144,4 @@ TODO:
     * Create a view that is similar to the xeditor view if it's ok (it kind of
       has to be since jie bao used my GPL code his has to be open source too.)
     
-    * Release new version (1.0.0)
+    * Release new version (0.7.0)
