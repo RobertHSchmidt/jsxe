@@ -43,6 +43,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Swing components
@@ -186,13 +187,34 @@ public class DefaultViewTreeModel implements TreeModel {
     //{{{ valueForPathChanged()
     
     public void valueForPathChanged(TreePath path, Object newValue) {
+        //get the nodes needed
+        AdapterNode node = ((AdapterNode)path.getLastPathComponent());
+        String oldPrefix = node.getNSPrefix();
+        String oldLocalName = node.getLocalName();
         try {
-            //get the nodes needed
-            AdapterNode node = ((AdapterNode)path.getLastPathComponent());
-            node.setNodeName(newValue.toString());
+            
+            String newName = newValue.toString();
+            String prefix = null;
+            String localName = null;
+            //Parse out the namespace info
+            int index = newName.indexOf(":");
+            if (index != -1) {
+                prefix = newName.substring(0,index);
+                localName = newName.substring(index);
+            } else {
+                localName = newName;
+            }
+            node.setNSPrefix(prefix);
+            node.setLocalName(localName);
             //notify the listeners that tree nodes have changed
             fireTreeNodesChanged(new TreeModelEvent(this, path));
         } catch (DOMException dome) {
+            try {
+                node.setNSPrefix(oldPrefix);
+                node.setLocalName(oldLocalName);
+            } catch (DOMException dome2) {
+                Log.log(Log.ERROR, this, "This is a bug: Previous prefix or local name is bad!");
+            }
             JOptionPane.showMessageDialog(view, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
