@@ -179,7 +179,7 @@ public class TabbedView extends JFrame {
                                 DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
                                 for (int i=0; i < buffers.length; i++) {
                                     if (buffers[i] == source) {
-                                        tabbedPane.setTitleAt(i, getTabTitle(source));
+                                        tabbedPane.setIconAt(i, getTabIcon(source));
                                     }
                                 }
                             }
@@ -189,7 +189,7 @@ public class TabbedView extends JFrame {
                             DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
                             for (int i=0; i < buffers.length; i++) {
                                 if (buffers[i] == source) {
-                                    tabbedPane.setTitleAt(i, getTabTitle(source));
+                                    tabbedPane.setIconAt(i, getTabIcon(source));
                                 }
                             }
                         };//}}}
@@ -198,8 +198,9 @@ public class TabbedView extends JFrame {
                         
                     });//}}}
                     
-                    tabbedPane.add(buffer.getName(), newDocView);
+                    tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), newDocView);
                     tabbedPane.setSelectedComponent(newDocView);
+                    
                     updateTitle();
                     updateMenuBar();
                     
@@ -415,7 +416,7 @@ public class TabbedView extends JFrame {
                 //no exceptions? cool. register the new view
                 tabbedPane.remove(oldView);
                 tabbedPane.add(newView, index);
-                tabbedPane.setTitleAt(index, getTabTitle(currentBuffer));
+                tabbedPane.setIconAt(index, getTabIcon(currentBuffer));
                 tabbedPane.setSelectedIndex(index);
                 updateMenuBar();
                 
@@ -428,15 +429,14 @@ public class TabbedView extends JFrame {
         }
     }//}}}
     
-    private String getTabTitle(DocumentBuffer buffer) {//{{{
-        String name = buffer.getName();
+    private ImageIcon getTabIcon(DocumentBuffer buffer) {//{{{
         
         if (buffer.isDirty()) {
             //Mark the tab title as dirty
-            name = "*" + name;
+            return m_dirtyIcon;
         }
         
-        return name;
+        return m_cleanIcon;
     }//}}}
     
     /**
@@ -500,5 +500,7 @@ public class TabbedView extends JFrame {
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     //The current document
     private JPanel panel;
+    private static final ImageIcon m_cleanIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/clean.png"), "clean");
+    private static final ImageIcon m_dirtyIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/dirty.png"), "dirty");
     //}}}
 }
