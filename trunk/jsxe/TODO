@@ -48,6 +48,9 @@ TODO:
     * Create a way for actions to be created dynamically and then registered
       with jsXe. Much the same way that jEdit does.
     
+    * Redo gui actions to include key mnemonics etc. so it acts like you would
+      expect.
+    
     * Create a toolbar that is customizable much the same way jEdit's is.
     
     * Create an interface for the main view in jsXe where the TabbedView
