@@ -1,3 +1,7 @@
+05/23/2004  version 0.2 pre4    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Allowed users to add a comment node to the document root.
+
 05/23/2004  version 0.2 pre3    Ian Lewis <IanLewis@member.fsf.org>
 
     * Added a new Reload action to the file menu so that users can reload the
