@@ -192,12 +192,6 @@ public class DefaultView extends JPanel implements DocumentView {
         setDocumentBuffer(document);
     }//}}}
     
-    //{{{ getHumanReadableName()
-    
-    public static String getHumanReadableName() {
-        return "Tree View";
-    }//}}}
-    
     //{{{ DocumentView methods
 
     //{{{ close()

@@ -1,3 +1,7 @@
+01/08/2004  version 0.3 pre9    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated so that getVersion() works properly;
+
 01/05/2005  version 0.3 pre7    Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated to use new Plugin API

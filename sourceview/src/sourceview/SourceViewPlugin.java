@@ -55,7 +55,7 @@ public class SourceViewPlugin extends ViewPlugin {
     public static final String PLUGIN_NAME = "source";
     private static final String HUMAN_READABLE_NAME = "Source View";
     private static final String VERSION;
-    private static final String DESCRIPTION = "";
+    private static final String DESCRIPTION = "Edit an XML document's source";
     
     static {
         InputStream propsStream = SourceViewPlugin.class.getResourceAsStream("/sourceview/build.properties");
@@ -64,7 +64,7 @@ public class SourceViewPlugin extends ViewPlugin {
             buildProps.load(propsStream);
         } catch (IOException ioe) {}
         
-        VERSION = buildProps.getProperty("build.version");
+        VERSION = buildProps.getProperty("major.version")+"."+buildProps.getProperty("minor.version")+" "+buildProps.getProperty("build.description");
     }
     
     //{{{ SourceViewPlugin
