@@ -1,3 +1,8 @@
+03/30/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed problem with entering new attributes after you reverse the order
+      of the columns.
+
 03/17/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added much better namespace support.

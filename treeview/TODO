@@ -1,15 +1,8 @@
 TODO:
 
-* Version 0.3 beta (Plugin Support)
-    
-    * Add namespace support.
-        * Fix renaming of prefix in element nodes. You should be able to change
-          the prefix and it will change the namespace uri as well.
-        * Fix renaming of attributes. Renaming these nodes should support
-          namespaces. You should also be allowed to change the namespace prefix
-          and it will change the namespace uri as well.
-    
 * Version 0.4 beta (Actions)
+    
+    * Add a "trim whitespace in text nodes" option.
     
     * Implement cut, copy, paste
     
@@ -21,11 +14,6 @@ TODO:
     
     * Make sure all instance variables are prefixed with m_ and are named in a
       consistent manner.
-
-* Version 0.3 beta
-
-    * Add back the "show whitespace-only nodes" option
-    * Add a "trim whitespace in text nodes" option.
       
 * Version 0.5 beta (DTD support and Threading)
     
