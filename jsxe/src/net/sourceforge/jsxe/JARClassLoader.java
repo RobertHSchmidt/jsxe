@@ -160,7 +160,11 @@ public class JARClassLoader extends ClassLoader {
      */
     public void addJarFile(File file) throws FileNotFoundException, IOException {
         if (file.exists()) {
+            
             JarFile jarFile = new JarFile(file);
+            
+            setProperties(jarFile); //if there is an IOException then this jar is messed up.
+            
             definePackages(jarFile);
             m_files.put(file.getName(), file);
             m_jarFiles.put(file.getName(), jarFile);
@@ -308,7 +312,7 @@ public class JARClassLoader extends ClassLoader {
     //{{{ startPlugins()
     /**
      * Starts all the plugins from their respective jar files.
-     * @return an ArrayList of error messages.
+     * @return an ArrayList of errors (either Strings or Exceptions).
      */
     public ArrayList startPlugins() {
         Iterator jarItr = m_jarFiles.keySet().iterator();
@@ -329,6 +333,117 @@ public class JARClassLoader extends ClassLoader {
     }//}}}
     
     //{{{ Private Members
+    
+    //{{{ checkDependencies
+    
+    private void checkDependencies(JarFile file) throws IOException, PluginDependencyException {
+       // String name = getManifestAttribute(jarfile, Attributes.Name.IMPLEMENTATION_TITLE);
+       // String dep;
+       // while ((dep = m_pluginProperties.getProperty(name+".dependency."+i++)) != null) {
+       //     //parse the dependency
+       //     
+       //     int index = dep.indexOf(' ');
+       //     if(index == -1) {
+       //         throw new IOException(name + " has an invalid dependency: " + dep);
+       //     }
+       //     
+       //     String what = dep.substring(0,index);
+       //     String arg = dep.substring(index + 1);
+       //     
+       //     if(what.equals("jdk"))
+       //     {
+       //         if(MiscUtilities.compareStrings(
+       //             System.getProperty("java.version"),
+       //             arg,false) < 0)
+       //         {
+       //             String[] args = { arg, System.getProperty("java.version") };
+       //             throw new IOException(name + " requires Java 
+       //             jEdit.pluginError(jar.getPath(),"plugin-error.dep-jdk",args);
+       //             ok = false;
+       //         }
+       //     }
+       //     else if(what.equals("jedit"))
+       //     {
+       //         if(arg.length() != 11)
+       //         {
+       //             Log.log(Log.ERROR,this,"Invalid jEdit version"
+       //                 + " number: " + arg);
+       //             ok = false;
+       //         }
+       //         
+       //         if(MiscUtilities.compareStrings(
+       //             jEdit.getBuild(),arg,false) < 0)
+       //         {
+       //             String needs = MiscUtilities.buildToVersion(arg);
+       //             String[] args = { needs,
+       //                 jEdit.getVersion() };
+       //             jEdit.pluginError(jar.getPath(),
+       //                 "plugin-error.dep-jedit",args);
+       //             ok = false;
+       //         }
+       //     }
+       //     else if(what.equals("plugin"))
+       //     {
+       //         int index2 = arg.indexOf(' ');
+       //         if(index2 == -1)
+       //         {
+       //             Log.log(Log.ERROR,this,name 
+       //                 + " has an invalid dependency: "
+       //                 + dep + " (version is missing)");
+       //             return false;
+       //         }
+       //         
+       //         String plugin = arg.substring(0,index2);
+       //         String needVersion = arg.substring(index2 + 1);
+       //         String currVersion = jEdit.getProperty("plugin." 
+       //             + plugin + ".version");
+       //             
+       //         if(currVersion == null)
+       //         {
+       //             String[] args = { needVersion, plugin };
+       //             jEdit.pluginError(jar.getPath(),
+       //                 "plugin-error.dep-plugin.no-version",
+       //                 args);
+       //             ok = false;
+       //         }
+       //         else if(MiscUtilities.compareStrings(currVersion,
+       //             needVersion,false) < 0)
+       //         {
+       //             String[] args = { needVersion, plugin, currVersion };
+       //             jEdit.pluginError(jar.getPath(),
+       //                 "plugin-error.dep-plugin",args);
+       //             ok = false;
+       //         }
+       //         else if(jEdit.getPlugin(plugin) instanceof EditPlugin.Broken)
+       //         {
+       //             String[] args = { plugin };
+       //             jEdit.pluginError(jar.getPath(),
+       //                 "plugin-error.dep-plugin.broken",args);
+       //             ok = false;
+       //         }
+       //     }
+       //     else if(what.equals("class"))
+       //     {
+       //         try
+       //         {
+       //             loadClass(arg,false);
+       //         }
+       //         catch(Exception e)
+       //         {
+       //             String[] args = { arg };
+       //             jEdit.pluginError(jar.getPath(),
+       //                 "plugin-error.dep-class",args);
+       //             ok = false;
+       //         }
+       //     }
+       //     else
+       //     {
+       //         Log.log(Log.ERROR,this,name + " has unknown"
+       //             + " dependency: " + dep);
+       //         return false;
+       //     }
+       // }
+    }//}}}
     
     //{{{ definePackages() 
     /**
@@ -429,59 +544,70 @@ public class JARClassLoader extends ClassLoader {
             sealBase);
     } //}}}
     
-    //{{{ getMainPluginClass() method
+    //{{{ setProperties() method
     
-    public String getMainPluginClass(JarFile jarFile) throws IOException {
-        Manifest manifest = jarFile.getManifest();
-        
-        if (manifest != null) {
+    private void setProperties(JarFile jarFile) throws IOException {
+        String pluginName = getManifestAttribute(jarFile, Attributes.Name.IMPLEMENTATION_TITLE);
+        if (pluginName != null) {
+            m_pluginProperties.setProperty(pluginName+".name", pluginName);
+            m_pluginProperties.setProperty(pluginName+".main-class", getManifestAttribute(jarFile, Attributes.Name.MAIN_CLASS));
+            m_pluginProperties.setProperty(pluginName+".version", getManifestAttribute(jarFile, Attributes.Name.IMPLEMENTATION_VERSION));
+            m_pluginProperties.setProperty(pluginName+".url", getManifestAttribute(jarFile, Attributes.Name.IMPLEMENTATION_URL));
+            
+            //Set dependency properties
+            ZipEntry entry = jarFile.getEntry("dependency.props");
+            if (entry != null) {
+                //No dependency file. Assume no dependencies
                 
-            String mainPluginClass = manifest.getMainAttributes().getValue(Attributes.Name.MAIN_CLASS);
-            if (mainPluginClass != null) {
+                InputStream stream = jarFile.getInputStream(entry);
+                Properties dependencies = new Properties();
+                dependencies.load(stream);
                 
-                return mainPluginClass;
-                
-            } else {
-                throw new IOException("Cannot load plugin "+jarFile.getName()+": No main class defined");
+                String dep;
+                int i = 0;
+                while ((dep = dependencies.getProperty("dependency." + i++)) != null) {
+                    m_pluginProperties.setProperty(pluginName+".dependency." + i++, dep);
+                }
             }
-        } else {
-            throw new IOException("Cannot load plugin "+jarFile.getName()+": No manifest");
         }
-        
     }//}}}
     
     //{{{ startPlugin()
     
-    private void startPlugin(JarFile jarfile) throws IOException {
+    private void startPlugin(JarFile jarfile) throws IOException, PluginDependencyException {
         
-        String mainPluginClass = getMainPluginClass(jarfile);
+        String mainPluginClass = getManifestAttribute(jarfile, Attributes.Name.MAIN_CLASS);
+        //TODO String pluginName = getManifestAttribute(jarfile, Attributes.Name.IMPLEMENTATION_TITLE);
+        
+        checkDependencies(jarfile);
         
         try {
-                Class pluginClass = loadClass(mainPluginClass);
-                
-                int modifiers = pluginClass.getModifiers();
-                if (!Modifier.isInterface(modifiers)
-                    && !Modifier.isAbstract(modifiers)
-                    && ActionPlugin.class.isAssignableFrom(pluginClass)) {
-                    
-                    Object plugin = pluginClass.newInstance();
-                    
-                    if (ViewPlugin.class.isAssignableFrom(pluginClass)) {
-                        //It's a view plugin
-                        ViewPlugin viewPlugin = (ViewPlugin)plugin;
-                        m_viewPlugins.put(viewPlugin.getName(), viewPlugin);
-                    } else {
-                        //It's an Action plugin
-                        ActionPlugin actionPlugin = (ActionPlugin)plugin;
-                        m_actionPlugins.put(actionPlugin.getName(), actionPlugin);
-                    }
-                } else {
-                    /*
-                    It's not a plugin. No biggie. We need it to be loaded
-                    anyway.
-                    */
-                }
+            Class pluginClass = loadClass(mainPluginClass);
             
+            int modifiers = pluginClass.getModifiers();
+            if (!Modifier.isInterface(modifiers)
+                && !Modifier.isAbstract(modifiers)
+                && ActionPlugin.class.isAssignableFrom(pluginClass)) {
+                
+                Object plugin = pluginClass.newInstance();
+                
+                if (ViewPlugin.class.isAssignableFrom(pluginClass)) {
+                    //It's a view plugin
+                    ViewPlugin viewPlugin = (ViewPlugin)plugin;
+                    //TODO m_viewPlugins.put(pluginName, viewPlugin);
+                    m_viewPlugins.put(viewPlugin.getName(), viewPlugin);
+                } else {
+                    //It's an Action plugin
+                    ActionPlugin actionPlugin = (ActionPlugin)plugin;
+                    //TODO m_actionPlugins.put(pluginName, actionPlugin);
+                    m_actionPlugins.put(actionPlugin.getName(), actionPlugin);
+                }
+            } else {
+                /*
+                It's not a plugin. No biggie. We need it to be loaded
+                anyway.
+                */
+            }
         } catch (ClassNotFoundException e) {
             throw new IOException(e.getMessage());
         } catch (InstantiationException e) {
@@ -491,10 +617,28 @@ public class JARClassLoader extends ClassLoader {
         }
     }//}}}
     
+    //{{{ getManifestAttribute()
+    
+    private String getManifestAttribute(JarFile file, Attributes.Name name) throws IOException {
+        Manifest manifest = file.getManifest();
+        if (manifest != null) {
+            return manifest.getMainAttributes().getValue(name);
+        } else {
+            return null;
+        }
+    }//}}}
+    
+    // fileName -> File
     private static HashMap m_files = new HashMap();
+    // fileName -> JarFile
     private static HashMap m_jarFiles = new HashMap();
+    // pluginName -> ViewPlugin
     private static HashMap m_viewPlugins = new HashMap();
+    // pluginName -> ActionPlugin
     private static HashMap m_actionPlugins = new HashMap();
+    
+    // internal properties used for storing name, version, etc.
+    private Properties m_pluginProperties = new Properties();
     
     //}}}
 }

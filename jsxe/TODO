@@ -20,23 +20,17 @@ TODO:
         ignore-unknown-character-denormalizations
 
     & Serialized XML should be 100% well-formed and parsable.
-    
+
 * Version 0.3 beta (Plugin Support)
-    
-    * Finalize the class structure and public plugin interface as it will be
-      harder to remove/deprecate methods after the introduction of plugins.
-    
-    * Add support for dependency tracking of plugins. Some plugins may be
-      dependent on others and so this may affect the order that they are
-      loaded and error checking. Some plugins will require specific versions of
-      jsXe as well.
-    
-    * Look into Marathon as a possible testing tool for jsXe. It seems to allow
-      you to create unit test scripts for Java/Swing GUI apps.
-      
-    * Look into Junit as a tool for further testing of jsXe. This can be used
-      to test data or model classes like AdapterNode and XMLDocument. It can
-      also be used to test things that Marathon cannot test.
+
+    * Dependency tracking for plugins
+        * Update JARClassLoader to load plugins and check dependencies
+        * Update JARClassLoader.startPlugins() to return an Arraylist of
+          exceptions or Strings. The exceptions might be dependency errors.
+        * Update jsXe.java to handle the errors created by startPlugins.
+        * Update plugins to use new interface.
+            * Remove version and name methods. Set the name and version in
+              the manifest.
 
 * Version 0.4 beta (DTD support)
     
