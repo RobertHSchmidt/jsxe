@@ -60,12 +60,6 @@ public class BufferHistory {
     public BufferHistory() {}
     //}}}
     
-    //{{{ BufferHistory constructor
-    
-    public BufferHistory(int maxEntries) {
-        m_maxEntries = maxEntries;
-    }//}}}
-    
     //{{{ getEntry()
     
     public BufferHistoryEntry getEntry(String path) {
@@ -83,12 +77,6 @@ public class BufferHistory {
     
     public ArrayList getEntries() {
         return m_history;
-    }//}}}
-    
-    //{{{ getMaxEntries()
-    
-    public int getMaxEntries() {
-        return m_maxEntries;
     }//}}}
     
     //{{{ setEntry()
@@ -114,18 +102,21 @@ public class BufferHistory {
         if (!m_history.contains(entry)) {
             String path = entry.getPath();
             BufferHistoryEntry previousEntry = getEntry(path);
-            if (previousEntry == null) {
-                m_history.add(0, entry);
-            } else {
-                m_history.set(m_history.indexOf(previousEntry), entry);
+            if (previousEntry != null) {
+                m_history.remove(previousEntry);
+            }
+            m_history.add(0, entry);
+            
+            //remove entries from the bottom of the list if it's too big.
+            int maxRecentFiles;
+            try {
+                maxRecentFiles = Integer.parseInt(jsXe.getProperty("max.recent.files"));
+            } catch (NumberFormatException nfe) {
+                try {
+                    maxRecentFiles = Integer.parseInt(jsXe.getDefaultProperty("max.recent.files"));
+                } catch (NumberFormatException nfe2) {}
             }
         }
-    }//}}}
-    
-    //{{{ setMaxEntries()
-    
-    public void setMaxEntries(int maxEntries) {
-        m_maxEntries = maxEntries;
     }//}}}
     
     //{{{ load()
@@ -156,39 +147,52 @@ public class BufferHistory {
         out.write("<recent>");
         out.write(lineSep);
         
+        int maxRecentFiles = 20;
+        try {
+            maxRecentFiles = Integer.parseInt(jsXe.getProperty("max.recent.files"));
+        } catch (NumberFormatException nfe) {
+            try {
+                maxRecentFiles = Integer.parseInt(jsXe.getDefaultProperty("max.recent.files"));
+            } catch (NumberFormatException nfe2) {}
+        }
+        
+        int index = 0;
         Iterator historyItr = m_history.iterator();
         while (historyItr.hasNext()) {
-            BufferHistoryEntry entry = (BufferHistoryEntry) historyItr.next();
-            out.write("<entry>");
-            out.write(lineSep);
-            
-            String path = entry.getPath();
-            out.write("<path><![CDATA[");
-            out.write(path);
-            out.write("]]></path>");
-            out.write(lineSep);
-            
-            String viewName = entry.getViewName();
-            out.write("<view>");
-            out.write(viewName);
-            out.write("</view>");
-            out.write(lineSep);
-            
-            Properties props = entry.getProperties();
-            Enumeration propertyItr = props.keys();
-            while (propertyItr.hasMoreElements()) {
-                String key = propertyItr.nextElement().toString();
-                String value = props.getProperty(key);
-                out.write("<property name=\"");
-                out.write(key);
-                out.write("\" value=\"");
-                out.write(value);
-                out.write("\"/>");
+            ++index;
+            if (index < maxRecentFiles) {
+                BufferHistoryEntry entry = (BufferHistoryEntry) historyItr.next();
+                out.write("<entry>");
+                out.write(lineSep);
+                
+                String path = entry.getPath();
+                out.write("<path><![CDATA[");
+                out.write(path);
+                out.write("]]></path>");
+                out.write(lineSep);
+                
+                String viewName = entry.getViewName();
+                out.write("<view>");
+                out.write(viewName);
+                out.write("</view>");
+                out.write(lineSep);
+                
+                Properties props = entry.getProperties();
+                Enumeration propertyItr = props.keys();
+                while (propertyItr.hasMoreElements()) {
+                    String key = propertyItr.nextElement().toString();
+                    String value = props.getProperty(key);
+                    out.write("<property name=\"");
+                    out.write(key);
+                    out.write("\" value=\"");
+                    out.write(value);
+                    out.write("\"/>");
+                    out.write(lineSep);
+                }
+                
+                out.write("</entry>");
                 out.write(lineSep);
             }
-            
-            out.write("</entry>");
-            out.write(lineSep);
         }
         
         out.write("</recent>");
@@ -250,7 +254,7 @@ public class BufferHistory {
         
         public void endElement(String uri, String localName, String qName) {
             if (qName.equals("entry")) {
-                setEntry(m_m_path, m_m_viewName, m_m_properties);
+                m_history.add(new BufferHistoryEntry(m_m_path, m_m_viewName, m_m_properties));
             }
             
             if (qName.equals("path")) {
@@ -276,7 +280,7 @@ public class BufferHistory {
                 String propName = new String();
                 String propValue = new String();
                 for (int i=0; i<length; i++) {
-                    String name = attributes.getLocalName(i);
+                    String name = attributes.getQName(i);
                     if (name.equals("name")) {
                         propName = attributes.getValue(i);
                     }
@@ -297,8 +301,6 @@ public class BufferHistory {
         
     }//}}}
     
-    
-    private int m_maxEntries = 20;
     private ArrayList m_history = new ArrayList();
     //}}}
     
