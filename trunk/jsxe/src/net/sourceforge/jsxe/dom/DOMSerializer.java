@@ -118,7 +118,7 @@ public class DOMSerializer implements LSSerializer {
     
     //{{{ getConfig()
     
-    public DOMConfiguration getConfig() {
+    public DOMConfiguration getDomConfig() {
         return config;
     }//}}}
     
