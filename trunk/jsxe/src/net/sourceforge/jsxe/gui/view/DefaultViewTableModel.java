@@ -58,7 +58,7 @@ import java.awt.Component;
 
 //{{{ DOM classes
 import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
+//import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -197,23 +197,20 @@ public class DefaultViewTableModel implements TableModel {
     }//}}}
     
     private void updateAttributes() {//{{{
-        Element node = (Element)currentNode.getNode();
-        Node parent = node.getParentNode();
-        NodeList children = node.getChildNodes();
+        
         try {
-            NamedNodeMap attrs = node.getAttributes();
+            NamedNodeMap attrs = currentNode.getAttributes();
             int attrlength = attrs.getLength();
             
             //remove old attributes
             for(int i = 0; i < attrlength; i++) {
-                Node attr = attrs.item(0);
-                node.removeAttribute(attr.getNodeName());
+                currentNode.removeAttributeAt(0);
             }
             
             //add attributes to reflect what's in the table..
             for(int i = 0; i < data[0].size()-1; i++) {
                 //Set the name or value
-                node.setAttribute(data[0].get(i).toString(), data[1].get(i).toString());
+                currentNode.addAttribute(data[0].get(i).toString(), data[1].get(i).toString());
             }
             
         } catch (DOMException dome) {

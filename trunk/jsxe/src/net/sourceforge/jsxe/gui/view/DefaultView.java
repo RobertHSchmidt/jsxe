@@ -168,12 +168,7 @@ public class DefaultView extends DocumentView {
     //{{{ Private Members
     
     private boolean canEditInJTree(AdapterNode node) {//{{{
-        boolean value = false;
-        Node domNode = node.getNode();
-        short nodeType = domNode.getNodeType();
-        if (nodeType == Node.ELEMENT_NODE)
-            value = true;
-        return value;
+        return (node.getNodeType() == Node.ELEMENT_NODE);
     }//}}}
     
     private class DefaultTreeSelectionListener implements TreeSelectionListener {//{{{

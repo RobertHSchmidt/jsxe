@@ -40,8 +40,12 @@ belongs to.
 */
 
 //{{{ DOM classes
+import org.w3c.dom.Document;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 //}}}
 
 //}}}
@@ -90,20 +94,67 @@ public class AdapterNode {
         return domNode.getChildNodes().getLength();
     }//}}}
     
-    public Node getNode() {//{{{
-        return domNode;
+    public String getNodeName() {//{{{
+        return domNode.getNodeName();
+    }//}}}
+    
+    public void setNodeName(String newValue) throws DOMException {//{{{
+        //Verify that this really is a change
+        if (!domNode.getNodeValue().equals(newValue) && typeName[domNode.getNodeType()].equals("Element")) {
+            //get the nodes needed
+            Node parent = domNode.getParentNode();
+            NodeList children = domNode.getChildNodes();
+            Document document = domNode.getOwnerDocument();
+            //replace the changed node
+            Element newNode = document.createElement(newValue);
+            parent.replaceChild(newNode, domNode);
+            NamedNodeMap attrs = domNode.getAttributes();
+            int attrlength = attrs.getLength();
+            
+            for(int i = 0; i < attrlength; i++) {
+                Node attr = attrs.item(i);
+                newNode.setAttribute(attr.getNodeName(), attr.getNodeValue());
+            }
+            
+            for (int i = 0; i < children.getLength(); i++ ) {
+                Node child = children.item(i);
+                domNode.removeChild(child);
+                newNode.appendChild(child);
+            }
+            domNode = newNode;
+        }
     }//}}}
     
     public String getNodeValue() {//{{{
         return domNode.getNodeValue();
     }//}}}
     
-    public NamedNodeMap getAttributes() {//{{{
-        return domNode.getAttributes();
+    public void setNodeValue(String str) {//{{{
+        domNode.setNodeValue(str);
     }//}}}
     
     public short getNodeType() {//{{{
         return domNode.getNodeType();
+    }//}}}
+    
+    public NamedNodeMap getAttributes() {//{{{
+        return domNode.getAttributes();
+    }//}}}
+    
+    public void addAttribute(String name, String value) throws DOMException {//{{{
+        if (typeName[domNode.getNodeType()].equals("Element")) {
+            Element element = (Element)domNode;
+            element.setAttribute(name,value);
+        }
+    }//}}}
+    
+    public void removeAttributeAt(int index) throws DOMException {//{{{
+        if (typeName[domNode.getNodeType()].equals("Element")) {
+            Element element = (Element)domNode;
+            NamedNodeMap attrs = element.getAttributes();
+            Node attr = attrs.item(index);
+            element.removeAttribute(attr.getNodeName());
+        }
     }//}}}
     
     //{{{ Private members
