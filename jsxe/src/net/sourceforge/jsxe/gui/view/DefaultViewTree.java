@@ -90,7 +90,12 @@ public class DefaultViewTree extends JTree {
     }//}}}
     
     //{{{ isEditable()
-    
+    /**
+     * Indicates if an AdapterNode is capable of being edited in
+     * this tree.
+     * @param node the node to check
+     * @return true if the node can be edited in this tree
+     */
     public static boolean isEditable(AdapterNode node) {
         return (node.getNodeType() == Node.ELEMENT_NODE);
     }//}}}
@@ -486,11 +491,24 @@ public class DefaultViewTree extends JTree {
             Point loc = dtde.getLocation();
             
             TreePath path = getPathForLocation(loc.x, loc.y);
+            if (path == null) {
+                dtde.rejectDrop();
+                return;
+            }
             AdapterNode parentNode = (AdapterNode)path.getLastPathComponent();
             
             if (node.getParentNode() != parentNode) {
                 try {
-                    parentNode.addAdapterNode(node);
+                    switch(parentNode.getNodeType()) {
+                        case Node.ELEMENT_NODE:
+                            parentNode.addAdapterNode(node);
+                            break;
+                        default:
+                            //get the true parent
+                            AdapterNode element = parentNode.getParentNode();
+                            element.addAdapterNodeAt(node, element.index(parentNode));
+                            break;
+                    }
                     dtde.acceptDrop(m_acceptableActions);
                 } catch (DOMException dome) {
                     dtde.rejectDrop();

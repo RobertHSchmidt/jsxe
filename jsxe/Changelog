@@ -1,10 +1,19 @@
+04/01/2004  version 0.1.59  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added an addAdaterNodeAt() method to the AdapterNode class so that
+      it would be possible to add better drag and drop functionality, Notably
+      being able to rearrange nodes within an element.
+    * Added some more fold marks and javadoc to several classes.
+    * Added the ability to rearrange text nodes and other nodes that aren't
+      elements around within an element.
+
 03/31/2004  version 0.1.58  Ian Lewis <IanLewis@member.fsf.org>
 
-	* When you save out of the options panel after you changed options that
-	  change the XML document itself the open document is marked as dirty.
-	* Fixed a bug where the source was not being changed when the encoding
-	  was changed because the XMLDocument object thought that the source
-	  was synced with the DOM.
+    * When you save out of the options panel after you changed options that
+      change the XML document itself the open document is marked as dirty.
+    * Fixed a bug where the source was not being changed when the encoding
+      was changed because the XMLDocument object thought that the source
+      was synced with the DOM.
 
 03/18/2004  version 0.1.57  Ian Lewis <IanLewis@member.fsf.org>
 
