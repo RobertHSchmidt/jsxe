@@ -41,6 +41,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.gui.EnhancedDialog;
 //}}}
 
 //{{{ Swing components
@@ -69,7 +70,7 @@ import java.io.IOException;
 
 //}}}
 
-public class SourceViewSearchDialog extends JDialog {
+public class SourceViewSearchDialog extends EnhancedDialog {
     
     //{{{ Private static members
     private static int m_dialogHeight = 200;
@@ -174,7 +175,20 @@ public class SourceViewSearchDialog extends JDialog {
         buttonsPanel.add(cancelButton);
         getContentPane().add(frame, BorderLayout.NORTH);
         getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
+        getRootPane().setDefaultButton(findButton);
         
+    }//}}}
+    
+    //{{{ ok()
+    
+    public void ok() {
+        find(false);
+    }//}}}
+    
+    //{{{ cancel()
+    
+    public void cancel() {
+        dispose();
     }//}}}
     
     //{{{ Private Members
