@@ -1,6 +1,7 @@
 03/18/2004  version 0.1.57
 
-    * jsXe now requires xerces 2.6.0.
+    * jsXe now requires xerces 2.6.0. No other xerces release will work with
+      jsXe at this time.
     * Fixed a bug where the html pane was editable after opening a new document
       though no node was selected.
     * Added a "Rename Node" action to the default view tree's context menu. You
