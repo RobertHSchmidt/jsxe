@@ -134,6 +134,7 @@ public class XMLDocument {
     public XMLDocument(Reader reader) throws IOException {
         setDefaultProperties();
         setModel(reader);
+        reader.close();
     }//}}}
     
     //{{{ XMLDocument constructor
@@ -149,6 +150,7 @@ public class XMLDocument {
         m_entityResolver = resolver;
         setDefaultProperties();
         setModel(reader);
+        reader.close();
     }//}}}
     
     //{{{ checkWellFormedness()
@@ -541,48 +543,11 @@ public class XMLDocument {
         fireStructureChanged(null);
     }//}}}
     
-    //{{{ addXMLDocumentListener()
-    /**
-     * Registers a change listener with the XMLDocument
-     * @param listener the listener to register with this document
-     */
-    public void addXMLDocumentListener(XMLDocumentListener listener) {
-        if (listener != null) {
-            listeners.add(listener);
-        }
-    }//}}}
-    
-    //{{{ removeXMLDocumentListener()
-    /**
-     * Unregisters a change listener from this document
-     * @param listener the listener to unregister
-     */
-    public void removeXMLDocumentListener(XMLDocumentListener listener) {
-        if (listener != null) {
-            listeners.remove(listener);
-        }
-    }//}}}
-    
-    //{{{ Private static members
-    private static final int READ_SIZE = 5120;
-    private static final int WRITE_SIZE = 5120;
-    private static final int IO_BUFFER_SIZE = 32768;
-    //}}}
-    
-    //{{{ Private members
-    
     //{{{ setModel()
     /**
      * Sets up the DefaultXMLDocument given a Reader.
-     * This should only be called in the constructor since if
-     * an IOException is thrown in checkWellFormedness()
-     * then the content manager will be messed up.
-     * Also fireStructureChanged is not called since we
-     * don't want to notify listeners that the struture
-     * has changed when we are building the DOM for the first
-     * time.
      */
-    private void setModel(Reader reader) throws IOException {
+    public void setModel(Reader reader) throws IOException {
         
         StringBuffer text = new StringBuffer();
         char[] buffer = new char[READ_SIZE];
@@ -619,6 +584,36 @@ public class XMLDocument {
        //     */
        // }
     }//}}}
+    
+    //{{{ addXMLDocumentListener()
+    /**
+     * Registers a change listener with the XMLDocument
+     * @param listener the listener to register with this document
+     */
+    public void addXMLDocumentListener(XMLDocumentListener listener) {
+        if (listener != null) {
+            listeners.add(listener);
+        }
+    }//}}}
+    
+    //{{{ removeXMLDocumentListener()
+    /**
+     * Unregisters a change listener from this document
+     * @param listener the listener to unregister
+     */
+    public void removeXMLDocumentListener(XMLDocumentListener listener) {
+        if (listener != null) {
+            listeners.remove(listener);
+        }
+    }//}}}
+    
+    //{{{ Private static members
+    private static final int READ_SIZE = 5120;
+    private static final int WRITE_SIZE = 5120;
+    private static final int IO_BUFFER_SIZE = 32768;
+    //}}}
+    
+    //{{{ Private members
     
     //{{{ setDefaultProperties()
     
