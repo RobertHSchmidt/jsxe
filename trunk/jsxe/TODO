@@ -23,9 +23,6 @@ TODO:
     
 * Version 0.2 beta
     
-    * Add support for checking if a file is in the BufferHistory and use the
-      info stored there to open the file
-    
     * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother? Maybe not since some views will require
       documents to be well formed.

@@ -380,10 +380,20 @@ public class TabbedView extends JFrame {
     public void updateRecentFilesMenu() {
         m_recentFilesMenu.removeAll();
         ArrayList historyEntries = jsXe.getBufferHistory().getEntries();
+        int index = 0;
+        JMenu addMenu = m_recentFilesMenu;
         Iterator historyItr = historyEntries.iterator();
         while (historyItr.hasNext()) {
+            //If the menu gets too big make a new one
+            if (index >= 20) {
+                JMenu newAddMenu = new JMenu("More");
+                addMenu.add(newAddMenu);
+                addMenu = newAddMenu;
+                index = 0;
+            }
             BufferHistory.BufferHistoryEntry entry = (BufferHistory.BufferHistoryEntry)historyItr.next();
-            m_recentFilesMenu.add(new JMenuItem(new OpenRecentFileAction(this, entry)));
+            addMenu.add(new JMenuItem(new OpenRecentFileAction(this, entry)));
+            index++;
         }
     }//}}}
     
