@@ -30,12 +30,6 @@ TODO:
           name, support for change listeners etc.
         * Create a parser class that manages parsing a document and creating
           the Adapter objects.
-        * 
-    
-    * Fix bug where the document is saved with formating checked but not
-      formatted, then closed and reopened. This formats the document without
-      marking it dirty. If opened in source view the document should look
-      exactly like it would in any text editor.
     
     * Fix bug where the file is kept open by a reader or something too long.
       This doesn't allow other editors to open the document until jsXe is
@@ -43,10 +37,6 @@ TODO:
     
     * Fix the reload fuctionality so it doesn't put the whole document into
       a string. see readFile() in the DocumentBuffer class
-    
-    * Have views remove listeners that they added to the DocumentBuffer when
-      close() is called. Not doing this causes a memory leak since view objects
-      are not garbage collected.
     
     * Do something with formatting. Should there be a formatting action that
       formats the document for you? Other options may apply here, like
