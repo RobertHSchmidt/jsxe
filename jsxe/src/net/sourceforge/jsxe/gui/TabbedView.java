@@ -180,6 +180,7 @@ public class TabbedView extends JFrame {
                                 for (int i=0; i < buffers.length; i++) {
                                     if (buffers[i] == source) {
                                         tabbedPane.setIconAt(i, getTabIcon(source));
+                                        return;
                                     }
                                 }
                             }
@@ -189,7 +190,7 @@ public class TabbedView extends JFrame {
                             DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
                             for (int i=0; i < buffers.length; i++) {
                                 if (buffers[i] == source) {
-                                    tabbedPane.setIconAt(i, getTabIcon(source));
+                                    tabbedPane.setTitleAt(i, source.getName());
                                 }
                             }
                         };//}}}

@@ -165,6 +165,7 @@ public class DocumentBuffer {
             
             if (!getName().equals(file.getName())) {
                 setName(file.getName());
+                fireNameChanged();
             }
             
             m_file = file;
