@@ -1,6 +1,9 @@
 05/26/2004  version 0.2 pre4    Ian Lewis <IanLewis@member.fsf.org>
 
     * Removed redundant call to fireNameChanged() in DocumentBuffer
+    * Moved code for setting the divider location of the split panes to an
+      overridden version of setVisible(). This allows the DefaultView to set
+      the divider locations after the parent container is made visible.
 
 05/23/2004  version 0.2 pre4    Ian Lewis <IanLewis@member.fsf.org>
 

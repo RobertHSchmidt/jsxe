@@ -124,9 +124,32 @@ public class DefaultView extends DocumentView {
         setDocumentBuffer(view, buffer);
     }//}}}
     
+    //{{{ setVisible()
+    /**
+     * Initializes the size of the split panes and shows the component.
+     * @param b If true, shows this component; otherwise, hides this component.
+     */
+    public void setVisible(boolean b) {
+        if (b) {
+            Container parent = getParent();
+            if (parent != null) {
+                Dimension size = parent.getSize();
+                float vertPercent = Integer.valueOf(m_buffer.getProperty(_VERT_SPLIT_LOCATION)).floatValue();
+                float horizPercent = Integer.valueOf(m_buffer.getProperty(_HORIZ_SPLIT_LOCATION)).floatValue();
+                
+                int vertLoc = (int)((vertPercent/100.0)*size.getHeight());
+                int horizLoc = (int)((horizPercent/100.0)*size.getWidth());
+                
+                vertSplitPane.setDividerLocation(vertLoc);
+                horizSplitPane.setDividerLocation(horizLoc);
+            }
+        }
+        super.setVisible(b);
+    }//}}}
+    
     //{{{ DocumentView methods
     
-    //{{{ setDocumentBuffer()
+    //{{{ setXMLDocument()
 
     public void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException {
         
@@ -163,16 +186,6 @@ public class DefaultView extends DocumentView {
         boolean layout = Boolean.valueOf(buffer.getProperty(_CONTINUOUS_LAYOUT)).booleanValue();
         vertSplitPane.setContinuousLayout(layout);
         horizSplitPane.setContinuousLayout(layout);
-        
-        Dimension size = view.getSize();
-        float vertPercent = Integer.valueOf(buffer.getProperty(_VERT_SPLIT_LOCATION)).floatValue();
-        float horizPercent = Integer.valueOf(buffer.getProperty(_HORIZ_SPLIT_LOCATION)).floatValue();
-        
-        int vertLoc = (int)((vertPercent/100.0)*size.getHeight());
-        int horizLoc = (int)((horizPercent/100.0)*size.getWidth());
-        
-        vertSplitPane.setDividerLocation(vertLoc);
-        horizSplitPane.setDividerLocation(horizLoc);
         
         //update the UI so that the components
         //are redrawn.
@@ -244,7 +257,7 @@ public class DefaultView extends DocumentView {
         
         //m_buffer should only be null if setBuffer was never called.
         if (m_buffer != null) {
-            Dimension size = view.getSize();
+            Dimension size = getSize();
             
             String vert = Integer.toString((int)(vertSplitPane.getDividerLocation()/size.getHeight()*100));
             String horiz = Integer.toString((int)(horizSplitPane.getDividerLocation()/size.getWidth()*100));

@@ -1,6 +1,16 @@
 #DefaultView default properties
+
+# whether to show comment nodes by default
 documentview.default.show.comment.nodes=true
+
+# whether to show empty text nodes by default
 documentview.default.show.empty.nodes=false
+
+# whether the split panes have continuous layout by default
 documentview.default.continuous.layout=false
+
+# a percentage of the vertical size of the parent container
 documentview.default.splitpane.vert.loc=40
+
+# a percentage of the horizontal size of the parent container
 documentview.default.splitpane.horiz.loc=40

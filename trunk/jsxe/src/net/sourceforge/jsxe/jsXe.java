@@ -176,7 +176,7 @@ public class jsXe {
         }
         //}}}
         
-        tabbedview.show();
+        tabbedview.setVisible(true);
     }//}}}
     
     //{{{ getVersion()
