@@ -75,7 +75,7 @@ public class DefaultViewTableModel implements TableModel {
     
     protected DefaultViewTableModel(Component parent, AdapterNode adapterNode) {//{{{
         currentNode = adapterNode;
-        view=parent;
+        view = parent;
         updateTable(currentNode);
     }//}}}
 
@@ -133,32 +133,42 @@ public class DefaultViewTableModel implements TableModel {
         while (rowIndex+1 > getRowCount()) {
             data[columnIndex].add("");
         }
-        //If setting a value on the last row
-        if (rowIndex+1 == getRowCount()) {
-            //we must be editing an attribute name.
-            if (!aValue.equals("")) {
-                data[columnIndex].setElementAt(aValue.toString(),rowIndex);
-                data[0].add("");
-                data[1].add("");
-                
-                updateAttributes();
-                fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
-            }
-        
-        //Otherwise we are editing an existing attribute.
-        } else {
-            //We don't want to allow the user to set an attribute
-            //name to an empty string.
-            if (columnIndex==1 || !aValue.equals("")) {
-                //We need to check if there really is a change.
-                //If we don't the UI croaks NullPointerExceptions
-                //when trying to update the UI for the table.
-                if (!aValue.equals(getValueAt(rowIndex, columnIndex))) {
-                    data[columnIndex].setElementAt(aValue,rowIndex);
-                    updateAttributes();
+        try {
+            //If setting a value on the last row
+            if (rowIndex+1 == getRowCount()) {
+                //we must be editing an attribute name.
+                if (!aValue.equals("")) {
+                    currentNode.setAttribute(aValue.toString(), "");
+                    data[columnIndex].setElementAt(aValue.toString(),rowIndex);
+                    data[0].add("");
+                    data[1].add("");
+                    
                     fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
                 }
+            
+            //Otherwise we are editing an existing attribute.
+            } else {
+                //We don't want to allow the user to set an attribute
+                //name to an empty string.
+                if (columnIndex==1 || !aValue.equals("")) {
+                    //We need to check if there really is a change.
+                    //If we don't the UI croaks NullPointerExceptions
+                    //when trying to update the UI for the table.
+                    if (!aValue.equals(getValueAt(rowIndex, columnIndex))) {
+                        if (columnIndex == 0) {
+                            currentNode.setAttribute(aValue.toString(), (String)getValueAt(rowIndex, 1));
+                        } else {
+                            currentNode.setAttribute((String)getValueAt(rowIndex, 0), aValue.toString());
+                        }
+                        data[columnIndex].setElementAt(aValue,rowIndex);
+                        fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
+                    }
+                }
             }
+        //We need to catch this here unfortunately because this method is called by
+        //a default table editor. Maybe this will change.
+        } catch (DOMException dome) {
+            JOptionPane.showMessageDialog(view, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
     
@@ -200,31 +210,9 @@ public class DefaultViewTableModel implements TableModel {
         }
     }//}}}
     
-    private void updateAttributes() {//{{{
-        
-        try {
-            NamedNodeMap attrs = currentNode.getAttributes();
-            int attrlength = attrs.getLength();
-            
-            //remove old attributes
-            for(int i = 0; i < attrlength; i++) {
-                currentNode.removeAttributeAt(0);
-            }
-            
-            //add attributes to reflect what's in the table..
-            for(int i = 0; i < data[0].size()-1; i++) {
-                //Set the name or value
-                currentNode.addAttribute(data[0].get(i).toString(), data[1].get(i).toString());
-            }
-            
-        } catch (DOMException dome) {
-           JOptionPane.showMessageDialog(view, dome, "Attribute Error", JOptionPane.WARNING_MESSAGE);
-        }
-        updateTable(currentNode);
-    }//}}}
+    private Component view;
     
     private AdapterNode currentNode;
-    private Component view;
     private Vector tableListenerList = new Vector();
     private Vector[] data={
         new Vector(),

@@ -43,6 +43,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.jsXe;
 //}}}
 
@@ -57,7 +58,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 //}}}
 
-//{{{ AWT classes
+//{{{ AWT components
 import java.awt.Component;
 //}}}
 
@@ -91,8 +92,9 @@ import java.util.Enumeration;
 public class DefaultViewTreeModel implements TreeModel {
     
     protected DefaultViewTreeModel(Component parent, XMLDocument doc) {//{{{
-        document=doc;
-        view=parent;
+        document     = doc;
+        view = parent;
+        documentNode = new AdapterNode(document.getDocument());
     }//}}}
 
     // {{{ Implemented TreeModel methods
@@ -114,6 +116,9 @@ public class DefaultViewTreeModel implements TreeModel {
         //massage the index so that it points returns
         //the correct child depending of if we are displaying
         //comments, empty nodes etc.
+        
+        //This should be changed later to make use of a node filter
+        //or something similar.
         for (int i=0; i<=index; i++) {
             AdapterNode child = node.child(i);
             
@@ -157,7 +162,7 @@ public class DefaultViewTreeModel implements TreeModel {
     }//}}}
     
     public Object getRoot() {//{{{
-        return new AdapterNode(document.getDocument());
+        return documentNode;
     }//}}}
     
     public boolean isLeaf(Object aNode) {//{{{
@@ -173,14 +178,14 @@ public class DefaultViewTreeModel implements TreeModel {
     }//}}}
     
     public void valueForPathChanged(TreePath path, Object newValue) {//{{{
-        //get the nodes needed
-        AdapterNode node = (AdapterNode)path.getLastPathComponent();
         try {
+            //get the nodes needed
+            AdapterNode node = (AdapterNode)path.getLastPathComponent();
             node.setNodeName(newValue.toString());
-            //notify the listeners that the tree structure has changed
+            //notify the listeners that tree nodes have changed
             fireTreeNodesChanged(new TreeModelEvent(this, path));
         } catch (DOMException dome) {
-           JOptionPane.showMessageDialog(view, dome, "Internal Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
     
@@ -224,8 +229,10 @@ public class DefaultViewTreeModel implements TreeModel {
 
     // }}}
     
+    Component view;
+    
+    private AdapterNode documentNode;
     private XMLDocument document;
-    private Component view;
     private Vector treeListenerList = new Vector();
     //}}}
 }

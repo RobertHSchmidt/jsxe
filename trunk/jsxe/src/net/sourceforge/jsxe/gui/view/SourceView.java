@@ -42,6 +42,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.dom.DOMSerializer;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
@@ -129,9 +130,13 @@ public class SourceView extends DocumentView {
     
     public void setDocument(TabbedView view, XMLDocument document) throws IOException {//{{{
         
+        if (currentdoc != null) {
+            currentdoc.removeXMLDocumentListener(docListener);
+        }
         currentdoc = document;
-        textarea.setTabSize((new Integer(document.getProperty("indent", "4"))).intValue());
         textarea.setDocument(new SourceViewDocument(view, document));
+        textarea.setTabSize((new Integer(document.getProperty("indent", "4"))).intValue());
+        currentdoc.addXMLDocumentListener(docListener);
         
     }//}}}
     
@@ -186,6 +191,19 @@ public class SourceView extends DocumentView {
             textarea.paste();
         }
     }//}}}
+    
+    private class SourceViewXMLDocumentListener implements XMLDocumentListener {//{{{
+        
+        public void propertiesChanged(XMLDocument source, String propertyKey) {
+            if (propertyKey.equals("indent")) {
+                textarea.setTabSize((new Integer(source.getProperty("indent", "4"))).intValue());
+            }
+        }
+        
+        public void fileChanged(XMLDocument source) {}
+    }//}}}
+    
+    private SourceViewXMLDocumentListener docListener = new SourceViewXMLDocumentListener();
     
     private XMLDocument currentdoc;
     private JTextArea textarea;

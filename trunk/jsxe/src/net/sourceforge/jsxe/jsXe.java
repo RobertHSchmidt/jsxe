@@ -601,7 +601,7 @@ public class jsXe {
     
     private static final String MajorVersion = "0";
     private static final String MinorVersion = "1";
-    private static final String BuildVersion = "15";
+    private static final String BuildVersion = "16";
     private static final String BuildType    = "development";
    // private static final String BuildType    = "stable";
     private static ArrayList XMLDocuments = new ArrayList();

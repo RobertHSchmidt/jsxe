@@ -41,8 +41,8 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.dom.DOMSerializer;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -82,6 +82,8 @@ public class SourceViewDocument extends DefaultStyledDocument {
         document = doc;
         view = parent;
         
+        document.addXMLDocumentListener(new SourceViewDocumentXMLDocumentListener());
+        
         if (doc != null) {
             
             try {
@@ -90,7 +92,7 @@ public class SourceViewDocument extends DefaultStyledDocument {
                 
             } catch (BadLocationException ble) {
                 //This should never happen. If it does however jsXe will
-                //act abnormally so crash.
+                //act abnormally so... crash.
                 jsXe.exiterror(view, ble.toString(), 1);
             }
         }
@@ -124,6 +126,28 @@ public class SourceViewDocument extends DefaultStyledDocument {
             jsXe.exiterror(view, ioe.toString(), 1);
         }
         
+    }//}}}
+
+    private class SourceViewDocumentXMLDocumentListener implements XMLDocumentListener {//{{{
+        
+        public void propertiesChanged(XMLDocument source, String propertyKey) {
+            if (propertyKey.equals("encoding")) {
+                try {
+                    remove(0, getLength());
+                    SourceViewDocument.super.insertString(0, document.getSource(), new SimpleAttributeSet());
+                } catch (BadLocationException ble) {
+                    //This should never happen. If it does however jsXe will
+                    //act abnormally so... crash.
+                    jsXe.exiterror(view, ble.toString(), 1);
+                } catch (IOException ioe) {
+                    //This might happen. If it does jsXe will
+                    //act abnormally so... crash.
+                    jsXe.exiterror(view, ioe.toString(), 1);
+                }
+            }
+        }
+        
+        public void fileChanged(XMLDocument source) {}
     }//}}}
 
     //{{{ Private members

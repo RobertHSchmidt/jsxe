@@ -114,6 +114,7 @@ public abstract class XMLDocument {
                     throw new ClassCastException("Could not cast to XMLDocument or File.");
                 }
             }
+            
             if (file != null) {
                 try {
                     if (caseInsensitiveFilesystem) {
@@ -139,4 +140,5 @@ public abstract class XMLDocument {
     
     public abstract void addXMLDocumentListener(XMLDocumentListener listener);
     
+    public abstract void removeXMLDocumentListener(XMLDocumentListener listener);
 }
