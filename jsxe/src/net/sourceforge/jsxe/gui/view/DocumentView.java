@@ -60,7 +60,7 @@ import java.io.IOException;
 
 public abstract class DocumentView extends JPanel {
 
-    public abstract void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException;
+    public abstract void setDocumentBuffer(DocumentBuffer buffer) throws IOException;
     
     public abstract JMenu[] getMenus();
     

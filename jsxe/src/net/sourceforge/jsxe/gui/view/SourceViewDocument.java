@@ -78,10 +78,9 @@ import java.util.StringTokenizer;
 
 public class SourceViewDocument extends DefaultStyledDocument {
 
-    protected SourceViewDocument(TabbedView parent, DocumentBuffer buffer) throws IOException {//{{{
+    protected SourceViewDocument(DocumentBuffer buffer) throws IOException {//{{{
         super(new GapContent(), new StyleContext());
         m_buffer = buffer;
-        view = parent;
         
        // document.addXMLDocumentListener(new SourceViewDocumentXMLDocumentListener());
         
@@ -100,7 +99,7 @@ public class SourceViewDocument extends DefaultStyledDocument {
             } catch (BadLocationException ble) {
                 //This should never happen. If it does however jsXe will
                 //act abnormally so... crash.
-                jsXe.exiterror(view, ble.toString(), 1);
+                jsXe.exiterror(null, ble.toString(), 1);
             }
         }
     }//}}}
@@ -117,7 +116,7 @@ public class SourceViewDocument extends DefaultStyledDocument {
         } catch (IOException ioe) {
             //This should never happen. If it does however jsXe will
             //act abnormally so crash.
-            jsXe.exiterror(view, ioe.toString(), 1);
+            jsXe.exiterror(null, ioe.toString(), 1);
         }
 
     }//}}}
@@ -134,7 +133,7 @@ public class SourceViewDocument extends DefaultStyledDocument {
         } catch (IOException ioe) {
             //This should never happen. If it does however jsXe will
             //act abnormally so crash.
-            jsXe.exiterror(view, ioe.toString(), 1);
+            jsXe.exiterror(null, ioe.toString(), 1);
         }
         
     }//}}}
@@ -163,7 +162,6 @@ public class SourceViewDocument extends DefaultStyledDocument {
    // }//}}}
 
     //{{{ Private members
-    TabbedView view;
     DocumentBuffer m_buffer;
     //}}}
 

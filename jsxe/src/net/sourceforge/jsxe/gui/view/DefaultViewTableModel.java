@@ -74,16 +74,16 @@ import java.util.Enumeration;
 public class DefaultViewTableModel implements TableModel {
     
     protected DefaultViewTableModel(Component parent, AdapterNode adapterNode) {//{{{
-        currentNode = adapterNode;
-        view = parent;
-        updateTable(currentNode);
+        m_currentNode = adapterNode;
+        m_view = parent;
+        updateTable(m_currentNode);
     }//}}}
 
     // {{{ Implemented TableModel methods
     
     public void addTableModelListener(TableModelListener l) {//{{{
-        if (l != null && !tableListenerList.contains(l) ) {
-            tableListenerList.addElement(l);
+        if (l != null && !m_tableListenerList.contains(l) ) {
+            m_tableListenerList.addElement(l);
         }
     }//}}}
     
@@ -106,11 +106,11 @@ public class DefaultViewTableModel implements TableModel {
     }//}}}
     
     public int getRowCount() {//{{{
-        return data[0].size();
+        return m_data[0].size();
     }//}}}
 
     public Object getValueAt(int rowIndex, int columnIndex) {//{{{
-        return data[columnIndex].get(rowIndex);
+        return m_data[columnIndex].get(rowIndex);
     }//}}}
     
     public boolean isCellEditable(int rowIndex, int columnIndex) {//{{{
@@ -124,24 +124,25 @@ public class DefaultViewTableModel implements TableModel {
     
     public void removeTableModelListener(TableModelListener listener) {//{{{
         if (listener!=null) {
-            tableListenerList.removeElement(listener);
+            m_tableListenerList.removeElement(listener);
         }
     }//}}}
     
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {//{{{
         //pad with empty values if necessary (this shouldn't really happen)
         while (rowIndex+1 > getRowCount()) {
-            data[columnIndex].add("");
+            m_data[columnIndex].add("");
         }
         try {
             //If setting a value on the last row
             if (rowIndex+1 == getRowCount()) {
                 //we must be editing an attribute name.
                 if (!aValue.equals("")) {
-                    currentNode.setAttribute(aValue.toString(), "");
-                    data[columnIndex].setElementAt(aValue.toString(),rowIndex);
-                    data[0].add("");
-                    data[1].add("");
+                    m_currentNode.setAttribute(aValue.toString(), "");
+                   // data[columnIndex].setElementAt(aValue.toString(),rowIndex);
+                   // data[0].add("");
+                   // data[1].add("");
+                    updateTable(m_currentNode);
                     
                     fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
                 }
@@ -156,11 +157,14 @@ public class DefaultViewTableModel implements TableModel {
                     //when trying to update the UI for the table.
                     if (!aValue.equals(getValueAt(rowIndex, columnIndex))) {
                         if (columnIndex == 0) {
-                            currentNode.setAttribute(aValue.toString(), (String)getValueAt(rowIndex, 1));
+                            //we are renaming the attribute, remove the old one first
+                            m_currentNode.removeAttribute((String)getValueAt(rowIndex, 0));
+                            m_currentNode.setAttribute(aValue.toString(), (String)getValueAt(rowIndex, 1));
                         } else {
-                            currentNode.setAttribute((String)getValueAt(rowIndex, 0), aValue.toString());
+                            m_currentNode.setAttribute((String)getValueAt(rowIndex, 0), aValue.toString());
                         }
-                        data[columnIndex].setElementAt(aValue,rowIndex);
+                       // data[columnIndex].setElementAt(aValue,rowIndex);
+                        updateTable(m_currentNode);
                         fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
                     }
                 }
@@ -168,21 +172,23 @@ public class DefaultViewTableModel implements TableModel {
         //We need to catch this here unfortunately because this method is called by
         //a default table editor. Maybe this will change.
         } catch (DOMException dome) {
-            JOptionPane.showMessageDialog(view, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(m_view, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
     
     //}}}
     
-    public AdapterNode getAdapterNode() {//{{{
-        return currentNode;
+    public void removeRow(int row) {//{{{
+        m_currentNode.removeAttributeAt(row);
+        updateTable(m_currentNode);
+        fireTableChanged(new TableModelEvent(this, row));
     }//}}}
     
     //{{{ Private members
     
     // {{{ Event notification methods
     private void fireTableChanged(TableModelEvent e) {//{{{
-        Enumeration listeners = tableListenerList.elements();
+        Enumeration listeners = m_tableListenerList.elements();
         while (listeners.hasMoreElements()) {
             TableModelListener listener = (TableModelListener)listeners.nextElement();
             listener.tableChanged(e);
@@ -191,30 +197,30 @@ public class DefaultViewTableModel implements TableModel {
     // }}}
     
     private void updateTable(AdapterNode selectedNode) {//{{{
-        currentNode = selectedNode;
-        data[0].removeAllElements();
-        data[1].removeAllElements();
+        m_currentNode = selectedNode;
+        m_data[0].removeAllElements();
+        m_data[1].removeAllElements();
         if (selectedNode!=null) {
             NamedNodeMap attrs = selectedNode.getAttributes();
             if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                 if (attrs!=null) {
                     for(int i = 0; i < attrs.getLength(); i++) {
-                        data[0].add(attrs.item(i).getNodeName());
-                        data[1].add(attrs.item(i).getNodeValue());
+                        m_data[0].add(attrs.item(i).getNodeName());
+                        m_data[1].add(attrs.item(i).getNodeValue());
                     }
                     //One extra table entry for adding an attribute
-                    data[0].add("");
-                    data[1].add("");
+                    m_data[0].add("");
+                    m_data[1].add("");
                 }
             }
         }
     }//}}}
     
-    private Component view;
+    private Component m_view;
     
-    private AdapterNode currentNode;
-    private Vector tableListenerList = new Vector();
-    private Vector[] data={
+    private AdapterNode m_currentNode;
+    private Vector m_tableListenerList = new Vector();
+    private Vector[] m_data={
         new Vector(),
         new Vector()
     };
