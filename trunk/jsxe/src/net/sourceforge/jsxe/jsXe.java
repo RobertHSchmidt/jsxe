@@ -38,15 +38,9 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.action.FileSaveAction;
-import net.sourceforge.jsxe.gui.TabbedView;
-import net.sourceforge.jsxe.gui.OptionsPanel;
-import net.sourceforge.jsxe.gui.DocumentView;
-import net.sourceforge.jsxe.gui.jsxeFileDialog;
-import net.sourceforge.jsxe.dom.AdapterNode;
-import net.sourceforge.jsxe.dom.XMLDocument;
-import net.sourceforge.jsxe.dom.XMLDocumentFactory;
-import net.sourceforge.jsxe.dom.XMLDocumentListener;
-import net.sourceforge.jsxe.dom.UnrecognizedDocTypeException;
+import net.sourceforge.jsxe.gui.*;
+import net.sourceforge.jsxe.dom.*;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Swing classes
@@ -77,20 +71,9 @@ import javax.xml.parsers.ParserConfigurationException;
 //}}}
 
 //{{{ Java Base classes
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
 //}}}
 
 //}}}
@@ -121,13 +104,29 @@ public class jsXe {
 			System.exit(1);
 		}//}}}
         
-        //{{{ get and load the configuration files
-        initDefaultProps();
-        
+        //{{{ start logging
         String homeDir = System.getProperty("user.home");
         String fileSep = System.getProperty("file.separator");
         
         String settingsDirectory = homeDir+fileSep+".jsxe";
+
+        Log.init(true, Log.ERROR);
+        
+        try {
+            BufferedWriter stream = new BufferedWriter(new FileWriter(settingsDirectory+fileSep+"jsXe.log"));
+            
+            stream.write("Log file created on " + new Date());
+            stream.write(System.getProperty("line.separator"));
+            
+            Log.setLogWriter(stream);
+        } catch (IOException ioe) {
+            Log.log(Log.ERROR, jsXe.class, ioe);
+        }
+        //}}}
+        
+        //{{{ get and load the configuration files
+        initDefaultProps();
+        
         File _settingsDirectory = new File(settingsDirectory);
         if(!_settingsDirectory.exists())
 		    _settingsDirectory.mkdirs();
@@ -197,7 +196,7 @@ public class jsXe {
         ArrayList errors = m_pluginLoader.addDirectory(pluginsDirectory);
         if (errors.size() != 0) {
             for (int i=0; i<errors.size(); i++) {
-                System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
+                Log.log(Log.WARNING, jsXe.class, "COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
             }
         }
         
@@ -222,7 +221,7 @@ public class jsXe {
         errors = m_pluginLoader.addDirectory(jsXeHome+"/jars");
         if (errors.size() != 0) {
             for (int i=0; i<errors.size(); i++) {
-                System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
+                Log.log(Log.WARNING, jsXe.class, "COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
             }
         }
         
@@ -234,7 +233,7 @@ public class jsXe {
         errors = m_pluginLoader.startPlugins();
         if (errors.size() != 0) {
             for (int i=0; i<errors.size(); i++) {
-                System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
+                Log.log(Log.WARNING, jsXe.class, "COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
             }
         }
         
@@ -269,12 +268,13 @@ public class jsXe {
                 try {
                     tabbedview = new TabbedView(defaultBuffer, viewname);
                 } catch (UnrecognizedPluginException e) {
-                    System.out.println("jsXe: "+e.getMessage());
+                    Log.log(Log.ERROR, jsXe.class, e);
                     System.exit(1);
                 }
             }
             
         } catch (IOException ioe) {
+            Log.log(Log.ERROR, jsXe.class, ioe);
             JOptionPane.showMessageDialog(null, ioe.getMessage()+".", "I/O Error", JOptionPane.WARNING_MESSAGE);
             System.exit(0);
         }
@@ -358,6 +358,7 @@ public class jsXe {
                             success = openXMLDocument(view, files[i]) || success;
                         } catch (IOException ioe) {
                             //I/O error doesn't change value of success
+                            Log.log(Log.WARNING, jsXe.class, ioe);
                             JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
                         }
                     }
@@ -611,8 +612,6 @@ public class jsXe {
      * @param view The view from which the exit was called.
      */
     public static void exit(TabbedView view) {
-        //nothing much here yet. Open documents should
-        //be checked for dirty documents.
         
         m_exiting = true;
         
@@ -641,12 +640,16 @@ public class jsXe {
                     exiterror(view, "Could not save jsXe recent files list.\n"+ioe.toString(), 1);
                 }
                 
+                //stop logging.
+                Log.closeStream();
+                
                 System.exit(0);
             } else {
                 m_exiting = false;
             }
         } catch (IOException ioe) {
             //failed save of a dirty buffer
+            Log.log(Log.ERROR, jsXe.class, ioe);
             JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
             m_exiting = false;
         }
@@ -666,15 +669,16 @@ public class jsXe {
         errorhdr        +="developers. Please fill out a full bug report at\n";
         errorhdr        +="http://www.sourceforge.net/projects/jsxe/\n\n";
         
-        JOptionPane.showMessageDialog(view, errorhdr + errormsg, "Fatal Error", JOptionPane.WARNING_MESSAGE);
+        Log.log(Log.ERROR, jsXe.class, errorhdr);
+        Log.log(Log.ERROR, jsXe.class, errormsg);
         
-        //print the error to the command line also.
-        System.err.println(getAppTitle() + ": jsXe has encountered a fatal error and is unable to continue.");
-        System.err.println(getAppTitle() + ": This is most likely a bug and should be reported to the jsXe");
-        System.err.println(getAppTitle() + ": developers. Please fill out a full bug report at");
-        System.err.println(getAppTitle() + ": http://www.sourceforge.net/projects/jsxe/");
-        System.err.println("");
-        System.err.println(getAppTitle() + ": "+errormsg);
+        if (view != null) {
+            JOptionPane.showMessageDialog(view, errorhdr + errormsg, "Fatal Error", JOptionPane.WARNING_MESSAGE);
+        }
+        
+        //stop logging
+        Log.closeStream();
+        
         System.exit(errorcode);
     }//}}}
     
@@ -833,6 +837,7 @@ public class jsXe {
                     success = openXMLDocument(view, new File(args[i])) || success;
                 } catch (IOException ioe) {
                     //I/O error doesn't change value of success
+                    Log.log(Log.WARNING, jsXe.class, ioe);
                     JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
                 }
             }
