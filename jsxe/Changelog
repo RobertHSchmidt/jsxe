@@ -2,6 +2,8 @@
 
     * Merged some of Bilel's changes to AdapterNode making it better able to
       handle more XML node types.
+    * Nodes in the default view tree are now rendered as different icons for
+      different node types. (Note: used icons from XML plugin for jEdit)
 
 12/19/2003  version 0.1.47  Ian Lewis <IanLewis@member.fsf.org>
 
