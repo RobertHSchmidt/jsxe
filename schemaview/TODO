@@ -1,16 +1,19 @@
-* The cells/nodes should be named based on the name of the type.
-    * Deal with localComplexTypes. These should be left out during parsing.
-
 * Make the cells shaped differently for different types of nodes (rounded
   corners etc.).
 
 * Create an icon for the choice and sequence nodes so they look more like
   XMLSpy
 
-* Allow the display of more information for each cell such as the name of a
-  complexType, simpleType or element for example.
+* Update the parser to support further development.
+    * Parser should catch errors in schema
+    * Parser should provide retrieval of info for schema items that can be
+      referenced (complexTypes, simpleTypes, groups, etc.).
+    
+* Allow the display of more information for each cell such as documentation and
+  attributes etc.
 
 * Allow collapsing of the schema tree.
+    * May require editing how the JGraph renders the model.
 
 * Size each cell based on the size of the text within it.
 
@@ -24,8 +27,8 @@
 
 * Show attributes that the type can have.
 
-* Build into the schema tree inherited attributes from other types. Show a box
-  around the attributes like XMLSpy.
+* Build into the schema tree inherited or referenced attributes from other
+  types. Show a box around the attributes like XMLSpy.
 
 * Begin to build in the editing features.
     * Override insert and remove methods in SchemaViewGraphModel to catch
