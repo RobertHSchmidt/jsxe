@@ -208,6 +208,8 @@ public class TabbedView extends JFrame {
                     updateTitle();
                     updateMenuBar();
                     
+                    buffer.addDocumentBufferListener(m_bufferListener);
+                    
                     return;
                     
                 } catch (IOException ioe) {
@@ -281,15 +283,6 @@ public class TabbedView extends JFrame {
      */
     public int getBufferCount() {
         return tabbedPane.getTabCount();
-    }//}}}
-    
-    //{{{ update()
-    /**
-     * Updates the view.
-     */
-    public void update() {
-        updateTitle();
-        tabbedPane.updateUI();
     }//}}}
     
     //{{{ close()
@@ -534,5 +527,18 @@ public class TabbedView extends JFrame {
     private JPanel panel;
     private static final ImageIcon m_cleanIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/clean.png"), "clean");
     private static final ImageIcon m_dirtyIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/dirty.png"), "dirty");
+    private DocumentBufferListener m_bufferListener = new DocumentBufferListener() {//{{{
+        
+        public void nameChanged(DocumentBuffer source, String newName) {
+            updateTitle();
+           // tabbedPane.updateUI();
+        }
+        
+        public void propertiesChanged(DocumentBuffer source, String key) {}
+    
+        public void bufferSaved(DocumentBuffer source) {}
+        
+    };//}}}
+    
     //}}}
 }

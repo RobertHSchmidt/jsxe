@@ -1,3 +1,24 @@
+04/17/2004  version 0.1.64
+
+    * Updated Drag and Drop to look nicer.
+    * When you save out of the options panel after you changed options that
+      change the XML document itself the open document is marked as dirty.
+    * Fixed a bug where the source was not being changed when the encoding
+      was changed because the XMLDocument object thought that the source
+      was synced with the DOM.
+    * Added the ability to rearrange text nodes and other nodes that aren't
+      elements around within an element in the tree view. The location where
+      the node will be dropped in the tree is highlighted.
+    * Added support for checking the version and getting command-line help
+      for jsXe via command-line options
+    * Fixed a bug that didn't allow users to open a document if the DTD couldn't
+      be found. Still won't think it's well formed though.
+    * Fixed a couple bugs that caused null pointer exceptions when inserting
+      around the document root.
+    * Added logic to the tree in the Default view so that dragged and dropped
+      nodes are always visible after a drop. New nodes that are added
+      through the context menu are also visible after they are added.
+
 03/18/2004  version 0.1.57
 
     * jsXe now requires xerces 2.6.0. No other xerces release will work with

@@ -156,7 +156,6 @@ public class FileSaveAsAction extends AbstractAction {
                     } else {
                         currentBuffer.saveAs(selectedFile);
                     }
-                    view.update();
                     
                 }
                 

@@ -552,6 +552,10 @@ public class DOMSerializer implements LSSerializer {
                         doWrite(writer, str, node, line, column, offset);
                         column += str.length();
                         offset += str.length();
+                    } else {
+                        //transform to text node.
+                        Node textNode = node.getOwnerDocument().createTextNode(node.getNodeValue());
+                        rSerializeNode(writer, textNode, encoding, currentIndent, line, column, offset);
                     }
                     break;//}}}
                 case Node.COMMENT_NODE://{{{
