@@ -175,7 +175,7 @@ def main():
 <!-- }}} -->"""
 
         # {{{ Write the current file
-        f = open("../html/" + page + ".html", "w")
+        f = open("../htdocs/" + page + ".html", "w")
         f.write(header)
         f.write(body)
         f.write(footer)
