@@ -247,16 +247,16 @@ Please send your comments and suggestions to asirv@webmethods.com
         </element>
         
         
-        <element name="include" substitutionGroup="xsl:top-level-elemt" type="xsl:combine-stylesheets">
+        <element/>
         
         	<!-- ***
         	
-        		<xsl:include 
+        		<xse 
   				href = uri-reference />
   				
         	-->
         	
-        </element>
+        <!--</element>-->
         
         
         <element name="key" substitutionGroup="xsl:top-level-element">
