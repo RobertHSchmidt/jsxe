@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+  <menu>About</menu>
+  <title>About</menu>
+  <content>
+    <!-- {{{ content for the about page -->
+    <h3>History</h3>
+    <p>
+      jsXe was originally a project for an undergraduate special topics course
+      I took on design patterns in java. After about a month of learning java
+      and developing i churned out an application that could view XML
+      documents in a tree view with support for a few other simple XML
+      constructs. The application only supported viewing an XML document when
+      I turned it in but it was always my vision that it would support editing
+      XML documents.
+    </p>
+    <h3>Vision</h3>
+    <p>
+      I decided to try and finish what i started and add all the features I
+      wanted to add to the project, perhaps some more if it becomes popular.
+      Because jsXe was originally a project for a class on design patterns and
+      object oriented design I have formulated a vision of an XML editor that
+      has cleanly written code while maintaining its ease of use. It is a
+      vision to make life easier for anyone using jsXe or anyone who is
+      reading its code. Part of this vision was that jsXe would not be geared
+      toward any particular type of XML document. This may limit the
+      practicality of jsXe but i want it to be an XML editor and not an editor
+      for an <i>application</i> of XML. Another part of my vision of jsXe is
+      that a user can create a full featured XML document easily without ever
+      looking at the source. Of course the source will always be available
+      however. I hope you agree with this vision but if you think it should be
+      any other way I encourage you to
+      <a href="mailto:ian_lewis at users.sourceforge dot net">e-mail me</a>
+      (ian).
+    </p>
+    <!-- }}} -->
+  </content>
+</page>
