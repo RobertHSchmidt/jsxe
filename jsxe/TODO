@@ -2,8 +2,10 @@ TODO:
 
     * Document methods with javadoc.
     
-    * Add property change listeners to the XMLDocument interface so that the GUI
-      can be updated automatically when the properties (options) change.
+    * Edit the SourceViewDocument class and make it more efficient when editing
+      the document in the source view. Redesign XMLDocument interface to handle
+      editing when not well formed easier? Add methods to insert and remove
+      text? Should I rewrite how XMLDocument deals with source now or defer?
     
     * Research the EntityResolver class and see if it can be used to resolve
       DTD files.
@@ -40,8 +42,8 @@ TODO:
     * Add full support for namespaces. (adding, editing, serialization, etc.)
     
     * Redo the interface for XMLDocuments and AdapterNodes so that DOM
-      implementation used in a more limited way. Implement Document editing
-      methods.
+      implementation used in a more limited way? Implement Document editing
+      methods? Can I eventually make my own DOM implementation?
     
     * Make sure jsXe can deal with all types of XML nodes.
     
@@ -51,6 +53,10 @@ TODO:
     * Release new version (0.3.1).
     
     * Implement undo for the DefaultView and SourceView.
+    
+    * Rewrite how source text is stored in the XMLDocument and
+      DefaultXMLDocument classes. Should use char arrays instead of String
+      objects. Implement a much more efficient way of storing the text source.
     
     * Create a feature to edit source for 1 node only. (Not sure how to do this
       given current design. How would I allow the source view to do that?)

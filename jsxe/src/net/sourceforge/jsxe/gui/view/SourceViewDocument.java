@@ -133,7 +133,7 @@ public class SourceViewDocument extends DefaultStyledDocument {
         public void propertiesChanged(XMLDocument source, String propertyKey) {
             if (propertyKey.equals("encoding")) {
                 try {
-                    remove(0, getLength());
+                    SourceViewDocument.super.remove(0, getLength());
                     SourceViewDocument.super.insertString(0, document.getSource(), new SimpleAttributeSet());
                 } catch (BadLocationException ble) {
                     //This should never happen. If it does however jsXe will

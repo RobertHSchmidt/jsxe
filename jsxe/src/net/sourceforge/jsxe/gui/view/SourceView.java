@@ -197,6 +197,7 @@ public class SourceView extends DocumentView {
         public void propertiesChanged(XMLDocument source, String propertyKey) {
             if (propertyKey.equals("indent")) {
                 textarea.setTabSize((new Integer(source.getProperty("indent", "4"))).intValue());
+                textarea.updateUI();
             }
         }
         

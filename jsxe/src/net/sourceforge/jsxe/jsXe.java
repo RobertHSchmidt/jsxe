@@ -324,31 +324,17 @@ public class jsXe {
         boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
 			|| File.separatorChar == ':' /* Windows or MacOS */);
         
-        //Check if the file is already open, if so
-        //change focus to that file
         for(int i=0; i < XMLDocuments.size();i++) {
             
-            XMLDocument doc = (XMLDocument)XMLDocuments.get(i);
-            File docfile = doc.getFile();
-            if (docfile != null) {
-                try {
-                    if (caseInsensitiveFilesystem) {
-                        
-                        if (file.getCanonicalPath().equalsIgnoreCase(docfile.getCanonicalPath())) {
-                            return doc;
-                        }
-                        
-                    } else {
-                        
-                        if (file.getCanonicalPath().equals(docfile.getCanonicalPath())) {
-                            return doc;
-                        }
-                    }
-                } catch (IOException ioe) {
-                    exiterror(null, ioe.getMessage(), 1);
+            try {
+                XMLDocument doc = (XMLDocument)XMLDocuments.get(i);
+                if (doc.equalsOnDisk(file)) {
+                    return doc;
                 }
-                
+            } catch (IOException ioe) {
+                exiterror(null, ioe.getMessage(), 1);
             }
+            
         }
         
         return null;
@@ -361,17 +347,21 @@ public class jsXe {
      * @return true if the document was closed successfully.
      */
     public static boolean closeXMLDocument(TabbedView view, XMLDocument document) {//{{{
-        view.removeDocument(document);
-        XMLDocuments.remove(document);
-        if (view.getDocumentCount() == 0) {
-            try {
-                openXMLDocument(view, getDefaultDocument());
-            } catch (IOException ioe) {
-                exiterror(view, "Could not open default document.", 1);
+        if (XMLDocuments.contains(document)) {
+            view.removeDocument(document);
+            XMLDocuments.remove(document);
+            if (view.getDocumentCount() == 0) {
+                try {
+                    openXMLDocument(view, getDefaultDocument());
+                } catch (IOException ioe) {
+                    exiterror(view, "Could not open default document.", 1);
+                }
             }
+            return true;
+        } else {
+            return false;
         }
-        return true;
-    }//}}}
+    }//}}} 
     
     /**
      * Gets the default XML document in jsXe. This is necessary 
@@ -601,7 +591,7 @@ public class jsXe {
     
     private static final String MajorVersion = "0";
     private static final String MinorVersion = "1";
-    private static final String BuildVersion = "16";
+    private static final String BuildVersion = "17";
     private static final String BuildType    = "development";
    // private static final String BuildType    = "stable";
     private static ArrayList XMLDocuments = new ArrayList();

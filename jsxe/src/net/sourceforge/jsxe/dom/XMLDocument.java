@@ -65,7 +65,7 @@ import java.io.StringReader;
 
 public abstract class XMLDocument {
     
-    public abstract void checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException;
+    public abstract boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException;
     
     public boolean isUntitled() {//{{{
         return (getFile() == null);
@@ -95,9 +95,9 @@ public abstract class XMLDocument {
     
     public abstract void setModel(String string) throws IOException;
     
-    public abstract boolean isWellFormed();
+    public abstract boolean isWellFormed() throws IOException;
     
-    public boolean equals(Object o) throws ClassCastException {//{{{
+    public boolean equalsOnDisk(Object o) throws ClassCastException, IOException {//{{{
         if (getFile() != null && o != null) {
             boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
                 || File.separatorChar == ':' /* Windows or MacOS */);
@@ -116,21 +116,17 @@ public abstract class XMLDocument {
             }
             
             if (file != null) {
-                try {
-                    if (caseInsensitiveFilesystem) {
-                        
-                        if (file.getCanonicalPath().equalsIgnoreCase(getFile().getCanonicalPath())) {
-                            return true;
-                        }
-                        
-                    } else {
-                        
-                        if (file.getCanonicalPath().equals(getFile().getCanonicalPath())) {
-                            return true;
-                        }
+                if (caseInsensitiveFilesystem) {
+                    
+                    if (file.getCanonicalPath().equalsIgnoreCase(getFile().getCanonicalPath())) {
+                        return true;
                     }
-                } catch (IOException ioe) {
-                    jsXe.exiterror(null, ioe.getMessage(), 1);
+                    
+                } else {
+                    
+                    if (file.getCanonicalPath().equals(getFile().getCanonicalPath())) {
+                        return true;
+                    }
                 }
             }
         }
