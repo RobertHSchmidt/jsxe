@@ -154,6 +154,14 @@ public class DefaultViewTreeModel implements TreeModel {
             try {
                 Element newNode = document.createElement(newValue.toString());
                 parent.replaceChild(newNode, node);
+                NamedNodeMap attrs = node.getAttributes();
+                int attrlength = attrs.getLength();
+                
+                for(int i = 0; i < attrlength; i++) {
+                    Node attr = attrs.item(i);
+                    newNode.setAttribute(attr.getNodeName(), attr.getNodeValue());
+                }
+                
                 for (int i = 0; i < children.getLength(); i++ ) {
                     Node child = children.item(i);
                     node.removeChild(child);
