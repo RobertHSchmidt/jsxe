@@ -97,26 +97,26 @@ public class DefaultViewTree extends JTree {
        //         }
        //     }
        // });//}}}
-        addTreeExpansionListener(new TreeExpansionListener() {//{{{
+       // addTreeExpansionListener(new TreeExpansionListener() {//{{{
             
-            //{{{ treeExpanded()
+       //     //{{{ treeExpanded()
             
-            public void treeExpanded(TreeExpansionEvent event) {
-                try {
-                    DefaultViewTreeNode node = (DefaultViewTreeNode)event.getPath().getLastPathComponent();
-                    node.setExpanded(true);
-                } catch (ClassCastException e) {}
-            }//}}}
+       //     public void treeExpanded(TreeExpansionEvent event) {
+       //         try {
+       //             DefaultViewTreeNode node = (DefaultViewTreeNode)event.getPath().getLastPathComponent();
+       //             node.setExpanded(true);
+       //         } catch (ClassCastException e) {}
+       //     }//}}}
             
-            //{{{ treeCollapsed()
+       //     //{{{ treeCollapsed()
             
-            public void treeCollapsed(TreeExpansionEvent event) {
-                try {
-                    DefaultViewTreeNode node = (DefaultViewTreeNode)event.getPath().getLastPathComponent();
-                    node.setExpanded(false);
-                } catch (ClassCastException e) {}
-            }//}}}
-        });//}}}
+       //     public void treeCollapsed(TreeExpansionEvent event) {
+       //         try {
+       //             DefaultViewTreeNode node = (DefaultViewTreeNode)event.getPath().getLastPathComponent();
+       //             node.setExpanded(false);
+       //         } catch (ClassCastException e) {}
+       //     }//}}}
+       // });//}}}
         
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         
@@ -158,7 +158,7 @@ public class DefaultViewTree extends JTree {
    //     boolean expandedState = node.isExpanded();
    //     if (!node.isLeaf()) {
    //         expandPath(path); //expand all nodes out
-   //         
+            
    //         System.out.println(path.toString() +" : "+expandedState);
    //         //still have to set expanded states
    //         Enumeration children = node.children();
@@ -166,10 +166,10 @@ public class DefaultViewTree extends JTree {
    //             TreePath newPath = path.pathByAddingChild(children.nextElement());
    //             refreshExpandedStates(newPath);
    //         }
-   //         if (!expandedState) { //close non-expanded nodes
-   //             collapsePath(path);
-   //         } else {
+   //         if (expandedState) { //close non-expanded nodes
    //             expandPath(path);
+   //         } else {
+   //             collapsePath(path);
    //         }
    //     }
    // }//}}}
@@ -650,8 +650,7 @@ public class DefaultViewTree extends JTree {
             }
             
             DefaultViewTreeNode parentNode = (DefaultViewTreeNode)path.getLastPathComponent();
-            TreePath droppedPath;
-            System.out.println(path.toString());
+            
             try {
                 //Find out the relative location where I dropped.
                 Rectangle bounds = getPathBounds(path);
@@ -663,7 +662,7 @@ public class DefaultViewTree extends JTree {
                             trueParent.insert(node, trueParent.getIndex(parentNode));
                             
                             makeVisible(path);
-                            droppedPath = path.getParentPath().pathByAddingChild(node);
+                           // droppedPath = path.getParentPath().pathByAddingChild(node);
                             
                         } else {
                             throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
@@ -676,9 +675,8 @@ public class DefaultViewTree extends JTree {
                         //insert in the node inside the parent at the end of its children
                         parentNode.insert(node, parentNode.getChildCount());
                         //Make sure the node we just dropped is viewable
-                        System.out.println(path.toString());
                         expandPath(path);
-                        droppedPath = path.pathByAddingChild(node);
+                       // droppedPath = path.pathByAddingChild(node);
                         
                     } else {
                         if (parentNode != null) {
@@ -687,7 +685,7 @@ public class DefaultViewTree extends JTree {
                             if (trueParent != null) {
                                 trueParent.insert(node, trueParent.getIndex(parentNode)+1);
                                 makeVisible(path);
-                                droppedPath = path.getParentPath().pathByAddingChild(node);
+                               // droppedPath = path.getParentPath().pathByAddingChild(node);
                             } else {
                                 throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
                             }

@@ -23,21 +23,15 @@ TODO:
     
 * Version 0.2.0
     
-    * Update to use the newest version of Xerces.
-    
     * Make any ease-of-use changes necessary to make jsxe act in an intuitive
       way.
     
-    * Add support for the expanded attribute of the DefaultViewTreeNode.
-      Use this attribute for determining if the node is expanded or not and
-      add logic to expand it. Need to overload the isExpanded() and
-      isCollapsed() methods in the DefaultViewTree so that they reflect the
-      new fuctionality.
-    
-    * Move code that saves and closes a DocumentBuffer to the DocumentBuffer
-      class itself, from the jsXe class and SaveAction classes.
-    
-    * Clean up code. Be consistent about fold marks. Alphabetize methods.
+    * Prepare for release.
+        - Clean up code.
+        - Be consistent about fold marks.
+        - Alphabetize methods.
+        - Test jsXe. Make sure to minimize bugs.
+        - Update documentation. NEWS, README INSTALL, build.xml
     
 * Version 0.3.0
     

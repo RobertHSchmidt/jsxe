@@ -1,3 +1,8 @@
+05/14/2004  version 0.1.73  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated the DOMSerializer to implement the newest version
+      of the LSSerializer interface. jsXe requires Xerces 2.6.2.
+
 05/13/2004  version 0.1.72  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug in the displaying of nodes in the tree. The algorithm
