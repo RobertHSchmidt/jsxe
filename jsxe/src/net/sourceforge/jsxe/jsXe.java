@@ -81,8 +81,8 @@ public class jsXe {
         
         //temporary method to set size of jsXe relative to screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        windowWidth = (int)(screenSize.getWidth() / 2);
-        windowHeight = (int)(3 * screenSize.getHeight() / 4);
+        int windowWidth = (int)(screenSize.getWidth() / 2);
+        int windowHeight = (int)(3 * screenSize.getHeight() / 4);
         
         TabbedView tabbedview = new TabbedView(windowWidth, windowHeight);
         
@@ -277,6 +277,12 @@ public class jsXe {
         return AppTitle;
     }//}}}
     
+    public static void exit(TabbedView view) {//{{{
+        //nothing much here yet. Settings should be saved and open documents should
+        //be checked for dirty documents.
+        System.exit(0);
+    }//}}}
+    
     // Private static members {{{    
     private static final String MajorVersion = "00";
     private static final String MinorVersion = "01";
@@ -284,8 +290,6 @@ public class jsXe {
     private static final String BuildType    = "alpha";
     private static Vector XMLDocuments = new Vector();
     private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?><default_element>default_node</default_element>";
-    private static int windowWidth=600;
-    private static int windowHeight=600;
     private static final ImageIcon jsXeIcon = new ImageIcon("net/sourceforge/jsxe/icons/jsxe.jpg", "jsXe");
     private static final String AppTitle = "jsXe";
     //}}}

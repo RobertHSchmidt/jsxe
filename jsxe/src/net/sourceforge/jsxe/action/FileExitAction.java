@@ -64,7 +64,7 @@ public class FileExitAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {//{{{
         //should check for dirty open documents somewhere
-        System.exit(1);
+        jsXe.exit(view);
     }//}}}
     
     //{{{ Private members
