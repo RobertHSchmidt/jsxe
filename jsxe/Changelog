@@ -1,6 +1,8 @@
 03/30/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Released 0.3 beta
+    * Added some more javadoc to XMLDocument
+    * Added some calls to syncContentWithDOM in XMLDocument
 
 03/29/2005  Ian Lewis <IanLewis@member.fsf.org>
 

@@ -80,6 +80,7 @@ import javax.swing.text.Segment;
  * that has nodes, implemented as AdapterNodes, as well as text. Methods are
  * provided to allow user objects to interact with the XML document as text
  * or as a tree structure seamlessly.
+ *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @see AdapterNode
@@ -392,9 +393,7 @@ public class XMLDocument {
         
         //if the document is well formed we go by the DOM
         //if it's not we go by the source text.
-        if (m_parsedMode) {
-            syncContentWithDOM();
-        }
+        syncContentWithDOM();
         return m_content.getText(start,length);
     }//}}}
     
@@ -548,8 +547,11 @@ public class XMLDocument {
      * @throws IOException if the text could not be inserted
      */
     public void insertText(int offset, String text) throws IOException {
+        syncContentWithDOM();
         m_content.insert(offset, text);
         m_parsedMode = false;
+        //may have some algorithm to determine the modified node(s) in the
+        //future
         fireStructureChanged(null);
     }//}}}
     
@@ -561,8 +563,11 @@ public class XMLDocument {
      * @throws IOException if the text could not be removed
      */
     public void removeText(int offset, int length) throws IOException {
+        syncContentWithDOM();
         m_content.remove(offset, length);
         m_parsedMode = false;
+        //may have some algorithm to determine the modified node(s) in the
+        //future
         fireStructureChanged(null);
     }//}}}
     
@@ -1039,7 +1044,22 @@ public class XMLDocument {
     private Document m_document;
     private AdapterNode m_adapterNode;
     private ContentManager m_content;
+    
+    /**
+     * This flag is set to true if and only if the DOM model is the
+     * model that contains the current version of the document. This
+     * will be set to true when the text has been parsed into the DOM
+     * but set to false when the text is altered.
+     */
     private boolean m_parsedMode = false;
+    
+    /**
+     * This flag is set to true if and only if the textual content held in
+     * the ContentManager m_content is synced symantically with the DOM
+     * and the AdapterNodes held in the tree structure.
+     * This flag will be set to false when the tree or content are changed in
+     * such a way that they become out of sync.
+     */
     private boolean m_syncedWithContent = false;
     private EntityResolver m_entityResolver;
     private ArrayList listeners = new ArrayList();
