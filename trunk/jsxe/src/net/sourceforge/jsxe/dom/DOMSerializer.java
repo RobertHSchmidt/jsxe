@@ -279,7 +279,7 @@ public class DOMSerializer implements LSSerializer {
     
     //{{{ DOMSerializerError class
     
-    private class DOMSerializerError implements DOMError {
+    private static class DOMSerializerError implements DOMError {
         
         //{{{ DOMSerializerError constructor
         
@@ -472,9 +472,11 @@ public class DOMSerializer implements LSSerializer {
                                     Integer indentSize = (Integer)config.getParameter("indent");
                                     if (indentSize != null) {
                                         int size = indentSize.intValue();
+                                        StringBuffer buf = new StringBuffer();
                                         for (int i=0; i < size; i++) {
-                                            indentUnit += " ";
+                                            buf.append(" ");
                                         }
+                                        indentUnit = buf.toString();
                                     }
                                 } else {
                                     indentUnit = "\t";
@@ -686,19 +688,17 @@ public class DOMSerializer implements LSSerializer {
                         column += str.length();
                         offset += str.length();
                     }
-                   // else {
-                        if (docType.getSystemId() != null) {
-                            if (docType.getPublicId() == null) {
-                                str = " SYSTEM ";
-                            } else {
-                                str = new String();
-                            }
-                            str +=  "\"" + docType.getSystemId() + "\"";
-                            doWrite(writer, str, node, line, column, offset);
-                            column += str.length();
-                            offset += str.length();
+                    if (docType.getSystemId() != null) {
+                        if (docType.getPublicId() == null) {
+                            str = " SYSTEM ";
+                        } else {
+                            str = "";
                         }
-                   // }
+                        str +=  "\"" + docType.getSystemId() + "\"";
+                        doWrite(writer, str, node, line, column, offset);
+                        column += str.length();
+                        offset += str.length();
+                    }
                     
                     String internalSubset = docType.getInternalSubset();
                     if (internalSubset != null && !internalSubset.equals("")) {
@@ -797,12 +797,6 @@ public class DOMSerializer implements LSSerializer {
     private DOMSerializerConfiguration config;
     private LSSerializerFilter m_filter;
     private String m_newLine;
-    
-    //{{{ Location variables used by the serialization process
-    private int m_line = 0;
-    private int m_column = 0;
-    private int m_offset = 0;
-    //}}}
     
     //}}}
 }

@@ -68,7 +68,7 @@ public class ToolsOptionsAction extends AbstractAction {
     //{{{ actionPerformed()
     
     public void actionPerformed(ActionEvent e) {
-        GlobalOptionsDialog options = new GlobalOptionsDialog(view);
+        new GlobalOptionsDialog(view);
     }//}}}
     
     //{{{ Private members

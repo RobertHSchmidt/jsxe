@@ -578,8 +578,8 @@ public class AdapterNode {
      * @return true if the underlying Node object for the two AdapterNodes is
      *         is the same.
      */
-    public boolean equals(AdapterNode node) {
-        return node.getNode() == m_domNode;
+    public boolean equals(Object node) {
+        return (node instanceof AdapterNode) && (((AdapterNode)node).getNode() == m_domNode);
     }//}}}
     
     //{{{ addAdapterNodeListener()
@@ -613,7 +613,7 @@ public class AdapterNode {
     //{{{ toString()
         
     public String toString() {
-        String s = new String();
+        String s = "";
         if (getNodeType() == Node.DOCUMENT_NODE)
             return "Document Root";
         String nodeName = getNodeName();

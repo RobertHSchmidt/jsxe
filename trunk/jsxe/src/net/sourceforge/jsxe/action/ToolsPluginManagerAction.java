@@ -68,7 +68,7 @@ public class ToolsPluginManagerAction extends AbstractAction {
     //{{{ actionPerformed()
     
     public void actionPerformed(ActionEvent e) {
-        PluginManagerDialog manager = new PluginManagerDialog(view);
+        new PluginManagerDialog(view);
     }//}}}
     
     //{{{ Private members

@@ -126,7 +126,7 @@ public abstract class ActionPlugin {
     
     //{{{ Broken class
     
-    public class Broken extends ActionPlugin {
+    public static class Broken extends ActionPlugin {
         
         //{{{ Broken constructor
         

@@ -74,7 +74,7 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         final JTextArea descArea = new JTextArea();
         final JScrollPane textView = new JScrollPane(descArea);
         
-        final JSplitPane centerPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, table, descArea);
+        final JSplitPane centerPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tableView, textView);
         
         JPanel content = new JPanel(new BorderLayout(12,12));
         content.setBorder(new EmptyBorder(12,12,12,12));
@@ -168,7 +168,7 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         //{{{ getColumnClass()
         
         public Class getColumnClass(int columnIndex) {
-            return (new String()).getClass();
+            return "".getClass();
         }//}}}
         
         //{{{ getColumnCount()

@@ -55,12 +55,12 @@ import net.sourceforge.jsxe.util.MiscUtilities;
 public class JARClassLoader extends ClassLoader {
     
     //{{{ Public static members
-    public static String PLUGIN_NAME    = "jsxe-plugin-name";
-    public static String PLUGIN_CLASS   = "jsxe-plugin-class";
-    public static String PLUGIN_VERSION = "jsxe-plugin-version";
-    public static String PLUGIN_URL     = "jsxe-plugin-url";
-    public static String PLUGIN_HUMAN_READABLE_NAME = "jsxe-plugin-human-readable-name";
-    public static String PLUGIN_DESCRIPTION = "jsxe-plugin-description";
+    public static final String PLUGIN_NAME    = "jsxe-plugin-name";
+    public static final String PLUGIN_CLASS   = "jsxe-plugin-class";
+    public static final String PLUGIN_VERSION = "jsxe-plugin-version";
+    public static final String PLUGIN_URL     = "jsxe-plugin-url";
+    public static final String PLUGIN_HUMAN_READABLE_NAME = "jsxe-plugin-human-readable-name";
+    public static final String PLUGIN_DESCRIPTION = "jsxe-plugin-description";
     //}}}
     
     //{{{ ClassLoader methods
@@ -133,7 +133,6 @@ public class JARClassLoader extends ClassLoader {
     protected URL findResource(String name) {
         Iterator filesItr = m_files.values().iterator();
         Iterator jarItr = m_jarFiles.values().iterator();
-        ArrayList urls = new ArrayList();
         
         while (jarItr.hasNext()) {
             try {
@@ -636,14 +635,15 @@ public class JARClassLoader extends ClassLoader {
         String pluginName = getManifestAttribute(jarfile, PLUGIN_NAME);
         
         if (getPlugin(pluginName) != null) {
-            throw new IOException("Plugin " + pluginName + " already loaded.");
+            throw new PluginLoadException("Plugin " + pluginName + " already loaded.");
         }
         
         if (mainPluginClass != null && pluginName != null) {
             
-            checkDependencies(jarfile);
-            
             try {
+                
+                checkDependencies(jarfile);
+                
                 Class pluginClass = loadClass(mainPluginClass);
                 
                 int modifiers = pluginClass.getModifiers();
@@ -677,10 +677,18 @@ public class JARClassLoader extends ClassLoader {
                 throw new IOException(e.getMessage());
             } catch (IllegalAccessException e) {
                 throw new IOException(e.getMessage());
+            } catch (PluginDependencyException e) {
+                m_actionPlugins.put(pluginName, new ActionPlugin.Broken());
+                throw e;
+            } catch (IOException e) {
+                m_actionPlugins.put(pluginName, new ActionPlugin.Broken());
+                throw e;
             }
+            
         } else {
             throw new PluginLoadException(jarfile, "No plugin class defined.");
         }
+        
     }//}}}
     
     //{{{ getManifestAttribute()
