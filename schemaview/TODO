@@ -1,2 +1,12 @@
 
-* Be able to display a simple graph representing a document
+* Build the flow layout so that nodes are formatted and displayed properly. They
+  should not overlap or cross edges.
+  
+* Make each node look nicer. They should have some padding between the border
+  and the text.
+
+* Implement an intermediate tree model between the graph model and the
+  XMLDocument that allows easy access to parent nodes and children. It will
+  also allow easier access to nodes for editing.
+
+* Begin to build in the editing features.
