@@ -21,6 +21,7 @@ TODO:
           characters and such.
         xml-declaration
         check-character-normalization
+        entities
 
 * Version 0.2.0
 
@@ -28,7 +29,6 @@ TODO:
       the dropped node to the drop target.
     
     * DOMSerializer needs to support the following parameters:
-        entities
         cdata-sections
         normalize-characters
         ignore-unknown-character-denormalizations
@@ -76,9 +76,6 @@ TODO:
     * Implement storing actions in an ActionSet or something so that actions
       can be retrieved easily.
     
-    * Make all menus and menu items have mnemonics so that the menus can
-      be navigated easily using the keyboard.
-    
     * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
       support for this. jsXe needs to recognize when a document has a DTD and
       deal with serializing to it if necessary.
@@ -108,6 +105,8 @@ TODO:
     
     * Redo gui actions to include key mnemonics etc. so it acts like you would
       expect.
+    
+    * Implement a find dialog.
     
     * Create a toolbar that is customizable much the same way jEdit's is.
 	    
@@ -167,15 +166,6 @@ TODO:
       or you run out of views.
     
     * Implement the xsl transformation feature as a plugin.
-    
-    * Rewrite existing views as plugins (maybe default view and source view are
-      built in?)
-    
-    * Add a way for jsXe to try to open a document in any of the installed views
-      before it shows errors saying it cannot open the document. i.e. If a
-      document is not validated try to open it in the requested view and if that
-      fails then open it in one of the remaining installed views until it works
-      or you run out of views.
     
     * Create a view that uses the view from pollo and implements the
       DocumentView interface.
