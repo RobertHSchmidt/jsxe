@@ -46,6 +46,7 @@ import net.sourceforge.jsxe.gui.TabbedView;
 //{{{ Swing components
 import javax.swing.Action;
 import javax.swing.AbstractAction;
+import javax.swing.KeyStroke;
 //}}}
 
 //{{{ AWT components
@@ -58,6 +59,8 @@ public class ToolsOptionsAction extends AbstractAction {
     
     public ToolsOptionsAction(TabbedView parent) {//{{{
         putValue(Action.NAME, "Options...");
+        putValue(Action.SHORT_DESCRIPTION, "Open jsXe's Options Dialog");
+        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
         view = parent;
     }//}}}
     

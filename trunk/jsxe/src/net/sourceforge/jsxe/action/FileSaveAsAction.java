@@ -58,6 +58,7 @@ import javax.swing.Action;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 //}}}
 
@@ -77,6 +78,8 @@ public class FileSaveAsAction extends AbstractAction {
     
     public FileSaveAsAction(TabbedView parent) {//{{{
         putValue(Action.NAME, "Save As...");
+        putValue(Action.SHORT_DESCRIPTION, "Save an XML Document");
+        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("A").getKeyCode()));
         view = parent;
     }//}}}
     
