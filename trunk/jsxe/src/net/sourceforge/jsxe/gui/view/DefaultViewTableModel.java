@@ -73,7 +73,7 @@ import java.util.Enumeration;
 
 public class DefaultViewTableModel implements TableModel {
     
-    public DefaultViewTableModel(Component parent, AdapterNode adapterNode) {//{{{
+    protected DefaultViewTableModel(Component parent, AdapterNode adapterNode) {//{{{
         currentNode = adapterNode;
         view=parent;
         updateTable(currentNode);
