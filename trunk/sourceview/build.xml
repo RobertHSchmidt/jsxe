@@ -31,7 +31,7 @@
     <property name="main.class" value="sourceview.SourceViewPlugin"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="3"/>
-		<property name="build.description" value="pre7"/>
+		<property name="build.description" value="pre9"/>
 		<property name="app.version" value="${major.version}.${minor.version} ${build.description}"/>
 		<property name="app_version" value="${major.version}_${minor.version}${build.description}"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
