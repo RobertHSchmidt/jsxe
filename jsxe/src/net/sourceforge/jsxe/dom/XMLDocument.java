@@ -77,31 +77,18 @@ import java.util.Vector;
 public abstract class XMLDocument {
     
     public XMLDocument(File file) {//{{{
-        props.setProperty("format.output", "true");
-        XMLFile = file;
-        if (file!=null) {
-            name = file.getName();
-            try {
-                XMLReader=new FileReader(file);
-            } catch (FileNotFoundException fnfe) {
-                System.out.println("File Not Found");
-            }
-        } else {
-            name = getUntitledLabel();
-        }
+        setModel(file);
         
     }//}}}
     
     public XMLDocument(Reader reader) {//{{{
-        props.setProperty("format.output", "true");
         name=getUntitledLabel();
-        XMLReader=reader;
+        setModel(reader);
     }//}}}
     
     public XMLDocument(String string) {//{{{
-        props.setProperty("format.output", "true");
         name=getUntitledLabel();
-        XMLReader=new StringReader(string);
+        setModel(string);
     }//}}}
     
     public abstract boolean validate(Component parent);
@@ -192,6 +179,31 @@ public abstract class XMLDocument {
             return save(view);
         }
         return true;
+    }//}}}
+    
+    public void setModel(File file) {//{{{
+        props.setProperty("format.output", "true");
+        XMLFile = file;
+        if (file!=null) {
+            name = file.getName();
+            try {
+                XMLReader=new FileReader(file);
+            } catch (FileNotFoundException fnfe) {
+                System.out.println("File Not Found");
+            }
+        } else {
+            name = getUntitledLabel();
+        }
+    }//}}}
+    
+    public void setModel(Reader reader) {//{{{
+        props.setProperty("format.output", "true");
+        XMLReader=reader;
+    }//}}}
+    
+    public void setModel(String string) {//{{{
+        props.setProperty("format.output", "true");
+        XMLReader=new StringReader(string);
     }//}}}
     
     //{{{ Private members

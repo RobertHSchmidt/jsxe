@@ -175,7 +175,7 @@ public class DefaultView extends DocumentView {
         return currentdoc;
     }//}}}
     
-    public void close() {//{{{
+    public void close(TabbedView view) {//{{{
         String vert = Integer.toString(vertSplitPane.getDividerLocation());
         String horiz = Integer.toString(horizSplitPane.getDividerLocation());
         
