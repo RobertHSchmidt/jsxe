@@ -39,6 +39,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.EnhancedDialog;
@@ -76,6 +77,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
     private static int m_dialogHeight = 200;
     private static int m_dialogWidth = 350;
     private static SourceViewSearchDialog m_dialog = null;
+    private static final String IGNORE_CASE = "source.ignore.case";
     //}}}
     
     //{{{ Public static members
@@ -110,7 +112,6 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         super(parentFrame, "Search and Replace", false);
         
         m_view = view;
-        m_textArea = m_view.getTextArea();
         
         JPanel frame = new JPanel();
         getContentPane().add(frame,BorderLayout.CENTER);
@@ -143,6 +144,10 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         m_replaceComboBox = new JComboBox();
         m_replaceComboBox.setName("ReplaceComboBox");
         m_replaceComboBox.setEditable(true);
+        
+        DocumentBuffer buffer = m_view.getDocumentBuffer();
+        boolean ignoreCase = Boolean.valueOf(jsXe.getProperty(IGNORE_CASE)).booleanValue();
+        m_ignoreCaseCheckBox = new JCheckBox("Ignore Case", ignoreCase);
         
         constraints.gridy      = 0;
         constraints.gridx      = 0;
@@ -198,6 +203,19 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         layout.setConstraints(m_replaceComboBox, constraints);
         frame.add(m_replaceComboBox);
         
+        constraints.gridy      = 4;
+        constraints.gridx      = 0;
+        constraints.gridheight = 1;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+        constraints.weightx    = 1.0f;
+        constraints.fill       = GridBagConstraints.BOTH;
+        constraints.insets     = new Insets(1,0,1,0);
+        
+        layout.setConstraints(m_ignoreCaseCheckBox, constraints);
+        frame.add(m_ignoreCaseCheckBox);
+        
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.add(findButton);
         buttonsPanel.add(replaceButton);
@@ -224,6 +242,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
     //{{{ cancel()
     
     public void cancel() {
+        jsXe.setProperty(IGNORE_CASE, String.valueOf(m_ignoreCaseCheckBox.isSelected()));
         dispose();
     }//}}}
     
@@ -248,7 +267,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         //{{{ actionPerformed()
         
         public void actionPerformed(ActionEvent e) {
-            dispose();
+            cancel();
         }//}}}
         
     }//}}}
@@ -271,34 +290,36 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         try {
             Object searchItem = m_findComboBox.getSelectedItem();
             Object replaceItem = m_replaceComboBox.getSelectedItem();
+            boolean ignoreCase = m_ignoreCaseCheckBox.isSelected();
             
             String search = "";
             if (searchItem != null) {
                 search = searchItem.toString();
             }
+            
             String replace = "";
             if (replaceItem != null) {
                 replace = replaceItem.toString();
-            } else {
-                JOptionPane.showMessageDialog(m_view, "replaceItem is null!", "Search Error", JOptionPane.WARNING_MESSAGE);
             }
             
-            RESearchMatcher matcher = new RESearchMatcher(search, replace, true);
+            RESearchMatcher matcher = new RESearchMatcher(search, replace, ignoreCase);
+            
+            JTextArea textArea = m_view.getTextArea();
             
             //replace previous text
             if (doReplace) {
-                String selText = m_textArea.getSelectedText();
+                String selText = textArea.getSelectedText();
                 if (selText != null && !selText.equals("")) { 
                     String replaceString = matcher.substitute(selText);
-                    int selStart = m_textArea.getSelectionStart();
-                    int selEnd = m_textArea.getSelectionEnd();
-                    m_textArea.replaceRange(replaceString, selStart, selEnd);
+                    int selStart = textArea.getSelectionStart();
+                    int selEnd = textArea.getSelectionEnd();
+                    textArea.replaceRange(replaceString, selStart, selEnd);
                 }
             }
             
             DocumentBuffer buffer = m_view.getDocumentBuffer();
             Segment seg = buffer.getSegment(0, buffer.getLength());
-            int caretPosition = m_textArea.getCaretPosition();
+            int caretPosition = textArea.getCaretPosition();
             CharIndexedSegment charSeg = new CharIndexedSegment(seg, caretPosition);
             
             int[] match = matcher.nextMatch(charSeg, false, true, true, false);
@@ -308,9 +329,9 @@ public class SourceViewSearchDialog extends EnhancedDialog {
             if (match != null) {
                 int start = match[0]+caretPosition;
                 int end = match[1]+caretPosition;
-                m_textArea.requestFocus();
-                m_textArea.setCaretPosition(start);
-                m_textArea.moveCaretPosition(end);
+                textArea.requestFocus();
+                textArea.setCaretPosition(start);
+                textArea.moveCaretPosition(end);
             }
             
             requestFocus();
@@ -323,7 +344,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
     private SourceView m_view;
     private JComboBox m_findComboBox;
     private JComboBox m_replaceComboBox;
-    private JTextArea m_textArea;
+    private JCheckBox m_ignoreCaseCheckBox;
     
     //}}}
 }

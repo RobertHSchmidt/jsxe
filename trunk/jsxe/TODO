@@ -23,8 +23,6 @@ TODO:
     
 * Version 0.3 beta (Plugin Support)
     
-    * Add an 'ignore case' option to the find dialog in the source view.
-    
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
     
@@ -58,6 +56,9 @@ TODO:
       then registered with jsXe. Much the same way that jEdit does.Is this
       really necessary? Can I achieve the same effect with actions that are not
       BeanShell actions?
+    
+    * Look at HistoryTextField and HistoryModel in jEdit. Use code from there
+      to implement a history text model for combo boxes in jsXe
     
     * Fully implement gui actions to include key mnemonics etc. so the actions
       act like you would expect. Allow users to define keys shortcuts to
@@ -130,6 +131,9 @@ TODO:
     * Make a splash screen that displays on startup.
     
     * Create a help system for jsXe.
+        * Create documentation for developing views with jsXe
+            * Document how to use actions and components to handle saving
+              settings and other general stuff.
     
 * Version 0.7 beta
     
