@@ -693,6 +693,16 @@ public class DOMSerializer implements LSSerializer {
                     column += str.length();
                     offset += str.length();
                     
+                    //need to add a newline so that the next item is on a new line
+                    //since text nodes are not included outside of the root element
+                    if (!formatting) {
+                        column = 0;
+                        str = m_newLine + currentIndent;
+                        doWrite(writer, str, node, line, column, offset);
+                        column += currentIndent.length();
+                        offset += str.length();
+                    }
+                    
                     break;//}}}
             }
         }
