@@ -67,7 +67,6 @@ import java.io.Reader;
 import java.io.FileReader;
 import java.io.StringReader;
 import java.util.Properties;
-import java.util.Enumeration;
 import java.util.Vector;
 //}}}
 
