@@ -2,15 +2,16 @@ BUILDING jsXe FROM SOURCE
 
 This is pretty simple. You will need jakarta ANT and a Sun's javac compiler.
 Also, in order for jsXe to compile properly you will need Apache Xerces
-installed. You should probobly have 1.3.1 or better of java and 2.3.0
-of Xerces. To build the distribution you will need to run the 'dist' target in
-the build.xml file. I to this by simply typing 'ant dist' or just 'ant'. 'dist'
-should be the default target. A Xerces 2.3.0 binary distribution is included in
-this source tree. You can aquire the source at http://xml.apache.org/
+installed. You should probobly have 1.3.1 or better of java and you will need
+2.6.0 of Xerces. To build the distribution you will need to run the 'dist'
+target in the build.xml file. I to this by simply typing 'ant dist' or just
+'ant'. 'dist' should be the default target. A Xerces 2.6.0 binary distribution
+is included in this source tree. You can aquire the source at
+http://xml.apache.org/
 
 RUNNING jsXe
 
-You should proboblyhave 1.3.1 or better of java and 2.3.0 of Xerces.
+You should probobly have 1.3.1 or better of java and you need 2.6.0 of Xerces.
 To run jsXe you should just run the java interpreter on the jsXe.jar file. There
 is a shell script or batch file included in the source tree for this purpose.
 
