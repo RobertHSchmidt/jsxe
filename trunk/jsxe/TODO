@@ -3,7 +3,10 @@ TODO:
     * Document methods with javadoc.
     
     * Change the DOMSerializer class to conform to the DOM3 standard DOMWriter
-      class.
+      interface. For encoding use the java.io.OutputStreamWriter class.
+    
+    * Use the Nodefilter interface with the DefaultView to determine which types
+      of nodes to show.
     
     * Allow for selecting multiple files when opening.
     
