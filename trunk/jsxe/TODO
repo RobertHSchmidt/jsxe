@@ -2,9 +2,9 @@ TODO:
 
     * Document methods with javadoc.
     
-    * Change the DOMSerializer class to conform to the DOM3 standard DOMWriter
-      interface. For encoding use the java.io.OutputStreamWriter class. Add an
-      encoding option to the option dialog. 
+    * Change the DOMSerializer class to conform to the DOM3 standard
+      DOMWriter (old) interface. For encoding use the java.io.OutputStreamWriter
+      class. Add an encoding option to the option dialog.
     
     * Fix bug that has to do with the DOM1 method createElement() making nodes
       so that localName returns null.
@@ -31,18 +31,21 @@ TODO:
     * Allow for opening files with wellformedness errors in source view. This
       way users can fix wellformedness errors in the editor.
     
+    * Update the DOM3 classes to the current version of the DOM3 interfaces.
+    
     * Release new version (0.2.1).
     
     * Add full support for namespaces. (adding, editing, serialization, etc.)
     
     * Currently AdapterNodes only wrap the Node interface and create new
-      instances of itself when queried. Have AdapterNode implement the Node
-      interface. This will allow the TreeModel to have a static model i.e. The
-      instances of AdapterNode won't change everytime the TreeModel is queried
-      by the JTree. e.g. Currently when I create a TreePath and call updateUI
-      the TreePath is no longer valid because it contains objects no longer in
-      the TreeModel. So when updating the UI I can't tell which Nodes were
-      previously visable.
+      instances of itself when queried. Have AdapterNode implement the TreeNode
+      interface and create a tree around the DOM so that new AdapterNodes are
+      not created on the fly. This will allow the TreeModel to have a static
+      model i.e. The instances of AdapterNode won't change everytime the
+      TreeModel is queried by the JTree. e.g. Currently when I create a TreePath
+      and call updateUI the TreePath is no longer valid because it contains
+      objects no longer in the TreeModel. So when updating the UI I can't tell
+      which Nodes were previously visable.
       
     * Redo the interface for XMLDocuments and AdapterNodes so that DOM
       implementation is abstracted away. Implement Document editing methods.
