@@ -84,7 +84,7 @@ public interface DocumentView {
     //{{{ getMenus()
     /**
      * Gets the menus that this view has associated with it. This can be
-     * used when the view is loaded to set the menu bar.
+     * used when the view is loaded to add extra menus to the menu bar.
      * @return the menus for this view
      */
     public JMenu[] getMenus();

@@ -519,6 +519,14 @@ public class TabbedView extends JFrame {
             m_toolsMenu.add(menuItem);
             menuItem = new JMenuItem(jsXe.getAction("plugin-manager"));
             m_toolsMenu.add(menuItem);
+            ArrayList plugins = jsXe.getPluginLoader().getAllPlugins();
+            for (int i=0; i<plugins.size(); i++) {
+                ActionPlugin plugin = (ActionPlugin)plugins.get(i);
+                JMenu pluginMenu = plugin.getPluginMenu();
+                if (pluginMenu != null) {
+                    m_toolsMenu.add(pluginMenu);
+                }
+            }
         //}}}
         
         //{{{ Create Help Menu

@@ -40,6 +40,7 @@ import net.sourceforge.jsxe.gui.OptionsPanel;
 
 //{{{ Swing classes
 import javax.swing.Action;
+import javax.swing.JMenu;
 //}}}
 
 //{{{ Java classes
@@ -123,6 +124,17 @@ public abstract class ActionPlugin {
      */
     public String getHumanReadableName() {
         return m_humanReadableName;
+    }//}}}
+    
+    //{{{ getPluginMenu()
+    /**
+     * Returns the menu that appears in the tools menu in jsXe. This can
+     * include menu items for actions that are included with the plugin.
+     * The default implementation returns null.
+     * @return the menu for this plugin.
+     */
+    public JMenu getPluginMenu() {
+        return null;
     }//}}}
     
     //{{{ getVersion()
