@@ -12,23 +12,20 @@ TODO:
       be thrown out? Then other classes would extend XMLDocument and have
       methods specific to their application of XML?
     
-    * DOMSerializer needs to support the following parameters:
-        entities
-        cdata-sections
-        normalize-characters
-        ignore-unknown-character-denormalizations
-        split-cdata-sections
-    * DOMSerializer should support the following parameters:
+    & DOMSerializer should support the following parameters:
         well-formed
             - Is this necessary? The DOM representation can't really be
               non-well-formed can it? It provides error checking for invalid
               characters and such.
         xml-declaration
         check-character-normalization
-    
-    * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
-      support for this. jsXe needs to recognize when a document has a DTD and
-      deal with serializing to it if necessary.
+      
+    * DOMSerializer needs to support the following parameters:
+        entities
+        cdata-sections
+        normalize-characters
+        ignore-unknown-character-denormalizations
+        split-cdata-sections
     
     * Make sure jsXe can deal with all types of XML nodes.
         * Add support for creating every type of XML node.
@@ -36,8 +33,19 @@ TODO:
           Certain characters and character sequences will need to be converted
           to entities.
     
+    * Add relevent command-line option parsing to jsXe. At least things like
+      '--version' and '--help' should be present.
+    
+    * Add drag & drop functionality to the default view tree
+    
+    * Add minimal support for namespaces.
+    
+    * Release new version (0.2.0), jsXe needs to be at least usable.
+    
     * Make the XML document declaration header non-editable in source-view
       mode. (how?) Update it when the user changes options in the options panel.
+    
+    * Refactor the class structure and DocumentView classes
     
     * Fix the options dialog and make it look better. Maybe split into two
       dialogs, global options and view/document specific? Maybe even three
@@ -46,14 +54,9 @@ TODO:
       option categories. So that way jsXe can have separate options for
       serialization and visualization and ...
     
-    * Add relevent command-line option parsing to jsXe. At least things like
-      '--version' and '--help' should be present.
-    
-    * Add drag & drop functionality to the default view.
-    
-    * Add minimal support for namespaces.
-    
-    * Release new version (0.2.0), jsXe needs to be at least usable.
+    * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
+      support for this. jsXe needs to recognize when a document has a DTD and
+      deal with serializing to it if necessary.
     
     * Build an adapter for DocumentBuilder so that it implements the DOM3
       standard DOMBuilder interface? Maybe use it with DOMSerializer to created

@@ -79,9 +79,9 @@ public class XMLDocumentFactory {
         //Document type validation is pretty simple right now
         if (docType == "xmldocument.default") {
             if (m_entityResolver != null) {
-                return new DefaultXMLDocument(reader, m_entityResolver);
+                return new XMLDocument(reader, m_entityResolver);
             } else {
-                return new DefaultXMLDocument(reader);
+                return new XMLDocument(reader);
             }
         } else {
             throw new UnrecognizedDocTypeException();

@@ -46,10 +46,8 @@ import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
-//{{{ Swing components
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
+//{{{
+import javax.swing.*;
 //}}}
 
 //{{{ Java base classes
