@@ -86,8 +86,6 @@ TODO:
       serialization and visualization and etc. General options should set
       defaults and application level options and the document options should
       set document/view level options.
-     
-    
     
     * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
       support for this. jsXe needs to recognize when a document has a DTD and
@@ -112,6 +110,9 @@ TODO:
       highly dependent on Xerces.
     
     * Implement undo for the DefaultView and SourceView.
+    
+    * Update the package structures to be a bit better before releasing next
+      beta version
     
 * Version 0.3 beta
     
