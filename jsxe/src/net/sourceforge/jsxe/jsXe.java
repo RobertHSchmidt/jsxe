@@ -192,44 +192,45 @@ public class jsXe {
         //}}}
         
         //{{{ load plugins
-       // try {
-       //     
-       //     JARClassLoader loader = new JARClassLoader();
-       //     ArrayList list = loader.addDirectory(settingsDirectory+"/plugins");
-       //     if (list.size() != 0) {
-       //         System.out.println("COULD NOT LOAD: "+list.get(0).toString());
-       //     } else {
-       //         Class cls = loader.loadClass("test.DOMTest");
-       //         Class cls2 = loader.loadClass("test.DOMTest2");
-       //         System.out.println(cls.getName());
-       //         System.out.println(cls.newInstance().toString());
-       //         System.out.println(cls2.getName());
-       //         System.out.println(cls2.newInstance().toString());
-       //     }
-       // } catch (ClassNotFoundException blah) {
-       //     System.out.println("NOT FOUND: "+blah.getMessage());
-       // } catch (InstantiationException e) {
-       //     System.out.println(e.getMessage());
-       // } catch (IllegalAccessException e) {
-       //     System.out.println(e.getMessage());
-       // }
-        
-       m_pluginLoader = new JARClassLoader();
-       ArrayList errors = m_pluginLoader.addDirectory(pluginsDirectory);
-       if (errors.size() != 0) {
-           for (int i=0; i<errors.size(); i++) {
-               System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
-           }
-       }
        
-       errors = m_pluginLoader.startPlugins();
-       if (errors.size() != 0) {
-           for (int i=0; i<errors.size(); i++) {
-               System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
-           }
-       }
+        m_pluginLoader = new JARClassLoader();
+        ArrayList errors = m_pluginLoader.addDirectory(pluginsDirectory);
+        if (errors.size() != 0) {
+            for (int i=0; i<errors.size(); i++) {
+                System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
+            }
+        }
+       
+        errors = m_pluginLoader.startPlugins();
+        if (errors.size() != 0) {
+            for (int i=0; i<errors.size(); i++) {
+                System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
+            }
+        }
         
-        //Code to load plugins here.
+        //load properties into jsXe's properties
+        Iterator viewItr = m_pluginLoader.getViewPlugins().iterator();
+        while (viewItr.hasNext()) {
+            ActionPlugin plugin = (ActionPlugin)viewItr.next();
+            Properties props = plugin.getProperties();
+            Enumeration names = props.propertyNames();
+            while (names.hasMoreElements()) {
+                String name = names.nextElement().toString();
+                setProperty(name, props.getProperty(name));
+            }
+        }
+        
+        // do the same for action plugins
+        Iterator actionItr = m_pluginLoader.getActionPlugins().iterator();
+        while (actionItr.hasNext()) {
+            ActionPlugin plugin = (ActionPlugin)actionItr.next();
+            Properties props = plugin.getProperties();
+            Enumeration names = props.propertyNames();
+            while (names.hasMoreElements()) {
+                String name = names.nextElement().toString();
+                setProperty(name, props.getProperty(name));
+            }
+        }
         
         //}}}
         
