@@ -45,11 +45,11 @@ import org.w3c.dom.Node;
 //}}}
 
 public class AdapterNode {
-
+    
     public AdapterNode(Node node) {//{{{
         domNode = node;
     }//}}}
-
+    
     public String toString() {//{{{
         String s = new String();
         if (typeName[domNode.getNodeType()].equals("Document"))
@@ -67,7 +67,7 @@ public class AdapterNode {
         }
         return s;
     }//}}}
-
+    
     public int index(AdapterNode child) {//{{{
         int count = childCount();
         for (int i=0; i<count; i++) {
@@ -77,17 +77,17 @@ public class AdapterNode {
         //Returns here when child not in tree
         return -1;
     }//}}}
-
+    
     public AdapterNode child(int searchIndex) {//{{{
         //Note: JTree index is zero-based.
         Node node = domNode.getChildNodes().item(searchIndex);
         return new AdapterNode(node);
     }//}}}
-
+    
     public int childCount() {//{{{
         return domNode.getChildNodes().getLength();
     }//}}}
-
+    
     public boolean canEditInJTree() {//{{{
         boolean value = false;
         short nodeType = domNode.getNodeType();
@@ -99,19 +99,19 @@ public class AdapterNode {
     public Node getNode() {//{{{
         return domNode;
     }//}}}
-
+    
     public String getNodeValue() {//{{{
         return domNode.getNodeValue();
     }//}}}
-
+    
     public NamedNodeMap getAttributes() {//{{{
         return domNode.getAttributes();
     }//}}}
-
+    
     public short getNodeType() {//{{{
         return domNode.getNodeType();
     }//}}}
-
+    
         /*
     *************************************************
     Private Data Fields
@@ -134,5 +134,5 @@ public class AdapterNode {
     };
     private Node domNode;
     //}}}
-
+    
 }

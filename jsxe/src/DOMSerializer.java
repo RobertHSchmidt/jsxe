@@ -58,8 +58,8 @@ import java.io.Writer;
 //}}}
 
 public class DOMSerializer {
-
-    public DOMSerializer(boolean formatting) {
+    
+    public DOMSerializer(boolean formatting) {//{{{
         formatText = formatting;
         if (formatText) {
             indent = "    ";
@@ -68,23 +68,22 @@ public class DOMSerializer {
             indent = "";
             lineSeparator = "";
         }
-    }
+    }//}}}
     
-    public void serialize(Document doc, OutputStream out) throws IOException {
+    public void serialize(Document doc, OutputStream out) throws IOException {//{{{
         serialize(doc, new OutputStreamWriter(out));
-    }
+    }//}}}
     
-    public void serialize(Document doc, File file) throws IOException {
+    public void serialize(Document doc, File file) throws IOException {//{{{
         serialize(doc, new FileWriter(file));
-    }
+    }//}}}
     
-    public void serialize(Document doc, Writer writer) throws IOException {
+    public void serialize(Document doc, Writer writer) throws IOException {//{{{
         serializeNode(doc, writer, "");
         writer.flush();
-    }
+    }//}}}
     
-    public void serializeNode(Node node, Writer writer, String indentLevel)
-    throws IOException {
+    public void serializeNode(Node node, Writer writer, String indentLevel) throws IOException {//{{{
         switch (node.getNodeType()) {
             case Node.DOCUMENT_NODE:
                 writer.write("<?xml version=\"1.0\"?>");
@@ -165,9 +164,15 @@ public class DOMSerializer {
                 writer.write(lineSeparator);
                 break;
         }
-    }
+    }//}}}
     
+    /*
+    *************************************************
+    Private Data Fields
+    *************************************************
+    *///{{{
     private boolean formatText;
     private String indent;
     private String lineSeparator;
+    //}}}
 }
