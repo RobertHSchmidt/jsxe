@@ -33,11 +33,6 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.gui.view;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.*;
@@ -52,7 +47,10 @@ import javax.swing.tree.*;
 //}}}
 
 //{{{ AWT components
-import java.awt.*;
+import java.awt.Point;
+import java.awt.Component;
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
 import java.awt.event.*;
 //}}}
 
@@ -63,8 +61,7 @@ import org.w3c.dom.Node;
 
 //{{{ Java base classes
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.*;
 //}}}
 
 //}}}
@@ -76,8 +73,8 @@ public class DefaultViewTree extends JTree {
     public DefaultViewTree() {
         
         //{{{ intitalize Drag n Drop
-       // m_dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_MOVE, treeDGListener);
-       // m_dropTarget = new DropTarget(this, DnDConstants.ACTION_MOVE, treeDTListener, true);
+        m_dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_MOVE, m_treeDGListener);
+        m_dropTarget = new DropTarget(this, m_acceptableActions, m_treeDTListener, true);
         //}}}
         
         addMouseListener(new TreePopupListener());
@@ -97,6 +94,8 @@ public class DefaultViewTree extends JTree {
     public static boolean isEditable(AdapterNode node) {
         return (node.getNodeType() == Node.ELEMENT_NODE);
     }//}}}
+    
+    //{{{ Private members
     
     //{{{ TreePopupListener class
     
@@ -298,10 +297,10 @@ public class DefaultViewTree extends JTree {
                     setToolTipText("Comment Node");
                     break;
                 case Node.ENTITY_REFERENCE_NODE:
-                    setIcon(m_externalEntityIcon);
-                    setLeafIcon(m_externalEntityIcon);
-                    setOpenIcon(m_externalEntityIcon);
-                    setClosedIcon(m_externalEntityIcon);
+                    setIcon(m_internalEntityIcon);
+                    setLeafIcon(m_internalEntityIcon);
+                    setOpenIcon(m_internalEntityIcon);
+                    setClosedIcon(m_internalEntityIcon);
                     setToolTipText("Entity Reference");
                     break;
                 case Node.DOCUMENT_NODE:
@@ -370,199 +369,198 @@ public class DefaultViewTree extends JTree {
     }//}}}
 
     //{{{ Drag n Drop classes
-//    
-//    //{{{ TransferableNode class
-//    
-//    private class TransferableNode implements Transferable {
-//        
-//        //{{{ TransferableNode constructor
-//        
-//        public TransferableNode(AdapterNode node) {
-//            m_node = node;
-//        }//}}}
-//        
-//        //{{{ getTransferDataFlavors()
-//        
-//        public synchronized DataFlavor[] getTransferDataFlavors() {
-//            return flavors;
-//        }//}}}
-//        
-//        //{{{ isDataFlavorSupported()
-//        
-//        public boolean isDataFlavorSupported(DataFlavor flavor) {
-//            return (flavorList.contains(flavor));
-//        }//}}}
-//        
-//        //{{{ getTransferData()
-//        
-//        public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-//            if (stringFlavor.equals(flavor)) {
-//                return m_node.serializeToString();
-//            } else {
-//                if (plainTextFlavor.equals(flavor)) {
-//                    //Maybe I'll make this more robust if needed.
-//                    String charset = flavor.getParameter("charset").trim();
-//                    if (charset.equalsIgnoreCase("unicode")) {
-//                        return new ByteArrayInputStream(this.string.getBytes("Unicode"));
-//                    } else {
-//                        return new ByteArrayInputStream(this.string.getBytes("iso8859-1"));
-//                    }
-//                } else {
-//                    if (nodeFlavor.equals(flavor)) {
-//                        return m_node;
-//                    } else {
-//                        throw new UnsupportedFlavorException(flavor);
-//                    }
-//                }
-//            }
-//        }//}}}
-//        
-//        //{{{ Private Members
-//        private static final DataFlavor stringFlavor = DataFlavor.stringFlavor;
-//        private static final DataFlavor plainTextFlavor = DataFlavor.plainTextFlavor;
-//        private static final DataFlavor nodeFlavor = new DataFlavor(Class.forName("net.sourceforge.jsxe.dom.AdapterNode"), "XML Node");
-//        
-//        private static final DataFlavor[] flavors = {
-//            plainTextFlavor,
-//            stringFlavor,
-//            nodeFlavor
-//        };
-//
-//        private static final List flavorList = Arrays.asList( flavors );
-//        private AdapterNode m_node;
-//        //}}}
-//        
-//    }//}}}
-//    
-//    //{{{ TreeDragGestureListener class
-//    
-//    private class TreeDragGestureListener implements DragGestureListener {
-//        
-//        //{{{ dragGestureRecognized()
-//        
-//        public void dragGestureRecognized(DragGestureEvent dge) {
-//            try {
-//                Point origin = e.getDragOrigin();
-//                TreePath path = tree.getPathForLocation(origin.getX(), origin.getY());
-//                AdapterNode node = (AdapterNode)path.getLastPathComponent();
-//                Transferable transferable = new TransferableNode(AdapterNode);
-//                dragSource.startDrag(e, DragSource.DefaultCopyNoDrop, transferable, m_treeDSListener);
-//            } catch( InvalidDnDOperationException idoe ) {
-//                System.err.println( idoe );
-//            }
-//        }//}}}
-//        
-//    }//}}}
-//    
-//    //{{{ DefaultViewDragSourceListener class
-//    
-//    private DefaultViewDragSourceListener implements DragSourceListener {
-//        
-//        //{{{ dragEnter()
-//        
-//        public void dragEnter(DragSourceDragEvent e) {
-//            DragSourceContext context = e.getDragSourceContext();
-//            
-//            int myaction = e.getDropAction();
-//            if ((myaction & DnDConstants.ACTION_MOVE) != 0) {
-//                context.setCursor(DragSource.DefaultMoveDrop);   
-//            } else {
-//                context.setCursor(DragSource.DefaultMoveNoDrop);   
-//            }
-//        }//}}}
-//        
-//        //{{{ dragDropEnd()
-//        
-//        public void dragDropEnd(DragSourceDropEvent dsde) {
-//            if ( e.getDropSuccess() == false ) {
-//                return;
-//            }
-//            
-//            int dropAction = e.getDropAction();
-//            if ( dropAction == DnDConstants.ACTION_MOVE ) {
-//                //***** Do stuff *****
-//            }
-//        }//}}}
-//        
-//        //{{{ dragExit()
-//        
-//        public void dragExit(DragSourceEvent dse) {
-//            
-//        }//}}}
-//        
-//        //{{{ dragOver()
-//        
-//        public void dragOver(DragSourceDragEvent dsde) {
-//            
-//        }//}}}
-//        
-//        //{{{ dropActionChanged()
-//        
-//        public void dropActionChanged(DragSourceDragEvent dsde) {
-//            
-//        }//}}}
-//        
-//    }//}}}
-//    
-//    //{{{ DefaultViewDropTargetListener class
-//    
-//    private class TreeDropTargetListener implements DropTargetListener {
-//        
-//        public void dragEnter(DropTargetDragEvent e) {
-//            if (isDragOk(e) == false) {
-//                e.rejectDrag();      
-//                return;
-//            }
-//            
-//            e.acceptDrag(DnDConstants.ACTION_MOVE);
-//        }
-//        
-//        public void dragOver(DropTargetDragEvent e) {
-//            if (isDragOk(e) == false) {
-//                e.rejectDrag();      
-//                return;
-//            }
-//            e.acceptDrag(DnDConstants.ACTION_MOVE);      
-//        }
-//    
-//        public void dropActionChanged(DropTargetDragEvent e) {
-//            if(isDragOk(e) == false) {
-//                e.rejectDrag();      
-//                return;
-//            }
-//            e.acceptDrag(DnDConstants.ACTION_MOVE);      
-//        }
-//        
-//        public void dragExit(DropTargetEvent e) {
-//            DropLabel.this.borderColor=Color.green;            
-//            showBorder(false);
-//        }
-//        
-//        private boolean isDragOk(DropTargetDragEvent e) {
-//            DataFlavor nodeFlavor = new DataFlavor();
-//            if (e.isDataFlavorSupported(nodeFlavor)) {
-//                chosen = flavors[i];
-//            }
-//
-//            // we're saying that these actions are necessary      
-//            if ((e.getSourceActions() & DnDConstants.ACTION_MOVE) == 0) {
-//                return false;
-//            }
-//            return true;
-//        }
-//        
-//    }//}}}
-//    
+    
+    //{{{ TreeDragGestureListener class
+    
+    private class TreeDragGestureListener implements DragGestureListener {
+        
+        //{{{ dragGestureRecognized()
+        
+        public void dragGestureRecognized(DragGestureEvent dge) {
+            try {
+                Point origin = dge.getDragOrigin();
+                TreePath path = getPathForLocation(origin.x, origin.y);
+                AdapterNode node = (AdapterNode)path.getLastPathComponent();
+                Transferable transferable = new TransferableNode(node);
+                m_dragSource.startDrag(dge, DragSource.DefaultCopyNoDrop, transferable, m_treeDSListener);
+            } catch( InvalidDnDOperationException idoe ) {
+                jsXe.exiterror(null, idoe.getMessage(), 1);
+            }
+        }//}}}
+        
+    }//}}}
+    
+    //{{{ DefaultViewDragSourceListener class
+    
+    private class DefaultViewDragSourceListener implements DragSourceListener {
+        
+        //{{{ dragEnter()
+        
+        public void dragEnter(DragSourceDragEvent dsde) {
+            DragSourceContext context = dsde.getDragSourceContext();
+            
+            int myaction = dsde.getDropAction();
+            if ((myaction & DnDConstants.ACTION_MOVE) != 0) {
+                context.setCursor(DragSource.DefaultMoveDrop);   
+            } else {
+                context.setCursor(DragSource.DefaultMoveNoDrop);   
+            }
+        }//}}}
+        
+        //{{{ dragDropEnd()
+        
+        public void dragDropEnd(DragSourceDropEvent dsde) {
+            if ( dsde.getDropSuccess() == false ) {
+                return;
+            }
+            
+            int dropAction = dsde.getDropAction();
+            if ( dropAction == DnDConstants.ACTION_MOVE ) {
+                //***** Do stuff *****
+            }
+        }//}}}
+        
+        //{{{ dragExit()
+        
+        public void dragExit(DragSourceEvent dse) {
+            
+        }//}}}
+        
+        //{{{ dragOver()
+        
+        public void dragOver(DragSourceDragEvent dsde) {
+            
+        }//}}}
+        
+        //{{{ dropActionChanged()
+        
+        public void dropActionChanged(DragSourceDragEvent dsde) {
+            
+        }//}}}
+        
+    }//}}}
+    
+    //{{{ DefaultViewDropTargetListener class
+    
+    private class TreeDropTargetListener implements DropTargetListener {
+        
+        //{{{ dragEnter
+        
+        public void dragEnter(DropTargetDragEvent dtde) {
+            if (isDragOk(dtde) == false) {
+                dtde.rejectDrag();      
+                return;
+            }
+            
+            dtde.acceptDrag(DnDConstants.ACTION_MOVE);
+        }//}}}
+        
+        //{{{ drop()
+        
+        public void drop(DropTargetDropEvent dtde) {
+            if (!dtde.isDataFlavorSupported(TransferableNode.nodeFlavor)) {
+                dtde.rejectDrop();
+                return;
+            }
+            
+            if ((dtde.getSourceActions() & m_acceptableActions ) == 0 ) {
+                dtde.rejectDrop();
+                return;
+            }
+            
+            DataFlavor chosen = TransferableNode.nodeFlavor;
+            
+            Object data = null;
+            try {
+                data = dtde.getTransferable().getTransferData(chosen);
+            } catch (UnsupportedFlavorException ufe) {
+                jsXe.exiterror(null, ufe.getMessage(), 1);
+            } catch (IOException ioe) {
+                jsXe.exiterror(null, ioe.getMessage(), 1);
+            }
+            
+            if (data == null)
+                throw new NullPointerException();
+            
+            AdapterNode node = (AdapterNode)data;
+            Point loc = dtde.getLocation();
+            
+            TreePath path = getPathForLocation(loc.x, loc.y);
+            AdapterNode parentNode = (AdapterNode)path.getLastPathComponent();
+            
+            try {
+                //Make sure the node is removed from it's previous parent
+                AdapterNode oldParent = node.getParentNode();
+                if (oldParent != null) {
+                    oldParent.remove(node);
+                }
+                parentNode.addAdapterNode(node);
+                dtde.acceptDrop(m_acceptableActions);
+            } catch (DOMException dome) {
+                dtde.rejectDrop();
+                JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+            }
+            
+            dtde.dropComplete(true);
+            updateUI();
+        }//}}}
+        
+        //{{{ dragOver
+        
+        public void dragOver(DropTargetDragEvent dtde) {
+            if (isDragOk(dtde) == false) {
+                dtde.rejectDrag();      
+                return;
+            }
+            dtde.acceptDrag(DnDConstants.ACTION_MOVE);      
+        }//}}}
+        
+        //{{{ dropActionChanged
+        
+        public void dropActionChanged(DropTargetDragEvent dtde) {
+            if(isDragOk(dtde) == false) {
+                dtde.rejectDrag();      
+                return;
+            }
+            dtde.acceptDrag(DnDConstants.ACTION_MOVE);      
+        }//}}}
+        
+        //{{{ dragExit
+        
+        public void dragExit(DropTargetEvent dte) {}//}}}
+        
+        //{{{ Private Members
+        
+        //{{{ isDragOk()
+        
+        private boolean isDragOk(DropTargetDragEvent dtde) {
+            //maybe someday I can accept text
+            if (!dtde.isDataFlavorSupported(TransferableNode.nodeFlavor)) {
+                return false;
+            }
+
+            // we're saying that these actions are necessary      
+            if ((dtde.getSourceActions() & m_acceptableActions) == 0) {
+                return false;
+            }
+            return true;
+        }//}}}
+        
+        //}}}
+        
+    }//}}}
+    
     //}}}
 
     //{{{ Instance variables
     
     //{{{ Drag and Drop instance variables
-   // private DragSource m_dragSource = DragSource.getDefaultDragSource();
-   // private DragGestureListener m_treeDGListener = new TreeDragGestureListener();
-   // private DragSourceListener m_treeDSListener = new ;
-   // private DropTarget m_dropTarget ;
-   // private DropTargetListener m_treeDTListener = new TreeDropTargetListener();
+    private DragSource m_dragSource = DragSource.getDefaultDragSource();
+    private DragGestureListener m_treeDGListener = new TreeDragGestureListener();
+    private DragSourceListener m_treeDSListener = new DefaultViewDragSourceListener();
+    private DropTarget m_dropTarget;
+    private DropTargetListener m_treeDTListener = new TreeDropTargetListener();
+    private int m_acceptableActions = DnDConstants.ACTION_MOVE;
     //}}}
 
     //{{{ Icons
@@ -570,9 +568,11 @@ public class DefaultViewTree extends JTree {
     private static final ImageIcon m_textIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Text.png"), "Text");
     private static final ImageIcon m_CDATAIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/CDATA.png"), "CDATA");
     private static final ImageIcon m_commentIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Comment.png"), "Comment");
-    private static final ImageIcon m_externalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/ExternalEntity.png"), "External Entity");
-   // private static final ImageIcon m_internalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/InternalEntity.png"), "Internal Entity");
+   // private static final ImageIcon m_externalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/ExternalEntity.png"), "External Entity");
+    private static final ImageIcon m_internalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/InternalEntity.png"), "Internal Entity");
    //}}}
+
+    //}}}
 
     //}}}
 }

@@ -19,7 +19,11 @@ TODO:
               characters and such.
         xml-declaration
         check-character-normalization
-      
+    
+    * Fix the tree node editing compatibility with drag n drop. If you select a
+      node then click again to drag it drags and begins editing at the same time
+      which causes problems.
+    
     * DOMSerializer needs to support the following parameters:
         entities
         cdata-sections
@@ -39,6 +43,8 @@ TODO:
     * Add drag & drop functionality to the default view tree
     
     * Add minimal support for namespaces.
+    
+    * Clean up code. Be consistent about fold marks. Alphabetize methods.
     
     * Release new version (0.2.0), jsXe needs to be at least usable.
     
