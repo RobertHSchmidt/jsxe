@@ -41,16 +41,32 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.CustomFileFilter;
+import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.TabbedView;
+//}}}
+
+//{{{ DOM classes
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import javax.xml.parsers.ParserConfigurationException;
 //}}}
 
 //{{{ Swing components
 import javax.swing.Action;
 import javax.swing.AbstractAction;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 //}}}
 
 //{{{ AWT components
 import java.awt.event.ActionEvent;
+//}}}
+
+//{{{ Java base classes
+import java.io.IOException;
+import java.util.Vector;
 //}}}
 
 //}}}
@@ -63,7 +79,60 @@ public class FileSaveAsAction extends AbstractAction {
     }//}}}
     
     public void actionPerformed(ActionEvent e) {//{{{
-        view.getDocumentView().getXMLDocument().saveAs(view);
+        
+        XMLDocument doc = view.getDocumentView().getXMLDocument();
+        //  if XMLFile is null, defaults to home directory
+        JFileChooser saveDialog = new JFileChooser(doc.getFile());
+        saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
+        saveDialog.setDialogTitle("Save As");
+        
+        //Add a filter to display only XML files
+        Vector extentionList = new Vector();
+        extentionList.add(new String("xml"));
+        CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
+        saveDialog.addChoosableFileFilter(firstFilter);
+        //Add a filter to display only XSL files
+        extentionList = new Vector();
+        extentionList.add(new String("xsl"));
+        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
+        //Add a filter to display only XSL:FO files
+        extentionList = new Vector();
+        extentionList.add(new String("fo"));
+        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
+        //Add a filter to display all formats
+        extentionList = new Vector();
+        extentionList.add(new String("xml"));
+        extentionList.add(new String("xsl"));
+        extentionList.add(new String("fo"));
+        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "All XML Documents"));
+        
+        //The "All Files" file filter is added to the dialog
+        //by default. Put it at the end of the list.
+        FileFilter all = saveDialog.getAcceptAllFileFilter();
+        saveDialog.removeChoosableFileFilter(all);
+        saveDialog.addChoosableFileFilter(all);
+        saveDialog.setFileFilter(firstFilter);
+        
+        int returnVal = saveDialog.showSaveDialog(view);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            try {
+                
+                doc.saveAs(saveDialog.getSelectedFile());
+                view.update();
+                
+            } catch(SAXParseException spe) {
+                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+            }
+            catch (SAXException sxe) {
+                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+            }
+            catch (ParserConfigurationException pce) {
+                JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
+            }
+            catch (IOException ioe) {
+                JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            }
+        }
     }//}}}
     
     //{{{ Private members

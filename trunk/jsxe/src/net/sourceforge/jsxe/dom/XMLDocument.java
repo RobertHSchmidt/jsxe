@@ -43,18 +43,6 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.CustomFileFilter;
-import net.sourceforge.jsxe.gui.TabbedView;
-//}}}
-
-//{{{ Swing classes
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
-//}}}
-
-//{{{ AWT classes
-import java.awt.Component;
 //}}}
 
 //{{{ DOM classes
@@ -105,11 +93,9 @@ public abstract class XMLDocument {
         return props.getProperty(key, defaultValue);
     }//}}}
     
-    public abstract boolean save(TabbedView view);
+    public abstract void save() throws IOException, SAXParseException, SAXException, ParserConfigurationException;
     
-    public abstract boolean save(TabbedView view, File file);
-    
-    public abstract boolean saveAs(TabbedView view);
+    public abstract void saveAs(File file) throws IOException, SAXParseException, SAXException, ParserConfigurationException;
     
     public abstract void setModel(File file) throws FileNotFoundException, IOException;
     

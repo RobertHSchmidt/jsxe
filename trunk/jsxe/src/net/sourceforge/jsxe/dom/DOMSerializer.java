@@ -76,16 +76,20 @@ public class DOMSerializer {
     }//}}}
     
     public void serialize(Document doc, OutputStream out) throws IOException {//{{{
-        serialize(doc, new OutputStreamWriter(out));
+        if (doc != null && out != null)
+            serialize(doc, new OutputStreamWriter(out));
     }//}}}
     
     public void serialize(Document doc, File file) throws IOException {//{{{
-        serialize(doc, new FileWriter(file));
+        if (file != null && doc != null)
+            serialize(doc, new FileWriter(file));
     }//}}}
     
     public void serialize(Document doc, Writer writer) throws IOException {//{{{
-        serializeNode(doc, writer, "");
-        writer.flush();
+        if (doc != null && writer != null) {
+            serializeNode(doc, writer, "");
+            writer.flush();
+        }
     }//}}}
     
     private void serializeNode(Node node, Writer writer, String indentLevel) throws IOException {//{{{
