@@ -247,10 +247,7 @@ public class DefaultView extends DocumentView {
             
             setLayout(layout);
             
-            constraints.fill = GridBagConstraints.NORTHWEST;
-            constraints.gridwidth = GridBagConstraints.REMAINDER;
-            constraints.anchor = GridBagConstraints.NORTHWEST;
-           // constraints.insets = new Insets(1,0,1,0);
+            int gridY = 0;
             
             boolean showCommentNodes = Boolean.valueOf(currentDoc.getProperty(viewname+".show.comment.nodes", "false")).booleanValue();
             boolean showEmptyNodes = Boolean.valueOf(currentDoc.getProperty(viewname+".show.empty.nodes", "false")).booleanValue();
@@ -260,10 +257,36 @@ public class DefaultView extends DocumentView {
             showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
             ContinuousLayoutCheckBox = new JCheckBox("Continuous layout for split-panes",continuousLayout);
             
+            constraints.gridy      = gridY++;
+            constraints.gridx      = 1;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
             layout.setConstraints(showCommentsCheckBox, constraints);
             add(showCommentsCheckBox);
+            
+            constraints.gridy      = gridY++;
+            constraints.gridx      = 1;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
             layout.setConstraints(showEmptyNodesCheckBox, constraints);
             add(showEmptyNodesCheckBox);
+            
+            constraints.gridy      = gridY++;
+            constraints.gridx      = 1;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
             layout.setConstraints(ContinuousLayoutCheckBox, constraints);
             add(ContinuousLayoutCheckBox);
         }//}}}

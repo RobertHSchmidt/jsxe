@@ -121,6 +121,7 @@ public class DefaultXMLDocument extends XMLDocument {
             DOMSerializer.DOMSerializerConfiguration config = new DOMSerializer.DOMSerializerConfiguration();
             config.setParameter("format-output", getProperty("format-output"));
             config.setParameter("whitespace-in-element-content", getProperty("whitespace-in-element-content"));
+            config.setParameter("indent", new Integer(getProperty("indent")));
             DOMSerializer serializer = new DOMSerializer(config);
             serializer.setEncoding(getProperty("encoding"));
             return serializer.writeToString(getDocument());
@@ -215,6 +216,7 @@ public class DefaultXMLDocument extends XMLDocument {
         setProperty("format-output", "false");
         setProperty("whitespace-in-element-content", "true");
         setProperty("encoding", "UTF-8");
+        setProperty("indent", "4");
     }//}}}
     
     private Document document;
