@@ -73,6 +73,12 @@ TODO:
       option categories. So that way jsXe can have separate options for
       serialization and visualization and ...
     
+    * Implement storing actions in an ActionSet or something so that actions
+      can be retrieved easily.
+    
+    * Make all menus and menu items have mnemonics so that the menus can
+      be navigated easily using the keyboard.
+    
     * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
       support for this. jsXe needs to recognize when a document has a DTD and
       deal with serializing to it if necessary.
@@ -91,10 +97,6 @@ TODO:
       methods? Can I eventually make my own DOM implementation?
     
     * Implement undo for the DefaultView and SourceView.
-    
-    * Rewrite how source text is stored in the XMLDocument and
-      DefaultXMLDocument classes. Should use char arrays instead of String
-      objects. Implement a much more efficient way of storing the text source.
     
 * Version 0.4.0
     
