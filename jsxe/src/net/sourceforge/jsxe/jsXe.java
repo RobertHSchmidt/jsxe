@@ -38,6 +38,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.gui.view.DocumentView;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentFactory;
 import net.sourceforge.jsxe.dom.UnrecognizedDocTypeException;
@@ -103,7 +104,10 @@ public class jsXe {
     
     public static boolean showOpenFileDialog(TabbedView view) {//{{{
             // if current file is null, defaults to home directory
-            JFileChooser loadDialog = new JFileChooser(view.getDocumentView().getXMLDocument().getFile());
+            DocumentView blah = view.getDocumentView();
+            XMLDocument blah2 = blah.getXMLDocument();
+            File blah3 = blah2.getFile();
+            JFileChooser loadDialog = new JFileChooser(blah3);
             //Add a filter to display only XML files
             Vector extentionList = new Vector();
             extentionList.add(new String("xml"));
@@ -151,26 +155,29 @@ public class jsXe {
         for(int i=0; i < XMLDocuments.size();i++) {
             
             XMLDocument doc = (XMLDocument)XMLDocuments.get(i);
-            if (caseInsensitiveFilesystem) {
-                
-                try {
-                    if (file.getCanonicalPath().equalsIgnoreCase(doc.getFile().getCanonicalPath())) {
-                        view.setDocument(doc);
-                        return true;
+            File docfile = doc.getFile();
+            if (docfile != null) {
+                if (caseInsensitiveFilesystem) {
+                    
+                    try {
+                        if (file.getCanonicalPath().equalsIgnoreCase(docfile.getCanonicalPath())) {
+                            view.setDocument(doc);
+                            return true;
+                        }
+                    } catch (IOException ioe) {
+                        return false;
                     }
-                } catch (IOException ioe) {
-                    return false;
-                }
-                
-            } else {
-                
-                try {
-                    if (file.getCanonicalPath().equals(doc.getFile().getCanonicalPath())) {
-                        view.setDocument(doc);
-                        return true;
+                    
+                } else {
+                    
+                    try {
+                        if (file.getCanonicalPath().equals(docfile.getCanonicalPath())) {
+                            view.setDocument(doc);
+                            return true;
+                        }
+                    } catch (IOException ioe) {
+                        return false;
                     }
-                } catch (IOException ioe) {
-                    return false;
                 }
             }
         }
@@ -187,8 +194,8 @@ public class jsXe {
                 if (!document.validate(view)) {
                     return false;
                 }
-                view.addDocument(document);
                 XMLDocuments.add(document);
+                view.addDocument(document);
                 return true;
             } else {
                 return false;
