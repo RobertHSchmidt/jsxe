@@ -64,6 +64,9 @@ TODO:
       before it shows errors saying it cannot open the document given that views
       are now plugins.
     
+    * Look into Marathon as a possible testing tool for jsXe. It seems to allow
+      you to create unit test scripts for Java/Swing GUI apps.
+    
 * Version 0.4 beta (Actions)
     
     * Implement cut, copy, paste in the DefaultView
