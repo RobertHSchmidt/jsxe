@@ -194,28 +194,7 @@ public class DefaultView extends DocumentView {
     }//}}}
     
     private void updateTree() {//{{{
-        //Cannot reexpand TreePaths for some
-        //reason so we store the rows that are expanded.
-        int rowcount = tree.getRowCount();
-        Vector allRows = new Vector();
-        //build a list of rows that are expanded
-        for (int i=0; i<rowcount; i++) {
-            TreePath root = tree.getPathForRow(i);
-            Enumeration expandedPaths = tree.getExpandedDescendants(root);
-            if (expandedPaths != null) {
-                while (expandedPaths.hasMoreElements()) {
-                    TreePath path = (TreePath)expandedPaths.nextElement();
-                    int row = tree.getRowForPath(path);
-                    allRows.add(new Integer(row));
-                }
-            }
-        }
-        tree.updateUI();
-        Enumeration rows = allRows.elements();
-        while (rows.hasMoreElements()) {
-            Integer row = (Integer)rows.nextElement();
-            tree.expandRow(row.intValue());
-        }
+        tree.treeDidChange();
     }//}}}
     
     private class DefaultTreeSelectionListener implements TreeSelectionListener {//{{{
