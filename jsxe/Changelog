@@ -1,3 +1,21 @@
+11/15/2003  version 0.1.42  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Changed the XMLDocument and DefaultXMLDocument classes to handle insertion
+      and removal of raw text.
+    * DefaultXMLDocument now stores text in a ContextManager object much like
+      the way jEdit stores text. This should be more efficient and more scalable
+      to large files than storing the raw text in String object.
+    * Created a DocumentBuffer class to handle editor/application specific
+      things like the underlying file on disk, the name of the buffer, whether
+      it's dirty or not etc...
+    * Documents can now be serialized/written to disk even if they are not
+      well-formed (However, they still can't be opened).
+
+11/11/2003  version 0.1.41  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed problem where the tree in the default view allowed you to select
+      multiple nodes and cause undesired operation.
+
 11/10/2003  version 0.1.40  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed bug where the * dirty file indicator was going away when switching

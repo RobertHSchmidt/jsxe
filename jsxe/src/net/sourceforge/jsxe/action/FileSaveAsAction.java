@@ -41,6 +41,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.CustomFileFilter;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.TabbedView;
@@ -81,9 +82,9 @@ public class FileSaveAsAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {//{{{
         
-        XMLDocument currentDoc = view.getDocumentView().getXMLDocument();
+        DocumentBuffer currentBuffer = view.getDocumentView().getDocumentBuffer();
         //  if XMLFile is null, defaults to home directory
-        JFileChooser saveDialog = new JFileChooser(currentDoc.getFile());
+        JFileChooser saveDialog = new JFileChooser(currentBuffer.getFile());
         saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
         saveDialog.setDialogTitle("Save As");
         
@@ -120,29 +121,25 @@ public class FileSaveAsAction extends AbstractAction {
                 
                 File selectedFile = saveDialog.getSelectedFile();
                 
-                XMLDocument doc = jsXe.getOpenXMLDocument(selectedFile);
+                DocumentBuffer buffer = jsXe.getOpenBuffer(selectedFile);
                 
                 //If the document is already open and
                 //it isn't the current document
-                if (doc != null && !doc.equals(currentDoc)) {
-                    jsXe.closeXMLDocument(view, doc);
-                    currentDoc.saveAs(selectedFile);
+                if (buffer != null && !buffer.equalsOnDisk(currentBuffer)) {
+                    
+                    //If the saved-to document is already open we
+                    //need to close that tab and save this tab
+                    //as that one.
+                    
+                    jsXe.closeDocumentBuffer(view, buffer);
+                    currentBuffer.saveAs(selectedFile);
+                    
                 } else {
-                    currentDoc.saveAs(selectedFile);
+                    currentBuffer.saveAs(selectedFile);
                 }
-                currentDoc.setProperty("dirty", "false");
                 view.update();
                 
-            } catch(SAXParseException spe) {
-                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-            }
-            catch (SAXException sxe) {
-                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-            }
-            catch (ParserConfigurationException pce) {
-                JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-            }
-            catch (IOException ioe) {
+            } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
             }
         }

@@ -41,6 +41,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.gui.TabbedView;
@@ -77,18 +78,24 @@ import java.util.StringTokenizer;
 
 public class SourceViewDocument extends DefaultStyledDocument {
 
-    protected SourceViewDocument(TabbedView parent, XMLDocument doc) throws IOException {//{{{
+    protected SourceViewDocument(TabbedView parent, DocumentBuffer buffer) throws IOException {//{{{
         super(new GapContent(), new StyleContext());
-        document = doc;
+        m_buffer = buffer;
         view = parent;
         
        // document.addXMLDocumentListener(new SourceViewDocumentXMLDocumentListener());
         
-        if (doc != null) {
+        if (buffer != null) {
+            
+            XMLDocument document = buffer.getXMLDocument();
             
             try {
                 
-                super.insertString(0, document.getSource(), new SimpleAttributeSet());
+                //getting the whole document as a string will have to do for now
+                //should make this better so that only the visable portion of the
+                //buffer is actually loaded in the text area at any
+                //given time.
+                super.insertString(0, document.getText(0, document.getLength()), new SimpleAttributeSet());
                 
             } catch (BadLocationException ble) {
                 //This should never happen. If it does however jsXe will
@@ -99,10 +106,12 @@ public class SourceViewDocument extends DefaultStyledDocument {
     }//}}}
 
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {//{{{
-
+        
+        XMLDocument document = m_buffer.getXMLDocument();
+        
         try {
             super.insertString(offs, str, a);
-            document.setModel(super.getText(0,super.getLength()));
+            document.insertText(offs, str);
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
         } catch (IOException ioe) {
@@ -115,9 +124,11 @@ public class SourceViewDocument extends DefaultStyledDocument {
 
     public void remove(int offs, int len) throws BadLocationException {//{{{
         
+        XMLDocument document = m_buffer.getXMLDocument();
+        
         try {
             super.remove(offs, len);
-            document.setModel(super.getText(0,super.getLength()));
+            document.removeText(offs, len);
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
         } catch (IOException ioe) {
@@ -153,7 +164,7 @@ public class SourceViewDocument extends DefaultStyledDocument {
 
     //{{{ Private members
     TabbedView view;
-    XMLDocument document;
+    DocumentBuffer m_buffer;
     //}}}
 
 }

@@ -169,13 +169,10 @@ public class jsXe {
      * @return The current version of jsXe.
      */
     public static String getVersion() {//{{{
-        // Development - Major.Minor.Build
-        // Stable      - Major.Minor
+        // Major.Minor.Build
         String version = buildProps.getProperty("major.version") + "." +
-                         buildProps.getProperty("minor.version");
-        if (buildProps.getProperty("build.type").equals("development")) {
-            version += "." + buildProps.getProperty("build.version");
-        }
+                         buildProps.getProperty("minor.version") + "." +
+                         buildProps.getProperty("build.version");
         return version;
     }//}}}
     
@@ -189,8 +186,8 @@ public class jsXe {
     public static boolean showOpenFileDialog(TabbedView view) throws IOException {//{{{
             // if current file is null, defaults to home directory
             DocumentView docView = view.getDocumentView();
-            XMLDocument doc = docView.getXMLDocument();
-            File docFile = doc.getFile();
+            DocumentBuffer buffer = docView.getDocumentBuffer();
+            File docFile = buffer.getFile();
             JFileChooser loadDialog = new JFileChooser(docFile);
             //Add a filter to display only XML files
             ArrayList extentionList = new ArrayList();
@@ -238,36 +235,21 @@ public class jsXe {
         if (file == null)
             return false;
         
-        XMLDocument doc = getOpenXMLDocument(file);
-        if (doc != null) {
-            view.setDocument(doc);
+        DocumentBuffer buffer = getOpenBuffer(file);
+        if (buffer != null) {
+            view.setDocumentBuffer(buffer);
             return true;
-        }
-        
-        //At this point we know the file is not open
-        //we need to open it.
-        //right now unrecognized doc exceptions should not be thrown.
-        XMLDocumentFactory factory = XMLDocumentFactory.newInstance();
-        try {
-            XMLDocument document = factory.newXMLDocument(file);
-            
-            if (document != null) {
-                
-                try {
-                    XMLDocuments.add(document);
-                    view.addDocument(document);
-                    document.addXMLDocumentListener(m_jsXeDocListener);
-                } catch (IOException ioe) {
-                    //recover by removing the document
-                    XMLDocuments.remove(document);
-                    throw ioe;
-                }
+        } else {
+            try {
+                buffer = new DocumentBuffer(file);
+                m_buffers.add(buffer);
+                view.addDocumentBuffer(buffer);
                 return true;
+            } catch (IOException ioe) {
+                m_buffers.remove(buffer);
+                throw ioe;
             }
         }
-        catch (UnrecognizedDocTypeException udte) {}
-        
-        return false;
         
     }//}}}
     
@@ -290,52 +272,37 @@ public class jsXe {
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
     public static boolean openXMLDocument(TabbedView view, Reader reader) throws IOException {//{{{
-        //For now we are assuming the contents of the reader do not
-        //exist on disk and therefore could not be opened already.
-        //right now unrecognized doc exceptions should not be thrown.
-        XMLDocumentFactory factory = XMLDocumentFactory.newInstance();
-        try {
-            
-            XMLDocument document = factory.newXMLDocument(reader);
-            if (document != null) {
-                
-                try {
-                    XMLDocuments.add(document);
-                    view.addDocument(document);
-                    document.addXMLDocumentListener(m_jsXeDocListener);
-                } catch (IOException ioe) {
-                    //recover by removing the document
-                    XMLDocuments.remove(document);
-                    throw ioe;
-                }
-                
-                return true;
-            }
-            
-        }
-        catch (UnrecognizedDocTypeException udte) {}
         
-        return false;
+        DocumentBuffer buffer = new DocumentBuffer(reader);
+        try {
+            m_buffers.add(buffer);
+            view.addDocumentBuffer(buffer);
+            return true;
+        } catch (IOException ioe) {
+            //recover by removing the document
+            m_buffers.remove(buffer);
+            throw ioe;
+        }
         
     }//}}}
     
     /**
-     * Gets the XMLDocument for this file if the file is open already. Returns
+     * Gets the DocumentBuffer for this file if the file is open already. Returns
      * null if the file is not open.
      * @param file The file that is open in jsXe
-     * @return the XMLDocument for the given file or null if the file not open.
+     * @return the DocumentBuffer for the given file or null if the file not open.
      */
-    public static XMLDocument getOpenXMLDocument(File file) {//{{{
+    public static DocumentBuffer getOpenBuffer(File file) {//{{{
         
         boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
 			|| File.separatorChar == ':' /* Windows or MacOS */);
         
-        for(int i=0; i < XMLDocuments.size();i++) {
+        for(int i=0; i < m_buffers.size();i++) {
             
             try {
-                XMLDocument doc = (XMLDocument)XMLDocuments.get(i);
-                if (doc.equalsOnDisk(file)) {
-                    return doc;
+                DocumentBuffer buffer = (DocumentBuffer)m_buffers.get(i);
+                if (buffer.equalsOnDisk(file)) {
+                    return buffer;
                 }
             } catch (IOException ioe) {
                 exiterror(null, ioe.getMessage(), 1);
@@ -347,19 +314,19 @@ public class jsXe {
     }//}}}
     
     /**
-     * Closes an open XML document.
-     * @param view The view that contains the document.
-     * @param document The document to close.
-     * @return true if the document was closed successfully. May return false if
+     * Closes an open DocumentBuffer.
+     * @param view The view that contains the buffer.
+     * @param buffer The buffer to close.
+     * @return true if the buffer was closed successfully. May return false if
      *         user hits cancel when asked to save changes.
      */
-    public static boolean closeXMLDocument(TabbedView view, XMLDocument document) {//{{{
-        if (XMLDocuments.contains(document)) {
+    public static boolean closeDocumentBuffer(TabbedView view, DocumentBuffer buffer) {//{{{
+        if (m_buffers.contains(buffer)) {
             
-            if (isDirty(document)) {
+            if (buffer.isDirty()) {
             
                 //If it's dirty ask if you want to save.
-                String msg = document.getName()+" unsaved! Save it now?";
+                String msg = buffer.getName()+" unsaved! Save it now?";
                 String title = "Unsaved Changes";
                 int optionType = JOptionPane.YES_NO_CANCEL_OPTION;
                 int messageType = JOptionPane.WARNING_MESSAGE;
@@ -380,9 +347,9 @@ public class jsXe {
                 }
             }
             
-            view.removeDocument(document);
-            XMLDocuments.remove(document);
-            if (view.getDocumentCount() == 0) {
+            view.removeDocumentBuffer(buffer);
+            m_buffers.remove(buffer);
+            if (view.getBufferCount() == 0) {
                 try {
                     openXMLDocument(view, getDefaultDocument());
                 } catch (IOException ioe) {
@@ -405,15 +372,15 @@ public class jsXe {
     }//}}}
     
     /**
-     * Gets an array of the open XMLDocuments.
-     * @return An array of XMLDocuments that jsXe currently has open.
+     * Gets an array of the open Buffers.
+     * @return An array of DocumentBuffers that jsXe currently has open.
      */
-    public static XMLDocument[] getXMLDocuments() {//{{{
-        XMLDocument[] documents = new XMLDocument[XMLDocuments.size()];
-        for (int i=0; i < XMLDocuments.size(); i++) {
-            documents[i] = (XMLDocument)XMLDocuments.get(i);
+    public static DocumentBuffer[] getDocumentBuffers() {//{{{
+        DocumentBuffer[] buffers = new DocumentBuffer[m_buffers.size()];
+        for (int i=0; i < m_buffers.size(); i++) {
+            buffers[i] = (DocumentBuffer)m_buffers.get(i);
         }
-        return documents;
+        return buffers;
     }//}}}
     
     /**
@@ -441,7 +408,7 @@ public class jsXe {
         //nothing much here yet. Open documents should
         //be checked for dirty documents.
         
-        exiting = true;
+        m_exiting = true;
         
         //saves properties
         //exit only if the view really wants to.
@@ -452,11 +419,13 @@ public class jsXe {
                 FileOutputStream filestream = new FileOutputStream(properties);
                 props.store(filestream, "Autogenerated jsXe properties"+System.getProperty("line.separator")+"#This file is not really meant to be edited.");
             } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                exiterror(view, "Could not save jsXe settings.\n"+ioe.toString(), 1);
             } catch (ClassCastException cce) {
-                JOptionPane.showMessageDialog(view, "Could not save jsXe settings.\n"+cce.toString(), "Internal Error", JOptionPane.WARNING_MESSAGE);
+                exiterror(view, "Could not save jsXe settings.\n"+cce.toString(), 1);
             }
             System.exit(0);
+        } else {
+            m_exiting = false;
         }
     }//}}}
     
@@ -530,16 +499,10 @@ public class jsXe {
      * @return true if jsXe is exiting.
      */
     public static final boolean isExiting() {//{{{
-        return exiting;
+        return m_exiting;
     }//}}}
     
     // Private static members {{{
-    /**
-     * Returns true if the XMLDocument is dirty.
-     */
-    private static boolean isDirty(XMLDocument doc) {//{{{
-        return (Boolean.valueOf(doc.getProperty("dirty"))).booleanValue();
-    }//}}}
 
     /**
      * Open the XML documents in the command line arguments.
@@ -642,25 +605,13 @@ public class jsXe {
         
     }//}}}
     
-    private static ArrayList XMLDocuments = new ArrayList();
+    private static ArrayList m_buffers = new ArrayList();
     private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?>\n<default_element>default_node</default_element>";
     private static final ImageIcon jsXeIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/jsxe.jpg"), "jsXe");
     private static final Properties defaultProps = new Properties();
     private static final Properties buildProps = new Properties();
-    private static boolean exiting=false;
+    private static boolean m_exiting=false;
     private static Properties props;
-    
-    private static XMLDocumentListener m_jsXeDocListener = new XMLDocumentListener() {//{{{
-                
-        public void propertiesChanged(XMLDocument source, String propertyKey) {}
-        
-        public void structureChanged(XMLDocument source, AdapterNode location) {//{{{
-            source.setProperty("dirty", "true");
-        }//}}}
-        
-        public void fileChanged(XMLDocument source) {};
-        
-    };//}}}
     
     private static OptionsPanel jsXeOptions;
     //}}}

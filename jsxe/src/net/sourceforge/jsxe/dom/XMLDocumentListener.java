@@ -58,10 +58,4 @@ public interface XMLDocumentListener {
      */
     public void structureChanged(XMLDocument source, AdapterNode location);
     
-    /**
-     * Called when the file on disk that the XMLDocument represents is changed.
-     * @param source The source XMLDocument.
-     */
-    public void fileChanged(XMLDocument source);
-    
 }

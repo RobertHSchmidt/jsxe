@@ -47,6 +47,7 @@ import net.sourceforge.jsxe.jsXe;
 
 //{{{ DOM classes
 import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -56,10 +57,12 @@ import javax.xml.parsers.ParserConfigurationException;
 //{{{ Java base classes
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 //}}}
 
 //}}}
@@ -68,19 +71,11 @@ public abstract class XMLDocument {
     
     public abstract boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException;
     
-    public boolean isUntitled() {//{{{
-        return (getFile() == null);
-    }//}}}
-    
     public abstract AdapterNode getAdapterNode();
     
     public abstract AdapterNode newAdapterNode(AdapterNode parent, Node node);
     
-    public abstract String getName();
-    
-    public abstract File getFile();
-    
-    public abstract String getSource() throws IOException;
+   // public abstract String getSource() throws IOException;
     
     public abstract String setProperty(String key, String value);
     
@@ -88,54 +83,25 @@ public abstract class XMLDocument {
     
     public abstract String getProperty(String key, String defaultValue);
     
-    public abstract void save() throws IOException, SAXParseException, SAXException, ParserConfigurationException;
+    public abstract void serialize(OutputStream out) throws IOException, UnsupportedEncodingException;
     
-    public abstract void saveAs(File file) throws IOException, SAXParseException, SAXException, ParserConfigurationException;
+    public abstract void setEntityResolver(EntityResolver resolver);
     
-    public abstract void setModel(File file) throws FileNotFoundException, IOException;
+    public abstract String getText(int start, int length) throws IOException;
     
-    public abstract void setModel(Reader reader) throws IOException;
+    public abstract int getLength();
     
-    public abstract void setModel(String string) throws IOException;
+   // public abstract void setModel(File file) throws FileNotFoundException, IOException;
+   // 
+   // public abstract void setModel(Reader reader) throws IOException;
+   // 
+   // public abstract void setModel(String string) throws IOException;
+    
+    public abstract void insertText(int offset, String text) throws IOException;
+    
+    public abstract void removeText(int offset, int length) throws IOException;
     
     public abstract boolean isWellFormed() throws IOException;
-
-    public boolean equalsOnDisk(Object o) throws ClassCastException, IOException {//{{{
-        if (getFile() != null && o != null) {
-            boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
-                || File.separatorChar == ':' /* Windows or MacOS */);
-    
-            File file;
-    
-            try {
-                XMLDocument doc = (XMLDocument)o;
-                file = doc.getFile();
-            } catch (ClassCastException cce) {
-                try {
-                    file = (File)o;
-                } catch (ClassCastException cce2) {
-                    throw new ClassCastException("Could not cast to XMLDocument or File.");
-                }
-            }
-            
-            if (file != null) {
-                if (caseInsensitiveFilesystem) {
-                    
-                    if (file.getCanonicalPath().equalsIgnoreCase(getFile().getCanonicalPath())) {
-                        return true;
-                    }
-                    
-                } else {
-                    
-                    if (file.getCanonicalPath().equals(getFile().getCanonicalPath())) {
-                        return true;
-                    }
-                }
-            }
-        }
-        
-        return false;
-    }//}}}
     
     public abstract void addXMLDocumentListener(XMLDocumentListener listener);
     

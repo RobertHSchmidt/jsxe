@@ -41,9 +41,8 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.dom.AdapterNode;
-import net.sourceforge.jsxe.dom.XMLDocument;
-import net.sourceforge.jsxe.dom.XMLDocumentListener;
+import net.sourceforge.jsxe.DocumentBuffer;
+import net.sourceforge.jsxe.DocumentBufferListener;
 import net.sourceforge.jsxe.gui.view.DocumentView;
 import net.sourceforge.jsxe.gui.view.DocumentViewFactory;
 import net.sourceforge.jsxe.action.FileCloseAction;
@@ -144,37 +143,44 @@ public class TabbedView extends JFrame {
     }//}}}
     
     /**
-     * Adds a document to the main view. This is essentially opening
+     * Adds a buffer to the main view. This is essentially opening
      * the document in jsXe.
-     * @param doc The XMLDocument to add to the view
+     * @param doc The DocumentBuffer to add to the view
      */
-    public void addDocument(XMLDocument doc) throws IOException {//{{{
-        if (doc != null) {
+    public void addDocumentBuffer(DocumentBuffer buffer) throws IOException {//{{{
+        if (buffer != null) {
             DocumentViewFactory factory = DocumentViewFactory.newInstance();
             DocumentView newDocView = factory.newDocumentView();
-            doc.addXMLDocumentListener(new XMLDocumentListener() {
+            buffer.addDocumentBufferListener(new DocumentBufferListener() {
                 
-                public void propertiesChanged(XMLDocument source, String propertyKey) {//{{{
+                public void propertiesChanged(DocumentBuffer source, String propertyKey) {//{{{
                     if (propertyKey.equals("dirty")) {
                         //It's dirtyness has changed
                         //change the tab title
                         
-                        XMLDocument[] docs = jsXe.getXMLDocuments();
-                        for (int i=0; i < docs.length; i++) {
-                            if (docs[i] == source) {
+                        DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+                        for (int i=0; i < buffers.length; i++) {
+                            if (buffers[i] == source) {
                                 tabbedPane.setTitleAt(i, getTabTitle(source));
                             }
                         }
                     }
                 }//}}}
                 
-                public void structureChanged(XMLDocument source, AdapterNode location) {}
+                public void nameChanged(DocumentBuffer source, String newName) {//{{{
+                    DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+                    for (int i=0; i < buffers.length; i++) {
+                        if (buffers[i] == source) {
+                            tabbedPane.setTitleAt(i, getTabTitle(source));
+                        }
+                    }
+                };//}}}
                 
-                public void fileChanged(XMLDocument source) {};
+                public void bufferSaved(DocumentBuffer source) {}
                 
             });
-            newDocView.setDocument(this,doc);
-            tabbedPane.add(doc.getName(), newDocView);
+            newDocView.setDocumentBuffer(this, buffer);
+            tabbedPane.add(buffer.getName(), newDocView);
             tabbedPane.setSelectedComponent(newDocView);
             updateTitle();
             updateMenuBar();
@@ -182,15 +188,15 @@ public class TabbedView extends JFrame {
     }//}}}
     
     /**
-     * Sets the current document and makes sure it is displayed. If
+     * Sets the current buffer and makes sure it is displayed. If
      * the document is not already open then this method does nothing.
-     * @param doc The document to set
+     * @param buffer The buffer to set
      */
-    public void setDocument(XMLDocument doc) throws IOException {//{{{
-        if (doc != null) {
-            XMLDocument[] docs = jsXe.getXMLDocuments();
-            for (int i=0; i < docs.length; i++) {
-                if (docs[i] == doc) {
+    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {//{{{
+        if (buffer != null) {
+            DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+            for (int i=0; i < buffers.length; i++) {
+                if (buffers[i] == buffer) {
                     tabbedPane.setSelectedIndex(i);
                 }
             }
@@ -200,15 +206,15 @@ public class TabbedView extends JFrame {
     }//}}}
     
     /**
-     * Removes a document from the view. If the doc passed is not
+     * Removes a buffer from the view. If the buffer passed is not
      * already open this method does nothing.
-     * @param doc The document to remove
+     * @param buffer The document to remove
      */
-    public void removeDocument(XMLDocument doc) {//{{{
-        if (doc != null) {
-            XMLDocument[] docs = jsXe.getXMLDocuments();
-            for (int i=0; i < docs.length; i++) {
-                if (docs[i] == doc) {
+    public void removeDocumentBuffer(DocumentBuffer buffer) {//{{{
+        if (buffer != null) {
+            DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+            for (int i=0; i < buffers.length; i++) {
+                if (buffers[i] == buffer) {
                     
                     DocumentView docView = (DocumentView)tabbedPane.getComponentAt(i);
                     
@@ -226,10 +232,10 @@ public class TabbedView extends JFrame {
     }//}}}
     
     /**
-     * Gets the number of open documents.
+     * Gets the number of open buffers.
      * @return The number of documents open in this view.
      */
-    public int getDocumentCount() {//{{{
+    public int getBufferCount() {//{{{
         return tabbedPane.getTabCount();
     }//}}}
     
@@ -238,7 +244,6 @@ public class TabbedView extends JFrame {
      */
     public void update() {//{{{
         updateTitle();
-        XMLDocument[] docs = jsXe.getXMLDocuments();
         tabbedPane.updateUI();
     }//}}}
     
@@ -248,12 +253,12 @@ public class TabbedView extends JFrame {
      */
     public boolean close() {//{{{
         
-        XMLDocument[] docs = jsXe.getXMLDocuments();
+        DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
         DocumentView currentDocView = null;
         
         //sequentially close all the document views
-        for (int i=0; i < docs.length; i++) {
-            if (!jsXe.closeXMLDocument(this, docs[i])) {
+        for (int i=0; i < buffers.length; i++) {
+            if (!jsXe.closeDocumentBuffer(this, buffers[i])) {
                 return false;
             }
         }
@@ -270,12 +275,6 @@ public class TabbedView extends JFrame {
     }//}}}
     
     //{{{ Private members
-    /**
-     * Returns true if the XMLDocument is dirty.
-     */
-    private static boolean isDirty(XMLDocument doc) {
-        return (Boolean.valueOf(doc.getProperty("dirty"))).booleanValue();
-    }
     
     /**
      * Updates the frame title. Useful when the tab has changed to a
@@ -284,10 +283,10 @@ public class TabbedView extends JFrame {
     private void updateTitle() {//{{{
         DocumentView currentDocView = getDocumentView();
         if (currentDocView != null) {
-            XMLDocument document = currentDocView.getXMLDocument();
+            DocumentBuffer buffer = currentDocView.getDocumentBuffer();
             String name = "";
-            if (document != null) {
-                name = document.getName();
+            if (buffer != null) {
+                name = buffer.getName();
             }
             setTitle(jsXe.getAppTitle() + " - " + name);
         } else {
@@ -364,16 +363,16 @@ public class TabbedView extends JFrame {
      */
     private void setDocumentView(DocumentView newView) {//{{{
         
-        XMLDocument[] docs = jsXe.getXMLDocuments();
+        DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
         DocumentView oldView = getDocumentView();
         int index = tabbedPane.getSelectedIndex();
         
-        XMLDocument currentDoc = docs[index];
+        DocumentBuffer currentBuffer = buffers[index];
         
         if (oldView != null) {
             try {
-                //try to open the document in the new view
-                newView.setDocument(this, currentDoc);
+                //try to open the buffer in the new view
+                newView.setDocumentBuffer(this, currentBuffer);
                 
                 //close the previous view
                 oldView.close(this);
@@ -381,7 +380,7 @@ public class TabbedView extends JFrame {
                 //no exceptions? cool. register the new view
                 tabbedPane.remove(oldView);
                 tabbedPane.add(newView, index);
-                tabbedPane.setTitleAt(index, getTabTitle(currentDoc));
+                tabbedPane.setTitleAt(index, getTabTitle(currentBuffer));
                 tabbedPane.setSelectedIndex(index);
                 updateMenuBar();
                 
@@ -394,10 +393,10 @@ public class TabbedView extends JFrame {
         }
     }//}}}
     
-    private String getTabTitle(XMLDocument doc) {//{{{
-        String name = doc.getName();
+    private String getTabTitle(DocumentBuffer buffer) {//{{{
+        String name = buffer.getName();
         
-        if (isDirty(doc)) {
+        if (buffer.isDirty()) {
             //Mark the tab title as dirty
             name = "*" + name;
         }

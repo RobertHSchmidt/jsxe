@@ -4,16 +4,7 @@ TODO:
     
     * Slowly prefix instance variables with m_ as a naming convention.
     
-    * Make it so you can't select multiple nodes in the JTree for the
-      DefaultView
-    
     * Allow for selecting multiple files when opening.
-    
-    * Change the XMLDocument interface to deal with text changes better. Instead
-      of setModel(String) use insertText(int index, String) or some such. Also
-      get rid of other setModel methods. XMLDocuments should be reconstructed
-      if the File or stream changes. This may mean changes to the
-      XMLDocumentListener interface.
     
     * Make the XML document declaration header non-editable in source-view mode.
       Update it when the user changes it in the options panel. (how?)

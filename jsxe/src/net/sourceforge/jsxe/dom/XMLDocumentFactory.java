@@ -67,45 +67,16 @@ public class XMLDocumentFactory {
         docType = type;
     }//}}}
     
-    public XMLDocument newXMLDocument(File file) throws FileNotFoundException, IOException, UnrecognizedDocTypeException {//{{{
-        //Document type validation is pretty simple right now
-        if (docType == "xmldocument.default") {
-            return new DefaultXMLDocument(file);
-        } else {
-            throw new UnrecognizedDocTypeException();
-        }
-    }//}}}
-    
     public XMLDocument newXMLDocument(Reader reader) throws IOException, UnrecognizedDocTypeException {//{{{
         //Document type validation is pretty simple right now
         if (docType == "xmldocument.default") {
-            return new DefaultXMLDocument(reader, getUntitledLabel());
+            return new DefaultXMLDocument(reader);
         } else {
             throw new UnrecognizedDocTypeException();
         }
     }//}}}
     
-    public XMLDocument newXMLDocument(String string) throws IOException, UnrecognizedDocTypeException {//{{{
-        return newXMLDocument(new StringReader(string));
-    }//}}}
-    
     //{{{ Private members
-    
-    private String getUntitledLabel() {//{{{
-        XMLDocument[] docs = jsXe.getXMLDocuments();
-        int untitledNo = 0;
-        for (int i=0; i < docs.length; i++) {
-            if ( docs[i].getName().startsWith("Untitled-")) {
-                // Kinda stolen from jEdit
-                try {
-					untitledNo = Math.max(untitledNo,Integer.parseInt(docs[i].getName().substring(9)));
-                }
-				catch(NumberFormatException nf) {}
-            }
-        }
-        return "Untitled-" + Integer.toString(untitledNo+1);
-    }//}}}
-    
     private String docType = "xmldocument.default";
     //}}}
 

@@ -41,6 +41,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
@@ -77,27 +78,17 @@ public class FileSaveAction extends AbstractAction {
     }//}}}
     
     public void actionPerformed(ActionEvent e) {//{{{
-        XMLDocument doc = view.getDocumentView().getXMLDocument();
-        if (doc.isUntitled()) {
+        DocumentBuffer buffer = view.getDocumentView().getDocumentBuffer();
+        if (buffer.isUntitled()) {
             //perform a saveAs action
             (new FileSaveAsAction(view)).actionPerformed(e);
         } else {
             try {
                 
-                doc.save();
-                doc.setProperty("dirty", "false");
+                buffer.save();
                 view.update();
                 
-            } catch(SAXParseException spe) {
-                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-            }
-            catch (SAXException sxe) {
-                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-            }
-            catch (ParserConfigurationException pce) {
-                JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-            }
-            catch (IOException ioe) {
+            } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
             }
         }

@@ -65,7 +65,7 @@ public class FileCloseAction extends AbstractAction {
     }//}}}
     
     public void actionPerformed(ActionEvent e) {//{{{
-        jsXe.closeXMLDocument(view, view.getDocumentView().getXMLDocument());
+        jsXe.closeDocumentBuffer(view, view.getDocumentView().getDocumentBuffer());
     }//}}}
     
     //{{{ Private members
