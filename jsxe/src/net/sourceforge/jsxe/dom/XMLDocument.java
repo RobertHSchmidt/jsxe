@@ -240,7 +240,17 @@ public class XMLDocument {
      */
     public Document getDocumentCopy() {
         //makes a deep copy of the document node
-        return (Document)m_document.cloneNode(true);
+        try {
+            checkWellFormedness();
+        } catch (SAXParseException e) {
+        } catch (SAXException e) {
+        } catch (ParserConfigurationException e) {
+        } catch (IOException e) {}
+        if (m_document != null) {
+            return (Document)m_document.cloneNode(true);
+        } else {
+            return null;
+        }
     }//}}}
     
     //{{{ getProperties()
@@ -294,14 +304,12 @@ public class XMLDocument {
      * @return the root node as an AdapterNode
      */
     public AdapterNode getAdapterNode() {
-        if (m_adapterNode == null) {
-            try {
-                checkWellFormedness();
-            } catch (SAXParseException e) {
-            } catch (SAXException e) {
-            } catch (ParserConfigurationException e) {
-            } catch (IOException e) {}
-        }
+        try {
+            checkWellFormedness();
+        } catch (SAXParseException e) {
+        } catch (SAXException e) {
+        } catch (ParserConfigurationException e) {
+        } catch (IOException e) {}
         return m_adapterNode;
     }//}}}
     
