@@ -1,3 +1,12 @@
+12/18/2003  version 0.1.46  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Changed tabs to use icons instead of appending a '*' to the tab name to
+      indicate a file is dirty.
+    * Added javadoc to the AdapterNode class.
+    * Changed the security mode for the getNode() and setParentNode() methods
+      in AdapterNode from protected to default. All other classes should use
+      the public interface.
+
 12/16/2003  version 0.1.45  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug in the attributes table where it wasn't updated properly.
