@@ -112,7 +112,9 @@ public class DocumentBuffer {
     
     public void addDocumentBufferListener(DocumentBufferListener listener) {//{{{
         if (listener != null) {
-            m_listeners.add(listener);
+            if (!m_listeners.contains(listener)) {
+                m_listeners.add(listener);
+            }
         }
     }//}}}
     
