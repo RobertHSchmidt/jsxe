@@ -1,3 +1,8 @@
+03/23/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Users can no longer remove namespace declarations when there are
+      attributes that use it.
+
 03/17/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Altered AdapterNode to support namespaces better. It handles adding and
