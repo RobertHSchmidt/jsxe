@@ -3,7 +3,10 @@
      This is a build.xml file for building jsXe.
 -->
 <project basedir="." default="usage" name="jsXe">
-	<!-- {{{ ============ Initializes properties and variables ============= -->
+	
+  <description>jsXe - Java Simple XML Editor</description>
+  
+  <!-- {{{ ============ Initializes properties and variables ============= -->
 	<target name="init">
 		<tstamp/>
 		<property name="app.name" value="jsXe"/>
@@ -47,7 +50,7 @@
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Prints the available targets ===================== -->
-	<target depends="init" name="usage">
+	<target depends="init" name="usage" description="Prints available targets">
 		<echo message=" available targets are:"/>
 		<echo message=""/>
 		<echo message=" compile   --&gt; generates the ${app.name}.jar file"/>
@@ -83,7 +86,7 @@
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Compiles the program ============================= -->
-	<target depends="prepare-src" name="compile">
+	<target depends="prepare-src" name="compile" description="compile jsXe">
 		<mkdir dir="${build.dest}"/>
 		<javac debug="${javac.debug}" deprecation="${javac.deprecation}" includeJavaRuntime="${javac.include.runtime}" optimize="${javac.optimize}" source="${javac.source}" destdir="${build.dest}" srcdir="${build.src}">
 			<classpath refid="classpath"/>
@@ -149,7 +152,7 @@
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Generates the binary distribution ================ -->
-	<target depends="compile, prepare-build, doc" name="bin">
+	<target depends="compile, prepare-build, doc" name="bin" description="Build binary distribution">
 		<!-- doc -->
 		<mkdir dir="${distbin.dir}/doc"/>
 		<copy todir="${distbin.dir}/doc">
@@ -177,7 +180,7 @@
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Generates the source distribution ================ -->
-	<target depends="prepare-build, prepare-src, doc" name="src">
+	<target depends="prepare-build, prepare-src, doc" name="src" description="Build source distribution">
 		<!-- doc -->
 		<mkdir dir="${distsrc.dir}/doc"/>
 		<copy todir="${distsrc.dir}/doc">
@@ -211,7 +214,7 @@
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Cleans everything up ============================= -->
-	<target depends="init" description="clean up" name="clean">
+	<target depends="init" name="clean" description="Clean up distribution tree">
 		<delete dir="${build.dir}"/>
 		<delete>
 			<fileset dir="." includes="${app.name}.jar"/>
