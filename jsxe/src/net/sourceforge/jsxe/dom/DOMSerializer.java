@@ -594,8 +594,10 @@ public class DOMSerializer implements LSSerializer {
                         offset += str.length();
                         
                     } else {
-                        String str1 = docType.getInternalSubset();
-                        System.out.println(str1);
+                        /*
+                        need to support serialization of entity reference
+                        declarations and the internal subset
+                        */
                     }
                     break;//}}}
             }
