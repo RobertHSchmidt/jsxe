@@ -88,8 +88,6 @@ import java.util.Enumeration;
 
 //}}}
 
-import java.io.PrintWriter;
-
 public class DOMAdapter implements TreeModel, TableModel {
     
     private DOMAdapter(TabbedView parent, File file, Document doc, String docname) {//{{{
