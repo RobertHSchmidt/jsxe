@@ -119,7 +119,7 @@ public class DefaultView extends DocumentView {
         JScrollPane treeView = new JScrollPane(tree);
         
         //{{{ Create html editor pane
-        htmlPane.setEditable(true);
+        htmlPane.setEditable(false);
         JScrollPane htmlView = new JScrollPane(htmlPane);
         //}}}
         

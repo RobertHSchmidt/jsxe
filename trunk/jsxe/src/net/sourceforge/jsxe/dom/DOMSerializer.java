@@ -46,6 +46,7 @@ belongs to.
 */
 
 //{{{ DOM classes
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMException;
@@ -343,18 +344,36 @@ public class DOMSerializer implements LSSerializer {
                     } else {
                         str = "<" + nodeName;
                     }
+                    
                     doWrite(writer, str, node, line, column, offset);
                     column += str.length();
                     offset += str.length();
                     
                     NamedNodeMap attr = node.getAttributes();
                     for (int i=0; i<attr.getLength(); i++) {
-                        Node currentAttr = attr.item(i);
-                        str = " " + currentAttr.getNodeName() + "=\"" + currentAttr.getNodeValue() + "\"";
-                        doWrite(writer, str, node, line, column, offset);
-                        column += str.length();
-                        offset += str.length();
+                        Attr currentAttr = (Attr)attr.item(i);
+                        boolean writeAttr = false;
+                        
+                        /*
+                        if we discard default content check if the attribute
+                        was specified in the original document.
+                        */
+                        if (config.getFeature("discard-default-content")) {
+                            if (currentAttr.getSpecified()) {
+                                writeAttr = true;
+                            }
+                        } else {
+                            writeAttr = true;
+                        }
+                        
+                        if (writeAttr) {
+                            str = " " + currentAttr.getNodeName() + "=\"" + currentAttr.getNodeValue() + "\"";
+                            doWrite(writer, str, node, line, column, offset);
+                            column += str.length();
+                            offset += str.length();
+                        }
                     }
+                    
                     NodeList children = node.getChildNodes();
                     if (children != null) {
                         
