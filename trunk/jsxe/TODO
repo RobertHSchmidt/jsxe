@@ -54,6 +54,8 @@ TODO:
     * Add support for evaluating an XPath expression on an XMLDocument.
         * Maybe add a XPath evaluation field
     
+    * Implement serialization support having to do with DTD/Schema support.
+    
 * Version 0.5 beta (Actions)
     
     * Implement cut, copy, paste in the DefaultView
