@@ -97,26 +97,27 @@ public class DefaultViewTree extends JTree {
        //         }
        //     }
        // });//}}}
-       // addTreeExpansionListener(new TreeExpansionListener() {//{{{
+        addTreeExpansionListener(new TreeExpansionListener() {//{{{
             
-       //     //{{{ treeExpanded()
+            //{{{ treeExpanded()
             
-       //     public void treeExpanded(TreeExpansionEvent event) {
-       //         try {
-       //             DefaultViewTreeNode node = (DefaultViewTreeNode)event.getPath().getLastPathComponent();
-       //             node.setExpanded(true);
-       //         } catch (ClassCastException e) {}
-       //     }//}}}
+            public void treeExpanded(TreeExpansionEvent event) {
+                try {
+                    DefaultViewTreeNode node = (DefaultViewTreeNode)event.getPath().getLastPathComponent();
+                    node.setExpanded(true);
+                } catch (ClassCastException e) {}
+            }//}}}
             
-       //     //{{{ treeCollapsed()
+            //{{{ treeCollapsed()
             
-       //     public void treeCollapsed(TreeExpansionEvent event) {
-       //         try {
-       //             DefaultViewTreeNode node = (DefaultViewTreeNode)event.getPath().getLastPathComponent();
-       //             node.setExpanded(false);
-       //         } catch (ClassCastException e) {}
-       //     }//}}}
-       // });//}}}
+            public void treeCollapsed(TreeExpansionEvent event) {
+                try {
+                    DefaultViewTreeNode node = (DefaultViewTreeNode)event.getPath().getLastPathComponent();
+                    node.setExpanded(false);
+                } catch (ClassCastException e) {}
+            }//}}}
+            
+        });//}}}
         
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         
@@ -155,33 +156,31 @@ public class DefaultViewTree extends JTree {
     //{{{ Private members
     
     //{{{ refreshExpandedStates()
-   // /**
-   //  * Refreshes the expanded states of all the node pointed to by
-   //  * the treepath and all nodes below it. Used after a drag and
-   //  * drop is done because the JTree uses TreePaths to keep track
-   //  * of expanded states. When a drag and drop is done the
-   //  * path is broken and the expanded states are lost.
-   //  */
-   // private void refreshExpandedStates(TreePath path) {
-   //     DefaultViewTreeNode node = (DefaultViewTreeNode)path.getLastPathComponent();
-   //     boolean expandedState = node.isExpanded();
-   //     if (!node.isLeaf()) {
-   //         expandPath(path); //expand all nodes out
-            
-   //         System.out.println(path.toString() +" : "+expandedState);
-   //         //still have to set expanded states
-   //         Enumeration children = node.children();
-   //         while (children.hasMoreElements()) {
-   //             TreePath newPath = path.pathByAddingChild(children.nextElement());
-   //             refreshExpandedStates(newPath);
-   //         }
-   //         if (expandedState) { //close non-expanded nodes
-   //             expandPath(path);
-   //         } else {
-   //             collapsePath(path);
-   //         }
-   //     }
-   // }//}}}
+    /**
+     * Refreshes the expanded states of all the node pointed to by
+     * the treepath and all nodes below it. Used after a drag and
+     * drop is done because the JTree uses TreePaths to keep track
+     * of expanded states. When a drag and drop is done the
+     * path is broken and the expanded states are lost.
+     */
+    private void refreshExpandedStates(TreePath path) {
+        DefaultViewTreeNode node = (DefaultViewTreeNode)path.getLastPathComponent();
+        boolean expandedState = node.isExpanded();
+        if (!node.isLeaf()) {
+            expandPath(path); //expand all nodes out
+            //still have to set expanded states
+            Enumeration children = node.children();
+            while (children.hasMoreElements()) {
+                TreePath newPath = path.pathByAddingChild(children.nextElement());
+                refreshExpandedStates(newPath);
+            }
+            if (expandedState) { //close non-expanded nodes
+                expandPath(path);
+            } else {
+                collapsePath(path);
+            }
+        }
+    }//}}}
     
     //{{{ TreePopupListener class
     
@@ -656,7 +655,7 @@ public class DefaultViewTree extends JTree {
             }
             
             DefaultViewTreeNode parentNode = (DefaultViewTreeNode)path.getLastPathComponent();
-            
+            TreePath droppedPath;
             try {
                 //Find out the relative location where I dropped.
                 Rectangle bounds = getPathBounds(path);
@@ -667,7 +666,7 @@ public class DefaultViewTree extends JTree {
                         if (trueParent != null) {
                             trueParent.insert(node, trueParent.getIndex(parentNode));
                             makeVisible(path);
-                            
+                            droppedPath = path.getParentPath();
                         } else {
                             throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
                         }
@@ -679,7 +678,7 @@ public class DefaultViewTree extends JTree {
                         
                         //insert in the node inside the parent at the end of its children
                         parentNode.insert(node, parentNode.getChildCount());
-                        
+                        droppedPath = path;
                         //Make sure the node we just dropped is viewable
                         if (isCollapsed(path)) {
                             expandPath(path);
@@ -691,6 +690,7 @@ public class DefaultViewTree extends JTree {
                             DefaultViewTreeNode trueParent = (DefaultViewTreeNode)parentNode.getParent();
                             if (trueParent != null) {
                                 trueParent.insert(node, trueParent.getIndex(parentNode)+1);
+                                droppedPath = path.getParentPath();
                                 makeVisible(path);
                             } else {
                                 throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
@@ -700,7 +700,7 @@ public class DefaultViewTree extends JTree {
                         }
                     }
                 }
-               // refreshExpandedStates(new TreePath(droppedPath.getPath()[1]));
+                refreshExpandedStates(droppedPath);
                 dtde.acceptDrop(m_acceptableActions);
             } catch (DOMException dome) {
                 dtde.rejectDrop();
