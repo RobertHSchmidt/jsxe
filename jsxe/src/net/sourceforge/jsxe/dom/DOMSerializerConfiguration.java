@@ -66,6 +66,7 @@ import java.util.Iterator;
  *    The <code>"format-pretty-print"</code> option is supported.</p>
  *
  * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
+ * @version $Id$
  */
 public class DOMSerializerConfiguration implements DOMConfiguration {
     
