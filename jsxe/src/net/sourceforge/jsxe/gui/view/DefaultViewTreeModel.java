@@ -43,8 +43,6 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
-import net.sourceforge.jsxe.gui.TabbedView;
-import net.sourceforge.jsxe.jsXe;
 //}}}
 
 //{{{ Swing components

@@ -23,6 +23,8 @@ TODO:
     
 * Version 0.2 beta
     
+    * Remove all references to jsXe classes in the DocumentViews.
+    
     * Add the ability for XMLDocuments to have a structure for non-well parsed
       documents. Should I bother?
     
@@ -45,6 +47,23 @@ TODO:
     
     * Updated javadoc for the DocumentViews and XMLDocument classes to be
       more descriptive and less specific to jsXe
+    
+    * Change ant build file to build the DocumentViews and XMLDocuments into
+      a different jar file. Also change the jsXe.bat and jsXe.sh to use the new
+      jar file.
+    
+    * Change the way the TabbedView keeps track of the DocumentViews and
+      DocumentBuffers so that it's easier to get the DocumentBuffer for a
+      
+    
+    * Add the ability for XMLDocuments to have a structure for non-well parsed
+      documents.
+    
+    * Add a command line option so that a user can specify the view to open
+      the document with. This will allow you to open large document in the
+      source view without parsing it using DOM.
+    
+    * Look for ways to improve efficiency with large XML documents
     
     * Store some options such as recent files and file specific options in
       an XML file with jsxe's options in the .jsxe folder in the home dir.
