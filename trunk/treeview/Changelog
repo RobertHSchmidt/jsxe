@@ -1,16 +1,21 @@
-03/08/2004  Ian Lewis <IanLewis@member.fsf.org>
+03/17/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added better namespace support.
+        * Requires jsXe 0.3.16 now
+
+03/08/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated to work with jsXe's new plugin dependency checking.
 
-03/04/2004  version 0.3 pre15   Ian Lewis <IanLewis@member.fsf.org>
+03/04/2005  version 0.3 pre15   Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated to work with jsXe 0.3 pre15
 
-01/08/2004  version 0.3 pre9    Ian Lewis <IanLewis@member.fsf.org>
+01/08/2005  version 0.3 pre9    Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated so that getVersion() works properly;
 
-01/05/2004  version 0.3 pre7    Ian Lewis <IanLewis@member.fsf.org>
+01/05/2005  version 0.3 pre7    Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated for new plugin API
 

@@ -33,7 +33,7 @@
     <property name="main.class" value="treeview.TreeViewPlugin"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="3"/>
-    <property name="build.version" value="15"/>
+    <property name="build.version" value="16"/>
 		<property name="app.version" value="${major.version}.${minor.version} pre${build.version}"/>
 		<property name="app_version" value="${major.version}_${minor.version}pre${build.version}"/>
 		<property name="implementation.version" value="${major.version}.${minor.version}.${build.version}"/>
