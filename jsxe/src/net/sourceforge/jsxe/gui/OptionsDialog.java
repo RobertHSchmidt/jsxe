@@ -146,7 +146,7 @@ public class OptionsDialog extends JDialog {
         }
         
         //Configure the document panel
-        OptionsPanel DocumentOptionsPanel = new XMLDocumentOptionsPanel(document);
+        DocumentOptionsPanel = new XMLDocumentOptionsPanel(document);
         
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
@@ -187,6 +187,8 @@ public class OptionsDialog extends JDialog {
                 OptionsNorthPanel.saveOptions();
             if (OptionsSouthPanel != null)
                 OptionsSouthPanel.saveOptions();
+            if (DocumentOptionsPanel != null)
+                DocumentOptionsPanel.saveOptions();
             parent.dispose();
         }
         private Dialog parent;
@@ -207,6 +209,7 @@ public class OptionsDialog extends JDialog {
     private XMLDocument document;
     private OptionsPanel OptionsNorthPanel;
     private OptionsPanel OptionsSouthPanel;
+    private OptionsPanel DocumentOptionsPanel;
     //}}}
     
 }
