@@ -22,7 +22,7 @@
 		<property name="build.docs" value="${build.dir}/doc"/>
 		<property name="build.javadocs" value="${build.docs}/api"/>
 		<property name="build.help" value="${build.docs}/help"/>
-    <property name="jsxe.dir" value="${root.dir}/../jsxe"/>
+    <property name="jsxe.dir" value="${root.dir}/../.."/>
     <property name="jsxe.jar" value="${jsxe.dir}/jsXe.jar"/>
 		<property name="javac.debug" value="on"/>
 		<property name="javac.optimize" value="off"/>
@@ -112,7 +112,7 @@
     <!-- copy dependencies file -->
     <copy file="dependency.props" todir="${build.dest}"/>
     
-    <propertyfile comment="${app.name}&apos;s build properties" file="${build.dest}/sourceview/build.properties">
+    <propertyfile comment="${root.dir}/${app.name}&apos;s build properties" file="${build.dest}/sourceview/build.properties">
 			<entry key="application.name" value="${app.name}"/>
 			<entry key="build.time" pattern="dd/MM/yyyy HH:mm" type="date" value="now"/>
 			<entry key="major.version" value="${major.version}"/>
@@ -121,7 +121,7 @@
 		</propertyfile>
     
     <!-- create jar manifest -->
-    <manifest file="${app.name}.manifest">
+    <manifest file="${root.dir}/${app.name}.manifest">
       <attribute name="Built-By" value="${user.name}"/>
       <attribute name="Main-Class" value="${main.class}"/>
       <section name="common">
@@ -137,7 +137,7 @@
       </section>
     </manifest>
     
-		<jar jarfile="${app.name}.jar" manifest="${app.name}.manifest">
+		<jar jarfile="${root.dir}/../${app.name}.jar" manifest="${app.name}.manifest">
 			<fileset dir="${build.dest}">
 				<include name="**/*.class"/>
 				<include name="**/properties"/>
@@ -205,17 +205,17 @@
 	<!-- {{{ ============ Cleans everything up ============================= -->
 	<target depends="init" name="clean" description="Clean up distribution tree">
 		<delete dir="${build.dir}"/>
-		<delete>
-			<fileset dir="." includes="${app.name}.jar"/>
-      <fileset dir="." includes="${app.name}.manifest"/>
-			<fileset dir="." includes="**/*.class"/>
-			<fileset dir="." includes="**/*.rej"/>
-			<fileset dir="." includes="**/*.orig"/>
-			<fileset dir="." includes="**/.*.swp"/>
-			<fileset dir="." includes="**/.#*"/>
-			<fileset dir="." includes="**/.new*"/>
-			<fileset dir="." includes="**/.directory"/>
-			<fileset dir="." includes="**/.xvpics"/>
+    <delete>
+			<fileset dir="${root.dir}/.." includes="${app.name}.jar"/>
+      <fileset dir="${root.dir}" includes="${app.name}.manifest"/>
+			<fileset dir="${root.dir}" includes="**/*.class"/>
+			<fileset dir="${root.dir}" includes="**/*.rej"/>
+			<fileset dir="${root.dir}" includes="**/*.orig"/>
+			<fileset dir="${root.dir}" includes="**/.*.swp"/>
+			<fileset dir="${root.dir}" includes="**/.#*"/>
+			<fileset dir="${root.dir}" includes="**/.new*"/>
+			<fileset dir="${root.dir}" includes="**/.directory"/>
+			<fileset dir="${root.dir}" includes="**/.xvpics"/>
 		</delete>
 	</target>
 	<!-- }}} -->
