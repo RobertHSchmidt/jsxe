@@ -1,4 +1,5 @@
 * The cells/nodes should be named based on the name of the type.
+    * Deal with localComplexTypes. These should be left out during parsing.
 
 * Make the cells shaped differently for different types of nodes (rounded
   corners etc.).
