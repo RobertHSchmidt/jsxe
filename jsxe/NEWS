@@ -1,3 +1,16 @@
+10/23/2003  version 0.1.37
+
+    * Fixed the problem with jsXe not finding DTD documents and other external
+      entities.
+    * jsXe now updates the interface more after you change a document's options.
+    * Fixed the problem with the tree view collapsing after adding new nodes
+      or changing some nodes.
+    * Fixed a bug that caused problems when saving as a file that was already
+      open. This was fixed earlier but the bug was reintroduced somewhere.
+    * Changed to a new version system where the build version is updated
+      automatically. This means the build version will get higher faster.
+    * Fixed some other bugs.
+
 08/31/2003  version 0.1.13
 
     * Fixed another nasty bug with createElement() creating elements with a

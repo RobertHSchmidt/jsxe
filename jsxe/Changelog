@@ -1,4 +1,4 @@
-10/23/2003  version 0.1.36  Ian Lewis <IanLewis@member.fsf.org>
+10/23/2003  version 0.1.37  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed the problem where the parser couldn't resolve the location
       of an external entity. Made it so that the parser searched for
