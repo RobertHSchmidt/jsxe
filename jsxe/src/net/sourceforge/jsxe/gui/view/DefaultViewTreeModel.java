@@ -97,7 +97,7 @@ import java.util.Enumeration;
 
 public class DefaultViewTreeModel implements TreeModel {
     
-    public DefaultViewTreeModel(Component parent, XMLDocument doc) {//{{{
+    protected DefaultViewTreeModel(Component parent, XMLDocument doc) {//{{{
         document=doc.getDocument();
         view=parent;
     }//}}}
