@@ -38,31 +38,34 @@ package treeview;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.gui.DocumentView;
-import net.sourceforge.jsxe.gui.OptionsPanel;
 //}}}
 
 //{{{ Java classes
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 //}}}
 
 //}}}
 
 public class TreeViewPlugin extends ViewPlugin {
     
-    public static final String PLUGIN_NAME = "tree";
+    //{{{ TreeViewPlugin
+    
+    public TreeViewPlugin() {
+        super(NAME, HUMAN_READABLE_NAME, VERSION, DESCRIPTION);
+    }//}}}
     
     //{{{ newDocumentView()
     
     public DocumentView newDocumentView(DocumentBuffer document) throws IOException {
-        return new DefaultView(document, this);
+        return new DefaultView(document);
     }//}}}
     
-    //{{{ getOptionsPanel()
+    //{{{ Private members
     
-    public OptionsPanel getOptionsPanel(DocumentBuffer buffer) {
-        return new DefaultViewOptionsPanel(buffer);
-    }//}}}
+    private static String NAME = "tree";
+    private static String HUMAN_READABLE_NAME = "Tree View";
+    private static String VERSION = "0.1";
+    private static String DESCRIPTION = "";
     
+    //}}}
 }

@@ -42,7 +42,6 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.DocumentBufferListener;
-import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.dom.AdapterNode;
@@ -225,8 +224,8 @@ public class SourceView extends JPanel implements DocumentView {
     
     //{{{ getViewName()
     
-    public ViewPlugin getViewPlugin() {
-        return m_plugin;
+    public String getViewName() {
+        return m_plugin.getName();
     }//}}}
     
     //{{{ setDocumentBuffer()
@@ -407,7 +406,7 @@ public class SourceView extends JPanel implements DocumentView {
         
         protected void processComponentKeyEvent(KeyEvent e) {
             if (!e.isConsumed() && e.getKeyCode() == KeyEvent.VK_TAB && e.getID() == KeyEvent.KEY_PRESSED) {
-                boolean softTabs = Boolean.valueOf(m_document.getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
+                boolean softTabs = Boolean.valueOf(m_document.getProperty(SOFT_TABS, "false")).booleanValue();
                 if (softTabs) {
                     try {
                         int indent = Integer.parseInt(m_document.getProperty(XMLDocument.INDENT));
@@ -429,7 +428,8 @@ public class SourceView extends JPanel implements DocumentView {
     //{{{ ensureDefaultProps()
     
     private void ensureDefaultProps(DocumentBuffer document) {
-        
+        //get default properties
+        document.setProperty(SOFT_TABS, document.getProperty(SOFT_TABS, m_defaultProperties.getProperty(SOFT_TABS)));
     }//}}}
     
     private SourceViewXMLDocumentListener docListener = new SourceViewXMLDocumentListener();

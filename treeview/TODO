@@ -14,12 +14,7 @@ TODO:
     
     * Make sure all instance variables are prefixed with m_ and are named in a
       consistent manner.
-
-* Version 0.3 beta
-
-    * Add back the "show whitespace-only nodes" option
-    * Add a "trim whitespace in text nodes" option.
-      
+    
 * Version 0.5 beta (DTD support and Threading)
     
     * Add support for DTDs and Schema and add feedback about whether the

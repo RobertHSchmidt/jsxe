@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
      This is a build.xml file for building jsXe.
--->
-<project basedir="." default="usage" name="jsXe2">
+--><project basedir="." default="usage" name="jsXe">
 	<!-- {{{ ============ Initializes properties and variables ============= -->
 	<target name="init">
 		<tstamp/>

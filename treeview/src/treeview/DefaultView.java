@@ -37,7 +37,6 @@ package treeview;
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.DocumentView;
 //}}}
@@ -75,16 +74,16 @@ import java.util.Properties;
 public class DefaultView extends JPanel implements DocumentView {
     
     //{{{ Private static members
+    private static final String _VIEWNAME="tree";
     private static final Properties m_defaultProperties;
     //}}}
     
     //{{{ Public static members
-    public static final String CONTINUOUS_LAYOUT = TreeViewPlugin.PLUGIN_NAME+".continuous.layout";
-    public static final String VERT_SPLIT_LOCATION = TreeViewPlugin.PLUGIN_NAME+".splitpane.vert.loc";
-    public static final String HORIZ_SPLIT_LOCATION = TreeViewPlugin.PLUGIN_NAME+".splitpane.horiz.loc";
-    public static final String SHOW_COMMENTS = TreeViewPlugin.PLUGIN_NAME+".show.comment.nodes";
-    public static final String SHOW_EMPTY_NODES = TreeViewPlugin.PLUGIN_NAME+".show.empty.nodes";
-    
+    public static final String CONTINUOUS_LAYOUT = _VIEWNAME+".continuous.layout";
+    public static final String VERT_SPLIT_LOCATION = _VIEWNAME+".splitpane.vert.loc";
+    public static final String HORIZ_SPLIT_LOCATION = _VIEWNAME+".splitpane.horiz.loc";
+    public static final String SHOW_COMMENTS = _VIEWNAME+".show.comment.nodes";
+    public static final String SHOW_EMPTY_NODES = _VIEWNAME+".show.empty.nodes";
     //}}}
     
     static {
@@ -101,9 +100,7 @@ public class DefaultView extends JPanel implements DocumentView {
      * @param document the document that this view shows
      * @throws IOException if the document cannot be viewed using this view.
      */
-    public DefaultView(DocumentBuffer document, TreeViewPlugin plugin) throws IOException {
-        
-        m_plugin = plugin;
+    public DefaultView(DocumentBuffer document) throws IOException {
         
         setLayout(new BorderLayout());
         
@@ -192,6 +189,26 @@ public class DefaultView extends JPanel implements DocumentView {
         setDocumentBuffer(document);
     }//}}}
     
+   // //{{{ setVisible()
+   // /**
+   //  * Initializes the size of the split panes and shows the component. The
+   //  * divider locations cannot be set before the split pane is added to a
+   //  * component for some reason.
+   //  * @param b If true, shows this component; otherwise, hides this component.
+   //  */
+   // public void setVisible(boolean b) {
+   //     if (b && m_firstShow) {
+            
+   //     }
+   //     super.setVisible(b);
+   // }//}}}
+    
+    //{{{ getHumanReadableName()
+    
+    public static String getHumanReadableName() {
+        return "Tree View";
+    }//}}}
+    
     //{{{ DocumentView methods
 
     //{{{ close()
@@ -217,18 +234,18 @@ public class DefaultView extends JPanel implements DocumentView {
         return true;
     }//}}}
 
+    //{{{ getDescription()
+    
+    public String getDescription() {
+        return "View a document in a tree";
+    }//}}}
+    
     //{{{ getDocumentViewComponent
     
     public Component getDocumentViewComponent() {
         return this;
     }//}}}
 
-    //{{{ getViewPlugin()
-    
-    public ViewPlugin getViewPlugin() {
-        return m_plugin;
-    }//}}}
-    
     //{{{ getMenus()
     
     public JMenu[] getMenus() {
@@ -256,6 +273,18 @@ public class DefaultView extends JPanel implements DocumentView {
        // menus[0] = editMenu;
        // return menus;
         return new JMenu[] {};
+    }//}}}
+    
+    //{{{ getOptionsPanel()
+    
+    public OptionsPanel getOptionsPanel() {
+        return new DefaultViewOptionsPanel();
+    }//}}}
+    
+    //{{{ getViewName()
+    
+    public String getViewName() {
+        return _VIEWNAME;
     }//}}}
     
     //{{{ getDocumentBuffer()
@@ -332,7 +361,99 @@ public class DefaultView extends JPanel implements DocumentView {
         document.setProperty(HORIZ_SPLIT_LOCATION, document.getProperty(HORIZ_SPLIT_LOCATION, m_defaultProperties.getProperty(HORIZ_SPLIT_LOCATION)));
         document.setProperty(VERT_SPLIT_LOCATION, document.getProperty(VERT_SPLIT_LOCATION, m_defaultProperties.getProperty(VERT_SPLIT_LOCATION)));
         document.setProperty(SHOW_COMMENTS, document.getProperty(SHOW_COMMENTS, m_defaultProperties.getProperty(SHOW_COMMENTS)));
-       // document.setProperty(SHOW_EMPTY_NODES, document.getProperty(SHOW_EMPTY_NODES, m_defaultProperties.getProperty(SHOW_EMPTY_NODES)));
+        document.setProperty(SHOW_EMPTY_NODES, document.getProperty(SHOW_EMPTY_NODES, m_defaultProperties.getProperty(SHOW_EMPTY_NODES)));
+    }//}}}
+    
+    //{{{ DefaultViewOptionsPanel class
+    
+    private class DefaultViewOptionsPanel extends OptionsPanel {
+        
+        //{{{ DefaultViewOptionsPanel constructor
+        
+        public DefaultViewOptionsPanel() {
+            
+            GridBagLayout layout = new GridBagLayout();
+            GridBagConstraints constraints = new GridBagConstraints();
+            
+            setLayout(layout);
+            
+            int gridY = 0;
+            
+            boolean showCommentNodes = Boolean.valueOf(m_document.getProperty(SHOW_COMMENTS, "false")).booleanValue();
+           // boolean showEmptyNodes = Boolean.valueOf(m_document.getProperty(SHOW_EMPTY_NODES, "false")).booleanValue();
+            boolean continuousLayout = Boolean.valueOf(m_document.getProperty(CONTINUOUS_LAYOUT, "false")).booleanValue();
+            
+            showCommentsCheckBox = new JCheckBox("Show comment nodes",showCommentNodes);
+           // showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
+            ContinuousLayoutCheckBox = new JCheckBox("Continuous layout for split-panes",continuousLayout);
+            
+            constraints.gridy      = gridY++;
+            constraints.gridx      = 1;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
+            layout.setConstraints(showCommentsCheckBox, constraints);
+            add(showCommentsCheckBox);
+            
+           // constraints.gridy      = gridY++;
+           // constraints.gridx      = 1;
+           // constraints.gridheight = 1;
+           // constraints.gridwidth  = 1;
+           // constraints.weightx    = 1.0f;
+           // constraints.fill       = GridBagConstraints.BOTH;
+           // constraints.insets     = new Insets(1,0,1,0);
+            
+           // layout.setConstraints(showEmptyNodesCheckBox, constraints);
+           // add(showEmptyNodesCheckBox);
+            
+            constraints.gridy      = gridY++;
+            constraints.gridx      = 1;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
+            layout.setConstraints(ContinuousLayoutCheckBox, constraints);
+            add(ContinuousLayoutCheckBox);
+        }//}}}
+        
+        //{{{ saveOptions()
+        
+        public void saveOptions() {
+            m_document.setProperty(SHOW_COMMENTS,(new Boolean(showCommentsCheckBox.isSelected())).toString());
+           // m_document.setProperty(SHOW_EMPTY_NODES,(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
+            
+            boolean layout = ContinuousLayoutCheckBox.isSelected();
+            m_document.setProperty(CONTINUOUS_LAYOUT,(new Boolean(layout)).toString());
+            vertSplitPane.setContinuousLayout(layout);
+            horizSplitPane.setContinuousLayout(layout);
+            tree.updateUI();
+        }//}}}
+        
+        //{{{ getName()
+        
+        public String getName() {
+            return "defaultview";
+        }//}}}
+        
+        //{{{ getTitle()
+        
+        public String getTitle() {
+            return "Tree View Options";
+        }//}}}
+        
+        //{{{ Private Members
+        
+        private JCheckBox showCommentsCheckBox;
+       // private JCheckBox showEmptyNodesCheckBox;
+        private JCheckBox ContinuousLayoutCheckBox;
+        
+        //}}}
+        
     }//}}}
     
     //{{{ TablePopupListener class
@@ -466,7 +587,6 @@ public class DefaultView extends JPanel implements DocumentView {
     private JSplitPane horizSplitPane;
     private DocumentBuffer m_document;
     private boolean m_viewShown = false;
-    private TreeViewPlugin m_plugin;
     
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {
@@ -511,16 +631,7 @@ public class DefaultView extends JPanel implements DocumentView {
         
         //{{{ propertiesChanged
         
-        public void propertyChanged(XMLDocument source, String key, String oldValue) {
-            if (CONTINUOUS_LAYOUT.equals(key)) {
-                boolean layout = Boolean.valueOf(source.getProperty(CONTINUOUS_LAYOUT)).booleanValue();
-                vertSplitPane.setContinuousLayout(layout);
-                horizSplitPane.setContinuousLayout(layout);
-            }
-            if (CONTINUOUS_LAYOUT.equals(key) || SHOW_COMMENTS.equals(key)) {
-                tree.updateUI();
-            }
-        }//}}}
+        public void propertiesChanged(XMLDocument source, String key) {}//}}}
         
         //{{{ structureChanged()
         

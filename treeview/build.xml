@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
      This is a build.xml file for building the Tree View for jsXe.
-     Version: $Id$
 -->
 <project basedir="." default="usage" name="treeview">
 	
@@ -11,8 +10,6 @@
 	<target name="init">
 		<tstamp/>
 		<property name="app.name" value="treeview"/>
-    <property name="readable.name" value="Tree View"/>
-    <property name="description" value="Edit an XML document as a tree"/>
 		<property name="root.dir" value="."/>
     <property name="build.dir" value="${root.dir}/build"/>
 		<property name="src.dir" value="${root.dir}/src"/>
@@ -22,22 +19,19 @@
 		<property name="build.docs" value="${build.dir}/doc"/>
 		<property name="build.javadocs" value="${build.docs}/api"/>
 		<property name="build.help" value="${build.docs}/help"/>
-    <property name="jsxe.dir" value="${root.dir}/../jsxe"/>
-    <property name="jsxe.jar" value="${jsxe.dir}/jsXe.jar"/>
+    <property name="jsxe.jar" value="${root.dir}/../jsxe/jsXe.jar"/>
 		<property name="javac.debug" value="on"/>
 		<property name="javac.optimize" value="off"/>
 		<property name="javac.deprecation" value="on"/>
     <property name="javac.include.runtime" value="no"/>
     <property name="javac.source" value="1.3"/>
 		<property name="javadoc.link" value="http://java.sun.com/j2se/1.3/docs/api/"/>
-    <property name="main.class" value="treeview.TreeViewPlugin"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="3"/>
-    <property name="build.version" value="15"/>
-		<property name="app.version" value="${major.version}.${minor.version} pre${build.version}"/>
-		<property name="app_version" value="${major.version}_${minor.version}pre${build.version}"/>
-		<property name="implementation.version" value="${major.version}.${minor.version}.${build.version}"/>
-        <property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
+		<property name="build.description" value="pre1"/>
+		<property name="app.version" value="${major.version}.${minor.version} ${build.description}"/>
+		<property name="app_version" value="${major.version}_${minor.version}${build.description}"/>
+		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
 		<property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>
 		<path id="classpath">
 			<pathelement location="${root.dir}"/>
@@ -93,14 +87,13 @@
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Compiles the program ============================= -->
-	<target depends="prepare-src" name="compile" description="compile Tree View">
+	<target depends="prepare-src" name="compile" description="compile treeView">
 		<mkdir dir="${build.dest}"/>
 		<javac debug="${javac.debug}" deprecation="${javac.deprecation}" includeJavaRuntime="${javac.include.runtime}" optimize="${javac.optimize}" source="${javac.source}" destdir="${build.dest}" srcdir="${build.src}">
 			<classpath refid="classpath"/>
 			<include name="**/*.java"/>
 		</javac>
-		
-    <copy todir="${build.dest}">
+		<copy todir="${build.dest}">
 			<fileset dir="${build.src}">
 				<include name="**/*.props"/>
 				<include name="**/*.properties"/>
@@ -109,26 +102,13 @@
 				<include name="**/*.png"/>
 			</fileset>
 		</copy>
-    
-    <!-- copy dependencies file -->
-    <copy file="dependency.props" todir="${build.dest}"/>
-    
-    <!-- create jar manifest -->
-    <manifest file="${app.name}.manifest">
-      <attribute name="Built-By" value="${user.name}"/>
-      <section name="common">
-        <attribute name="Implementation-Title" value="${app.name}"/>
-        <attribute name="Implementation-Version" value="${implementation.version}"/>
-        <!-- plugin attributes -->
-        <attribute name="jsxe-plugin-name" value="${app.name}"/>
-        <attribute name="jsxe-plugin-human-readable-name" value="${readable.name}"/>
-        <attribute name="jsxe-plugin-version" value="${implementation.version}"/>
-        <attribute name="jsxe-plugin-url" value="http://jsxe.sourceforge.net/"/>
-        <attribute name="jsxe-plugin-class" value="${main.class}"/>
-        <attribute name="jsxe-plugin-description" value="${description}"/>
-      </section>
-    </manifest>
-    
+		<propertyfile comment="${app.name}&apos;s build properties" file="${build.dest}/treeview/build.properties">
+			<entry key="application.name" value="${app.name}"/>
+			<entry key="build.time" pattern="dd/MM/yyyy HH:mm" type="date" value="now"/>
+			<entry key="major.version" value="${major.version}"/>
+			<entry key="minor.version" value="${minor.version}"/>
+			<entry key="build.description" value="${build.description}"/>
+		</propertyfile>
 		<jar jarfile="${app.name}.jar" manifest="${app.name}.manifest">
 			<fileset dir="${build.dest}">
 				<include name="**/*.class"/>
@@ -199,8 +179,9 @@
 		<delete dir="${build.dir}"/>
 		<delete>
 			<fileset dir="." includes="${app.name}.jar"/>
-      <fileset dir="." includes="${app.name}.manifest"/>
 			<fileset dir="." includes="**/*.class"/>
+			<fileset defaultexcludes="no" dir="." includes="**/*~"/>
+			<fileset defaultexcludes="no" dir="." includes="**/#*#"/>
 			<fileset dir="." includes="**/*.rej"/>
 			<fileset dir="." includes="**/*.orig"/>
 			<fileset dir="." includes="**/.*.swp"/>

@@ -1,29 +1,3 @@
-03/08/2004  Ian Lewis <IanLewis@member.fsf.org>
-
-    * Updated to work with jsXe's new plugin dependency checking.
-
-03/04/2004  version 0.3 pre15   Ian Lewis <IanLewis@member.fsf.org>
-
-    * Updated to work with jsXe 0.3 pre15
-
-01/08/2004  version 0.3 pre9    Ian Lewis <IanLewis@member.fsf.org>
-
-    * Updated so that getVersion() works properly;
-
-01/05/2004  version 0.3 pre7    Ian Lewis <IanLewis@member.fsf.org>
-
-    * Updated for new plugin API
-
-12/13/2004  version 0.3 pre3    Ian Lewis <IanLewis@member.fsf.org>
-
-    * Updated to use the build properties to get plugin version
-
-12/10/2004  version 0.3 pre2    Ian Lewis <IanLewis@member.fsf.org>
-
-    * Updated to support slightly modified version of XMLDocumentListener
-    * Updated XMLDocumentListener again
-    * Odded support for displaying the Options Panel in the general options
-
 12/07/2004  version 0.3 pre1    Ian Lewis <IanLewis@member.fsf.org>
 
     * Split the tree view to it's own source tree now that it's a plugin.

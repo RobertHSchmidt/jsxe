@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<test><!--A generic test xml document--><Text>Some test text</Text><CDATA><![CDATA[`~!@#$%^&*()[{]}?/+=|\_-;:]]></CDATA><PI><?pi-test test?></PI></test>
+<test>
+	<!--
+	A generic test xml document
+	-->
+	<Text>Some test text</Text>
+	<CDATA>
+		<![CDATA[`~!@#$%^&*()[{]}?/+=|\_-;:]]>
+	</CDATA>
+</test>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
      This is a build.xml file for building the Source View for jsXe.
-     Version: $Id$
 -->
 <project basedir="." default="usage" name="sourceview">
 	
@@ -11,8 +10,6 @@
 	<target name="init">
 		<tstamp/>
 		<property name="app.name" value="sourceview"/>
-    <property name="readable.name" value="Source View"/>
-    <property name="description" value="Edit an XML document's source"/>
 		<property name="root.dir" value="."/>
     <property name="build.dir" value="${root.dir}/build"/>
 		<property name="src.dir" value="${root.dir}/src"/>
@@ -33,10 +30,9 @@
     <property name="main.class" value="sourceview.SourceViewPlugin"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="3"/>
-		<property name="build.version" value="15"/>
-		<property name="app.version" value="${major.version}.${minor.version} pre${build.version}"/>
-		<property name="app_version" value="${major.version}_${minor.version}pre${build.version}"/>
-        <property name="implementation.version" value="${major.version}.${minor.version}.${build.version}"/>
+		<property name="build.description" value="pre1"/>
+		<property name="app.version" value="${major.version}.${minor.version} ${build.description}"/>
+		<property name="app_version" value="${major.version}_${minor.version}${build.description}"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
 		<property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>
 		<path id="classpath">
@@ -46,7 +42,7 @@
 			<pathelement location="${src.dir}"/>
       <pathelement location="${jsxe.jar}"/>
 		</path>
-		<echo message="${readable.name} ${app.version}"/>
+		<echo message="${app.name} ${app.version}"/>
 		<echo message="----------------------------------------------------------"/>
 	</target>
 	<!-- }}} -->
@@ -108,16 +104,12 @@
 				<include name="**/*.png"/>
 			</fileset>
 		</copy>
-		
-    <!-- copy dependencies file -->
-    <copy file="dependency.props" todir="${build.dest}"/>
-    
-    <propertyfile comment="${app.name}&apos;s build properties" file="${build.dest}/sourceview/build.properties">
+		<propertyfile comment="${app.name}&apos;s build properties" file="${build.dest}/sourceview/build.properties">
 			<entry key="application.name" value="${app.name}"/>
 			<entry key="build.time" pattern="dd/MM/yyyy HH:mm" type="date" value="now"/>
 			<entry key="major.version" value="${major.version}"/>
 			<entry key="minor.version" value="${minor.version}"/>
-			<entry key="build.version" value="${build.version}"/>
+			<entry key="build.description" value="${build.description}"/>
 		</propertyfile>
     
     <!-- create jar manifest -->
@@ -126,14 +118,7 @@
       <attribute name="Main-Class" value="${main.class}"/>
       <section name="common">
         <attribute name="Implementation-Title" value="${app.name}"/>
-        <attribute name="Implementation-Version" value="${implementation.version}"/>
-        <!-- plugin attributes -->
-        <attribute name="jsxe-plugin-name" value="${app.name}"/>
-        <attribute name="jsxe-plugin-human-readable-name" value="${readable.name}"/>
-        <attribute name="jsxe-plugin-version" value="${implementation.version}"/>
-        <attribute name="jsxe-plugin-url" value="http://jsxe.sourceforge.net/"/>
-        <attribute name="jsxe-plugin-class" value="${main.class}"/>
-        <attribute name="jsxe-plugin-description" value="${description}"/>
+        <attribute name="Implementation-Version" value="${app.version} ${TODAY}"/>
       </section>
     </manifest>
     
@@ -209,6 +194,8 @@
 			<fileset dir="." includes="${app.name}.jar"/>
       <fileset dir="." includes="${app.name}.manifest"/>
 			<fileset dir="." includes="**/*.class"/>
+			<fileset defaultexcludes="no" dir="." includes="**/*~"/>
+			<fileset defaultexcludes="no" dir="." includes="**/#*#"/>
 			<fileset dir="." includes="**/*.rej"/>
 			<fileset dir="." includes="**/*.orig"/>
 			<fileset dir="." includes="**/.*.swp"/>

@@ -287,12 +287,6 @@ public class SourceViewSearchDialog extends EnhancedDialog {
     //{{{ find()
     
     private void find(boolean doReplace) {
-        find(doReplace, m_view.getTextArea().getCaretPosition());
-    }
-    
-    //{{{ find()
-    
-    private void find(boolean doReplace, int startIndex) {
         try {
             Object searchItem = m_findComboBox.getSelectedItem();
             Object replaceItem = m_replaceComboBox.getSelectedItem();
@@ -325,7 +319,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
             
             DocumentBuffer buffer = m_view.getDocumentBuffer();
             Segment seg = buffer.getSegment(0, buffer.getLength());
-            int caretPosition = startIndex;
+            int caretPosition = textArea.getCaretPosition();
             CharIndexedSegment charSeg = new CharIndexedSegment(seg, caretPosition);
             
             int[] match = matcher.nextMatch(charSeg, false, true, true, false);
@@ -338,11 +332,6 @@ public class SourceViewSearchDialog extends EnhancedDialog {
                 textArea.requestFocus();
                 textArea.setCaretPosition(start);
                 textArea.moveCaretPosition(end);
-            } else {
-                int again = JOptionPane.showConfirmDialog(m_view, "No more matches were found. Continue search from the beginning?", "No More Matches Found", JOptionPane.YES_NO_OPTION);
-                if (again == 0) {
-                    find(doReplace, 0);
-                }
             }
             
             requestFocus();

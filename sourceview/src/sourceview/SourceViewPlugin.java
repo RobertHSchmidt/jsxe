@@ -42,15 +42,22 @@ import net.sourceforge.jsxe.gui.OptionsPanel;
 
 //}}}
 
-//{{{ Java classes
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-//}}}
 
 //}}}
 
 public class SourceViewPlugin extends ViewPlugin {
+    
+    public static final String PLUGIN_NAME = "source";
+    private static final String HUMAN_READABLE_NAME = "Source View";
+    private static final String VERSION = "0.1";
+    private static final String DESCRIPTION = "";
+    
+    //{{{ SourceViewPlugin
+    
+    public SourceViewPlugin() {
+        super(PLUGIN_NAME, HUMAN_READABLE_NAME, VERSION, DESCRIPTION);
+    }//}}}
     
     //{{{ newDocumentView()
     
@@ -61,10 +68,7 @@ public class SourceViewPlugin extends ViewPlugin {
     //{{{ getOptionsPanel()
     
     public OptionsPanel getOptionsPanel(DocumentBuffer buffer) {
-       // return new SourceViewOptionsPanel(buffer);
-        // moved the soft tabs option to the jsXe core.
-        // no need for a options panel right now.
-        return null;
+        return new SourceViewOptionsPanel(buffer);
     }//}}}
     
 }
