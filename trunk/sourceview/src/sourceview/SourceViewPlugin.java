@@ -42,7 +42,11 @@ import net.sourceforge.jsxe.gui.OptionsPanel;
 
 //}}}
 
+//{{{ Java classes
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+//}}}
 
 //}}}
 
@@ -50,8 +54,18 @@ public class SourceViewPlugin extends ViewPlugin {
     
     public static final String PLUGIN_NAME = "source";
     private static final String HUMAN_READABLE_NAME = "Source View";
-    private static final String VERSION = "0.1";
+    private static final String VERSION;
     private static final String DESCRIPTION = "";
+    
+    static {
+        InputStream propsStream = SourceViewPlugin.class.getResourceAsStream("/sourceview/build.properties");
+        Properties buildProps = new Properties();
+        try {
+            buildProps.load(propsStream);
+        } catch (IOException ioe) {}
+        
+        VERSION = buildProps.getProperty("build.version");
+    }
     
     //{{{ SourceViewPlugin
     

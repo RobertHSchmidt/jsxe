@@ -1,3 +1,7 @@
+12/13/2004  verison 0.3 pre2    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated to use the build properties to get the plugin version
+
 12/12/2004  version 0.3 pre1    Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated the Source View to be a plugin
