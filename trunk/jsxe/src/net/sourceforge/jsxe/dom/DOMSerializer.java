@@ -133,48 +133,40 @@ public class DOMSerializer implements DOMWriter {
     public boolean writeNode(OutputStream out, Node wnode) {//{{{
         if (filter == null || filter.acceptNode(wnode) == 1) {
             
-            OutputStreamWriter writer = new OutputStreamWriter(out);
-            
-            if (writer.getEncoding() != "UTF-8") {
-                try {
-                    writer = new OutputStreamWriter(out, "UTF-8");
-                } catch (UnsupportedEncodingException uee2) {}
-            }
-            
             DefaultDOMLocator loc = new DefaultDOMLocator(wnode, 1, 1, 0, "");
             
             try {
                 
-                writer = new OutputStreamWriter(out, encoding);
-                
+                OutputStreamWriter writer = new OutputStreamWriter(out, encoding);
+                try {
+                    serializeNode(writer, wnode);
+                    return true;
+                } catch (DOMSerializerException dse) {
+                    Object rawHandler = config.getParameter("error-handler");
+                    if (rawHandler != null) {
+                        
+                        DOMErrorHandler handler = (DOMErrorHandler)rawHandler;
+                        
+                        DOMError error = dse.getError();
+                        
+                        handler.handleError(error);
+                    }
+                    //This is a fatal error, quit.
+                }
             } catch (UnsupportedEncodingException uee) {
                 Object rawHandler = config.getParameter("error-handler");
                 if (rawHandler != null) {
-                
+                    
                     DOMErrorHandler handler = (DOMErrorHandler)rawHandler;
                     
                     DOMSerializerError error = new DOMSerializerError(loc, uee, DOMError.SEVERITY_FATAL_ERROR);
                     
-                    if (!handler.handleError(error)) {
-                        //The handler should quit because this error
-                        //is fatal but if it doesn't then use the
-                        //default encoding. Java is guaranteed to support
-                        //UTF-8
-                        return false;
-                    }
-                } else {
-                    return false;
+                    handler.handleError(error);
                 }
+                //This is a fatal error, quit.
             }
-            try {
-                serializeNode(writer, wnode);
-            } catch (DOMSerializerException dse) {
-                
-                return false;
-            }
-            
         }
-        return true;
+        return false;
     }//}}}
     
     public String writeToString(Node wnode) throws DOMException {//{{{
@@ -740,8 +732,10 @@ public class DOMSerializer implements DOMWriter {
     
     private void doWrite(Writer writer, String str, Node wnode, int line, int column, int offset) throws DOMSerializerException {//{{{
         try {
-            writer.write(str);
-            
+            writer.write(str, 0, str.length());
+            //flush the output-stream. Without this
+            //files are sometimes not written at all.
+            writer.flush();
         } catch (IOException ioe) {
             
             DefaultDOMLocator loc = new DefaultDOMLocator(wnode, line, column, offset, "");

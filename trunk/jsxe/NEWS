@@ -1,3 +1,7 @@
+08/30/2003  version 0.1.12
+
+    * Fixed a very nasty bug that caused jsXe to save blank files.
+
 08/30/2003  version 0.1.11
     
     * jsXe has some more options. The options are specific to each open XML

@@ -108,7 +108,7 @@ public class AdapterNode {
             NodeList children = domNode.getChildNodes();
             Document document = domNode.getOwnerDocument();
             //replace the changed node
-            Element newNode = document.createElement(newValue);
+            Element newNode = document.createElementNS("", newValue);
             NamedNodeMap attrs = domNode.getAttributes();
             int attrlength = attrs.getLength();
             

@@ -2,11 +2,23 @@ TODO:
 
     * Document methods with javadoc.
     
-    * Work on performance problems when loading an XML document. (Hint: setModel
-      in DefaultXMLDocument.java)
-    
     * Change the XMLDocument interface to use something else but validate().
       i.e. rename it. This is confusing and dumb.
+    
+    * Allow GUI models to register change listeners with XMLDocuments and
+      AdapterNodes. This will allow GUI models to be updated automatically when
+      the DOM is changed. Also add property change listeners so that views can
+      be updated when properties (options) change.
+    
+    * Currently AdapterNodes only wrap the Node interface and create new
+      instances of itself when queried. Have AdapterNode implement the TreeNode
+      interface and create a tree around the DOM so that new AdapterNodes are
+      not created on the fly. This will allow the TreeModel to have a static
+      model i.e. The instances of AdapterNode won't change everytime the
+      TreeModel is queried by the JTree. e.g. Currently when I create a TreePath
+      and call updateUI the TreePath is no longer valid because it contains
+      objects no longer in the TreeModel. So when updating the UI I can't tell
+      which Nodes were previously visable.
     
     * Research the EntityResolver class and see if it can be used to resolve
       DTD files.
@@ -39,24 +51,9 @@ TODO:
     
     * Add full support for namespaces. (adding, editing, serialization, etc.)
     
-    * Currently AdapterNodes only wrap the Node interface and create new
-      instances of itself when queried. Have AdapterNode implement the TreeNode
-      interface and create a tree around the DOM so that new AdapterNodes are
-      not created on the fly. This will allow the TreeModel to have a static
-      model i.e. The instances of AdapterNode won't change everytime the
-      TreeModel is queried by the JTree. e.g. Currently when I create a TreePath
-      and call updateUI the TreePath is no longer valid because it contains
-      objects no longer in the TreeModel. So when updating the UI I can't tell
-      which Nodes were previously visable.
-    
     * Redo the interface for XMLDocuments and AdapterNodes so that DOM
       implementation used in a more limited way. Implement Document editing
       methods.
-    
-    * Allow GUI models to register change listeners with XMLDocuments and
-      AdapterNodes. This will allow GUI models to be updated automatically when
-      the DOM is changed. Also add property change listeners so that views can
-      be updated when properties (options) change.
     
     * Make sure jsXe can deal with all types of XML nodes.
     

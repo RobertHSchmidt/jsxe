@@ -111,6 +111,8 @@ public abstract class XMLDocument {
     
     public abstract boolean isValidated();
     
+    public abstract boolean equals(Object o) throws ClassCastException;
+    
     //{{{ Private members
     private Properties props = new Properties();
     //}}}
