@@ -9,9 +9,6 @@ The user can then edit this tree and the content in the tree and save the
 document.
 
 This file contains all the code for the default panel shows the xml document.
-Since you don't want a panel for every document each with its own splitpane
-dimensions this is a singleton. It may not be forever as jsXe may one day
-may be multi-threaded and have multiple TabbedViews.
 
 This file written by Ian Lewis (IanLewis@member.fsf.org)
 Copyright (C) 2002 Ian Lewis
@@ -112,7 +109,9 @@ import java.util.Vector;
 
 public class DefaultView extends DocumentView {
     
-    public DefaultView(DocumentBuffer buffer) throws IOException {//{{{
+    //{{{ DefaultView constructor
+    
+    public DefaultView(DocumentBuffer buffer) throws IOException {
         
         setLayout(new BorderLayout());
         
@@ -156,7 +155,9 @@ public class DefaultView extends DocumentView {
         ToolTipManager.sharedInstance().registerComponent(tree);
     } //}}}
     
-    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {//{{{
+    //{{{ setDocumentBuffer
+    
+    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {
         
         XMLDocument document = buffer.getXMLDocument();
         
@@ -201,7 +202,9 @@ public class DefaultView extends DocumentView {
         m_buffer = buffer;
     } //}}}
     
-    public JMenu[] getMenus() {//{{{
+    //{{{ getMenus()
+    
+    public JMenu[] getMenus() {
         //Edit Menu doesn't work yet.
        // JMenu[] menus = new JMenu[1];
        // //{{{ Create Edit Menu
@@ -228,19 +231,27 @@ public class DefaultView extends DocumentView {
         return null;
     }//}}}
     
-    public OptionsPanel getOptionsPanel() {//{{{
+    //{{{ getOptionsPanel()
+    
+    public OptionsPanel getOptionsPanel() {
         return new DefaultViewOptionsPanel();
     }//}}}
     
-    public DocumentBuffer getDocumentBuffer() {//{{{
+    //{{{ getDocumentBuffer()
+    
+    public DocumentBuffer getDocumentBuffer() {
         return m_buffer;
     }//}}}
     
-    public String getName() {//{{{
+    //{{{ getName()
+    
+    public String getName() {
         return "Tree View";
     }//}}}
     
-    public boolean close(TabbedView view) {//{{{
+    //{{{ close()
+    
+    public boolean close(TabbedView view) {
         
         //m_buffer should only be null if setBuffer was never called.
         if (m_buffer != null) {
@@ -256,17 +267,38 @@ public class DefaultView extends DocumentView {
     
     //{{{ Private Members
     
-    private boolean canEditInJTree(AdapterNode node) {//{{{
+    //{{{ canEditInJTree()
+    
+    private boolean canEditInJTree(AdapterNode node) {
         return (node.getNodeType() == Node.ELEMENT_NODE);
     }//}}}
     
-    private boolean canEditInJEditorPane(AdapterNode node) {//{{{
+    //{{{ canEditInJEditorPane()
+    
+    private boolean canEditInJEditorPane(AdapterNode node) {
         return (node.getNodeValue() != null);
     }//}}}
     
-    private class DefaultViewOptionsPanel extends OptionsPanel {//{{{
+    //{{{ updateTree()
+    
+    private void updateTree() {
+        //We must settle for this but this doesn't
+        //update the tree properly. When the text node
+        //is changed the tree cell size doesn't change
+        //resulting in ... characters in the tree.
+        //Being able to update the tree the way we want
+        //to is going to be require more complex use of
+        //tree rendering I think.
+        tree.treeDidChange();
+    }//}}}
+    
+    //{{{ DefaultViewOptionsPanel class
+    
+    private class DefaultViewOptionsPanel extends OptionsPanel {
         
-        public DefaultViewOptionsPanel() {//{{{
+        //{{{ DefaultViewOptionsPanel constructor
+        
+        public DefaultViewOptionsPanel() {
             
             GridBagLayout layout = new GridBagLayout();
             GridBagConstraints constraints = new GridBagConstraints();
@@ -317,7 +349,9 @@ public class DefaultView extends DocumentView {
             add(ContinuousLayoutCheckBox);
         }//}}}
         
-        public void saveOptions() {//{{{
+        //{{{ saveOptions()
+        
+        public void saveOptions() {
             m_buffer.setProperty(viewname+".show.comment.nodes",(new Boolean(showCommentsCheckBox.isSelected())).toString());
             m_buffer.setProperty(viewname+".show.empty.nodes",(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
             
@@ -328,21 +362,33 @@ public class DefaultView extends DocumentView {
             tree.updateUI();
         }//}}}
         
-        public String getTitle() {//{{{
+        //{{{ getTitle()
+        
+        public String getTitle() {
             return "Tree View Options";
         }//}}}
+        
+        //{{{ Private Members
         
         private JCheckBox showCommentsCheckBox;
         private JCheckBox showEmptyNodesCheckBox;
         private JCheckBox ContinuousLayoutCheckBox;
         
+        //}}}
+        
     }//}}}
     
-    private class DefaultTreeSelectionListener implements TreeSelectionListener {//{{{
+    //{{{ DefaultTreeSelectionListener class
+    
+    private class DefaultTreeSelectionListener implements TreeSelectionListener {
+        
+        //{{{ DefaultTreeSelectionListener constructor
         
         DefaultTreeSelectionListener(Component p) {
             parent=p;
-        }
+        }//}}}
+        
+        //{{{ valueChanged()
         
         public void valueChanged(TreeSelectionEvent e) {
             TreePath selPath = e.getPath();
@@ -369,21 +415,32 @@ public class DefaultView extends DocumentView {
             } else {
                 htmlPane.setDocument(null);
             }
-        }
+        }//}}}
         
+        //{{{ Private members
         private Component parent;
+        //}}}
         
     }//}}}
     
-    private class TreePopupListener extends MouseAdapter {//{{{
+    //{{{ TreePopupListener class
+    
+    private class TreePopupListener extends MouseAdapter {
+        
+        //{{{ mousePressed()
+        
         public void mousePressed(MouseEvent e) {
             maybeShowPopup(e);
-        }
-
+        }//}}}
+        
+        //{{{ mouseReleased()
+        
         public void mouseReleased(MouseEvent e) {
             maybeShowPopup(e);
-        }
-
+        }//}}}
+        
+        //{{{ maybeShowPopup()
+        
         private void maybeShowPopup(MouseEvent e) {
             TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
             if (e.isPopupTrigger() && selPath != null) {
@@ -417,110 +474,27 @@ public class DefaultView extends DocumentView {
                 if (showpopup)
                     popup.show(e.getComponent(), e.getX(), e.getY());
             }
-        }
+        }//}}}
     }//}}}
     
-    private class AddElementNodeAction implements ActionListener {//{{{
-        
-        public void actionPerformed(ActionEvent e) {
-            try {
-                TreePath selPath = tree.getLeadSelectionPath();
-                if (selPath != null) {
-                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    AdapterNode newNode = selectedNode.addAdapterNode("New_Element", "", Node.ELEMENT_NODE);
-                    //The TreeModel doesn't automatically treeNodesInserted() yet
-                   // updateComponents();
-                    tree.updateUI();
-                }
-            } catch (DOMException dome) {
-                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
-            }
-        }
-        
-    }//}}}
+    //{{{ TablePopupListener class
     
-    private class RenameElementAction implements ActionListener {//{{{
+    private class TablePopupListener extends MouseAdapter {
         
-        public void actionPerformed(ActionEvent e) {
-            TreePath selPath = tree.getLeadSelectionPath();
-            if (selPath != null) {
-                tree.startEditingAtPath(selPath);
-            }
-        }
+        //{{{ mousePressed()
         
-    }//}}}
-    
-    private class AddTextNodeAction implements ActionListener {//{{{
-        
-        public void actionPerformed(ActionEvent e) {
-            try {
-                TreePath selPath = tree.getLeadSelectionPath();
-                if (selPath != null) {
-                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    selectedNode.addAdapterNode("", "New Text Node", Node.TEXT_NODE);
-                    //The TreeModel doesn't automatically treeNodesInserted() yet
-                   // updateComponents();
-                    tree.updateUI();
-                }
-            } catch (DOMException dome) {
-                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
-            }
-        }
-        
-    }//}}}
-    
-    private class RemoveNodeAction implements ActionListener {//{{{
-        
-        public void actionPerformed(ActionEvent e) {
-            try {
-                TreePath selPath = tree.getLeadSelectionPath();
-                if (selPath != null) {
-                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    selectedNode.getParentNode().remove(selectedNode);
-                    //The TreeModel doesn't automatically treeNodesRemoved() yet
-                   // updateComponents();
-                    tree.updateUI();
-                }
-            } catch (DOMException dome) {
-                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
-            }
-        }
-        
-    }//}}}
-    
-    private class RemoveAttributeAction implements ActionListener {//{{{
-        
-        public RemoveAttributeAction(int r) {
-            row = r;
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            DefaultViewTableModel model = (DefaultViewTableModel)attributesTable.getModel();
-            model.removeRow(row);
-           // updateComponents();
-            attributesTable.updateUI();
-        }
-        
-        private int row;
-    }//}}}
-    
-    private class AddAttributeAction implements ActionListener {//{{{
-        
-        public void actionPerformed(ActionEvent e) {
-            attributesTable.editCellAt(attributesTable.getRowCount()-1,0);
-        }
-        
-    }//}}}
-    
-    private class TablePopupListener extends MouseAdapter {//{{{
         public void mousePressed(MouseEvent e) {
             maybeShowPopup(e);
-        }
+        }//}}}
 
+        //{{{ mouseReleased()
+        
         public void mouseReleased(MouseEvent e) {
             maybeShowPopup(e);
-        }
+        }//}}}
 
+        //{{{ maybeShowPopup
+        
         private void maybeShowPopup(MouseEvent e) {
             Point point = new Point(e.getX(), e.getY());
             int row = attributesTable.rowAtPoint(point);
@@ -546,20 +520,27 @@ public class DefaultView extends DocumentView {
                 }
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
-        }
+        }//}}}
+        
     }//}}}
     
-    public class DefaultViewTreeCellRenderer extends DefaultTreeCellRenderer {//{{{
+    //{{{ DefaultViewTreeCellRenderer class
+    
+    private class DefaultViewTreeCellRenderer extends DefaultTreeCellRenderer {
         
-        DefaultViewTreeCellRenderer() {//{{{
+        //{{{ DefaultViewTreeCellRenderer constructor
+        
+        DefaultViewTreeCellRenderer() {
             m_defaultLeafIcon = getLeafIcon();
             m_defaultOpenIcon = getOpenIcon();
             m_defaultClosedIcon = getClosedIcon();
         }//}}}
         
+        //{{{ getTreeCellRendererComponent()
+        
         public Component getTreeCellRendererComponent(JTree tree, 
             Object value, boolean selected, boolean expanded,
-            boolean leaf, int row, boolean hasFocus) {//{{{
+            boolean leaf, int row, boolean hasFocus) {
             
             AdapterNode node = (AdapterNode)value;
             setText(node.toString());
@@ -631,63 +612,166 @@ public class DefaultView extends DocumentView {
             return this;
         }//}}}
         
+        //{{{ Private members
         private Icon m_defaultLeafIcon;
         private Icon m_defaultOpenIcon;
         private Icon m_defaultClosedIcon;
+        //}}}
         
     }//}}}
     
-    public class ElementTreeCellRenderer extends DefaultTreeCellRenderer {//{{{
+    //{{{ ElementTreeCellRenderer class
+    
+    private class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
         
-        public ElementTreeCellRenderer() {//{{{
+        //{{{ ElementTreeCellRenderer constructor
+        
+        public ElementTreeCellRenderer() {
             //only element nodes can be edited in the tree
             setIcon(m_elementIcon);
             setLeafIcon(m_elementIcon);
             setOpenIcon(m_elementIcon);
             setClosedIcon(m_elementIcon);
             setToolTipText("Element Node");
-        }//}}}o
+        }//}}}
+        
+        //{{{ getTreeCellRendererComponent
         
         public Component getTreeCellRendererComponent(JTree tree, 
             Object value, boolean selected, boolean expanded,
-            boolean leaf, int row, boolean hasFocus) {//{{{
+            boolean leaf, int row, boolean hasFocus) {
             
             return this;
             
         }//}}}
         
     }//}}}
+
+    //{{{ Actions
     
-    private void updateTree() {//{{{
-        //We must settle for this but this doesn't
-        //update the tree properly. When the text node
-        //is changed the tree cell size doesn't change
-        //resulting in ... characters in the tree.
-        //Being able to update the tree the way we want
-        //to is going to be require more complex use of
-        //tree rendering I think.
-        tree.treeDidChange();
+    //{{{ AddElementNodeAction class
+    
+    private class AddElementNodeAction implements ActionListener {
+        
+        //{{{ actionPerformed()
+        
+        public void actionPerformed(ActionEvent e) {
+            try {
+                TreePath selPath = tree.getLeadSelectionPath();
+                if (selPath != null) {
+                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+                    AdapterNode newNode = selectedNode.addAdapterNode("New_Element", "", Node.ELEMENT_NODE);
+                    //The TreeModel doesn't automatically treeNodesInserted() yet
+                   // updateComponents();
+                    tree.updateUI();
+                }
+            } catch (DOMException dome) {
+                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+            }
+        }//}}}
+        
     }//}}}
     
-    /**
-     * This is temporary. It causes GUI components to be updated but does
-     * not retain their state.
-     * Since AdapterNodes are persistent now. This should go away NOW.
-     */
-   // private void updateComponents() {//{{{
-   //     
-   //     tree.updateUI();
-   //     //Clear the right hand pane of previous values.
-   //     htmlPane.setText("");
-   //     
-   //     XMLDocument document = m_buffer.getXMLDocument();
-   //     
-   //     //set the attributes table to the document itself
-   //     AdapterNode adapter = document.getAdapterNode();
-   //     DefaultViewTableModel tableModel = new DefaultViewTableModel(this, adapter);
-   //     attributesTable.setModel(tableModel);
-   //     attributesTable.updateUI();
-   // }//}}}
+    //{{{ RenameElementAction class
+    
+    private class RenameElementAction implements ActionListener {
+        
+        //{{{ actionPerformed()
+        
+        public void actionPerformed(ActionEvent e) {
+            TreePath selPath = tree.getLeadSelectionPath();
+            if (selPath != null) {
+                tree.startEditingAtPath(selPath);
+            }
+        }//}}}
+        
+    }//}}}
+    
+    //{{{ AddTextNodeAction class
+    
+    private class AddTextNodeAction implements ActionListener {
+        
+        //{{{ actionPerformed()
+        
+        public void actionPerformed(ActionEvent e) {
+            try {
+                TreePath selPath = tree.getLeadSelectionPath();
+                if (selPath != null) {
+                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+                    selectedNode.addAdapterNode("", "New Text Node", Node.TEXT_NODE);
+                    //The TreeModel doesn't automatically treeNodesInserted() yet
+                   // updateComponents();
+                    tree.updateUI();
+                }
+            } catch (DOMException dome) {
+                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+            }
+        }//}}}
+        
+    }//}}}
+    
+    //{{{ RemoveNodeAction class
+    
+    private class RemoveNodeAction implements ActionListener {
+        
+        //{{{ actionPerformed()
+        
+        public void actionPerformed(ActionEvent e) {
+            try {
+                TreePath selPath = tree.getLeadSelectionPath();
+                if (selPath != null) {
+                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+                    selectedNode.getParentNode().remove(selectedNode);
+                    //The TreeModel doesn't automatically treeNodesRemoved() yet
+                   // updateComponents();
+                    tree.updateUI();
+                }
+            } catch (DOMException dome) {
+                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+            }
+        }//}}}
+        
+    }//}}}
+    
+    //{{{ RemoveAttributeAction class
+    
+    private class RemoveAttributeAction implements ActionListener {
+        
+        //{{{ RemoveAttributeAction constructor
+        
+        public RemoveAttributeAction(int r) {
+            row = r;
+        }//}}}
+        
+        //{{{ actionPerformed()
+        
+        public void actionPerformed(ActionEvent e) {
+            DefaultViewTableModel model = (DefaultViewTableModel)attributesTable.getModel();
+            model.removeRow(row);
+           // updateComponents();
+            attributesTable.updateUI();
+        }//}}}
+        
+        //{{{ Private members
+        private int row;
+        //}}}
+    }//}}}
+    
+    //{{{ AddAttributeAction class
+    
+    private class AddAttributeAction implements ActionListener {
+        
+        //{{{ actionPerformed()
+        
+        public void actionPerformed(ActionEvent e) {
+            attributesTable.editCellAt(attributesTable.getRowCount()-1,0);
+        }//}}}
+        
+    }//}}}
+    
+    //}}}
+
+    //{{{ Instance variables
     
     private JTree tree = new JTree();
     private JEditorPane htmlPane = new JEditorPane("text/plain","");
@@ -743,5 +827,7 @@ public class DefaultView extends DocumentView {
         };
         
     };//}}}
+    //}}}
+
     //}}}
 }
