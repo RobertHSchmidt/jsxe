@@ -10,6 +10,8 @@ document.
 
 This file contains the adapter class that allows a DOM to serve as the model
 for a JTree. This allows jsXe to display an XML document as a tree diagram.
+This adapter class also implements the model for the JTable for viewing of
+node attributes.
 
 This file written by ian Lewis (iml001@bridgewater.edu)
 Copyright (C) 2002 ian Lewis
@@ -214,7 +216,7 @@ public class DOMAdapter implements TreeModel, TableModel {
         return true;
     }//}}}
 
-    public void removeTreeModelListener( TreeModelListener listener ) {//{{{
+    public void removeTreeModelListener(TreeModelListener listener) {//{{{
         if ( listener != null ) {
             treeListenerList.removeElement( listener );
         }
@@ -237,8 +239,8 @@ public class DOMAdapter implements TreeModel, TableModel {
                     node.removeChild(child);
                     newNode.appendChild(child);
                 }
-            }
-            catch (DOMException dome) {
+                currentNode = new AdapterNode(newNode);
+            } catch (DOMException dome) {
                JOptionPane.showMessageDialog(view, dome, "Internal Error", JOptionPane.WARNING_MESSAGE);
             }
             //notify the listeners that the tree structure has changed
@@ -251,14 +253,14 @@ public class DOMAdapter implements TreeModel, TableModel {
     // {{{ Implemented TableModel methods
 
     public void addTableModelListener(TableModelListener l) {//{{{
-        if ( l != null && !tableListenerList.contains( l ) ) {
-            tableListenerList.addElement( l );
+        if (l != null && !tableListenerList.contains(l) ) {
+            tableListenerList.addElement(l);
         }
     }//}}}
 
     public Class getColumnClass(int columnIndex) {//{{{
         //the attributes table should contain strings only
-        return data[0].get(0).getClass();
+        return (new String()).getClass();
     }//}}}
 
     public int getColumnCount() {//{{{
@@ -275,7 +277,6 @@ public class DOMAdapter implements TreeModel, TableModel {
     }//}}}
 
     public int getRowCount() {//{{{
-        //data[0] and data[1] are associated and will be equal in size
         return data[0].size();
     }//}}}
 
@@ -292,44 +293,44 @@ public class DOMAdapter implements TreeModel, TableModel {
         return true;
     }//}}}
 
-    public void removeTableModelListener(TableModelListener l) {//{{{
-        if ( l != null ) {
-            tableListenerList.removeElement( l );
+    public void removeTableModelListener(TableModelListener listener) {//{{{
+        if (listener!=null) {
+            tableListenerList.removeElement(listener);
         }
     }//}}}
 
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {//{{{
-        //This algorithm makes sure that there is an empty table row
-        //at the bottom of the table for users to add new attributes.
-
-        //add intermittent blank rows (this should never happen
-        //more than once)
-        while (rowIndex + 1 > getRowCount()) {
-            data[columnIndex].addElement("");
-            data[columnIndex+1%2].addElement("");
-        }
-        if (columnIndex!=1 || !aValue.equals("")) {
-            //If setting a value on the last row (greater shouldn't happen)
-            if (rowIndex + 1 >= getRowCount()) {
+        //If setting a value on the last row (greater shouldn't happen)
+        if (rowIndex + 1 >= getRowCount()) {
+            //We can't create a new attribute value before
+            //a name.
+            if (!aValue.equals("")) {
+               if (rowIndex >= data[columnIndex].size()) {
+                    data[columnIndex].add(aValue.toString());
+                } else {
+                    data[columnIndex].setElementAt(aValue.toString(),rowIndex);
+                    if (rowIndex+1==data[columnIndex].size()) {
+                        data[0].add("");
+                        data[1].add("");
+                    }
+                }
+                fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
+                updateAttributes();
+                updateTable(currentNode);
+            }
+        //Otherwise we are editing an existing attribute.
+        } else {
+            //We don't want to allow the user to set an attribute
+            //name to an empty string.
+            if (columnIndex==1 || !aValue.equals("")) {
                 //We need to check if there really is a change.
                 //If we don't the UI croaks NullPointerExceptions
                 //when trying to update the UI for the table.
                 if (!aValue.equals(getValueAt(rowIndex, columnIndex))) {
-                    //Set the value in the table
-                    data[columnIndex].set(rowIndex, aValue);
-                    //If you aren't setting the final blank row
-                    //it needs to be added.
-                    if (!aValue.equals("")) {
-                        data[columnIndex].addElement("");
-                        data[columnIndex+1%2].addElement("");
-                    }
+                    data[columnIndex].setElementAt(aValue,rowIndex);
                     fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
-                }
-            } else {
-                //We're not on the last row so just set the value.
-                if (!aValue.equals(getValueAt(rowIndex, columnIndex))) {
-                    data[columnIndex].set(rowIndex, aValue);
-                    fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
+                    updateAttributes();
+                    updateTable(currentNode);
                 }
             }
         }
@@ -337,30 +338,23 @@ public class DOMAdapter implements TreeModel, TableModel {
 
     //}}}
 
-    public void removeRow(int rowIndex) {//{{{
-        data[0].removeElementAt(rowIndex);
-        data[1].removeElementAt(rowIndex);
-    }//}}}
-
     public void updateTable(AdapterNode selectedNode) {//{{{
-        NamedNodeMap attrs = selectedNode.getAttributes();
-        if (attrs!=null) {
-            while(getRowCount()>0) {
-                removeRow(0);
+        currentNode = selectedNode;
+        data[0].removeAllElements();
+        data[1].removeAllElements();
+        if (selectedNode!=null) {
+            NamedNodeMap attrs = selectedNode.getAttributes();
+            if (attrs!=null) {
+                for(int i = 0; i < attrs.getLength(); i++) {
+                    data[0].add(attrs.item(i).getNodeName());
+                    data[1].add(attrs.item(i).getNodeValue());
+                }
+                if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
+                    //One extra table entry for adding an attribute
+                    data[0].add("");
+                    data[1].add("");
+                }
             }
-            for(int i = 0; i < attrs.getLength(); i++) {
-                setValueAt(attrs.item(i).getNodeName(),i,0);
-                setValueAt(attrs.item(i).getNodeValue(),i,1);
-            }
-        } else {
-            if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                //One extra table entry for adding an attribute
-                setValueAt("",attrs.getLength(),0);
-                setValueAt("",attrs.getLength(),1);
-            }
-           // while(getRowCount()>0) {
-           //     removeRow(0);
-           // }
         }
     }//}}}
 
@@ -400,7 +394,7 @@ public class DOMAdapter implements TreeModel, TableModel {
 
     private void fireTableChanged(TableModelEvent e) {//{{{
         Enumeration listeners = tableListenerList.elements();
-        while ( listeners.hasMoreElements() ) {
+        while (listeners.hasMoreElements()) {
             TableModelListener listener = (TableModelListener)listeners.nextElement();
             listener.tableChanged(e);
         }
@@ -530,6 +524,35 @@ public class DOMAdapter implements TreeModel, TableModel {
         return props.getProperty(key);
     }//}}}
 
+    private void updateAttributes() {//{{{
+        System.out.println("updating Attributes");
+        Node node = currentNode.getNode();
+        Node parent = node.getParentNode();
+        NodeList children = node.getChildNodes();
+        try {
+            Element newNode = document.createElement(node.getNodeName());
+
+            //add the attributes that were there previously.
+            for(int i = 0; i < data[0].size()-1; i++) {
+                //Set the name or value
+                System.out.println("adding new attribute");
+                newNode.setAttribute(data[0].get(i).toString(), data[1].get(i).toString());
+            }
+
+            //replace the changed node
+            parent.replaceChild(newNode, node);
+            for (int i = 0; i < children.getLength(); i++ ) {
+                Node child = children.item(i);
+                node.removeChild(child);
+                newNode.appendChild(child);
+            }
+            currentNode = new AdapterNode(newNode);
+
+        } catch (DOMException dome) {
+           JOptionPane.showMessageDialog(view, dome, "Internal Error", JOptionPane.WARNING_MESSAGE);
+        }
+    }//}}}
+
     /*
     *************************************************
     Private Data Fields
@@ -540,6 +563,7 @@ public class DOMAdapter implements TreeModel, TableModel {
     private File XMLFile;
     private String name;
     private TabbedView view;
+    private AdapterNode currentNode;
     private Vector treeListenerList = new Vector();
     private Vector tableListenerList = new Vector();
     private static Vector adapterList = new Vector(10, 1);
