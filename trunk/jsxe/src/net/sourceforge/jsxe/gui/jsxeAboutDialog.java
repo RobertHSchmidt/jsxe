@@ -45,7 +45,6 @@ import net.sourceforge.jsxe.jsXe;
 //{{{ Swing components
 import javax.swing.Action;
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 //}}}
 
@@ -78,7 +77,7 @@ public class jsxeAboutDialog extends AbstractAction {
             "About jsXe",
             0,
             JOptionPane.INFORMATION_MESSAGE,
-            new ImageIcon("icons"+System.getProperty("file.separator")+"jsxe.jpg", "jsXe"),
+            jsXe.getIcon(),
             okButton,
             okButton[0]);
     }//}}}
