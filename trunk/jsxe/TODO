@@ -23,6 +23,9 @@ TODO:
     
 * Version 0.2 beta
     
+    * Add the ability for XMLDocuments to have a structure for non-well parsed
+      documents.
+    
     * Remove references to the TabbedView class in DocumentViews. This
       will allow DocumentViews and XMLDocuments to be used as a separate
       packages that can be imbedded in other applications. DocumentViews are
