@@ -45,13 +45,7 @@ import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.DocumentBufferListener;
 import net.sourceforge.jsxe.gui.view.DocumentView;
 import net.sourceforge.jsxe.gui.view.DocumentViewFactory;
-import net.sourceforge.jsxe.action.FileCloseAction;
-import net.sourceforge.jsxe.action.FileExitAction;
-import net.sourceforge.jsxe.action.FileNewAction;
-import net.sourceforge.jsxe.action.FileOpenAction;
-import net.sourceforge.jsxe.action.FileSaveAction;
-import net.sourceforge.jsxe.action.FileSaveAsAction;
-import net.sourceforge.jsxe.action.ToolsOptionsAction;
+import net.sourceforge.jsxe.action.*;
 //import net.sourceforge.jsxe.action.ToolsViewSourceAction;
 //}}}
 
@@ -387,6 +381,8 @@ public class TabbedView extends JFrame {
                 fileMenu.add( menuItem );
                 fileMenu.addSeparator();
                 menuItem = new JMenuItem(new FileCloseAction(this));
+                fileMenu.add( menuItem );
+                menuItem = new JMenuItem(new FileCloseAllAction(this));
                 fileMenu.add( menuItem );
                 menuItem = new JMenuItem(new FileExitAction(this));
                 fileMenu.add( menuItem );

@@ -1,5 +1,5 @@
 /*
-FileCloseDialog.java
+FileCloseAction.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
