@@ -55,7 +55,7 @@ import java.io.IOException;
 //}}}
 
 //{{{ JGraph classes
-//import org.jgraph.JGraph;
+import org.jgraph.JGraph;
 //}}}
 
 //}}}
@@ -74,9 +74,14 @@ public class SchemaView extends JPanel implements DocumentView {
         
         setLayout(new BorderLayout());
         
-       // JGraph graph = new JGraph();
-       // JScrollPane scrollPane = new JScrollPane(graph);
-       // add(scrollPane);
+        JGraph graph = new JGraph();
+        graph.setMoveable(false);
+        graph.setConnectable(false);
+        graph.setDisconnectable(false);
+        graph.setBendable(false);
+        graph.setSizeable(false);
+        JScrollPane scrollPane = new JScrollPane(graph);
+        add(scrollPane);
         setDocumentBuffer(document);
     }//}}}
     

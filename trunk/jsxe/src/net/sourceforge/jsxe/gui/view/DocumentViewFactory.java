@@ -127,7 +127,7 @@ public class DocumentViewFactory {
         DocumentViews() {
             elements.add("tree");
             elements.add("source");
-           // elements.add("schema");
+            elements.add("schema");
         }//}}}
         
         //{{{ Enumeration methods
