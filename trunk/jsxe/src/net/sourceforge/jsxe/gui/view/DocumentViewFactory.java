@@ -42,10 +42,12 @@ belongs to.
 */
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
 //}}}
 
 //{{{ Java base classes
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.Vector;
@@ -65,13 +67,13 @@ public class DocumentViewFactory {
         viewType = type;
     }//}}}
     
-    public DocumentView newDocumentView() throws UnrecognizedDocViewException {//{{{
+    public DocumentView newDocumentView(DocumentBuffer buffer) throws IOException, UnrecognizedDocViewException {//{{{
         //Document type validation is pretty simple right now
         if (viewType == "documentview.default") {
-            return new DefaultView();
+            return new DefaultView(buffer);
         } else {
             if (viewType == "documentview.sourceview") {
-                return new SourceView();
+                return new SourceView(buffer);
             } else {
                 throw new UnrecognizedDocViewException();
             }
