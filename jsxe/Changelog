@@ -1,3 +1,8 @@
+11/22/2004  version 0.2 beta    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Redid how the view human readable names are retrieved.
+    * Added preliminary support for the schema view (not enabled).
+
 10/8/2004   version 0.2 pre25   Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed bug that didn't update the tab width for the source view when

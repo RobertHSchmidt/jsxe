@@ -4,7 +4,7 @@ This is pretty simple. You will need jakarta ANT and a Sun's javac compiler
 (others might work, I just haven't tested them). Also, in order for jsXe to
 compile properly you will need Apache Xerces installed.
 
-You should probobly have 1.3.1 or better of java and you will need 2.6.2 of
+You should have 1.3.1 or better of java and you will need 2.6.2 of
 Xerces. The jar files xercesImpl.jar and xml-apis.jar from the 2.6.2
 distribution are required. These should be placed in a directory called lib in
 jsXe's root folder (where you installed jsXe) or in the jre/lib/ext or lib/ext
