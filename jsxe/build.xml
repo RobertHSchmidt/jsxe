@@ -32,10 +32,10 @@
     <property name="javac.source" value="1.3"/>
 		<property name="javadoc.link" value="http://java.sun.com/j2se/1.3/docs/api/"/>
     <property name="main.class" value="net.sourceforge.jsxe.jsXe"/>
-		<property name="major.version" value="00"/>
-		<property name="minor.version" value="03"/>
+		<property name="major.version" value="0"/>
+		<property name="minor.version" value="3"/>
 		<property name="beta.version" value="15"/>
-    <property name="bugfix.version" value="00"/>
+    <property name="bugfix.version" value="0"/>
 		<property name="app.version" value="${major.version}.${minor.version} pre${beta.version}"/>
 		<property name="app_version" value="${major.version}_${minor.version}pre${beta.version}"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
@@ -201,7 +201,6 @@
 			</fileset>
 		</copy>
 		<copy file="${app.name}.jar" tofile="${distbin.dir}/${app.name}.jar"/>
-		<zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-bin/**" zipfile="${build.dir}/${app.name}-${app_version}-bin-noLibs.zip"/>
 		<!-- lib -->
 		<mkdir dir="${distbin.dir}/lib"/>
 		<copy todir="${distbin.dir}/lib">
@@ -242,7 +241,6 @@
 				<include name="**/*"/>
 			</fileset>
 		</copy>
-		<zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-src/**" zipfile="${build.dir}/${app.name}-${app_version}-src-noLibs.zip"/>
 		<!-- lib -->
 		<mkdir dir="${distsrc.dir}/lib"/>
 		<copy todir="${distsrc.dir}/lib">
