@@ -388,7 +388,6 @@ public class jsXe {
         for (int i=0; i < m_buffers.size(); i++) {
             buffers[i] = (DocumentBuffer)m_buffers.get(i);
         }
-        System.out.println("getDocumentBuffers() : "+buffers.length);
         return buffers;
     }//}}}
     

@@ -101,6 +101,19 @@ public class DocumentBuffer {
     
     //{{{ DocumentBuffer constructor
     /**
+     * Creates a new DocumentBuffer for a jsXe's default document. The buffer
+     * is initialized from the document and given and takes the name Untitled-X,
+     * where X is the highest untitled document number plus 1.
+     * @throws IOException if there was a problem reading the document
+     */
+    public DocumentBuffer() throws IOException {
+        m_file = null;
+        m_name = getUntitledLabel();
+        readFile(new StringReader(jsXe.getDefaultDocument()));
+    }//}}}
+    
+    //{{{ DocumentBuffer constructor
+    /**
      * Creates a new DocumentBuffer for a file on disk. The name of the
      * DocumentBuffer is taken from the filename.
      * @param file the file to read the XML document from.
@@ -309,7 +322,11 @@ public class DocumentBuffer {
         }
         
         if (stillReload) {
-            readFile(new FileReader(m_file));
+            if (isUntitled()) {
+                readFile(new StringReader(jsXe.getDefaultDocument()));
+            } else {
+                readFile(new FileReader(m_file));
+            }
             setDirty(false);
             return true;
         } else {
