@@ -33,13 +33,12 @@
       </fileset>
     </jar>
     
-    <propertyfile file="net/sourceforge/jsxe/build.properties" comment="jsXe build properties">
+    <propertyfile file="net/sourceforge/jsxe/build.properties" comment="$Id$">
       <entry key="application.name" value="jsXe"/>
       <entry key="build.time" type="date" value="now" pattern="dd/MM/yyyy HH:mm"/>
       <entry key="major.version" type="int" value="0"/>
       <entry key="minor.version" type="int" value="0"/>
       <entry key="build.version" type="int" default="0" operation="+"/>
-      <entry key="cvs.version" default="0"/>
     </propertyfile>
     
   </target>
