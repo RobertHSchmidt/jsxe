@@ -341,7 +341,7 @@ public class jsXe {
         DocumentBuffer buffer = getOpenBuffer(file);
         if (buffer != null) {
             /*
-            ignore properties since it's already open and the user may have
+            ignore properties since the file is already open and the user may have
             set propeties him/herself. We don't want to change what the user
             has set.
             */
@@ -349,7 +349,6 @@ public class jsXe {
             return true;
         } else {
             try {
-                
                 buffer = new DocumentBuffer(file, properties);
                 m_buffers.add(buffer);
                 if (viewName != null) {
