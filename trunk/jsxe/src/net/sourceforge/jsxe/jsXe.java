@@ -42,6 +42,7 @@ import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.view.DocumentView;
 import net.sourceforge.jsxe.gui.view.DocumentViewFactory;
+import net.sourceforge.jsxe.gui.view.UnrecognizedDocViewException;
 import net.sourceforge.jsxe.gui.jsxeFileDialog;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
@@ -139,8 +140,8 @@ public class jsXe {
         //}}}
         
         //{{{ parse command line arguments
-       // String viewname = null;
-       // ArrayList files = new ArrayList;
+        String viewname = null;
+        ArrayList files = new ArrayList();
         for (int i=0; i<args.length; i++) {
             if (args[i].equals("--help") || args[i].equals("-h")) {
                 printUsage();
@@ -150,12 +151,15 @@ public class jsXe {
                 System.out.println(getVersion());
                 System.exit(0);
             }
-           // if (args[i].startswith("--view") || args[i].startswith("-v")) {
+           // if (args[i].startsWith("--view") || args[i].startsWith("-v")) {
            //     if (i+1<args.length) {
-           //         viewname = args[i+1];
+           //         viewname = args[++i];
            //     } else {
-           //         System.out.println(getAppTitle()+": No view name specified.")
+           //         System.out.println(getAppTitle()+": No view name specified.");
+           //         System.exit(1);
            //     }
+           // } else {
+                files.add(args[i]);
            // }
         }
         //}}}
@@ -167,7 +171,16 @@ public class jsXe {
         try {
             defaultBuffer = new DocumentBuffer(new StringReader(getDefaultDocument()));
             m_buffers.add(defaultBuffer);
-            tabbedview = new TabbedView(defaultBuffer);
+            if (viewname == null) {
+                tabbedview = new TabbedView(defaultBuffer);
+            } else {
+                try {
+                    tabbedview = new TabbedView(defaultBuffer, viewname);
+                } catch (UnrecognizedDocViewException e) {
+                    System.out.println("jsXe: "+e.getMessage());
+                    System.exit(1);
+                }
+            }
             
         } catch (IOException ioe) {
             exiterror(tabbedview, "Could not open default document", 1);
@@ -175,8 +188,8 @@ public class jsXe {
         //}}}
         
         //{{{ Parse files to open on the command line
-        if (args.length >= 1) {
-            if (openXMLDocuments(tabbedview, args)) {
+        if (files.size() > 0) {
+            if (openXMLDocuments(tabbedview, (String[])files.toArray(new String[] {}))) {
                 try {
                     closeDocumentBuffer(tabbedview, defaultBuffer);
                 } catch (IOException ioe) {
@@ -481,14 +494,12 @@ public class jsXe {
      * @param errorcode The errorcode to exit with.
      */
     public static void exiterror(TabbedView view, String errormsg, int errorcode) {
-        if (view != null) {
-            String errorhdr = "jsXe has encountered a fatal error and is unable to continue.\n";
-            errorhdr        +="This is most likely a bug and should be reported to the jsXe\n";
-            errorhdr        +="developers. Please fill out a full bug report at\n";
-            errorhdr        +="http://www.sourceforge.net/projects/jsxe/\n\n";
-            
-            JOptionPane.showMessageDialog(view, errorhdr + errormsg, "Fatal Error", JOptionPane.WARNING_MESSAGE);
-        }
+        String errorhdr = "jsXe has encountered a fatal error and is unable to continue.\n";
+        errorhdr        +="This is most likely a bug and should be reported to the jsXe\n";
+        errorhdr        +="developers. Please fill out a full bug report at\n";
+        errorhdr        +="http://www.sourceforge.net/projects/jsxe/\n\n";
+        
+        JOptionPane.showMessageDialog(view, errorhdr + errormsg, "Fatal Error", JOptionPane.WARNING_MESSAGE);
         
         //print the error to the command line also.
         System.err.println(getAppTitle() + ": jsXe has encountered a fatal error and is unable to continue.");
@@ -690,6 +701,10 @@ public class jsXe {
         System.out.println("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");
         System.out.println();
         System.out.println("Usage: jsXe [<options>] [<files>]");
+       // System.out.println("  -v, --view <viewname>     open the files using the view specified");
+       // System.out.println("                            valid views are:");
+       // System.out.println("                                            tree");
+       // System.out.println("                                            source");
         System.out.println("  -h, --help                display this help and exit");
         System.out.println("  -V, --version             print version information and exit");
         System.out.println();

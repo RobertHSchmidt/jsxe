@@ -43,8 +43,8 @@ public class UnrecognizedDocViewException extends RuntimeException {
 
     //{{{ UnrecognizedDocViewException constructor
     
-    public UnrecognizedDocViewException() {
-        super("Attempted to create an unrecognized DocumentView type.");
+    public UnrecognizedDocViewException(String type) {
+        super("Attempted to create an unrecognized DocumentView type: "+type);
     }//}}}
 
 }
