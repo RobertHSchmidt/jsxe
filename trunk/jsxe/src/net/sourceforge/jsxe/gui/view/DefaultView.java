@@ -81,6 +81,7 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -104,7 +105,7 @@ import java.util.Vector;
 
 public class DefaultView extends DocumentView {
     
-    protected DefaultView() {//{{{
+    public DefaultView(DocumentBuffer buffer) throws IOException {//{{{
         
         setLayout(new BorderLayout());
         
@@ -120,6 +121,9 @@ public class DefaultView extends DocumentView {
         
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
+        
+        attributesTable.setColumnSelectionAllowed(false);
+        attributesTable.setRowSelectionAllowed(false);
         
         //{{{ Create and set up the splitpanes
         vertSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treeView, attrView);
@@ -139,9 +143,10 @@ public class DefaultView extends DocumentView {
         tree.addMouseListener(new TreePopupListener());
         attributesTable.addMouseListener(new TablePopupListener());
 
+        setDocumentBuffer(buffer);
     } //}}}
     
-    public void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException {//{{{
+    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {//{{{
         
         XMLDocument document = buffer.getXMLDocument();
         
@@ -411,7 +416,8 @@ public class DefaultView extends DocumentView {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                     AdapterNode newNode = selectedNode.addAdapterNode("New_Element", "", Node.ELEMENT_NODE);
                     //The TreeModel doesn't automatically treeNodesInserted() yet
-                    updateComponents();
+                   // updateComponents();
+                    tree.updateUI();
                 }
             } catch (DOMException dome) {
                 JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
@@ -429,7 +435,8 @@ public class DefaultView extends DocumentView {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                     selectedNode.addAdapterNode("", "New Text Node", Node.TEXT_NODE);
                     //The TreeModel doesn't automatically treeNodesInserted() yet
-                    updateComponents();
+                   // updateComponents();
+                    tree.updateUI();
                 }
             } catch (DOMException dome) {
                 JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
@@ -447,7 +454,8 @@ public class DefaultView extends DocumentView {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                     selectedNode.getParentNode().remove(selectedNode);
                     //The TreeModel doesn't automatically treeNodesRemoved() yet
-                    updateComponents();
+                   // updateComponents();
+                    tree.updateUI();
                 }
             } catch (DOMException dome) {
                 JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
@@ -464,9 +472,9 @@ public class DefaultView extends DocumentView {
         
         public void actionPerformed(ActionEvent e) {
             DefaultViewTableModel model = (DefaultViewTableModel)attributesTable.getModel();
-            AdapterNode node = model.getAdapterNode();
-            node.removeAttributeAt(row);
-            updateComponents();
+            model.removeRow(row);
+           // updateComponents();
+            attributesTable.updateUI();
         }
         
         private int row;
@@ -490,11 +498,16 @@ public class DefaultView extends DocumentView {
         }
 
         private void maybeShowPopup(MouseEvent e) {
-            int row = attributesTable.getSelectedRow();
+            Point point = new Point(e.getX(), e.getY());
+            int row = attributesTable.rowAtPoint(point);
+            int column = attributesTable.columnAtPoint(point);
+            
+            attributesTable.setColumnSelectionInterval(column, column);
+            attributesTable.setRowSelectionInterval(row, row);
+            
             if (e.isPopupTrigger() && row != -1) {
                 
                 DefaultViewTableModel model = (DefaultViewTableModel)attributesTable.getModel();
-                AdapterNode node = model.getAdapterNode();
                 JPopupMenu popup = new JPopupMenu();
                 JMenuItem popupMenuItem;
                 
@@ -528,20 +541,20 @@ public class DefaultView extends DocumentView {
      * not retain their state.
      * Since AdapterNodes are persistent now. This should go away NOW.
      */
-    private void updateComponents() {//{{{
-        
-        tree.updateUI();
-        //Clear the right hand pane of previous values.
-        htmlPane.setText("");
-        
-        XMLDocument document = m_buffer.getXMLDocument();
-        
-        //set the attributes table to the document itself
-        AdapterNode adapter = document.getAdapterNode();
-        DefaultViewTableModel tableModel = new DefaultViewTableModel(this, adapter);
-        attributesTable.setModel(tableModel);
-        attributesTable.updateUI();
-    }//}}}
+   // private void updateComponents() {//{{{
+   //     
+   //     tree.updateUI();
+   //     //Clear the right hand pane of previous values.
+   //     htmlPane.setText("");
+   //     
+   //     XMLDocument document = m_buffer.getXMLDocument();
+   //     
+   //     //set the attributes table to the document itself
+   //     AdapterNode adapter = document.getAdapterNode();
+   //     DefaultViewTableModel tableModel = new DefaultViewTableModel(this, adapter);
+   //     attributesTable.setModel(tableModel);
+   //     attributesTable.updateUI();
+   // }//}}}
     
     private JTree tree = new JTree();
     private JEditorPane htmlPane = new JEditorPane("text/plain","");
@@ -564,13 +577,16 @@ public class DefaultView extends DocumentView {
         
         //These aren't called yet.
         public void treeNodesInserted(TreeModelEvent e) {
-            updateComponents();
+           // updateComponents();
+            tree.updateUI();
         }
         public void treeNodesRemoved(TreeModelEvent e) {
-            updateComponents();
+           // updateComponents();
+            tree.updateUI();
         }
         public void treeStructureChanged(TreeModelEvent e) {
-            updateComponents();
+           // updateComponents();
+            tree.updateUI();
         }
         
     };//}}}
