@@ -1,0 +1,307 @@
+<?xml version="1.0"?>
+<!--
+  This is a jEdit mode for the Envision-Based Software Language
+  used by Datatel Inc.
+  It was created to conform to the Envision Basic Commands Reference
+  dated April 24, 2000 applying to Envision Release 4.6
+  
+  This mode has been tested against jEdit 4.1 final
+  
+  Last update: Mon Jul 07 15:14:01 EDT 2003 @843 /Internet Time/
+  
+  This file is maintained by Ian Lewis. Changes and comments/suggestions
+  should be submitted to iml@datatel.com
+  
+  Issues:
+    * Some keywords, listed below in KEYWORD2 tags are highlighted even
+      when in a file but not following the keyword they are associated with.
+      This is relatively minor because most programs don't have keywords as
+      variables etc.
+  
+  WARNING: Some or all of this jEdit mode may be considered Datatel
+  Confidential.
+-->
+
+<!DOCTYPE MODE SYSTEM "xmode.dtd">
+
+<MODE>
+    <PROPS>
+        <PROPERTY NAME="doubleBracketIndent" VALUE="false" />
+        <PROPERTY NAME="lineComment" VALUE="*" />
+        <PROPERTY NAME="indentSize" VALUE="3" />
+        <PROPERTY NAME="tabSize" VALUE="3" />
+        <PROPERTY NAME="wrap" VALUE="soft" />
+        <!-- Line length is 73 because line number markers in
+             ELE and AE take up 7 spaces (80 - 7 = 73) -->
+        <PROPERTY NAME="maxLineLen" VALUE="73" />
+    </PROPS>
+    <RULES NO_WORD_SEP="." IGNORE_CASE="FALSE" HIGHLIGHT_DIGITS="TRUE">
+        <!-- whitespace: (space and tab) -->
+        <WHITESPACE> </WHITESPACE>
+        <WHITESPACE>	</WHITESPACE>
+
+        <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
+            <BEGIN>"</BEGIN>
+            <END>"</END>
+        </SPAN>
+        <SPAN TYPE="LITERAL1" NO_LINE_BREAK="TRUE">
+            <BEGIN>'</BEGIN>
+            <END>'</END>
+        </SPAN>
+
+        <!-- UNIBASIC inserts -->
+        <SPAN TYPE="KEYWORD1" NO_LINE_BREAK="TRUE" AT_WHITESPACE_END="TRUE">
+            <BEGIN>:</BEGIN>
+            <END>:</END>
+        </SPAN>
+
+        <EOL_SPAN TYPE="COMMENT1" AT_WHITESPACE_END="TRUE">*</EOL_SPAN>
+        <EOL_SPAN TYPE="COMMENT1">;*</EOL_SPAN>
+        <EOL_SPAN TYPE="COMMENT1">!</EOL_SPAN>
+        <EOL_SPAN TYPE="COMMENT1" AT_WHITESPACE_END="TRUE">REM </EOL_SPAN>
+        <EOL_SPAN TYPE="KEYWORD1">$INSERT</EOL_SPAN>
+
+        <SEQ TYPE="OPERATOR">=</SEQ>
+        <SEQ TYPE="OPERATOR">&gt;</SEQ>
+        <SEQ TYPE="OPERATOR">&lt;</SEQ>
+        
+        <SEQ TYPE="OPERATOR">*</SEQ>
+
+        <SEQ TYPE="OPERATOR">+</SEQ>
+        <SEQ TYPE="OPERATOR">/</SEQ>
+        <SEQ TYPE="OPERATOR">;</SEQ>
+        <SEQ TYPE="OPERATOR">-</SEQ>
+
+        <SEQ TYPE="OPERATOR">,</SEQ>
+        <SEQ TYPE="NULL">)</SEQ>
+        <SEQ TYPE="OPERATOR">]</SEQ>
+        <SEQ TYPE="OPERATOR">[</SEQ>
+
+        <MARK_FOLLOWING TYPE="KEYWORD1" EXCLUDE_MATCH="FALSE">FOR_</MARK_FOLLOWING>
+        <MARK_FOLLOWING TYPE="KEYWORD1" EXCLUDE_MATCH="FALSE">END_</MARK_FOLLOWING>
+        <MARK_FOLLOWING TYPE="KEYWORD1" EXCLUDE_MATCH="FALSE">$</MARK_FOLLOWING>
+        <!-- For MIO calls, value marks etc. -->
+        <MARK_FOLLOWING TYPE="KEYWORD2" EXCLUDE_MATCH="TRUE">@</MARK_FOLLOWING>
+
+        <MARK_PREVIOUS TYPE="FUNCTION" EXCLUDE_MATCH="TRUE">(</MARK_PREVIOUS>
+        <MARK_PREVIOUS TYPE="LABEL" AT_LINE_START="TRUE" EXCLUDE_MATCH="FALSE">:</MARK_PREVIOUS>
+
+        <KEYWORDS IGNORE_CASE="FALSE">
+
+            <!-- Keywords -->
+            <!-- Repeated Keywords in constructs are commented out
+                 but left in for completeness -->
+            <KEYWORD1>AND</KEYWORD1>
+            <KEYWORD1>CALL</KEYWORD1>
+            <KEYWORD1>CALL_PROCESS</KEYWORD1>
+            <KEYWORD1>CALL_SCREEN</KEYWORD1>
+                <KEYWORD2>FORCE</KEYWORD2>
+                <KEYWORD2>SUSPEND</KEYWORD2>
+                <KEYWORD2>INQUIRY</KEYWORD2>
+                <KEYWORD2>ADD</KEYWORD2>
+                <KEYWORD2>CHANGE</KEYWORD2>
+            <KEYWORD1>CALL_SUBR</KEYWORD1>
+                <!-- <KEYWORD2>SUSPEND</KEYWORD2> -->
+            <KEYWORD2>CASE</KEYWORD2>
+                <KEYWORD1>BEGIN</KEYWORD1>
+                <KEYWORD1>END</KEYWORD1>
+            <KEYWORD1>CAT</KEYWORD1>
+            <KEYWORD1>CDD</KEYWORD1>
+            <KEYWORD1>CHAIN_SCREEN</KEYWORD1>
+            <KEYWORD1>CLEAR</KEYWORD1>
+                <KEYWORD2>ASSOCIATION</KEYWORD2>
+                <KEYWORD2>ALL_OF</KEYWORD2>
+                <KEYWORD2>FILE</KEYWORD2>
+                <KEYWORD2>VARIABLES</KEYWORD2>
+            <KEYWORD1>CONVERT</KEYWORD1>
+                <KEYWORD2>TO</KEYWORD2>
+            <KEYWORD1>COPY_LOGICAL</KEYWORD1>
+                <!-- <KEYWORD2>ALL_OF</KEYWORD2> -->
+                <KEYWORD2>FROM</KEYWORD2>
+                <KEYWORD2>AND_FROM</KEYWORD2>
+                <!-- <KEYWORD2>TO<KEYWORD2> -->
+                <KEYWORD2>CONSOLIDATING</KEYWORD2>
+                <KEYWORD2>BUT_NOT_FROM</KEYWORD2>
+                <KEYWORD2>SORTING</KEYWORD2>
+                <KEYWORD2>ASCENDING</KEYWORD2>
+                <KEYWORD2>DESCENDING</KEYWORD2>
+            <KEYWORD1>DEFAULT_RECORD</KEYWORD1>
+            <KEYWORD1>DEL</KEYWORD1>
+            <KEYWORD1>EQ</KEYWORD1>
+            <KEYWORD1>EQU</KEYWORD1>
+                <!-- <KEYWORD2>TO</KEYWORD2> -->
+                <KEYWORD2>LITERALLY</KEYWORD2>
+                <KEYWORD2>LIT</KEYWORD2>
+            <KEYWORD1>EQUATE</KEYWORD1>
+                <!-- <KEYWORD2>TO</KEYWORD2> -->
+                <!-- <KEYWORD2>LITERALLY</KEYWORD2> -->
+                <!-- <KEYWORD2>LIT</KEYWORD2> -->
+            <KEYWORD1>ERROR_IF</KEYWORD1>
+                <KEYWORD2>RESET</KEYWORD2>
+                <!-- <KEYWORD2>FORCE</KEYWORD2> -->
+                <KEYWORD2>WARNING</KEYWORD2>
+                <KEYWORD2>ABORT</KEYWORD2>
+                <KEYWORD2>CANCEL</KEYWORD2>
+                <KEYWORD2>CONTINUE</KEYWORD2>
+            <KEYWORD1>EXIT</KEYWORD1>
+            <KEYWORD1>FIND</KEYWORD1>
+                <KEYWORD2>IN</KEYWORD2>
+                <KEYWORD2>SETTING</KEYWORD2>
+                <KEYWORD2>THEN</KEYWORD2>
+                <KEYWORD2>ELSE</KEYWORD2>
+            <KEYWORD1>FINDSTR</KEYWORD1>
+                <!-- <KEYWORD2>IN</KEYWORD2> -->
+                <!-- <KEYWORD2>SETTING</KEYWORD2> -->
+                <!-- <KEYWORD2>THEN</KEYWORD2> -->
+                <!-- <KEYWORD2>ELSE</KEYWORD2> -->
+            <KEYWORD1>FOR</KEYWORD1>
+                <!-- <KEYWORD2>TO</KEYWORD2> -->
+                <KEYWORD2>STEP</KEYWORD2>
+                <KEYWORD2>UNTIL</KEYWORD2>
+                <KEYWORD2>WHILE</KEYWORD2>
+                <KEYWORD2>NEXT</KEYWORD2>
+            <!-- FOR_<text> -->
+                <KEYWORD2>COUNTED</KEYWORD2>
+                <KEYWORD2>BREAKING_ON</KEYWORD2>
+                <KEYWORD2>PRE-ASSEMBLED</KEYWORD2>
+                <KEYWORD2>COMMIT</KEYWORD2>
+                <KEYWORD2>RECURSIVE</KEYWORD2>
+                <KEYWORD2>NEW</KEYWORD2>
+                <KEYWORD2>EXISTING</KEYWORD2>
+                <KEYWORD2>REFERENCED</KEYWORD2>
+                <KEYWORD2>WRITING</KEYWORD2>
+                <KEYWORD2>DELETING</KEYWORD2>
+                <KEYWORD2>RELEASING</KEYWORD2>
+                <KEYWORD2>TESTING</KEYWORD2>
+                <KEYWORD2>SECONDARY</KEYWORD2>
+                <KEYWORD2>SELECTED</KEYWORD2>
+                <KEYWORD2>SINGLE</KEYWORD2>
+                <KEYWORD2>INTO</KEYWORD2>
+                <KEYWORD2>ASSOCIATED</KEYWORD2>
+                <KEYWORD2>AT</KEYWORD2>
+                <!-- <KEYWORD2>FROM</KEYWORD2> -->
+                <!-- <KEYWORD2>TO</KEYWORD2> -->
+                <KEYWORD2>MATCHING</KEYWORD2>
+                <!-- <KEYWORD2>ASCENDING</KEYWORD2> -->
+                <KEYWORD2>LEFT</KEYWORD2>
+                <!-- <KEYWORD2>DESCENDING</KEYWORD2> -->
+                <KEYWORD2>RIGHT</KEYWORD2>
+                <KEYWORD2>ONLY</KEYWORD2>
+                <KEYWORD2>FIRST</KEYWORD2>
+                <KEYWORD2>LAST</KEYWORD2>
+                <KEYWORD2>THIS_INSTANCE_OF</KEYWORD2>
+                <!--Added DEFER_COMMIT not based on EBSL Commands Reference-->
+                <KEYWORD2>DEFER_COMMIT</KEYWORD2>
+            <KEYWORD1>GE</KEYWORD1>
+            <KEYWORD1>GET_VARIABLES</KEYWORD1>
+            <KEYWORD1>GOSUB</KEYWORD1>
+            <KEYWORD1>GROUPSTORE</KEYWORD1>
+                <!-- <KEYWORD2>IN</KEYWORD2> -->
+                <KEYWORD2>USING</KEYWORD2>
+            <KEYWORD1>GT</KEYWORD1>
+            <KEYWORD1>HEADING</KEYWORD1>
+                <KEYWORD2>ON</KEYWORD2>
+            <KEYWORD1>HUSH</KEYWORD1>
+                <!-- <KEYWORD2>ON</KEYWORD2> -->
+                <KEYWORD2>OFF</KEYWORD2>
+                <KEYWORD2>SETTING</KEYWORD2>
+            <KEYWORD1>IF</KEYWORD1>
+                <!-- <KEYWORD2>THEN</KEYWORD2> -->
+                <!-- <KEYWORD2>ELSE</KEYWORD2> -->
+                <!-- <KEYWORD2>END</KEYWORD2> -->
+            <KEYWORD1>IGNORE</KEYWORD1>
+            <KEYWORD1>INS</KEYWORD1>
+                <KEYWORD2>BEFORE</KEYWORD2>
+            <KEYWORD1>LE</KEYWORD1>
+            <KEYWORD1>LOCATE</KEYWORD1>
+                <!-- <KEYWORD2>IN</KEYWORD2> -->
+                <KEYWORD2>BY</KEYWORD2>
+                <!-- <KEYWORD2>SETTING</KEYWORD2> -->
+                <!-- <KEYWORD2>THEN</KEYWORD2> -->
+                <!-- <KEYWORD2>ELSE</KEYWORD2> -->
+                <!-- <KEYWORD2>END</KEYWORD2> -->
+            <KEYWORD1>LOOKUP</KEYWORD1>
+            <KEYWORD1>LOOP</KEYWORD1>
+                <!-- <KEYWORD2>UNTIL</KEYWORD2> -->
+                <!-- <KEYWORD2>WHILE</KEYWORD2> -->
+                <KEYWORD2>DO</KEYWORD2>
+                <KEYWORD2>REPEAT</KEYWORD2>
+            <KEYWORD1>LT</KEYWORD1>
+            <KEYWORD1>MATCH</KEYWORD1>
+            <KEYWORD1>MESSAGE</KEYWORD1>
+            <KEYWORD1>MOVE_CONTROLLER</KEYWORD1>
+                <!-- <KEYWORD2>FROM</KEYWORD2> -->
+                <!-- <KEYWORD2>TO</KEYWORD2> -->
+            <KEYWORD1>NE</KEYWORD1>
+            <KEYWORD1>NOCONVERT</KEYWORD1>
+                <!-- <KEYWORD2>ON</KEYWORD2> -->
+                <!-- <KEYWORD2>OFF</KEYWORD2> -->
+            <LITERAL2>NULL</LITERAL2>
+            <KEYWORD1>OR</KEYWORD1>
+            <KEYWORD1>PRECISION</KEYWORD1>
+            <KEYWORD1>PRINT_DETAIL</KEYWORD1>
+                <KEYWORD2>ITEMIZING</KEYWORD2>
+                <KEYWORD2>LINE</KEYWORD2>
+                <!-- <KEYWORD2>FROM</KEYWORD2> -->
+                <!-- <KEYWORD2>TO</KEYWORD2> -->
+            <KEYWORD1>PRINT_TOTAL</KEYWORD1>
+                <KEYWORD2>LEVEL</KEYWORD2>
+            <KEYWORD1>PROCEDURE</KEYWORD1>
+                <!-- <KEYWORD2>CALL</KEYWORD2> -->
+                    <KEYWORD2>DATA</KEYWORD2>
+                    <KEYWORD2>BROWSE</KEYWORD2>
+                    <KEYWORD2>NOBROWSE</KEYWORD2>
+                    <KEYWORD2>TYPE</KEYWORD2>
+                <!-- <KEYWORD2>LINE</KEYWORD2> -->
+                <KEYWORD2>OUTPUT</KEYWORD2>
+                <KEYWORD2>RUN</KEYWORD2>
+                    <KEYWORD2>PHANTOM</KEYWORD2>
+                    <KEYWORD2>CAPTURE</KEYWORD2>
+                <KEYWORD2>SELECT</KEYWORD2>
+                    <KEYWORD2>NO_EXECUTE</KEYWORD2>
+                    <!-- <KEYWORD2>USING</KEYWORD2> -->
+                <KEYWORD1>STMT</KEYWORD1>
+                    <!-- <KEYWORD2>DATA</KEYWORD2> -->
+            <KEYWORD1>PROMPT_IN_PLACE</KEYWORD1>
+            <KEYWORD1>PROMPT_WIDE</KEYWORD1>
+            <KEYWORD1>REMOVE</KEYWORD1>
+                <!-- </KEYWORD2>AT</KEYWORD2> -->
+                <!-- <KEYWORD2>FROM</KEYWORD2> -->
+                <!-- <KEYWORD2>SETTING</KEYWORD2> -->
+            <KEYWORD1>REPROMPT</KEYWORD1>
+            <KEYWORD1>RETURN</KEYWORD1>
+                <!-- <KEYWORD2>TO</KEYWORD2> -->
+            <KEYWORD1>RNDSEED</KEYWORD1>
+            <KEYWORD1>SET_SECURITY</KEYWORD1>
+            <KEYWORD1>SWAP</KEYWORD1>
+                <KEYWORD2>WITH</KEYWORD2>
+                <!-- <KEYWORD2>IN</KEYWORD2> -->
+            <KEYWORD1>TRANSLATE</KEYWORD1>
+            <KEYWORD1>VALIDATE</KEYWORD1>
+                <!-- <KEYWORD2>ALL_OF</KEYWORD2> -->
+                <KEYWORD2>TRANSLATING</KEYWORD2>
+                <KEYWORD2>GETTING_ACTION_CODES</KEYWORD2>
+            <KEYWORD1>VALIDATION</KEYWORD1>
+                <!-- <KEYWORD2>OFF</KEYWORD2> -->
+
+            <!-- Deprecated Keywords 
+                 i.e. Not in the Envision Basic Commands Reference -->
+            <KEYWORD1>CRT</KEYWORD1>
+            <KEYWORD1>INPUT</KEYWORD1>
+            <KEYWORD1>PRINT</KEYWORD1>
+            <!-- READLIST not supported in Oracle -->
+            <KEYWORD1>READLIST</KEYWORD1>
+            
+            <!-- Special Variable Names
+                 (for hook code, debug etc.) -->
+            <KEYWORD3>INPUT.DATA</KEYWORD3>
+            <KEYWORD3>EDITED.DATA</KEYWORD3>
+            <KEYWORD3>OUTPUT.DATA</KEYWORD3>
+            <KEYWORD3>WARNING.OCCURRED</KEYWORD3>
+            <KEYWORD3>ERROR.OCCURRED</KEYWORD3>
+            <KEYWORD3>DATATEL.DEBUG</KEYWORD3>
+            <KEYWORD3>XL.DEBUG.MSG</KEYWORD3>
+            <KEYWORD3>MSG</KEYWORD3>
+        </KEYWORDS>
+    </RULES>
+</MODE>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<penguins>
+	<penguin>
+		<link>asfunction:_root.LoadStory,1001</link>
+		<headline>Emperor (Aptenodytes forsteri)</headline>
+		<summary>The Emperor penguin is truly the supreme and most dignified of all penguins, as it towers above the rest at an amazing 115 cm.</summary>
+	</penguin>
+	<penguin>
+		<link>asfunction:_root.LoadStory,1002</link>
+		<headline>King (Aptenodytes patagonica patagonica)</headline>
+		<summary>Despite the name, King penguins are not the giants of all penguins; those are the Emperor penguins.</summary>
+	</penguin>
+	<penguin>
+		<link>asfunction:_root.LoadStory,1003</link>
+		<headline>Fiordland (Eudyptes pachyrhynchus)</headline>
+		<summary>The Fiordland penguin is easily confused with the Snares Island penguin and the Erect-crested penguin.</summary>
+	</penguin>
+	<penguin>
+		<link>asfunction:_root.LoadStory,1004</link>
+		<headline>Macaroni (Eudyptes chysolophus)</headline>
+		<summary>Macaroni penguins are easily identified from the other crested penguins: their crests are bright orange and form on the centerline of the dorsal head and point outwardly, slightly posteriorly.</summary>
+	</penguin>
+	<penguin>
+		<link>asfunction:_root.LoadStory,1005</link>
+		<headline>Rockhopper (Eudyptes crestatus)</headline>
+		<summary>Rockhoppers are often considered the favorites of many people.</summary>
+	</penguin>
+	<penguin>
+		<link>asfunction:_root.LoadStory,1006</link>
+		<headline>Snares Island  (Eudyptes robutsus)</headline>
+		<summary>It's easy to confuse the Snares Island penguins with some of the other crested penguins, especially while they're swimming.</summary>
+	</penguin>
+	<penguin>
+		<link>asfunction:_root.LoadStory,1007</link>
+		<headline>Little-blue (Eudyptula albosignata)</headline>
+		<summary>The Little-blue penguins have many local and informal names.</summary>
+	</penguin>
+	<penguin>
+		<link>asfunction:_root.LoadStory,1008</link>
+		<headline>Yellow-eyed (Megadyptes antipodes)</headline>
+		<summary>The Yellow-eyed penguins are the sole members of the genus Megadyptes. They are a beautiful bird that is easily recognized given their profuse yellow coloring of their heads and their yellow irises.</summary>
+	</penguin>
+</penguins>

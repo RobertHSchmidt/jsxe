@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>    <code language="java">private void open( Reader reader, String title ) {
+    try {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse( new InputSource(reader) );
+        document.getDocumentElement().normalize();
+        panel.open(document);
+        setTitle(m_Title + &quot; - &quot; + title);
+        return;
+    }
+    catch(SAXParseException spe) {
+        JOptionPane.showMessageDialog(this, spe, &quot;Parse Error&quot;, JOptionPane.WARNING_MESSAGE);
+    }
+    catch (SAXException sxe) {
+        JOptionPane.showMessageDialog(this, sxe, &quot;Parse Error&quot;, JOptionPane.WARNING_MESSAGE);
+    }
+    catch (ParserConfigurationException pce) {
+        JOptionPane.showMessageDialog(this, pce, &quot;Parser Configuration Error&quot;, JOptionPane.WARNING_MESSAGE);
+    }
+    catch (IOException ioe) {
+        JOptionPane.showMessageDialog(this, ioe, &quot;IO Error&quot;, JOptionPane.WARNING_MESSAGE);
+    }
+}
+</code>
+    
+</document>
