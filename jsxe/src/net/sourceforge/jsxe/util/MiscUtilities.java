@@ -1023,7 +1023,7 @@ loop:       for(int i = 0; i < str.length(); i++)
 
         return "" + major + "." + minor
             + (beta != 99 ? "pre" + beta :
-            (bugfix != 0 ? "." + bugfix : "final"));
+            (bugfix != 0 ? "." + bugfix : "beta"));
     } //}}}
 
    // //{{{ isToolsJarAvailable() method

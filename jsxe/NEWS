@@ -1,3 +1,11 @@
+03/30/2005  verison 0.3 beta
+
+    * Added much better namespace support. Users can no longer create
+      non-wellformed documents by changing namespaces.
+        * Users can no longer remove namespace declarations when there are
+          attributes that use it.
+    * Added a command line option to enable printing debug to the command line.
+
 03/09/2005  version 0.3 pre15
 
     * Added plugin support. Now additional views can be added to jsXe easily
@@ -9,7 +17,6 @@
       exception.
     * Added an 'Ignore Case' Check box to the find dialog
     
-
 11/23/2004  version 0.2 beta
 
     * Fixed bug that didn't update the tab width for the source view when

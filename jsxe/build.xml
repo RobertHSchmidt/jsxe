@@ -34,10 +34,12 @@
     <property name="main.class" value="net.sourceforge.jsxe.jsXe"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="3"/>
-		<property name="beta.version" value="16"/>
+		<property name="beta.version" value="99"/>
     <property name="bugfix.version" value="0"/>
-		<property name="app.version" value="${major.version}.${minor.version} pre${beta.version}"/>
-		<property name="app_version" value="${major.version}_${minor.version}pre${beta.version}"/>
+		<!-- <property name="app.version" value="${major.version}.${minor.version} pre${beta.version}"/> -->
+		<!-- <property name="app_version" value="${major.version}_${minor.version}pre${beta.version}"/> -->
+    <property name="app.version" value="${major.version}.${minor.version} beta"/>
+    <property name="app_version" value="${major.version}_${minor.version}beta"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
 		<property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>
 		<path id="classpath">

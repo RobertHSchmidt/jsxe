@@ -21,10 +21,6 @@ TODO:
 
     & Serialized XML should be 100% well-formed and parsable.
 
-* Version 0.3 beta (Plugin + Namespace Support)
-
-    * Make any changes necessary for an early version of the Schema View.
-
 * Version 0.4 beta (DTD/Schema support)
     
     * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
