@@ -29,11 +29,11 @@
         <include name="**/*.class"/>
         <include name="**/properties"/>
         <include name="**/*.props"/>
-        <include name="net/sourceforge/jsxe/icons/*.jpg"/>
+        <include name="net/sourceforge/jsxe/**/*.java"/>
       </fileset>
     </jar>
     
-    <propertyfile file="build.properties" comment="jsXe build properties">
+    <propertyfile file="net/sourceforge/jsxe/build.properties" comment="jsXe build properties">
       <entry  key="application.name" value="jsXe"/>
       <entry  key="build.time" type="date" value="now" pattern="dd/MM/yyyy HH:mm"/>
       <entry  key="major.version" type="int" value="0"/>
