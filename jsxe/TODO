@@ -23,16 +23,12 @@ TODO:
     
 * Version 0.2 beta
     
-    * Remove all references to jsXe classes in the DocumentViews.
-    
     * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother?
     
     * Add a command line option so that a user can specify the view to open
       the document with. This will allow you to open large document in the
       source view without parsing it into the tree view using DOM.
-    
-    * Look for ways to improve efficiency with large XML documents
     
     * Remove references to the TabbedView class in DocumentViews. This
       will allow DocumentViews and XMLDocuments to be used as a separate
@@ -42,7 +38,7 @@ TODO:
     * Create new packages for the XMLDocument and DocumentViews. Provide
       javadoc on the jsXe website. Rename AdapterNodes to something more
       meaningful and update it's API. Maybe make XMLDocument an interface
-      so that XMLDocument classes can be created that use something othe
+      so that XMLDocument classes can be created that use something other
       than Xerces.
     
     * Updated javadoc for the DocumentViews and XMLDocument classes to be
@@ -55,12 +51,6 @@ TODO:
     * Change the way the TabbedView keeps track of the DocumentViews and
       DocumentBuffers so that it's easier to get the DocumentBuffer for a
       particular XMLDocument
-    
-    * Add a command line option so that a user can specify the view to open
-      the document with. This will allow you to open large document in the
-      source view without parsing it using DOM.
-    
-    * Look for ways to improve efficiency with large XML documents
     
     * Store some options such as recent files and file specific options in
       an XML file with jsxe's options in the .jsxe folder in the home dir.
@@ -205,13 +195,18 @@ TODO:
     
     * Add a way for jsXe to try to open a document in any of the installed views
       before it shows errors saying it cannot open the document given that views
-      are now plugins..
+      are now plugins.
     
 * Version 0.7 beta
     
     * Implement some form of internationalization support.
     
     * Implement printing support in the Default View and SourceView
+    
+    * Add an option when opening documents that lets users specify which
+      installed view to open the document with.
+    
+    * Look for ways to improve efficiency with large XML documents
     
 * Version 0.8 beta
 

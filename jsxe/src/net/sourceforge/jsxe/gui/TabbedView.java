@@ -45,6 +45,7 @@ import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.DocumentBufferListener;
 import net.sourceforge.jsxe.gui.view.DocumentView;
 import net.sourceforge.jsxe.gui.view.DocumentViewFactory;
+import net.sourceforge.jsxe.gui.view.UnrecognizedDocViewException;
 import net.sourceforge.jsxe.action.*;
 //import net.sourceforge.jsxe.action.ToolsViewSourceAction;
 //}}}
@@ -93,61 +94,27 @@ public class TabbedView extends JFrame {
     
     //{{{ TabbedView constructor
     /**
-     * Constructs a new TabbedView
+     * Constructs a new TabbedView with the default view
+     * @param buffer the buffer to use initially
      */
     public TabbedView(DocumentBuffer buffer) throws IOException {
         
-        //{{{ load global properties
-        
-        //Make sure user defined properties don't cause unwanted exceptions.
-        int width = Integer.valueOf(jsXe.getDefaultProperty(_WIDTH)).intValue();
-        try {
-            width = Integer.valueOf(jsXe.getProperty(_WIDTH)).intValue();
-        } catch (NumberFormatException e) {}
-        
-        int height = Integer.valueOf(jsXe.getDefaultProperty(_HEIGHT)).intValue();
-        try {
-            height = Integer.valueOf(jsXe.getProperty(_HEIGHT)).intValue();
-        } catch (NumberFormatException e) {}
-        
-        int x = Integer.valueOf(jsXe.getDefaultProperty(_X)).intValue();
-        try {
-            x = Integer.valueOf(jsXe.getProperty(_X)).intValue();
-        } catch (NumberFormatException e) {}
-        
-        int y = Integer.valueOf(jsXe.getDefaultProperty(_Y)).intValue();
-        try {
-            y = Integer.valueOf(jsXe.getProperty(_Y)).intValue();
-        } catch (NumberFormatException e) {}
-        
-        //}}}
-        
-        createDefaultMenuItems();
-        updateMenuBar();
-        
-        tabbedPane.addChangeListener(//{{{
-            new ChangeListener() {
-                public void stateChanged(ChangeEvent e) {
-                    //it's possible to change to another file
-                    //that is using another view.
-                    updateMenuBar();
-                    updateTitle();
-                }
-           });//}}}
-        
-        getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(tabbedPane, BorderLayout.CENTER);
-        pack();
-        
-        //Set window options
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowHandler());
-        
-        setIconImage(jsXe.getIcon().getImage());
-        
-        setBounds(new Rectangle(x, y, width, height));
+        init();
         
         addDocumentBuffer(buffer);
+    }//}}}
+    
+    //{{{ TabbedView constructor
+    /**
+     * Constructs a new TabbedView using the document view with the name specified.
+     * @param buffer the buffer to use initially
+     * @param documentViewName the document view name
+     */
+    public TabbedView(DocumentBuffer buffer, String documentViewName) throws IOException, UnrecognizedDocViewException {
+        
+        init();
+        
+        addDocumentBuffer(buffer, documentViewName);
     }//}}}
     
     //{{{ getDocumentBuffer()
@@ -169,73 +136,80 @@ public class TabbedView extends JFrame {
     //{{{ addDocumentBuffer()
     /**
      * Adds a buffer to the main view. This is essentially opening
-     * the document in jsXe.
-     * @param doc The DocumentBuffer to add to the view
+     * the document in jsXe. The TabbedView attempts to open the buffer
+     * in each registered DocumentView until it is successfull.
+     * @param buffer The DocumentBuffer to add to the view
+     * @throws IOException if the buffer could not be opened
+     */
+    public void addDocumentBuffer(DocumentBuffer buffer, String documentViewName) throws IOException {
+        DocumentViewFactory factory = DocumentViewFactory.newInstance();
+        factory.setDocumentViewType(documentViewName);
+        
+        
+        DocumentView newDocView = factory.newDocumentView(buffer.getXMLDocument());
+        
+       // newDocView.setDocumentBuffer(this, buffer);
+        
+        buffer.addDocumentBufferListener(new DocumentBufferListener() {//{{{
+    
+            public void propertiesChanged(DocumentBuffer source, String propertyKey) {//{{{
+                if (propertyKey.equals("dirty")) {
+                    //It's dirtyness has changed
+                    //change the tab title
+                    
+                    DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+                    for (int i=0; i < buffers.length; i++) {
+                        if (buffers[i] == source) {
+                            tabbedPane.setIconAt(i, getTabIcon(source));
+                            return;
+                        }
+                    }
+                }
+            }//}}}
+            
+            public void nameChanged(DocumentBuffer source, String newName) {//{{{
+                DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+                for (int i=0; i < buffers.length; i++) {
+                    if (buffers[i] == source) {
+                        tabbedPane.setTitleAt(i, source.getName());
+                    }
+                }
+            };//}}}
+            
+            public void bufferSaved(DocumentBuffer source) {}
+            
+        });//}}}
+        
+        tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), newDocView.getDocumentViewComponent());
+        tabbedPane.setSelectedComponent(newDocView.getDocumentViewComponent());
+        
+        updateTitle();
+        updateMenuBar();
+        
+        buffer.addDocumentBufferListener(m_bufferListener);
+        
+        return;
+    }//}}}
+    
+    //{{{ addDocumentBuffer()
+    /**
+     * Adds a buffer to the main view using the document view specified.
+     * This is essentially opening the document in jsXe.
+     * @param buffer The DocumentBuffer to add to the view
+     * @throws IOException if the buffer could not be opened.
      */
     public void addDocumentBuffer(DocumentBuffer buffer) throws IOException {
         if (buffer != null) {
             DocumentViewFactory factory = DocumentViewFactory.newInstance();
-            
             Enumeration types = factory.getAvailableViewTypes();
             
             String error = null;
-            DocumentView newDocView;
             
             while (types.hasMoreElements()) {
                 
-                factory.setDocumentViewType((String)types.nextElement());
-                
                 try {
-                    
-                    newDocView = factory.newDocumentView(buffer.getXMLDocument());
-                    
-                   // newDocView.setDocumentBuffer(this, buffer);
-                    
-                    buffer.addDocumentBufferListener(new DocumentBufferListener() {//{{{
-                
-                        public void propertiesChanged(DocumentBuffer source, String propertyKey) {//{{{
-                            if (propertyKey.equals("dirty")) {
-                                //It's dirtyness has changed
-                                //change the tab title
-                                
-                                DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
-                                for (int i=0; i < buffers.length; i++) {
-                                    if (buffers[i] == source) {
-                                        tabbedPane.setIconAt(i, getTabIcon(source));
-                                        return;
-                                    }
-                                }
-                            }
-                        }//}}}
-                        
-                        public void nameChanged(DocumentBuffer source, String newName) {//{{{
-                            DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
-                            for (int i=0; i < buffers.length; i++) {
-                                if (buffers[i] == source) {
-                                    tabbedPane.setTitleAt(i, source.getName());
-                                }
-                            }
-                        };//}}}
-                        
-                        public void bufferSaved(DocumentBuffer source) {}
-                        
-                    });//}}}
-                    
-                    tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), newDocView.getDocumentViewComponent());
-                    tabbedPane.setSelectedComponent(newDocView.getDocumentViewComponent());
-                    
-                    updateTitle();
-                    updateMenuBar();
-                    
-                    buffer.addDocumentBufferListener(m_bufferListener);
-                    
-                    if (error != null) {
-                        String msg = "Could not open buffer in document views:\n\n"+error;
-                        JOptionPane.showMessageDialog(this, msg, "I/O Error", JOptionPane.WARNING_MESSAGE);
-                    }
-                    
+                    addDocumentBuffer(buffer, types.nextElement().toString());
                     return;
-                    
                 } catch (IOException ioe) {
                     if (error == null) {
                         error = buffer.getName() + ": "+ioe.getMessage() + "\n";
@@ -245,6 +219,7 @@ public class TabbedView extends JFrame {
                 }
             }
             
+            String msg = "Could not open buffer in document views:\n\n"+error;
             throw new IOException("Could not open buffer in any installed document views\n\n" + error);
             
         }
@@ -356,6 +331,60 @@ public class TabbedView extends JFrame {
     //}}}
     
     //{{{ Private members
+    
+    //{{{ init()
+    
+    private void init() {
+        //{{{ load global properties
+        
+        //Make sure user defined properties don't cause unwanted exceptions.
+        int width = Integer.valueOf(jsXe.getDefaultProperty(_WIDTH)).intValue();
+        try {
+            width = Integer.valueOf(jsXe.getProperty(_WIDTH)).intValue();
+        } catch (NumberFormatException e) {}
+        
+        int height = Integer.valueOf(jsXe.getDefaultProperty(_HEIGHT)).intValue();
+        try {
+            height = Integer.valueOf(jsXe.getProperty(_HEIGHT)).intValue();
+        } catch (NumberFormatException e) {}
+        
+        int x = Integer.valueOf(jsXe.getDefaultProperty(_X)).intValue();
+        try {
+            x = Integer.valueOf(jsXe.getProperty(_X)).intValue();
+        } catch (NumberFormatException e) {}
+        
+        int y = Integer.valueOf(jsXe.getDefaultProperty(_Y)).intValue();
+        try {
+            y = Integer.valueOf(jsXe.getProperty(_Y)).intValue();
+        } catch (NumberFormatException e) {}
+        
+        //}}}
+        
+        createDefaultMenuItems();
+        updateMenuBar();
+        
+        tabbedPane.addChangeListener(//{{{
+            new ChangeListener() {
+                public void stateChanged(ChangeEvent e) {
+                    //it's possible to change to another file
+                    //that is using another view.
+                    updateMenuBar();
+                    updateTitle();
+                }
+           });//}}}
+        
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(tabbedPane, BorderLayout.CENTER);
+        pack();
+        
+        //Set window options
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowHandler());
+        
+        setIconImage(jsXe.getIcon().getImage());
+        
+        setBounds(new Rectangle(x, y, width, height));
+    }//}}}
     
     //{{{ createDefaultMenuItems()
     

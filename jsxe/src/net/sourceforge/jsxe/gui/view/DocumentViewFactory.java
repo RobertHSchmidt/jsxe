@@ -76,13 +76,13 @@ public class DocumentViewFactory {
     
     public DocumentView newDocumentView(XMLDocument document) throws IOException, UnrecognizedDocViewException {
         //Document type validation is pretty simple right now
-        if (viewType == "tree") {
+        if (viewType.equals("tree")) {
             return new DefaultView(document);
         } else {
-            if (viewType == "source") {
+            if (viewType.equals("source")) {
                 return new SourceView(document);
             } else {
-                throw new UnrecognizedDocViewException();
+                throw new UnrecognizedDocViewException(viewType);
             }
         }
     }//}}}
