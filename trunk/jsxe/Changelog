@@ -2,6 +2,12 @@
 
     * Fixed a bug in the CustomFileFilter class that caused it to go into
       an infinite loop with files with no extension.
+    * When opening an XML document jsXe now cycles through installed views
+      until it finds one that will open a document.
+    * Added support for opening multiple files at a time. Fixed a few bugs
+      in that process.
+    * Fixed an EntityResolver bug that was introduced with the DocumentBuffer
+      class.
 
 11/15/2003  version 0.1.42  Ian Lewis <IanLewis@member.fsf.org>
 

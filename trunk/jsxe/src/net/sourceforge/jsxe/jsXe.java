@@ -189,6 +189,7 @@ public class jsXe {
             DocumentBuffer buffer = docView.getDocumentBuffer();
             File docFile = buffer.getFile();
             JFileChooser loadDialog = new JFileChooser(docFile);
+            loadDialog.setMultiSelectionEnabled(true);
             //Add a filter to display only XML files
             ArrayList extentionList = new ArrayList();
             extentionList.add(new String("xml"));
@@ -218,7 +219,21 @@ public class jsXe {
             
             int returnVal = loadDialog.showOpenDialog(view);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
-                return openXMLDocument(view, loadDialog.getSelectedFile());
+                boolean success = false;
+                File[] files = loadDialog.getSelectedFiles();
+                for (int i = 0; i < files.length; i++) {
+                    //success becomes true if at least one document is opened
+                    //successfully.
+                    if (files[i] != null) {
+                        try {
+                            success = openXMLDocument(view, files[i]) || success;
+                        } catch (IOException ioe) {
+                            //I/O error doesn't change value of success
+                            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                        }
+                    }
+                }
+                return success;
             }
             return false;
     }//}}}
@@ -231,7 +246,6 @@ public class jsXe {
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
     public static boolean openXMLDocument(TabbedView view, File file) throws IOException {//{{{
-        
         if (file == null)
             return false;
         
@@ -515,7 +529,7 @@ public class jsXe {
             //successfully.
             if (args[i] != null) {
                 try {
-                    success = success || openXMLDocument(view, new File(args[i]));
+                    success = openXMLDocument(view, new File(args[i])) || success;
                 } catch (IOException ioe) {
                     //I/O error doesn't change value of success
                     JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
@@ -567,7 +581,7 @@ public class jsXe {
         //}}}
         
         //{{{ Load default properties of installed views
-        Enumeration installedViews = DocumentViewFactory.getAvailableViewNames();
+        Enumeration installedViews = DocumentViewFactory.getAvailableViewTypes();
         while (installedViews.hasMoreElements()) {
             String viewname = (String)installedViews.nextElement();
             InputStream viewinputstream = jsXe.class.getResourceAsStream("/net/sourceforge/jsxe/gui/view/"+viewname+".props");

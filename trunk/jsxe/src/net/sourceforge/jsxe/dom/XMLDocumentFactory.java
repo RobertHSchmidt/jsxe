@@ -53,6 +53,10 @@ import java.io.Reader;
 import java.io.StringReader;
 //}}}
 
+//{{{ DOM classes
+import org.xml.sax.EntityResolver;
+//}}}
+
 //}}}
 
 public class XMLDocumentFactory {
@@ -67,10 +71,18 @@ public class XMLDocumentFactory {
         docType = type;
     }//}}}
     
+    public void setEntityResolver(EntityResolver resolver) {//{{{
+        m_entityResolver = resolver;
+    }//}}}
+    
     public XMLDocument newXMLDocument(Reader reader) throws IOException, UnrecognizedDocTypeException {//{{{
         //Document type validation is pretty simple right now
         if (docType == "xmldocument.default") {
-            return new DefaultXMLDocument(reader);
+            if (m_entityResolver != null) {
+                return new DefaultXMLDocument(reader, m_entityResolver);
+            } else {
+                return new DefaultXMLDocument(reader);
+            }
         } else {
             throw new UnrecognizedDocTypeException();
         }
@@ -78,6 +90,7 @@ public class XMLDocumentFactory {
     
     //{{{ Private members
     private String docType = "xmldocument.default";
+    private EntityResolver m_entityResolver;
     //}}}
 
 }

@@ -221,6 +221,10 @@ public class DefaultView extends DocumentView {
         return m_buffer;
     }//}}}
     
+    public String getName() {//{{{
+        return "Tree View";
+    }//}}}
+    
     public boolean close(TabbedView view) {//{{{
         
         //m_buffer should only be null if setBuffer was never called.

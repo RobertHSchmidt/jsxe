@@ -1,15 +1,21 @@
 TODO:
 
-    * Slowly document methods with javadoc.
+    & Slowly document methods with javadoc.
     
-    * Slowly prefix instance variables with m_ as a naming convention.
+    & Slowly prefix instance variables with m_ as a naming convention.
+    
+    & Think about how the XMLDocument hierarchy should be. Most XMLDocuments
+      are going to need the functionality in DefaultXMLDocument. Should
+      XMLDocument have most of that logic in it and sub-classes define their own
+      ways of determining if they are valid or something? Should
+      DefaultXMLDocument just be called XMLDocument and the current XMLDocument
+      be thrown out? Then other classes would extend XMLDocument and have
+      methods specific to their application of XML?
     
     * Update the DOM3 classes to the current version of the DOM3 interfaces.
       (2.6.0) DOMSerializer needs to be renamed. DOMSerializerConfiguration
       needs to be updated to support the parameters specified in DOM3 javadoc
       for DOMSerializer.
-    
-    * Allow for selecting multiple files when opening.
     
     * Make the XML document declaration header non-editable in source-view mode.
       Update it when the user changes it in the options panel. (how?)
@@ -21,11 +27,10 @@ TODO:
       option categories. So that way jsXe can have separate options for
       serialization and visualization and ...
     
-    * Allow for opening files with wellformedness errors in source view. This
-      way users can fix wellformedness errors in the editor.
-    
     * Add relevent command-line option parsing to jsXe. At least things like
       '--version' and '--help' should be present.
+    
+    * Add drag & drop functionality to the default view.
     
     * Release new version (0.2.0).
     
@@ -47,8 +52,6 @@ TODO:
     
     * Change icons in tree in DocumentView to be different for different types
       of XML nodes.
-    
-    * Add drag & drop functionality to the default view.
     
     * Release new version (0.3.0).
     

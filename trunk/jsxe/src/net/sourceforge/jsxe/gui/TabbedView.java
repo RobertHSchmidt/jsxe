@@ -81,6 +81,7 @@ import java.awt.event.WindowEvent;
 
 //{{{ Java base classes
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Vector;
 //}}}
 
@@ -150,40 +151,62 @@ public class TabbedView extends JFrame {
     public void addDocumentBuffer(DocumentBuffer buffer) throws IOException {//{{{
         if (buffer != null) {
             DocumentViewFactory factory = DocumentViewFactory.newInstance();
-            DocumentView newDocView = factory.newDocumentView();
-            buffer.addDocumentBufferListener(new DocumentBufferListener() {
+            
+            Enumeration types = factory.getAvailableViewTypes();
+            
+            String error = "";
+            DocumentView newDocView;
+            
+            while (types.hasMoreElements()) {
+                factory.setDocumentViewType((String)types.nextElement());
+                newDocView = factory.newDocumentView();
                 
-                public void propertiesChanged(DocumentBuffer source, String propertyKey) {//{{{
-                    if (propertyKey.equals("dirty")) {
-                        //It's dirtyness has changed
-                        //change the tab title
-                        
-                        DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
-                        for (int i=0; i < buffers.length; i++) {
-                            if (buffers[i] == source) {
-                                tabbedPane.setTitleAt(i, getTabTitle(source));
+                try {
+                    newDocView.setDocumentBuffer(this, buffer);
+                    
+                    buffer.addDocumentBufferListener(new DocumentBufferListener() {//{{{
+                
+                        public void propertiesChanged(DocumentBuffer source, String propertyKey) {//{{{
+                            if (propertyKey.equals("dirty")) {
+                                //It's dirtyness has changed
+                                //change the tab title
+                                
+                                DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+                                for (int i=0; i < buffers.length; i++) {
+                                    if (buffers[i] == source) {
+                                        tabbedPane.setTitleAt(i, getTabTitle(source));
+                                    }
+                                }
                             }
-                        }
-                    }
-                }//}}}
-                
-                public void nameChanged(DocumentBuffer source, String newName) {//{{{
-                    DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
-                    for (int i=0; i < buffers.length; i++) {
-                        if (buffers[i] == source) {
-                            tabbedPane.setTitleAt(i, getTabTitle(source));
-                        }
-                    }
-                };//}}}
-                
-                public void bufferSaved(DocumentBuffer source) {}
-                
-            });
-            newDocView.setDocumentBuffer(this, buffer);
-            tabbedPane.add(buffer.getName(), newDocView);
-            tabbedPane.setSelectedComponent(newDocView);
-            updateTitle();
-            updateMenuBar();
+                        }//}}}
+                        
+                        public void nameChanged(DocumentBuffer source, String newName) {//{{{
+                            DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+                            for (int i=0; i < buffers.length; i++) {
+                                if (buffers[i] == source) {
+                                    tabbedPane.setTitleAt(i, getTabTitle(source));
+                                }
+                            }
+                        };//}}}
+                        
+                        public void bufferSaved(DocumentBuffer source) {}
+                        
+                    });//}}}
+                    
+                    tabbedPane.add(buffer.getName(), newDocView);
+                    tabbedPane.setSelectedComponent(newDocView);
+                    updateTitle();
+                    updateMenuBar();
+                    
+                    return;
+                    
+                } catch (IOException ioe) {
+                    error += newDocView.getName() + ": "+ioe.getMessage() + "\n";
+                }
+            }
+            
+            throw new IOException("Could not open buffer in any installed document views\n\n" + error);
+            
         }
     }//}}}
     

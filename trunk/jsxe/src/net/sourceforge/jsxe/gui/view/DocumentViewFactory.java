@@ -78,7 +78,7 @@ public class DocumentViewFactory {
         }
     }//}}}
 
-    public static Enumeration getAvailableViewNames() {//{{{
+    public static Enumeration getAvailableViewTypes() {//{{{
         return new DocumentViews();
     }//}}}
 
