@@ -44,6 +44,10 @@ TODO:
     
     * Look into Marathon as a possible testing tool for jsXe. It seems to allow
       you to create unit test scripts for Java/Swing GUI apps.
+      
+    * Look into Junit as a tool for further testing of jsXe. This can be used
+      to test data or model classes like AdapterNode and XMLDocument. It can
+      also be used to test things that Marathon cannot test.
     
 * Version 0.4 beta (Actions)
     
@@ -175,9 +179,6 @@ TODO:
     
     * Create a view that uses the view from Jaxe and implements the
       DocumentView interface. See jaxe.sourceforge.net
-    
-    * Create a view that is similar to the xeditor view if it's ok (it kind of
-      has to be since jie bao used my GPL code his has to be open source too.)
     
     * Create a view for editing doc-book files using the components in the
       Vex editor. See vex.sourceforge.net
