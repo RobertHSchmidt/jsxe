@@ -1,6 +1,7 @@
 useFixture(default)
 
 def test():
+	# Tests removing nodes from the tree.
 	window('jsXe - Untitled-1')
 	doubleclick('DefaultViewTree', '/Document Root/default_element')
 	rightclick('DefaultViewTree', '/Document Root/default_element')

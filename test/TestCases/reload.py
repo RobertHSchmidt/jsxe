@@ -1,13 +1,12 @@
 useFixture(default)
 
 def test():
+	# Tests reloading an untitled file
 	window('jsXe - Untitled-1')
 	doubleclick('DefaultViewTree', '/Document Root/default_element')
 	rightclick('DefaultViewTree', '/Document Root/default_element/default_node')
 	click('Remove Node')
-
 	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element' ] ])
-
 
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')

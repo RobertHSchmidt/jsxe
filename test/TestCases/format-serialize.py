@@ -1,6 +1,7 @@
 useFixture(default)
 
 def test():
+	# tests the format-pretty-print feature
 	window('jsXe - Untitled-1')
 	doubleclick('DefaultViewTree', '/Document Root/default_element')
 	rightclick('DefaultViewTree', '/Document Root/default_element/default_node')
@@ -110,6 +111,7 @@ def test():
 	click('Tools')
 	click('Options...')
 	window('Global Options')
+	click('JTree', '//jsxe/XML Document Options')
 	select('Format XML output', 'true')
 	click('OK')
 	close()

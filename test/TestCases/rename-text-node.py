@@ -1,6 +1,7 @@
 useFixture(default)
 
 def test():
+	# Tests renaming a text node
 	window('jsXe - Untitled-1')
 	doubleclick('DefaultViewTree', '/Document Root/default_element')
 	click('DefaultViewTree', '/Document Root/default_element/default_node')
