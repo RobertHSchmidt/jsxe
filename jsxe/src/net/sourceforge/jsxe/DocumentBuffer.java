@@ -41,10 +41,9 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
-import net.sourceforge.jsxe.dom.XMLDocumentFactory;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
+import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.UnrecognizedDocTypeException;
 import net.sourceforge.jsxe.options.OptionPane;
 import net.sourceforge.jsxe.gui.OptionsPanel;

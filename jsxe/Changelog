@@ -1,3 +1,7 @@
+11/23/2004  version 0.3 pre1    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Obsoleted the DefaultViewTreeNode class.
+
 11/22/2004  version 0.2 beta    Ian Lewis <IanLewis@member.fsf.org>
 
     * Redid how the view human readable names are retrieved.

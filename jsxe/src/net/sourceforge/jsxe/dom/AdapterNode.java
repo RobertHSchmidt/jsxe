@@ -43,6 +43,7 @@ belongs to.
 //{{{ Java Base Classes
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.util.Properties;
 //}}}
 
 //{{{ DOM classes
@@ -100,6 +101,44 @@ public class AdapterNode {
         m_domNode = node;
         setParent(parent);
         m_rootDocument = xmlDocument;
+    }//}}}
+    
+    //{{{ getProperty()
+    /**
+     * Gets a property for the key given.
+     * @param key the key to the properties list
+     * @return the value of the property for the given key.
+     */
+    public String getProperty(String key) {
+        return m_props.getProperty(key);
+    }//}}}
+    
+    //{{{ getProperty()
+    /**
+     * Gets a property for the key given or returns the default value
+     * if there is no property for the given key.
+     * @param key the key to the properties list
+     * @param defaultValue the default value for the property requested
+     * @return the value of the property for the given key.
+     */
+    public String getProperty(String key, String defaultValue) {
+        return m_props.getProperty(key, defaultValue);
+    }//}}}
+    
+    //{{{ setProperty()
+    /**
+     * Sets a property of the AdapterNode
+     * @param key the key to the property
+     * @param value the value of the property
+     * @return the old value of the property
+     */
+    public String setProperty(String key, String value) {
+        Object oldValue = m_props.setProperty(key, value);
+        if (oldValue != null) {
+            return oldValue.toString();
+        } else {
+            return null;
+        }
     }//}}}
     
     //{{{ index()
@@ -571,6 +610,32 @@ public class AdapterNode {
         return m_rootDocument.serializeNodeToString(this);
     }//}}}
     
+    //{{{ toString()
+        
+    public String toString() {
+        String s = new String();
+        if (getNodeType() == Node.DOCUMENT_NODE)
+            return "Document Root";
+        String nodeName = getNodeName();
+        if (! nodeName.startsWith("#")) {   
+            s += nodeName;
+        }
+        if (s.equals("")) {
+            if (getNodeValue() != null) {
+                String t = getNodeValue().trim();
+                int x = t.indexOf("\n");
+                if (x >= 0) {
+                    t = t.substring(0, x);
+                }
+                if (t.length() > 50) {
+                    t = t.substring(0, 50) + "...";
+                }
+                s += t;
+            }
+        }
+        return s;
+    }//}}}
+    
     //{{{ Protected members
     
     //{{{ getNode()
@@ -676,5 +741,6 @@ public class AdapterNode {
     
     private Node m_domNode;
     private ArrayList m_listeners = new ArrayList();
+    private Properties m_props = new Properties();
     //}}}
 }
