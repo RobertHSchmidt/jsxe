@@ -51,16 +51,24 @@ import java.util.*;
 
 //}}}
 
+/**
+ * A transferable class that manages the physical data that is transferred when
+ * transferring an XML node. This class handles an AdapterNode
+ * object and either returning the object itself or some representation of
+ * the node (such as a string) during transfer.
+ */
 public class TransferableNode implements Transferable {
     
     //{{{ TransferableNode constructor
-    
+    /**
+     * Creates a new TransferableNode to handle the AdapterNode given.
+     * @param node The AdapterNode that is being transferred.
+     */
     public TransferableNode(AdapterNode node) {
         m_node = node;
     }//}}}
     
     //{{{ getTransferDataFlavors()
-    
     public synchronized DataFlavor[] getTransferDataFlavors() {
         return flavors;
     }//}}}
