@@ -128,11 +128,17 @@ public class DefaultXMLDocument extends XMLDocument {
             // do this first so NullPointerExceptions are thrown
             returnValue = (String)props.setProperty(key, value);
             
-            if (key == "format-pretty-print" && Boolean.valueOf(value).booleanValue()) {
-                setProperty("element-content-whitespace", "false");
+            if (key == "format-pretty-print") {
+                m_syncedWithContent = false;
+                if (Boolean.valueOf(value).booleanValue()) {
+                    setProperty("element-content-whitespace", "false");
+                }
             }
-            if (key == "element-content-whitespace" && Boolean.valueOf(value).booleanValue()) {
-                setProperty("format-pretty-print", "false");
+            if (key == "element-content-whitespace") {
+                m_syncedWithContent = false;
+                if (Boolean.valueOf(value).booleanValue()) {
+                    setProperty("format-pretty-print", "false");
+                }
             }
             firePropertiesChanged(key);
             return returnValue;
@@ -183,9 +189,7 @@ public class DefaultXMLDocument extends XMLDocument {
     
     public int getLength() {//{{{
         
-        if (m_parsedMode) {
-           syncContentWithDOM();
-        }
+        syncContentWithDOM();
         
         return m_content.getLength();
     }//}}}
@@ -336,7 +340,7 @@ public class DefaultXMLDocument extends XMLDocument {
     
     /**
      * Sets up the DefaultXMLDocument given a Reader.
-     * should only be called in the constructor as if
+     * This should only be called in the constructor since if
      * an IOException is thrown in checkWellFormedness()
      * then the content manager will be messed up.
      * Also fireStructureChanged is not called since we
