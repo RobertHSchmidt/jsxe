@@ -207,11 +207,27 @@ public class DefaultViewTableModel implements TableModel {
     //}}}
     
     //{{{ removeRow()
-    
+    /**
+     * Removes a row from the table and removes the attribute
+     * from the node that this table is showing the attributes of.
+     * @param row the index of the row in the table to remove
+     */
     public void removeRow(int row) {
         m_currentNode.removeAttributeAt(row);
         updateTable(m_currentNode);
         fireTableChanged(new TableModelEvent(this, row));
+    }//}}}
+    
+    //{{{ setAdapterNode()
+    /**
+     * Sets the AdapterNode that this table model is showing
+     * the attributes of.
+     * @param adapterNode the node to represent
+     */
+    public void setAdapterNode(AdapterNode adapterNode) {
+        m_currentNode = adapterNode;
+        updateTable(m_currentNode);
+        fireTableChanged(new TableModelEvent(this));
     }//}}}
     
     //{{{ Private members

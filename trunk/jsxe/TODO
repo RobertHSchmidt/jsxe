@@ -23,6 +23,9 @@ TODO:
     
 * Version 0.2 beta
     
+    * Store some options such as recent files and file specific options in
+      an XML file with jsxe's options in the .jsxe folder in the home dir.
+    
     * Add a ghosted image of the node to drag and drop cursor. Hopefully the
       whole cursor can be replaced with the image since the default drag
       cursor is dumb in linux.
@@ -32,9 +35,6 @@ TODO:
     * Create a dialog that displays all dirty DocumentBuffers and allows you to
       save the selected ones, like jEdit.
     
-    * Store some options such as recent files and file specific options in
-      an XML file with jsxe's options in the .jsxe folder in the home dir.
-      
     * Add support for creating and editing Processing instructions. New
       tree cell renderer/editor for the different parts of the processing
       instruction?

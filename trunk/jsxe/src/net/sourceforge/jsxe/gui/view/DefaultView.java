@@ -440,10 +440,7 @@ public class DefaultView extends DocumentView {
                 htmlPane.setEditable(canEditInJEditorPane(selectedNode));
                 
                 //update the attributes table with the current info.
-                DefaultViewTableModel tableModel = new DefaultViewTableModel(DefaultView.this, selectedNode.getAdapterNode());
-                attributesTable.setModel(tableModel);
-                tableModel.addTableModelListener(tableListener);
-                attributesTable.updateUI();
+               ((DefaultViewTableModel)attributesTable.getModel()).setAdapterNode(selectedNode.getAdapterNode());
                 
                 //update the text pane with the current info
                 DefaultViewDocument styledDoc = new DefaultViewDocument(selectedNode.getAdapterNode());

@@ -268,12 +268,16 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     addNodeItem.add(popupMenuItem);
                     popupMenuItem = new JMenuItem(new AddNodeAction("", "New CDATA Node", Node.CDATA_SECTION_NODE));
                     addNodeItem.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem(new AddNodeAction("", "New Comment Node", Node.COMMENT_NODE));
-                    addNodeItem.add(popupMenuItem);
                    // popupMenuItem = new JMenuItem(new AddNodeAction("BLAH", "New Processing Instruction", Node.PROCESSING_INSTRUCTION_NODE));
                    // addNodeItem.add(popupMenuItem);
                    // popupMenuItem = new JMenuItem(new AddNodeAction("New_Entity", "", Node.ENTITY_REFERENCE_NODE));
                    // addNodeItem.add(popupMenuItem);
+                    addNodeShown = true;
+                    showpopup = true;
+                }
+                if (selectedNode.getNodeType() == Node.DOCUMENT_NODE || selectedNode.getNodeType() == Node.ELEMENT_NODE) {
+                    popupMenuItem = new JMenuItem(new AddNodeAction("", "New Comment Node", Node.COMMENT_NODE));
+                    addNodeItem.add(popupMenuItem);
                     addNodeShown = true;
                     showpopup = true;
                 }
