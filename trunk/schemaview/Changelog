@@ -1,3 +1,7 @@
+03/22/2005  Ian Lewis <Ian Lewis@member.fsf.org>
+
+    * local complexTypes are no longer added to the diagram.
+
 03/21/2005  Ian Lewis <Ian Lewis@member.fsf.org>
 
     * Cells now get their names from the attributes defined for the node type
