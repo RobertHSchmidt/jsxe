@@ -95,7 +95,7 @@ public class DOMAdapter implements TreeModel, TableModel {
     private DOMAdapter(TabbedView parent, File file, Document doc, String docname) {//{{{
         props.setProperty("format.output", "true");
         view = parent;
-        XMLFile=file;
+        XMLFile = file;
         document = doc;
         name = docname;
     }//}}}
@@ -301,7 +301,7 @@ public class DOMAdapter implements TreeModel, TableModel {
     
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {//{{{
         //If setting a value on the last row (greater shouldn't happen)
-        if (rowIndex + 1 >= getRowCount()) {
+        if (rowIndex+1 >= getRowCount()) {
             //We can't create a new attribute value before
             //a name.
             if (!aValue.equals("")) {
@@ -309,7 +309,7 @@ public class DOMAdapter implements TreeModel, TableModel {
                     data[columnIndex].add(aValue.toString());
                 } else {
                     data[columnIndex].setElementAt(aValue.toString(),rowIndex);
-                    if (rowIndex+1==data[columnIndex].size()) {
+                    if (rowIndex+1 == data[columnIndex].size()) {
                         data[0].add("");
                         data[1].add("");
                     }

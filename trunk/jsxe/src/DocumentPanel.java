@@ -56,6 +56,7 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.text.EditorKit;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 //}}}
@@ -64,8 +65,10 @@ import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ComponentListener;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 //}}}
@@ -106,11 +109,20 @@ public class DocumentPanel extends JPanel {
         JScrollPane treeView = new JScrollPane(tree);
         
         //Create html editor pane
-        htmlPane.setEditable(false);
+        htmlPane.setEditable(true);
+        EditorKit blah = htmlPane.getEditorKit();
+        htmlPane.addInputMethodListener(
+            new InputMethodListener() {
+                public void inputMethodTextChanged(InputMethodEvent event) {
+                    System.out.println("Event Triggered");
+                }
+                public void caretPositionChanged(InputMethodEvent event) {
+                    System.out.println("Caret position changed");
+                }
+            });
         JScrollPane htmlView = new JScrollPane(htmlPane);
         
         //create a table model
-        //attributesTable = new JTable(attrTableModel);
         JScrollPane attrView = new JScrollPane(attributesTable);
         
         //layout of the panes is defined by splitpanes
@@ -187,6 +199,9 @@ public class DocumentPanel extends JPanel {
     private static JTree tree = new JTree();
     private static TreePath previousSelection;
     private static DOMAdapter currentAdapter;
+    //htmlPane will one day be more true to its name. I wanted to
+    //use the JEditorPane to add support for viewing graphics in
+    //the right hand pane but so far that isn't supported.
     private static JEditorPane htmlPane = new JEditorPane("text/plain","");
     private static JTable attributesTable = new JTable();
     private static JSplitPane vertSplitPane;
