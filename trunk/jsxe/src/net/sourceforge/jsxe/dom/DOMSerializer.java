@@ -54,6 +54,7 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Notation;
 import org.w3c.dom.ls.LSSerializer;
 import org.w3c.dom.ls.LSSerializerFilter;
 import org.w3c.dom.ls.LSOutput;
@@ -560,45 +561,46 @@ public class DOMSerializer implements LSSerializer {
                 case Node.DOCUMENT_TYPE_NODE://{{{
                     DocumentType docType = (DocumentType)node;
                     
-                    String systemId = docType.getSystemId();
-                    System.out.println(docType.getName());
-                    if (systemId != null) { 
-                    
-                        if (formatting) {
-                            //set to zero here for error handling (if doWrite throws exception).
-                            column = 0;
-                            str = m_newLine + currentIndent;
-                            doWrite(writer, str, node, line, column, offset);
-                            column += currentIndent.length();
-                            offset += str.length();
-                        }
-                        
-                        str = "<!DOCTYPE " + docType.getName();
+                    if (formatting) {
+                        //set to zero here for error handling (if doWrite throws exception).
+                        column = 0;
+                        str = m_newLine + currentIndent;
                         doWrite(writer, str, node, line, column, offset);
-                        column += str.length();
+                        column += currentIndent.length();
                         offset += str.length();
-                        if (docType.getPublicId() != null) {
-                            str = " PUBLIC \"" + docType.getPublicId() + "\" ";
-                            doWrite(writer, str, node, line, column, offset);
-                            column += str.length();
-                            offset += str.length();
-                        } else {
-                            str = " SYSTEM ";
-                            doWrite(writer, str, node, line, column, offset);
-                            column += str.length();
-                            offset += str.length();
-                        }
-                        str = "\"" + docType.getSystemId() + "\">";
-                        doWrite(writer, str, node, line, column, offset);
-                        column += str.length();
-                        offset += str.length();
-                        
-                    } else {
-                        /*
-                        need to support serialization of entity reference
-                        declarations and the internal subset
-                        */
                     }
+                    
+                    str = "<!DOCTYPE " + docType.getName();
+                    doWrite(writer, str, node, line, column, offset);
+                    column += str.length();
+                    offset += str.length();
+                    if (docType.getPublicId() != null) {
+                        str = " PUBLIC \"" + docType.getPublicId() + "\" ";
+                        doWrite(writer, str, node, line, column, offset);
+                        column += str.length();
+                        offset += str.length();
+                    } else {
+                        if (docType.getSystemId() != null) {
+                            str = " SYSTEM \"" + docType.getSystemId() + "\"";
+                            doWrite(writer, str, node, line, column, offset);
+                            column += str.length();
+                            offset += str.length();
+                        }
+                    }
+                    
+                    String internalSubset = docType.getInternalSubset();
+                    if (internalSubset != null && !internalSubset.equals("")) {
+                        str = " [ "+internalSubset+" ]";
+                        doWrite(writer, str, node, line, column, offset);
+                        column += str.length();
+                        offset += str.length();
+                    }
+                    
+                    str = ">";
+                    doWrite(writer, str, node, line, column, offset);
+                    column += str.length();
+                    offset += str.length();
+                    
                     break;//}}}
             }
         }

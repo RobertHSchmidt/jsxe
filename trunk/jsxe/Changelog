@@ -1,3 +1,8 @@
+02/08/2004  version 0.1.52  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added support for writing the internal part of a DOCTYPE to the XML
+      document.
+
 02/07/2004  version 0.1.51  Ian Lewis <IanLewis@member.fsf.org>
 
     * Cleaned up the DOMSerializer and DOMSerializerConfiguration classes
