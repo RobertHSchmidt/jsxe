@@ -4,6 +4,7 @@
       doesn't have tree specific code in it.
     * Fixed bug in the find and replace dialog that caused a null pointer
       exception.
+    * Added an 'Ignore Case' Check box to the find dialog
 
 11/23/2004  version 0.3 pre1    Ian Lewis <IanLewis@member.fsf.org>
 
