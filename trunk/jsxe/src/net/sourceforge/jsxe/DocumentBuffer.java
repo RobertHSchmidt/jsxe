@@ -167,6 +167,7 @@ public class DocumentBuffer {
                 setName(file.getName());
             }
             
+            m_file = file;
             setDirty(false);
             
             fireBufferSaved();
