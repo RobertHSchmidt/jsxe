@@ -56,18 +56,67 @@ import java.io.IOException;
 
 //}}}
 
+/**
+ * The DocumentView class defines the methods that will be implemented by
+ * all views in jsXe that provide features for editing XML documents.
+ *
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public abstract class DocumentView extends JPanel {
-
+    
+    //{{{ setDocumentBuffer()
+    /**
+     * Sets the current document buffer. This method is used when you want to
+     * view another document using this view object.
+     * @param buffer the new buffer to view
+     * @throws IOException if the buffer cannot be viewed using this view
+     */
     public abstract void setDocumentBuffer(DocumentBuffer buffer) throws IOException;
+    //}}}
     
+    //{{{ getMenus()
+    /**
+     * Gets the menus that this view has associated with it. This can be
+     * used when the view is loaded to set the menu bar.
+     * @return the menus for this view
+     */
     public abstract JMenu[] getMenus();
+    //}}}
     
+    //{{{ getOptionsPanel()
+    /**
+     * Gets the view's options panel. This is used when displaying options
+     * that are associated with this view.
+     * @return the OptionsPanel for this view
+     */
     public abstract OptionsPanel getOptionsPanel();
+    //}}}
     
+    //{{{ getDocumentBuffer()
+    /**
+     * Gets the DocumentBuffer that this view is currently using.
+     * @return the DocumentBuffer for this view
+     */
     public abstract DocumentBuffer getDocumentBuffer();
+    //}}}
     
+    //{{{ getName()
+    /**
+     * Gets the name of the view.
+     * @return the name of the view
+     */
     public abstract String getName();
+    //}}}
 
+    //{{{ close
+    /**
+     * Closes the current view. This method is called whenever the view is
+     * being discarded. This is usually used to save properties associated
+     * with this view.
+     * @param view The TabbedView that is closing this view
+     */
     public abstract boolean close(TabbedView view);
+    //}}}
 
 }

@@ -89,9 +89,24 @@ import javax.swing.text.Segment;
  */
 public class XMLDocument {
     
+    /**
+     * The property key for the encoding of this XML document
+     */
     public static String ENCODING = "encoding";
+    /**
+     * The property key for the boolean property specifying if whitespace
+     * is allowed in element content.
+     */
     public static String WS_IN_ELEMENT_CONTENT = DOMSerializerConfiguration.WS_IN_ELEMENT_CONTENT;
+    /**
+     * The property key for the boolean property specifying that the XML text
+     * should be formatted to look pleasing to the eye.
+     */
     public static String FORMAT_XML = DOMSerializerConfiguration.FORMAT_XML;
+    /**
+     * The property key for the property defining the size of a tab when the
+     * document is displayed as text or otherwise.
+     */
     public static String INDENT = DOMSerializerConfiguration.INDENT;
     
     //{{{ XMLDocument constructor

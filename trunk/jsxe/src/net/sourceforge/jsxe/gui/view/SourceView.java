@@ -45,6 +45,7 @@ import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.DocumentBufferListener;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.dom.XMLDocument;
 //}}}
 
 //{{{ Swing components
@@ -78,9 +79,22 @@ import java.io.IOException;
 
 //}}}
 
+/**
+ * The SourceView class allows users to view and edit an XML document in raw
+ * text form.
+ *
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class SourceView extends DocumentView {
     
-    public SourceView(DocumentBuffer buffer) throws IOException {//{{{
+    //{{{ SourceView constructor
+    /**
+     * Creates a new SourceView for the DocumentBuffer specified.
+     * @param buffer the buffer to open.
+     * @throws IOException if the buffer cannot be viewed using this view
+     */
+    public SourceView(DocumentBuffer buffer) throws IOException {
         
         panel = new JPanel();
         
@@ -98,7 +112,9 @@ public class SourceView extends DocumentView {
         setDocumentBuffer(buffer);
     }//}}}
     
-    public JMenu[] getMenus() {//{{{
+    //{{{ getMenus()
+    
+    public JMenu[] getMenus() {
         
         JMenu[] menus = new JMenu[1];
         
@@ -124,11 +140,15 @@ public class SourceView extends DocumentView {
         return menus;
     }//}}}
     
-    public OptionsPanel getOptionsPanel() {//{{{
+    //{{{ getOptionsPanel()
+    
+    public OptionsPanel getOptionsPanel() {
         return null;
     }//}}}
     
-    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {//{{{
+    //{{{ setDocumentBuffer()
+    
+    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {
         
         if (m_buffer != null) {
             m_buffer.removeDocumentBufferListener(docListener);
@@ -136,80 +156,135 @@ public class SourceView extends DocumentView {
         
         m_buffer = buffer;
         textarea.setDocument(new SourceViewDocument(m_buffer));
-        textarea.setTabSize((new Integer(m_buffer.getProperty("indent", "4"))).intValue());
+        textarea.setTabSize((new Integer(m_buffer.getProperty(XMLDocument.INDENT, "4"))).intValue());
         m_buffer.addDocumentBufferListener(docListener);
         
     }//}}}
     
-    public DocumentBuffer getDocumentBuffer() {//{{{
+    //{{{ getDocumentBuffer()
+    
+    public DocumentBuffer getDocumentBuffer() {
         return m_buffer;
     }//}}}
     
-    public String getName() {//{{{
+    //{{{ getName()
+    
+    public String getName() {
         return "Source View";
     }//}}}
     
-    public boolean close(TabbedView view) {//{{{
+    //{{{ close()
+    
+    public boolean close(TabbedView view) {
         m_buffer.removeDocumentBufferListener(docListener);
         return true;
     }//}}}
     
     //{{{ Private members
     
-    private class EditUndoAction implements ActionListener {//{{{
+    //{{{ EditUndoAction class
+    
+    private class EditUndoAction implements ActionListener {
+        
+        //{{{ actionPerformed()
+        
         public void actionPerformed(ActionEvent e) {
             //undo does nothing for now
-        }
+        }//}}}
+        
     }//}}}
     
-    private class EditRedoAction implements ActionListener {//{{{
+    //{{{ EditRedoAction class
+    
+    private class EditRedoAction implements ActionListener {
+        
+        //{{{ actionPerformed()
+        
         public void actionPerformed(ActionEvent e) {
             //redo action does nothing for now.
-        }
+        }//}}}
+        
     }//}}}
     
-    private class EditCutAction extends AbstractAction {//{{{
+    //{{{ EditCutAction class
+    
+    private class EditCutAction extends AbstractAction {
+        
+        //{{{ EditCutAction constructor
+        
         public EditCutAction() {
             putValue(Action.NAME, "Cut");
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
-        }
+        }//}}}
+        
+        //{{{ actionPerformed()
+        
         public void actionPerformed(ActionEvent e) {
             textarea.cut();
-        }
+        }//}}}
+        
     }//}}}
     
-    private class EditCopyAction extends AbstractAction {//{{{
+    //{{{ EditCopyAction class
+    
+    private class EditCopyAction extends AbstractAction {
+        
+        //{{{ EditCopyAction constructor
+        
         public EditCopyAction() {
             putValue(Action.NAME, "Copy");
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl C"));
-        }
+        }//}}}
+        
+        //{{{ actionPerformed()
+        
         public void actionPerformed(ActionEvent e) {
             textarea.copy();
-        }
+        }//}}}
+        
     }//}}}
     
-    private class EditPasteAction extends AbstractAction {//{{{
+    //{{{ EditPasteAction class
+    
+    private class EditPasteAction extends AbstractAction {
+        
+        //{{{ EditPasteAction constructor
+        
         public EditPasteAction() {
             putValue(Action.NAME, "Paste");
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl V"));
-        }
+        }//}}}
+        
+        //{{{ actionPerformed()
+        
         public void actionPerformed(ActionEvent e) {
             textarea.paste();
-        }
+        }//}}}
+        
     }//}}}
     
-    private class SourceViewBufferListener implements DocumentBufferListener {//{{{
+    //{{{ SourceViewBufferListener class
+    
+    private class SourceViewBufferListener implements DocumentBufferListener {
         
-        public void propertiesChanged(DocumentBuffer source, String key) {//{{{
-            if (key.equals("indent")) {
-                textarea.setTabSize((new Integer(source.getProperty("indent", "4"))).intValue());
+        //{{{ propertiesChanged()
+        
+        public void propertiesChanged(DocumentBuffer source, String key) {
+            if (key.equals(XMLDocument.INDENT)) {
+                textarea.setTabSize((new Integer(source.getProperty(XMLDocument.INDENT, "4"))).intValue());
                 textarea.updateUI();
             }
         }//}}}
         
+        //{{{ nameChanged()
+        
         public void nameChanged(DocumentBuffer source, String newName) {}
+        //}}}
+        
+        //{{{ bufferSaved()
         
         public void bufferSaved(DocumentBuffer source) {}
+        //}}}
         
     }//}}}
     

@@ -69,10 +69,23 @@ import java.util.Vector;
 
 //}}}
 
+/**
+ * This is the default tree-like view in jsXe. It has a tree panel in the
+ * upper-left, a table in the lower-left to display attributes of the currently
+ * selected node, and a text panel on the right to display the value of the
+ * currently selected node.
+ *
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class DefaultView extends DocumentView {
     
     //{{{ DefaultView constructor
-    
+    /**
+     * Constructs a new DefaultView for the provided document buffer.
+     * @param buffer the buffer owning the document that this view shows
+     * @throws IOException if the buffer cannot be viewed using this view.
+     */
     public DefaultView(DocumentBuffer buffer) throws IOException {
         
         setLayout(new BorderLayout());
@@ -114,7 +127,7 @@ public class DefaultView extends DocumentView {
     }//}}}
     
     //{{{ setDocumentBuffer()
-    
+
     public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {
         
         XMLDocument document = buffer.getXMLDocument();
