@@ -1,3 +1,10 @@
+04/02/2004  version 0.1.60  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added much better drag and drop support. You can now rearrange nodes
+      with ease. The relative location of the drop is used to determine
+      where to put the dragged node. Draws a line in between nodes in the
+      JTree when nodes will be inserted before or after a node.
+
 04/01/2004  version 0.1.59  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added an addAdaterNodeAt() method to the AdapterNode class so that
