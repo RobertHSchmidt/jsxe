@@ -66,10 +66,20 @@ import java.util.*;
 
 //}}}
 
+/**
+ * The DefaultViewTree is the tree that is displayed in the upper-left of
+ * the DefaultView in jsXe. This class defines methods specific to the tree
+ * display.
+ *
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class DefaultViewTree extends JTree {
     
     //{{{ DefaultViewTree constructor
-    
+    /**
+     * Creates a new DefaultViewTree with the default TreeModel
+     */
     public DefaultViewTree() {
         
         //{{{ intitalize Drag n Drop
