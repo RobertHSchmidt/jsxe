@@ -75,6 +75,7 @@ import javax.swing.tree.TreePath;
 
 //{{{ AWT components
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -246,6 +247,9 @@ public class DefaultView extends DocumentView {
             
             showCommentsCheckBox = new JCheckBox("Show comment nodes",showCommentNodes);
             showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
+            
+            
+            setLayout(new FlowLayout(FlowLayout.LEFT));
             
             add(showCommentsCheckBox);
             add(showEmptyNodesCheckBox);
