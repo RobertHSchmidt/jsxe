@@ -174,13 +174,13 @@ public class XMLDocument {
             
             builder.setErrorHandler(new org.xml.sax.ErrorHandler() {
                 public void error(SAXParseException exception) {
-                    System.out.println(exception.getLineNumber());
+                   // System.out.println(exception.getLineNumber());
                 }
                 public void fatalError(SAXParseException exception) {
-                    System.out.println(exception.getLineNumber());
+                   // System.out.println(exception.getLineNumber());
                 }
                 public void warning(SAXParseException exception) {
-                    System.out.println(exception.getLineNumber());
+                   // System.out.println(exception.getLineNumber());
                 }
             });
             
