@@ -62,8 +62,13 @@ import java.util.Iterator;
  * <p>DOMSerializerConfiguration is the default implementation of the DOMConfiguration
  * interface to be used with the DOMSerializer class.</p>
  * 
- * <p>Currently, this class only supports the required options with one exception.
- *    The <code>"format-pretty-print"</code> option is supported.</p>
+ * <p>Currently, this class only supports the required options with few exceptions.
+ *    The <code>"format-pretty-print"</code> option is supported.
+ *    A <code>"soft-tabs"</code> option is supported which specifies whether
+ *    to emulate tabs with spaces.
+ *    An <code>"indent"</code> option is supported to specify the indent/tab
+ *    size when the <code>"soft-tabs"</code> feature is true. This has no effect
+ *    if <code>"soft-tabs"</code> is false.</p>
  *
  * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
  * @version $Id$
@@ -295,14 +300,12 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
      * @return The current setting for the given feature
      */
     public boolean getFeature(String name) throws DOMException {//{{{
-        /*
-        we know these aren't features (true or false) so provide a little better
-        error handling.
-        */
-        if (name.equals("error-handler") || name.equals("indent")) {
+        Object parameter = getParameter(name);
+        
+        if (name.equals("error-handler") || name.equals("indent") || !(parameter instanceof Boolean)) {
             throw new DOMException(DOMException.NOT_FOUND_ERR, "NOT_FOUND_ERR: "+name+" is not a feature.");
         }
-        return ((Boolean)getParameter(name)).booleanValue();
+        return ((Boolean)parameter).booleanValue();
         
     }//}}}
     
