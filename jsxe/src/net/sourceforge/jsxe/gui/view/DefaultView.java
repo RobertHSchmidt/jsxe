@@ -149,7 +149,7 @@ public class DefaultView extends JPanel implements DocumentView {
      * @param b If true, shows this component; otherwise, hides this component.
      */
     public void setVisible(boolean b) {
-        if (b) {
+        if (b && m_firstShow) {
             Container parent = getParent();
             if (parent != null) {
                 Dimension size = parent.getSize();
@@ -161,6 +161,7 @@ public class DefaultView extends JPanel implements DocumentView {
                 
                 vertSplitPane.setDividerLocation(vertLoc);
                 horizSplitPane.setDividerLocation(horizLoc);
+                m_firstShow=false;
             }
         }
         super.setVisible(b);
@@ -541,6 +542,7 @@ public class DefaultView extends JPanel implements DocumentView {
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
     private XMLDocument m_document;
+    private boolean m_firstShow = true;
     
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {

@@ -1,3 +1,8 @@
+07/27/2004  version 0.2 pre14   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added a very preliminary search and replace dialog to the source view.
+      jsXe now requires the gnu.regexp package
+
 07/26/2004  version 0.2 pre13   Ian Lewis <IanLewis@member.fsf.org>
 
     * Implemented actions by putting them in ActionSets and having them be

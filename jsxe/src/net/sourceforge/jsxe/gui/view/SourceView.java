@@ -73,6 +73,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 //{{{ Java base classes
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 //}}}
 
 //}}}
@@ -88,11 +90,21 @@ public class SourceView extends JPanel implements DocumentView {
     
     //{{{ Private static members
     private static final String _VIEWNAME = "source";
+    private static final Properties m_defaultProperties;
     //}}}
     
     //{{{ Public static members
     public static final String SOFT_TABS = _VIEWNAME+".soft.tabs";
     //}}}
+    
+    static {
+       // InputStream viewinputstream = DefaultView.class.getResourceAsStream("/net/sourceforge/jsxe/gui/view/"+_VIEWNAME+".props");
+        InputStream defaultPropsStream = SourceView.class.getResourceAsStream("/net/sourceforge/jsxe/gui/view/documentview.sourceview.props");
+        m_defaultProperties = new Properties();
+        try {
+            m_defaultProperties.load(defaultPropsStream);
+        } catch (IOException ioe) {}
+    }
     
     //{{{ SourceView constructor
     /**
@@ -151,6 +163,7 @@ public class SourceView extends JPanel implements DocumentView {
         
         //{{{ Construct Edit Menu
         JMenu menu = new JMenu("Edit");
+        menu.setMnemonic('E');
            // These don't do anything yet.
            // JMenuItem menuItem = new JMenuItem("Undo");
            // menuItem.addActionListener( new EditUndoAction() );
@@ -159,12 +172,17 @@ public class SourceView extends JPanel implements DocumentView {
            // menuItem.addActionListener( new EditRedoAction() );
            // menu.add(menuItem);
            // menu.addSeparator();
-            JMenuItem menuItem = new JMenuItem( new EditCutAction() );
-            menu.add( menuItem );
-            menuItem = new JMenuItem( new EditCopyAction() );
+            JMenuItem menuItem = new JMenuItem(new EditCutAction());
             menu.add(menuItem);
-            menuItem = new JMenuItem( new EditPasteAction() );
-            menu.add( menuItem );
+            menuItem = new JMenuItem(new EditCopyAction());
+            menu.add(menuItem);
+            menuItem = new JMenuItem(new EditPasteAction());
+            menu.add(menuItem);
+            menu.addSeparator();
+            menuItem = new JMenuItem(new EditFindAction());
+            menu.add(menuItem);
+            menuItem = new JMenuItem(new EditFindNextAction());
+            menu.add(menuItem);
         //}}}
         
         menus[0] = menu;
@@ -197,6 +215,8 @@ public class SourceView extends JPanel implements DocumentView {
             m_document.removeXMLDocumentListener(docListener);
         }
         
+        ensureDefaultProps(document);
+        
         m_document = document;
         textarea.setDocument(new SourceViewDocument(m_document));
         textarea.setTabSize((new Integer(m_document.getProperty(XMLDocument.INDENT, "4"))).intValue());
@@ -205,6 +225,20 @@ public class SourceView extends JPanel implements DocumentView {
     }//}}}
     
     //}}}
+    
+    //{{{ getTextPane()
+    
+    public int getCaretPosition() {
+        return textarea.getCaretPosition();
+    }//}}}
+    
+    //{{{ selectText()
+    
+    public void selectText(int start, int end) {
+        textarea.requestFocus();
+        textarea.setCaretPosition(start);
+        textarea.moveCaretPosition(end);
+    }//}}}
     
     //{{{ Private members
     
@@ -241,6 +275,7 @@ public class SourceView extends JPanel implements DocumentView {
         public EditCutAction() {
             putValue(Action.NAME, "Cut");
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
+            putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("C").getKeyCode()));
         }//}}}
         
         //{{{ actionPerformed()
@@ -260,6 +295,7 @@ public class SourceView extends JPanel implements DocumentView {
         public EditCopyAction() {
             putValue(Action.NAME, "Copy");
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl C"));
+            putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
         }//}}}
         
         //{{{ actionPerformed()
@@ -279,12 +315,56 @@ public class SourceView extends JPanel implements DocumentView {
         public EditPasteAction() {
             putValue(Action.NAME, "Paste");
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl V"));
+            putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("P").getKeyCode()));
         }//}}}
         
         //{{{ actionPerformed()
         
         public void actionPerformed(ActionEvent e) {
             textarea.paste();
+        }//}}}
+        
+    }//}}}
+    
+    //{{{ EditFindAction class
+    
+    private class EditFindAction extends AbstractAction {
+        
+        //{{{ EditFindAction constructor
+        
+        public EditFindAction() {
+            putValue(Action.NAME, "Find...");
+            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl F"));
+            putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("F").getKeyCode()));
+        }//}}}
+        
+        //{{{ actionPerformed()
+        
+        public void actionPerformed(ActionEvent e) {
+            //display find dialog
+            SourceViewSearchDialog dialog = new SourceViewSearchDialog(SourceView.this);
+            dialog.setVisible(true);
+        }//}}}
+        
+    }//}}}
+    
+    //{{{ EditFindNextAction class
+    
+    private class EditFindNextAction extends AbstractAction {
+        
+        //{{{ EditFindNextAction constructor
+        
+        public EditFindNextAction() {
+            putValue(Action.NAME, "Find Next");
+            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl G"));
+            putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("N").getKeyCode()));
+        }//}}}
+        
+        //{{{ actionPerformed()
+        
+        public void actionPerformed(ActionEvent e) {
+            //use previous find string
+            
         }//}}}
         
     }//}}}
@@ -390,10 +470,21 @@ public class SourceView extends JPanel implements DocumentView {
         
     }//}}}
     
+    //{{{ ensureDefaultProps()
+    
+    private void ensureDefaultProps(XMLDocument document) {
+        //get default properties
+        document.setProperty(SOFT_TABS, document.getProperty(SOFT_TABS, m_defaultProperties.getProperty(SOFT_TABS)));
+    }//}}}
+    
     private SourceViewXMLDocumentListener docListener = new SourceViewXMLDocumentListener();
     
     private XMLDocument m_document;
     private SourceViewTextPane textarea;
+    
+    private String m_searchString;
+    private String m_replaceString;
+    
     //}}}
     
 }
