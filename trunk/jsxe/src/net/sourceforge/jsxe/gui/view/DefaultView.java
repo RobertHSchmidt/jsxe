@@ -66,7 +66,6 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.text.DefaultStyledDocument;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 //}}}
@@ -113,9 +112,11 @@ public class DefaultView extends DocumentView {
     } //}}}
     
     public void setDocument(TabbedView view, XMLDocument document) {//{{{
+        AdapterNode adapter = new AdapterNode(document.getDocument());
+        
         DefaultViewTreeModel treeModel = new DefaultViewTreeModel(this, document);
-        DefaultViewTableModel tableModel = new DefaultViewTableModel(this, new AdapterNode(document.getDocument()));
-        DefaultStyledDocument styledDoc = new DefaultStyledDocument();
+        DefaultViewTableModel tableModel = new DefaultViewTableModel(this, adapter);
+        DefaultViewDocument styledDoc = new DefaultViewDocument(adapter);
         //This adapter may have the listener already.
         //addTreeModelListener does not add the listener
         //again if it is already added.
@@ -124,10 +125,10 @@ public class DefaultView extends DocumentView {
         treeModel.addTreeModelListener(treeListener);
         tableModel.addTableModelListener(tableListener);
         
+        htmlPane.setDocument(styledDoc);
         //Clear the right hand pane of previous values.
         htmlPane.setText("");
-        htmlPane.setDocument(styledDoc);
-        styledDoc.addDocumentListener(docListener);
+        
         //update the UI so that the components
         //are redrawn.
         attributesTable.updateUI();
@@ -171,6 +172,10 @@ public class DefaultView extends DocumentView {
         return (node.getNodeType() == Node.ELEMENT_NODE);
     }//}}}
     
+    private boolean canEditInJEditorPane(AdapterNode node) {//{{{
+        return (node.getNodeType() == Node.TEXT_NODE);
+    }//}}}
+    
     private class DefaultTreeSelectionListener implements TreeSelectionListener {//{{{
         
         DefaultTreeSelectionListener(Component p) {
@@ -181,19 +186,16 @@ public class DefaultView extends DocumentView {
             TreePath selPath = e.getPath();
             AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
             if ( selectedNode != null ) {
-                String value = selectedNode.getNodeValue();
-                if (value != null)
-                    htmlPane.setText(value);
-                else
-                    htmlPane.setText("");
+                htmlPane.setDocument(new DefaultViewDocument(selectedNode));
                 //if the selected node can be edited in the tree
                 tree.setEditable(canEditInJTree(selectedNode));
+                htmlPane.setEditable(canEditInJEditorPane(selectedNode));
                 DefaultViewTableModel tableModel = new DefaultViewTableModel(parent, selectedNode);
                 attributesTable.setModel(tableModel);
                 tableModel.addTableModelListener(tableListener);
                 attributesTable.updateUI();
             } else {
-                htmlPane.setText("");
+                htmlPane.setDocument(null);
             }
         }
         
@@ -229,16 +231,5 @@ public class DefaultView extends DocumentView {
                 tree.updateUI();
             }
         };//}}}
-    private DocumentListener docListener = new DocumentListener() {//{{{
-        public void changedUpdate(DocumentEvent e) {
-            System.out.println("changedUpdate: " + e.toString());
-        }
-        public void insertUpdate(DocumentEvent e) {
-            System.out.println("insertUpdate: " + e.toString());
-        }
-        public void removeUpdate(DocumentEvent e) {
-            System.out.println("removeUpdate: " + e.toString());
-        }
-    };//}}}
     //}}}
 }
