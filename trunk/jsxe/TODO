@@ -4,9 +4,6 @@ TODO:
     
     * Slowly prefix instance variables with m_ as a naming convention.
     
-    * Fix bug where the * indicating the file is dirty goes away when changing
-      views.
-    
     * Allow for selecting multiple files when opening.
     
     * Make the XML document declaration header non-editable in source-view mode.

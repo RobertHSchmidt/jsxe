@@ -158,20 +158,13 @@ public class TabbedView extends JFrame {
                     if (propertyKey.equals("dirty")) {
                         //It's dirtyness has changed
                         //change the tab title
-                        String name = source.getName();
-                        
-                        if (isDirty(source)) {
-                            //Mark the tab title as dirty
-                            name = "*" + name;
-                        }
                         
                         XMLDocument[] docs = jsXe.getXMLDocuments();
                         for (int i=0; i < docs.length; i++) {
                             if (docs[i] == source) {
-                                tabbedPane.setTitleAt(i, name);
+                                tabbedPane.setTitleAt(i, getTabTitle(source));
                             }
                         }
-                        
                     }
                 }//}}}
                 
@@ -246,9 +239,6 @@ public class TabbedView extends JFrame {
     public void update() {//{{{
         updateTitle();
         XMLDocument[] docs = jsXe.getXMLDocuments();
-       // for (int i=0; i<docs.length;i++) {
-       //     tabbedPane.setTitleAt(i, docs[i].getName());
-       // }
         tabbedPane.updateUI();
     }//}}}
     
@@ -382,18 +372,19 @@ public class TabbedView extends JFrame {
         
         if (oldView != null) {
             try {
-                //close the previous view
-                oldView.close(this);
-                
                 //try to open the document in the new view
                 newView.setDocument(this, currentDoc);
+                
+                //close the previous view
+                oldView.close(this);
                 
                 //no exceptions? cool. register the new view
                 tabbedPane.remove(oldView);
                 tabbedPane.add(newView, index);
-                tabbedPane.setTitleAt(index, currentDoc.getName());
+                tabbedPane.setTitleAt(index, getTabTitle(currentDoc));
                 tabbedPane.setSelectedIndex(index);
                 updateMenuBar();
+                
             } catch (IOException ioe) {
                 //Some sort of error occured
                 //We didn't register the new view yet.
@@ -401,6 +392,17 @@ public class TabbedView extends JFrame {
                 JOptionPane.showMessageDialog(this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
             }
         }
+    }//}}}
+    
+    private String getTabTitle(XMLDocument doc) {//{{{
+        String name = doc.getName();
+        
+        if (isDirty(doc)) {
+            //Mark the tab title as dirty
+            name = "*" + name;
+        }
+        
+        return name;
     }//}}}
     
     /**

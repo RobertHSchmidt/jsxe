@@ -152,6 +152,7 @@ public class DefaultView extends DocumentView {
         DefaultViewTreeModel treeModel = new DefaultViewTreeModel(this, document);
         DefaultViewTableModel tableModel = new DefaultViewTableModel(this, adapter);
         DefaultViewDocument styledDoc = new DefaultViewDocument(adapter);
+        
         //This adapter may have the listener already.
         //addTreeModelListener does not add the listener
         //again if it is already added.

@@ -147,13 +147,13 @@ public class SourceView extends DocumentView {
     }//}}}
     
     public boolean close(TabbedView view) {//{{{
-        try {
-            currentdoc.setModel(textarea.getText());
-            currentdoc.removeXMLDocumentListener(docListener);
-        } catch (IOException ioe) {
-            jsXe.exiterror(view, ioe.getMessage(), 1);
-        }
-        
+       // try {
+       //     currentdoc.setModel(textarea.getText());
+       //     currentdoc.removeXMLDocumentListener(docListener);
+       // } catch (IOException ioe) {
+       //     jsXe.exiterror(view, ioe.getMessage(), 1);
+       // }
+        currentdoc.removeXMLDocumentListener(docListener);
         return true;
     }//}}}
     
