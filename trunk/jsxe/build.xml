@@ -12,15 +12,15 @@
   
 	<target name="compile" depends="init">
     <javac srcdir="." deprecation="on" includeJavaRuntime="yes">
-      <include name="src/**/*.java"/>
+      <include name="net/sourceforge/jsxe/**/*.java"/>
     </javac>
   </target>
   
   <target name="dist" depends="compile">
     <jar jarfile="jsXe.jar" manifest="jsxe.manifest">
-      <fileset dir="./src/">
+      <fileset dir=".">
         <include name="**/*.class"/>
-        <include name="icons/*.jpg"/>
+        <include name="net/sourceforge/jsxe/icons/*.jpg"/>
       </fileset>
     </jar>
   </target>
