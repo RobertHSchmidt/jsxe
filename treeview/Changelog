@@ -1,3 +1,7 @@
+12/13/2004  version 0.3 pre3    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated to use the build properties to get plugin version
+
 12/10/2004  version 0.3 pre2    Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated to support slightly modified version of XMLDocumentListener
