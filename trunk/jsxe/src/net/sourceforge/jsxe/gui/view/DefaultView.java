@@ -146,7 +146,9 @@ public class DefaultView extends JPanel implements DocumentView {
     
     //{{{ setVisible()
     /**
-     * Initializes the size of the split panes and shows the component.
+     * Initializes the size of the split panes and shows the component. The
+     * divider locations cannot be set before the split pane is added to a
+     * component for some reason.
      * @param b If true, shows this component; otherwise, hides this component.
      */
     public void setVisible(boolean b) {

@@ -1,3 +1,8 @@
+08/10/2004  version 0.2 pre16   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Removed code in the TabbedView that assumed that the DocumentView was
+      the same reference as the document view component.
+
 07/30/2004  version 0.2 pre15   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added replace field to the search dialog.
