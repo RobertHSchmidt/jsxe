@@ -4,7 +4,10 @@ TODO:
     
     * Change the DOMSerializer class to conform to the DOM3 standard DOMWriter
       interface. For encoding use the java.io.OutputStreamWriter class. Add an
-      encoding option to the option dialog.
+      encoding option to the option dialog. 
+    
+    * Fix bug that has to do with the DOM1 method createElement() making nodes
+      so that localName returns null.
     
     * Work on performance problems when loading an XML document. (Hint: setModel
       in DefaultXMLDocument.java)
@@ -28,6 +31,10 @@ TODO:
     * Allow for opening files with wellformedness errors in source view. This
       way users can fix wellformedness errors in the editor.
     
+    * Release new version (0.2.1).
+    
+    * Add full support for namespaces. (adding, editing, serialization, etc.)
+    
     * Currently AdapterNodes only wrap the Node interface and create new
       instances of itself when queried. Have AdapterNode implement the Node
       interface. This will allow the TreeModel to have a static model i.e. The
@@ -36,18 +43,21 @@ TODO:
       the TreePath is no longer valid because it contains objects no longer in
       the TreeModel. So when updating the UI I can't tell which Nodes were
       previously visable.
+      
+    * Redo the interface for XMLDocuments and AdapterNodes so that DOM
+      implementation is abstracted away. Implement Document editing methods.
+    
+    * Allow GUI models to register change listeners with XMLDocuments and
+      AdapterNodes. This will allow GUI models to be updated automatically when
+      the DOM is changed. Also add property change listeners so that views can
+      be updated when properties (options) change.
     
     * Make sure jsXe can deal with all types of XML nodes.
     
     * Change icons in tree in DocumentView to be different for different types
       of XML nodes.
     
-    * Release a new version with the new features.
-    
-    * Allow GUI models to register change listeners with XMLDocuments and
-      AdapterNodes. This will allow GUI models to be updated automatically when
-      the DOM is changed. Also add property change listeners so that views can
-      be updated when properties (options) change.
+    * Release new version (0.3.1).
     
     * Create a feature to edit source for 1 node only.
     
@@ -66,6 +76,8 @@ TODO:
     * Implement undo for the DefaultView and SourceView.
     
     * Implement syntax highlighting for the SourceView.
+    
+    * Release new version (0.4.1)
     
     * Add drag & drop functionality to the default view.
     
@@ -86,6 +98,8 @@ TODO:
     
     * Create an install program for jsXe.
     
+    * Release new version (0.5.1).
+    
     * Create a view that uses the view from pollo and implements the
       DocumentView interface.
     
@@ -94,3 +108,5 @@ TODO:
     * Implement validation against DTDs and different forms of Schema.
     
     * Create a help system for jsXe.
+    
+    * Release new version (0.6.1)
