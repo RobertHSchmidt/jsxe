@@ -1,3 +1,9 @@
+03/13/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated the getAdapterNode() method in XMLDocument to check if the
+      document is parsed and if not then attempt to go to parsed mode instead of
+      simply returning null when in non-parsed mode.
+
 03/09/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Released jsXe 0.3 pre15

@@ -294,6 +294,14 @@ public class XMLDocument {
      * @return the root node as an AdapterNode
      */
     public AdapterNode getAdapterNode() {
+        if (m_adapterNode == null) {
+            try {
+                checkWellFormedness();
+            } catch (SAXParseException e) {
+            } catch (SAXException e) {
+            } catch (ParserConfigurationException e) {
+            } catch (IOException e) {}
+        }
         return m_adapterNode;
     }//}}}
     
