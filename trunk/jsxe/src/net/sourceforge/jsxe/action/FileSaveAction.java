@@ -85,6 +85,7 @@ public class FileSaveAction extends AbstractAction {
             try {
                 
                 doc.save();
+                doc.setProperty("dirty", "false");
                 view.update();
                 
             } catch(SAXParseException spe) {

@@ -146,13 +146,15 @@ public class SourceView extends DocumentView {
         return currentdoc;
     }//}}}
     
-    public void close(TabbedView view) {//{{{
+    public boolean close(TabbedView view) {//{{{
         try {
             currentdoc.setModel(textarea.getText());
             currentdoc.removeXMLDocumentListener(docListener);
         } catch (IOException ioe) {
             jsXe.exiterror(view, ioe.getMessage(), 1);
         }
+        
+        return true;
     }//}}}
     
     //{{{ Private members

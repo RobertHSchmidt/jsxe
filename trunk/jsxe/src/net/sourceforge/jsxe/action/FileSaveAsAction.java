@@ -81,9 +81,9 @@ public class FileSaveAsAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {//{{{
         
-        XMLDocument currentdoc = view.getDocumentView().getXMLDocument();
+        XMLDocument currentDoc = view.getDocumentView().getXMLDocument();
         //  if XMLFile is null, defaults to home directory
-        JFileChooser saveDialog = new JFileChooser(currentdoc.getFile());
+        JFileChooser saveDialog = new JFileChooser(currentDoc.getFile());
         saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
         saveDialog.setDialogTitle("Save As");
         
@@ -124,12 +124,13 @@ public class FileSaveAsAction extends AbstractAction {
                 
                 //If the document is already open and
                 //it isn't the current document
-                if (doc != null && !doc.equals(view.getDocumentView().getXMLDocument())) {
+                if (doc != null && !doc.equals(currentDoc)) {
                     jsXe.closeXMLDocument(view, doc);
-                    currentdoc.saveAs(selectedFile);
+                    currentDoc.saveAs(selectedFile);
                 } else {
-                    currentdoc.saveAs(selectedFile);
+                    currentDoc.saveAs(selectedFile);
                 }
+                currentDoc.setProperty("dirty", "false");
                 view.update();
                 
             } catch(SAXParseException spe) {

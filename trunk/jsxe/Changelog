@@ -1,3 +1,12 @@
+10/30/2003  version 0.1.39  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added support for dirty files. When you make changes to a document
+      it is marked dirty and has an '*' in the tab name. jsXe also asks you
+      if you want to save if you have dirty documents open.
+    * Fixed many miscellaneous bugs.
+    * AdapterNodes notify the XMLDocument parent when changes are made to the
+      DOM.
+
 10/23/2003  version 0.1.38  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug that caused an error message and undesired behavior when

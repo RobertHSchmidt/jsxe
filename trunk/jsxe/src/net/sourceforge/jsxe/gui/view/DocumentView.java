@@ -68,6 +68,6 @@ public abstract class DocumentView extends JPanel {
     
     public abstract XMLDocument getXMLDocument();
 
-    public abstract void close(TabbedView view);
+    public abstract boolean close(TabbedView view);
 
 }

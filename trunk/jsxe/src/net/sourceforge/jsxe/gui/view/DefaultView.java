@@ -147,8 +147,6 @@ public class DefaultView extends DocumentView {
             throw new IOException(errormsg);
         }
         
-        close(view);
-        
         AdapterNode adapter = document.getAdapterNode();
         
         DefaultViewTreeModel treeModel = new DefaultViewTreeModel(this, document);
@@ -164,8 +162,6 @@ public class DefaultView extends DocumentView {
         
         htmlPane.setDocument(styledDoc);
         styledDoc.addDocumentListener(docListener);
-        //Clear the right hand pane of previous values.
-        htmlPane.setText("");
         
         //get the splitpane layout options
         boolean layout = Boolean.valueOf(document.getProperty(viewname+".continuous.layout", "false")).booleanValue();
@@ -179,6 +175,7 @@ public class DefaultView extends DocumentView {
         attributesTable.updateUI();
         tree.updateUI();
         updateUI();
+        
         currentDoc = document;
     } //}}}
     
@@ -217,7 +214,8 @@ public class DefaultView extends DocumentView {
         return currentDoc;
     }//}}}
     
-    public void close(TabbedView view) {//{{{
+    public boolean close(TabbedView view) {//{{{
+        
         if (currentDoc != null) {
             String vert = Integer.toString(vertSplitPane.getDividerLocation());
             String horiz = Integer.toString(horizSplitPane.getDividerLocation());
@@ -225,6 +223,8 @@ public class DefaultView extends DocumentView {
             currentDoc.setProperty(viewname+".splitpane.vert.loc",vert);
             currentDoc.setProperty(viewname+".splitpane.horiz.loc",horiz);
         }
+        
+        return true;
     }//}}}
     
     //{{{ Private Members

@@ -117,7 +117,6 @@ public class AdapterNode {
                     if (child == null) {
                         //the size was ok but no AdapterNode was at this index
                         child = rootDocument.newAdapterNode(this, domNode.getChildNodes().item(index));
-                        addAdapterNode(child);
                         children.set(index, child);
                     }
                 } catch (IndexOutOfBoundsException ioobe) {}
@@ -145,31 +144,33 @@ public class AdapterNode {
     }//}}}
     
     public void setNodeName(String newValue) throws DOMException {//{{{
-        //Verify that this really is a change
-        if (domNode.getNodeType() == Node.ELEMENT_NODE && !domNode.getNodeName().equals(newValue)) {
-            //get the nodes needed
-            Node parent = domNode.getParentNode();
-            NodeList children = domNode.getChildNodes();
-            Document document = domNode.getOwnerDocument();
-            //replace the changed node
-            Element newNode = document.createElementNS("", newValue);
-            NamedNodeMap attrs = domNode.getAttributes();
-            int attrlength = attrs.getLength();
-            
-            for(int i = 0; i < attrlength; i++) {
-                Node attr = attrs.item(i);
-                newNode.setAttribute(attr.getNodeName(), attr.getNodeValue());
+        if (domNode.getNodeType() == Node.ELEMENT_NODE) {
+            //Verify that this really is a change
+            if (!domNode.getNodeName().equals(newValue)) {
+                //get the nodes needed
+                Node parent = domNode.getParentNode();
+                NodeList children = domNode.getChildNodes();
+                Document document = domNode.getOwnerDocument();
+                //replace the changed node
+                Element newNode = document.createElementNS("", newValue);
+                NamedNodeMap attrs = domNode.getAttributes();
+                int attrlength = attrs.getLength();
+                
+                for(int i = 0; i < attrlength; i++) {
+                    Node attr = attrs.item(i);
+                    newNode.setAttribute(attr.getNodeName(), attr.getNodeValue());
+                }
+                
+                int length = children.getLength();
+                for (int i = 0; i < length; i++ ) {
+                    Node child = children.item(0);
+                    domNode.removeChild(child);
+                    newNode.appendChild(child);
+                }
+                parent.replaceChild(newNode, domNode);
+                domNode = newNode;
+                fireLocalNameChanged(this);
             }
-            
-            int length = children.getLength();
-            for (int i = 0; i < length; i++ ) {
-                Node child = children.item(0);
-                domNode.removeChild(child);
-                newNode.appendChild(child);
-            }
-            parent.replaceChild(newNode, domNode);
-            domNode = newNode;
-            fireLocalNameChanged(this);
         } else {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element can be renamed at this time.");
         }
@@ -180,8 +181,11 @@ public class AdapterNode {
     }//}}}
     
     public void setNodeValue(String str) throws DOMException {//{{{
-        domNode.setNodeValue(str);
-        fireNodeValueChanged(this);
+        // Make sure there is a change.
+        if (str != null && !str.equals(domNode.getNodeValue())) {
+            domNode.setNodeValue(str);
+            fireNodeValueChanged(this);
+        }
     }//}}}
     
     public short getNodeType() {//{{{
@@ -240,11 +244,13 @@ public class AdapterNode {
     
     public AdapterNode addAdapterNode(AdapterNode node) {//{{{
         //add to this AdapterNode and the DOM.
-        domNode.appendChild(node.getNode());
-        children.add(node);
-        node.setParent(this);
-        
-        fireNodeAdded(this, node);
+        if (node != null) {
+            domNode.appendChild(node.getNode());
+            children.add(node);
+            node.setParent(this);
+            
+            fireNodeAdded(this, node);
+        }
         
         return node;
     }//}}}
@@ -257,9 +263,11 @@ public class AdapterNode {
    // }//}}}
     
     public void remove(AdapterNode child) throws DOMException {//{{{
-        domNode.removeChild(child.getNode());
-        children.remove(child);
-        fireNodeRemoved(this, child);
+        if (child != null) {
+            domNode.removeChild(child.getNode());
+            children.remove(child);
+            fireNodeRemoved(this, child);
+        }
     }//}}}
     
     public void setAttribute(String name, String value) throws DOMException {//{{{

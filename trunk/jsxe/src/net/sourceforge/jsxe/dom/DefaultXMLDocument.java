@@ -140,14 +140,25 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
     
     public String setProperty(String key, String value) {//{{{
-        if (key == "format-output" && Boolean.valueOf(value).booleanValue()) {
-            setProperty("whitespace-in-element-content", "false");
+        
+        String oldValue = getProperty(key);
+        String returnValue = oldValue;
+        
+        if (oldValue == null || !oldValue.equals(value)) {
+            
+            // do this first so NullPointerExceptions are thrown
+            returnValue = (String)props.setProperty(key, value);
+            
+            if (key == "format-output" && Boolean.valueOf(value).booleanValue()) {
+                setProperty("whitespace-in-element-content", "false");
+            }
+            if (key == "whitespace-in-element-content" && Boolean.valueOf(value).booleanValue()) {
+                setProperty("format-output", "false");
+            }
+            firePropertiesChanged(key);
+            return returnValue;
+            
         }
-        if (key == "whitespace-in-element-content" && Boolean.valueOf(value).booleanValue()) {
-            setProperty("format-output", "false");
-        }
-        String returnValue = (String)props.setProperty(key, value);
-        firePropertiesChanged(key);
         return returnValue;
     }//}}}
     
@@ -160,7 +171,7 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
     
     public AdapterNode getAdapterNode() {//{{{
-        return adapterNode;
+        return m_adapterNode;
     }//}}}
     
     public AdapterNode newAdapterNode(AdapterNode parent, Node node) {//{{{
@@ -237,6 +248,8 @@ public class DefaultXMLDocument extends XMLDocument {
             if (!file.equals(oldFile)) {
                 fireFileChanged();
             }
+            
+            fireStructureChanged(m_adapterNode);
         } else {
             throw new FileNotFoundException("File Not Found: null");
         }
@@ -273,10 +286,7 @@ public class DefaultXMLDocument extends XMLDocument {
             source = backupSource;
             throw ioe;
         }
-        
-        if (XMLFile != null) {
-            fireFileChanged();
-        }
+        fireStructureChanged(m_adapterNode);
     }//}}}
     
     public void setModel(String string) throws IOException {//{{{
@@ -296,9 +306,7 @@ public class DefaultXMLDocument extends XMLDocument {
             source = backupSource;
             throw ioe;
         }
-        if (XMLFile != null) {
-            fireFileChanged();
-        }
+        fireStructureChanged(m_adapterNode);
     }//}}}
     
     public boolean isWellFormed() throws IOException {//{{{
@@ -306,14 +314,18 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
     
     public void save() throws IOException, SAXParseException, SAXException, ParserConfigurationException {//{{{
-       if (getFile() != null) {
-           saveAs(getFile());
-       } else {
-           //You shouldn't call this when the document is untitled but
-           //if you do default to saving to the home directory.
-           File newFile = new File(System.getProperty("user.home") + getName());
-           setModel(newFile);
-       }
+        if (getFile() != null) {
+            saveAs(getFile());
+        } else {
+            //You shouldn't call this when the document is untitled but
+            //if you do default to saving to the home directory.
+            File newFile = new File(System.getProperty("user.home") + getName());
+            //don't really need to do this.
+           // setModel(newFile);
+            //just set XMLFile and name instead.
+            XMLFile = newFile;
+            name = newFile.getName();
+        }
     }//}}}
     
     public void saveAs(File file) throws IOException, SAXParseException, SAXException, ParserConfigurationException {//{{{
@@ -330,15 +342,24 @@ public class DefaultXMLDocument extends XMLDocument {
         FileOutputStream out = new FileOutputStream(file);
         
         serializer.writeNode(out, m_document);
-        setModel(file);
+        
+        //don't really need to do this.
+       // setModel(file);
+        //just set XMLFile and name instead.
+        XMLFile = file;
+        name = file.getName();
     }//}}}
     
     public void addXMLDocumentListener(XMLDocumentListener listener) {//{{{
-        listeners.add(listener);
+        if (listener != null) {
+            listeners.add(listener);
+        }
     }//}}}
     
     public void removeXMLDocumentListener(XMLDocumentListener listener) {//{{{
-        listeners.remove(listeners.indexOf(listener));
+        if (listener != null) {
+            listeners.remove(listeners.indexOf(listener));
+        }
     }//}}}
     
     //{{{ Private members
@@ -358,7 +379,7 @@ public class DefaultXMLDocument extends XMLDocument {
         }
     }//}}}
     
-    protected void fireStructureChanged(AdapterNode location) {//{{{
+    private void fireStructureChanged(AdapterNode location) {//{{{
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
             XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
@@ -374,11 +395,11 @@ public class DefaultXMLDocument extends XMLDocument {
         }
     }//}}}
     
-    private void setDocument(Document doc) {
+    private void setDocument(Document doc) {//{{{
         m_document=doc;
-        adapterNode = new AdapterNode(this, m_document);
-        adapterNode.addAdapterNodeListener(docAdapterListener);
-    }
+        m_adapterNode = new AdapterNode(this, m_document);
+        m_adapterNode.addAdapterNodeListener(docAdapterListener);
+    }//}}}
     
     private class XMLDocAdapterListener implements AdapterNodeListener {//{{{
         
@@ -390,18 +411,26 @@ public class DefaultXMLDocument extends XMLDocument {
             fireStructureChanged(source);
         }
         
-        public void localNameChanged(AdapterNode source) {}
+        public void localNameChanged(AdapterNode source) {
+            fireStructureChanged(source);
+        }
         
-        public void namespaceChanged(AdapterNode source) {}
+        public void namespaceChanged(AdapterNode source) {
+            fireStructureChanged(source);
+        }
         
-        public void nodeValueChanged(AdapterNode source) {}
+        public void nodeValueChanged(AdapterNode source) {
+            fireStructureChanged(source);
+        }
         
-        public void attributeChanged(AdapterNode source, String attr) {}
+        public void attributeChanged(AdapterNode source, String attr) {
+            fireStructureChanged(source);
+        }
         
     }//}}}
     
     private Document m_document;
-    private AdapterNode adapterNode;
+    private AdapterNode m_adapterNode;
     private File XMLFile;
     private String name;
     private String source = new String();
