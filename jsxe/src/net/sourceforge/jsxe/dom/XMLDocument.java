@@ -168,7 +168,21 @@ public class XMLDocument {
             factory.setNamespaceAware(true);
             factory.setExpandEntityReferences(false);
             factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", new Boolean(false));
+            factory.setAttribute("http://xml.org/sax/features/external-general-entities", new Boolean(false));
+            factory.setAttribute("http://xml.org/sax/features/external-parameter-entities", new Boolean(false));
             DocumentBuilder builder = factory.newDocumentBuilder();
+            
+            builder.setErrorHandler(new org.xml.sax.ErrorHandler() {
+                public void error(SAXParseException exception) {
+                    System.out.println(exception.getLineNumber());
+                }
+                public void fatalError(SAXParseException exception) {
+                    System.out.println(exception.getLineNumber());
+                }
+                public void warning(SAXParseException exception) {
+                    System.out.println(exception.getLineNumber());
+                }
+            });
             
             if (m_entityResolver != null) {
                 builder.setEntityResolver(m_entityResolver);

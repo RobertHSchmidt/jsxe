@@ -48,6 +48,7 @@ import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.dom.UnrecognizedDocTypeException;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.gui.jsxeFileDialog;
 //}}}
 
 //{{{ Java base classes
@@ -317,41 +318,7 @@ public class DocumentBuffer {
     public boolean saveAs(TabbedView view) throws IOException {
         
         //  if XMLFile is null, defaults to home directory
-        JFileChooser saveDialog = new JFileChooser(getFile());
-        saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
-        saveDialog.setDialogTitle("Save As");
-        
-        //Add a filter to display only XML files
-        ArrayList extentionList = new ArrayList();
-        extentionList.add(new String("xml"));
-        CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
-        saveDialog.addChoosableFileFilter(firstFilter);
-        //Add a filter to display only XSL files
-        extentionList = new ArrayList();
-        extentionList.add(new String("xsl"));
-        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
-        //Add a filter to display only XSL:FO files
-        extentionList = new ArrayList();
-        extentionList.add(new String("fo"));
-        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
-        //Add a filter to display only Schema files
-        extentionList = new ArrayList();
-        extentionList.add(new String("xsd"));
-        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XML Schema"));
-        //Add a filter to display all formats
-        extentionList = new ArrayList();
-        extentionList.add(new String("xml"));
-        extentionList.add(new String("xsl"));
-        extentionList.add(new String("fo"));
-        extentionList.add(new String("xsd"));
-        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "All XML Documents"));
-        
-        //The "All Files" file filter is added to the dialog
-        //by default. Put it at the end of the list.
-        FileFilter all = saveDialog.getAcceptAllFileFilter();
-        saveDialog.removeChoosableFileFilter(all);
-        saveDialog.addChoosableFileFilter(all);
-        saveDialog.setFileFilter(firstFilter);
+        JFileChooser saveDialog = new jsxeFileDialog(getFile());
         
         int returnVal = saveDialog.showSaveDialog(view);
         if(returnVal == JFileChooser.APPROVE_OPTION) {

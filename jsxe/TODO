@@ -21,19 +21,7 @@ TODO:
 
     & Serialized XML should be 100% well-formed and parsable.
     
-* Version 0.2.0
-    
-    * Make any ease-of-use changes necessary to make jsxe act in an intuitive
-      way.
-    
-    * Prepare for release.
-        - Clean up code.
-        - Be consistent about fold marks.
-        - Alphabetize methods.
-        - Test jsXe. Make sure to minimize bugs.
-        - Update documentation. NEWS, README INSTALL, build.xml
-    
-* Version 0.3.0
+* Version 0.3 beta
     
     * Create a new file open/save dialog class that handles the file filters
       and junk so that code isn't duplicated in the jsXe class and
@@ -101,7 +89,7 @@ TODO:
     
     * Implement undo for the DefaultView and SourceView.
     
-* Version 0.4.0
+* Version 0.4 beta
     
     * Allow Views to be split so that one DocumentView can be displayed left/top
       and one on the right/bottom. Views should be able to update automatically
@@ -126,7 +114,7 @@ TODO:
     * Make sure all instance variables are prefixed with m_ and are named in a
       consistent manner.
     
-* Version 0.5.0
+* Version 0.5 beta
     
     * Add threading support and allow multiple windows/Views to be open for one
       document at once. This can let you edit a document using one view and
@@ -156,7 +144,7 @@ TODO:
       can be validated by the DTD and what needs to be done to the document
       before it will comply with the DTD.
     
-* Version 0.6.0
+* Version 0.6 beta
     
     * Implement some version of the DOM Document interfaces and add features
       such as the registering of listeners that can tell when the structure
@@ -169,7 +157,7 @@ TODO:
     
     * Implement validation against DTDs and different forms of Schema.
     
-* Version 0.7.0
+* Version 0.7 beta
     
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
@@ -182,7 +170,7 @@ TODO:
       before it shows errors saying it cannot open the document given that views
       are now plugins..
     
-* Version 0.8.0
+* Version 0.8 beta
     
     * Implement some form of internationalization support.
     
