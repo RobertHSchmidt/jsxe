@@ -81,40 +81,53 @@ public class SchemaView extends JPanel implements DocumentView {
         
         m_plugin = plugin;
         
-        JGraph graph = new JGraph();
+        final JGraph graph = new JGraph();
         
-        graph.setModel(new SchemaViewModel(document));
+        graph.setModel(new SchemaViewGraphModel(document));
         
-        org.jgraph.graph.GraphModel model = graph.getModel();
+       // org.jgraph.graph.GraphModel model = graph.getModel();
+       // 
+       // int rootcount = model.getRootCount();
+       // for (int j=0; j<rootcount; j++) {
+       //     Object root = model.getRootAt(j);
+       //     Log.log(Log.DEBUG,this,"root: "+root.getClass().toString()+" : "+root.toString());
+       //     int count = model.getChildCount(root);
+       //     boolean children = false;
+       //     for (int i=0;i<count;i++) {
+       //         children = true;
+       //         Object child = model.getChild(root, i);
+       //         Log.log(Log.DEBUG,this,child.getClass().toString()+" : "+child.toString());
+       //         int count2 = model.getChildCount(child);
+       //         for (int k=0;k<count2;k++) {
+       //             Object child2 = model.getChild(child, k);
+       //             Log.log(Log.DEBUG,this,"   "+child2.getClass().toString()+" : "+child2.toString());
+       //         }
+       //     }
+       //     if (!children) {
+       //         Log.log(Log.DEBUG,this,"NO CHILDREN!");
+       //     }
+       // }
         
-        int rootcount = model.getRootCount();
-        for (int j=0; j<rootcount; j++) {
-            Object root = model.getRootAt(j);
-            Log.log(Log.DEBUG,this,"root: "+root.getClass().toString()+" : "+root.toString());
-            int count = model.getChildCount(root);
-            boolean children = false;
-            for (int i=0;i<count;i++) {
-                children = true;
-                Object child = model.getChild(root, i);
-                Log.log(Log.DEBUG,this,child.getClass().toString()+" : "+child.toString());
-                int count2 = model.getChildCount(child);
-                for (int k=0;k<count2;k++) {
-                    Object child2 = model.getChild(child, k);
-                    Log.log(Log.DEBUG,this,"   "+child2.getClass().toString()+" : "+child2.toString());
-                }
-            }
-            if (!children) {
-                Log.log(Log.DEBUG,this,"NO CHILDREN!");
-            }
-        }
+       // addComponentListener(new ComponentListener() {//{{{
+       //     
+       //     public void componentHidden(ComponentEvent e) {}
+       //     
+       //     public void componentMoved(ComponentEvent e) {}
+       //     
+       //     public void componentResized(ComponentEvent e) {}
+       //     
+       //     public void componentShown(ComponentEvent e) {
+       //         ((SchemaViewGraphModel)graph.getModel()).layout();
+       //         updateUI();
+       //     }
+       //     
+       // });//}}}
         
-        
-        
-       // graph.setMoveable(false);
+        graph.setMoveable(false);
         graph.setConnectable(false);
         graph.setDisconnectable(false);
-       // graph.setBendable(false);
-       // graph.setSizeable(false);
+        graph.setBendable(false);
+        graph.setSizeable(false);
         
         JScrollPane scrollPane = new JScrollPane(graph);
         add(scrollPane);
