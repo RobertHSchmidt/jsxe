@@ -137,9 +137,11 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         frame.setLayout(layout);
         
         m_findComboBox = new JComboBox();
+        m_findComboBox.setName("FindComboBox");
         m_findComboBox.setEditable(true);
         
         m_replaceComboBox = new JComboBox();
+        m_replaceComboBox.setName("ReplaceComboBox");
         m_replaceComboBox.setEditable(true);
         
         constraints.gridy      = 0;
@@ -277,6 +279,8 @@ public class SourceViewSearchDialog extends EnhancedDialog {
             String replace = "";
             if (replaceItem != null) {
                 replace = replaceItem.toString();
+            } else {
+                JOptionPane.showMessageDialog(m_view, "replaceItem is null!", "Search Error", JOptionPane.WARNING_MESSAGE);
             }
             
             RESearchMatcher matcher = new RESearchMatcher(search, replace, true);
@@ -284,10 +288,12 @@ public class SourceViewSearchDialog extends EnhancedDialog {
             //replace previous text
             if (doReplace) {
                 String selText = m_textArea.getSelectedText();
-                String replaceString = matcher.substitute(selText);
-                int selStart = m_textArea.getSelectionStart();
-                int selEnd = m_textArea.getSelectionEnd();
-                m_textArea.replaceRange(replaceString, selStart, selEnd);
+                if (selText != null && !selText.equals("")) { 
+                    String replaceString = matcher.substitute(selText);
+                    int selStart = m_textArea.getSelectionStart();
+                    int selEnd = m_textArea.getSelectionEnd();
+                    m_textArea.replaceRange(replaceString, selStart, selEnd);
+                }
             }
             
             DocumentBuffer buffer = m_view.getDocumentBuffer();

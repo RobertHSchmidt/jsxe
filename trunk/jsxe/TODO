@@ -23,19 +23,6 @@ TODO:
     
 * Version 0.3 beta (Plugin Support)
     
-    * Revamp the DOM objects.
-        * Create Adapter... objects (AdapterDocument, AdapterNode,
-          AdapterElement, etc.) that wraps around the objects created when
-          parsing. They add the fuctionality needed like ability to change the
-          name, support for change listeners etc.
-        * Create a parser class that manages parsing a document and creating
-          the Adapter objects.
-        * Update the package structures to be a bit better before releasing next
-          beta version
-    
-    * Redo how tree nodes are displayed so we don't need the DefaultViewTreeNode
-      class
-    
     * Add an 'ignore case' option to the find dialog in the source view.
     
     * Finalize the class structure and public plugin interface as it will be

@@ -2,6 +2,8 @@
 
     * Changed how the tree editor and renderers work so that the AdapterNode
       doesn't have tree specific code in it.
+    * Fixed bug in the find and replace dialog that caused a null pointer
+      exception.
 
 11/23/2004  version 0.3 pre1    Ian Lewis <IanLewis@member.fsf.org>
 
