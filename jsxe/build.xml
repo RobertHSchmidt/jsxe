@@ -6,6 +6,7 @@
 
 <project name="jsXe" default="usage" basedir=".">
   
+  <!-- {{{ ============ Initializes properties and variables ============= -->
   <target name="init">
     <tstamp/>
     <property name="app.name" value="jsXe"/>
@@ -49,8 +50,9 @@
     <echo message="${app.name} ${app.version}"/>
     <echo message="----------------------------------------------------------"/>
   </target>
+  <!-- }}} -->
   
-  <!-- ============== Prints the available targets ======================= -->
+  <!-- {{{ ============ Prints the available targets ===================== -->
   <target name="usage" depends="init">
     <echo message=" available targets are:"/>
     <echo message=""/>
@@ -61,18 +63,21 @@
     <echo message=" javadocs  --> generates html documentation"/>
     <echo message=" clean     --> cleans everything up"/>
   </target>
+  <!-- }}} -->
   
-  <!-- ============== Prepares for any type of build ==================== -->
+  <!-- {{{ ============ Prepares for any type of build =================== -->
   <target name="prepare" depends="init">
     <mkdir dir="${build.dir}"/>
   </target>
+  <!-- }}} -->
   
-  <!-- ============== Prepares the documentation ======================== -->
+  <!-- {{{ ============ Prepares the documentation ======================= -->
   <target name="prepare-doc" depends="prepare">
     <mkdir dir="${build.docs}"/>
   </target>
-  
-  <!-- ============== Prepares the source distribution ================== -->
+  <!-- }}} -->
+
+  <!-- {{{ ============ Prepares the source distribution ================= -->
   <target name="prepare-src" depends="prepare">
     <mkdir dir="${build.src}"/>
     <copy todir="${build.src}">
@@ -85,8 +90,9 @@
       </fileset>
     </copy>
   </target>
+  <!-- }}} -->
   
-  <!-- ============== Compiles the program =============================== -->
+  <!-- {{{ ============ Compiles the program ============================= -->
   <target name="compile" depends="prepare-src">
     <mkdir dir="${build.dest}"/>
     <javac srcdir="${build.src}"
@@ -128,8 +134,9 @@
     </jar>
     
   </target>
+  <!-- }}} -->
 
-  <!-- ============== Prepares for a build =============================== -->
+  <!-- {{{ ============ Prepares for a build ============================= -->
   <target name="prepare-build" depends="init">
     
     <!-- lib -->
@@ -149,13 +156,15 @@
     </copy>
     
   </target>
+  <!-- }}} -->
 
-  <!-- ============== Generates the documentation ======================== -->
+  <!-- {{{ ============ Generates the documentation ====================== -->
   <target name="doc" depends="prepare-doc">
     <!-- nothing right now -->
   </target>
+  <!-- }}} -->
 
-  <!-- ============== Generates the binary distribution ================== -->
+  <!-- {{{ ============ Generates the binary distribution ================ -->
   <target name="dist" depends="compile, prepare-build, doc">
     
     <!-- doc -->
@@ -203,9 +212,9 @@
          includes="${app.name}-${app_version}-bin/**"
          excludes="*.class"/>
   </target>
+  <!-- }}} -->
   
-  
-  <!-- ============== Generates the source distribution ================== -->
+  <!-- {{{ ============ Generates the source distribution ================ -->
   <target name="src" depends="prepare-src, prepare-build, doc">
     
     <!-- doc -->
@@ -268,8 +277,9 @@
       windowtitle="jsXe API" doctitle="jsXe API"
       />
   </target>
+  <!-- }}} -->
 
-  <!-- ============== Cleans everything up ================== -->
+  <!-- {{{ ============ Cleans everything up ============================= -->
   <target name="clean" depends="init" description="clean up">
     <delete dir="${build.dir}"/>
     <delete>
@@ -285,5 +295,6 @@
       <fileset dir="." includes="**/.directory"/>
     </delete>
   </target>
+  <!-- }}} -->
 
 </project>
