@@ -79,44 +79,17 @@ import java.util.Vector;
 
 public abstract class XMLDocument {
     
-    public XMLDocument(File file) {//{{{
-        props.setProperty("format.output", "true");
-        setModel(file);
-    }//}}}
-    
-    public XMLDocument(Reader reader) {//{{{
-        name=getUntitledLabel();
-        props.setProperty("format.output", "true");
-        setModel(reader);
-    }//}}}
-    
-    public XMLDocument(String string) {//{{{
-        name=getUntitledLabel();
-        props.setProperty("format.output", "true");
-        setModel(string);
-    }//}}}
-    
     public abstract void validate() throws SAXParseException, SAXException, ParserConfigurationException, IOException;
     
     public boolean isUntitled() {//{{{
-        return (XMLFile == null);
+        return (getFile() == null);
     }//}}}
     
-    public String getName() {//{{{
-        return name;
-    }//}}}
+    public abstract String getName();
     
-    public File getFile() {//{{{
-        return XMLFile;
-    }//}}}
+    public abstract File getFile();
     
-    public Reader getReader() {//{{{
-        return new StringReader(source);
-    }//}}}
-    
-    public String getSource() throws IOException {//{{{
-        return source;
-    }//}}}
+    public abstract String getSource() throws IOException;
     
     public abstract Document getDocument();
     
@@ -128,167 +101,22 @@ public abstract class XMLDocument {
         return props.getProperty(key);
     }//}}}
     
-    public boolean save(TabbedView view) {//{{{
-       return save(view,XMLFile);
-    }//}}}
+    public abstract boolean save(TabbedView view);
     
-    public boolean save(TabbedView view, File file) {//{{{
-        if (file == null) {
-            return saveAs(view);
-        } else {
-            try {
-                validate();
-                XMLFile = file;
-                //formatting the document is disabled because it doesn't work right
-                DOMSerializer serializer = new DOMSerializer(false);
-                try {
-                    serializer.serialize(getDocument(), XMLFile);
-                    return true;
-                } catch (IOException ioe) {
-                    JOptionPane.showMessageDialog(view, ioe, "Write Error", JOptionPane.WARNING_MESSAGE);
-                    return false;
-                }
-            } catch(SAXParseException spe) {
-                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-            catch (SAXException sxe) {
-                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-            catch (ParserConfigurationException pce) {
-                JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-            catch (IOException ioe) {
-                JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-        }
-    }//}}}
+    public abstract boolean save(TabbedView view, File file);
     
-    public boolean saveAs(TabbedView view) {//{{{
-        try {
-            validate();
-            
-            //  if XMLFile is null, defaults to home directory
-            JFileChooser saveDialog = new JFileChooser();
-            saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
-            saveDialog.setDialogTitle("Save As");
-            
-            //Add a filter to display only XML files
-            Vector extentionList = new Vector();
-            extentionList.add(new String("xml"));
-            CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
-            saveDialog.addChoosableFileFilter(firstFilter);
-            //Add a filter to display only XSL files
-            extentionList = new Vector();
-            extentionList.add(new String("xsl"));
-            saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
-            //Add a filter to display only XSL:FO files
-            extentionList = new Vector();
-            extentionList.add(new String("fo"));
-            saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
-            //Add a filter to display all formats
-            extentionList = new Vector();
-            extentionList.add(new String("xml"));
-            extentionList.add(new String("xsl"));
-            extentionList.add(new String("fo"));
-            saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "All XML Documents"));
-            
-            //The "All Files" file filter is added to the dialog
-            //by default. Put it at the end of the list.
-            FileFilter all = saveDialog.getAcceptAllFileFilter();
-            saveDialog.removeChoosableFileFilter(all);
-            saveDialog.addChoosableFileFilter(all);
-            saveDialog.setFileFilter(firstFilter);
-            
-            int returnVal = saveDialog.showSaveDialog(view);
-            if(returnVal == JFileChooser.APPROVE_OPTION) {
-                XMLFile=saveDialog.getSelectedFile();
-                return save(view);
-            }
-            return true;
-        } catch(SAXParseException spe) {
-            JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        catch (SAXException sxe) {
-            JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        catch (ParserConfigurationException pce) {
-            JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-    }//}}}
+    public abstract boolean saveAs(TabbedView view);
     
-    public void setModel(File file) {//{{{
-        XMLFile = file;
-        source="";
-        int nextchar=0;
-        if (file!=null) {
-            name = file.getName();
-            try {
-                FileReader reader=new FileReader(file);
-                while (nextchar != -1) {
-                   nextchar = reader.read();
-                   if (nextchar != -1)
-                       source+=(char)nextchar;
-                }
-            } catch (FileNotFoundException fnfe) {
-                System.out.println("File Not Found");
-            } catch (IOException fnfe) {
-                System.out.println("Can't read input source.");
-            }
-        } else {
-            name = getUntitledLabel();
-        }
-    }//}}}
+    public abstract void setModel(File file) throws FileNotFoundException, IOException;
     
-    public void setModel(Reader reader) {//{{{
-        source="";
-        int nextchar=0;
-        try {
-            while (nextchar != -1) {
-               nextchar = reader.read();
-               if (nextchar != -1)
-                   source+=(char)nextchar;
-            }
-        } catch (IOException fnfe) {
-            System.out.println("Can't read input source.");
-        }
-    }//}}}
+    public abstract void setModel(Reader reader) throws IOException;
     
-    public void setModel(String string) {//{{{
-        source=string;
-    }//}}}
+    public abstract void setModel(String string) throws IOException;
+    
+    public abstract boolean isValidated();
     
     //{{{ Private members
-    
-    private String getUntitledLabel() {//{{{
-        XMLDocument[] docs = jsXe.getXMLDocuments();
-        int untitledNo = 0;
-        for (int i=0; i < docs.length; i++) {
-            if ( docs[i].getName().startsWith("Untitled-")) {
-                // Kinda stolen from jEdit
-                try {
-					untitledNo = Math.max(untitledNo,Integer.parseInt(docs[i].getName().substring(9)));
-                }
-				catch(NumberFormatException nf) {}
-            }
-        }
-        return "Untitled-" + Integer.toString(untitledNo+1);
-    }//}}}
-    
     private Properties props = new Properties();
-    private File XMLFile;
-    private String source=new String();
-    private String name;
     //}}}
     
 }

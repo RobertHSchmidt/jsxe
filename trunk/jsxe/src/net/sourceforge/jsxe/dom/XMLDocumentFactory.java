@@ -43,6 +43,8 @@ belongs to.
 
 //{{{ Java base classes
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 //}}}
@@ -62,7 +64,7 @@ public class XMLDocumentFactory {
         docType = type;
     }//}}}
     
-    public XMLDocument newXMLDocument(File file) throws UnrecognizedDocTypeException {//{{{
+    public XMLDocument newXMLDocument(File file) throws FileNotFoundException, IOException, UnrecognizedDocTypeException {//{{{
         //Document type validation is pretty simple right now
         if (docType == "xmldocument.default") {
             return new DefaultXMLDocument(file);
@@ -71,7 +73,7 @@ public class XMLDocumentFactory {
         }
     }//}}}
     
-    public XMLDocument newXMLDocument(Reader reader) throws UnrecognizedDocTypeException {//{{{
+    public XMLDocument newXMLDocument(Reader reader) throws IOException, UnrecognizedDocTypeException {//{{{
         //Document type validation is pretty simple right now
         if (docType == "xmldocument.default") {
             return new DefaultXMLDocument(reader);
@@ -80,7 +82,7 @@ public class XMLDocumentFactory {
         }
     }//}}}
     
-    public XMLDocument newXMLDocument(String string) throws UnrecognizedDocTypeException {//{{{
+    public XMLDocument newXMLDocument(String string) throws IOException, UnrecognizedDocTypeException {//{{{
         return newXMLDocument(new StringReader(string));
     }//}}}
     

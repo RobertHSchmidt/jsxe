@@ -51,11 +51,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 //}}}
 
+//{{{ Java base classes
+import java.io.IOException;
+//}}}
+
 //}}}
 
 public abstract class DocumentView extends JPanel {
 
-    public abstract void setDocument(TabbedView view, XMLDocument document);
+    public abstract void setDocument(TabbedView view, XMLDocument document) throws IOException;
     
     public abstract JMenu[] getMenus();
     

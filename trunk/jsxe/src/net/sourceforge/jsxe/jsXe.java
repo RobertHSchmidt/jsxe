@@ -240,26 +240,27 @@ public class jsXe {
                     
                     return true;
                     
-                }  catch(SAXParseException spe) {
+                } catch(SAXParseException spe) {
                     JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-                    return false;
                 }
                 catch (SAXException sxe) {
                     JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-                    return false;
                 }
                 catch (ParserConfigurationException pce) {
                     JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-                    return false;
                 }
                 catch (IOException ioe) {
                     JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-                    return false;
                 }
-            } else {
-                return false;
             }
-        } catch (UnrecognizedDocTypeException udte) {}
+        }
+        catch (FileNotFoundException fnfe) {
+            JOptionPane.showMessageDialog(view, fnfe, "File Not Found", JOptionPane.WARNING_MESSAGE);
+        }
+        catch (IOException ioe) {
+            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+        } 
+        catch (UnrecognizedDocTypeException udte) {}
         
         return false;
         
@@ -290,25 +291,22 @@ public class jsXe {
                     
                 }  catch(SAXParseException spe) {
                     JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-                    return false;
                 }
                 catch (SAXException sxe) {
                     JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-                    return false;
                 }
                 catch (ParserConfigurationException pce) {
                     JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-                    return false;
                 }
                 catch (IOException ioe) {
                     JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-                    return false;
                 }
-            } else {
-                return false;
             }
             
-        } catch (UnrecognizedDocTypeException udte) {}
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+        }
+        catch (UnrecognizedDocTypeException udte) {}
         
         return false;
         
@@ -375,6 +373,24 @@ public class jsXe {
             JOptionPane.showMessageDialog(view, "Could not save jsXe settings.\n"+cce.toString(), "Internal Error", JOptionPane.WARNING_MESSAGE);
         }
         System.exit(0);
+    }//}}}
+    
+    public static void exiterror(TabbedView view, String errormsg, int errorcode) {//{{{
+        String errorhdr = "jsXe has encountered a fatal error and is unable to continue.\n";
+        errorhdr        +="This is most likely a bug and should be reported to the jsXe\n";
+        errorhdr        +="developers. Please fill out a full bug report at\n";
+        errorhdr        +="http://www.sourceforge.net/projects/jsxe/\n\n";
+        
+        JOptionPane.showMessageDialog(view, errorhdr + errormsg, "Fatal Error", JOptionPane.WARNING_MESSAGE);
+        
+        //print the error to the command line also.
+        System.err.println(getAppTitle() + ": jsXe has encountered a fatal error and is unable to continue.");
+        System.err.println(getAppTitle() + ": This is most likely a bug and should be reported to the jsXe");
+        System.err.println(getAppTitle() + ": developers. Please fill out a full bug report at");
+        System.err.println(getAppTitle() + ": http://www.sourceforge.net/projects/jsxe/");
+        System.err.println("");
+        System.err.println(getAppTitle() + ": "+errormsg);
+        System.exit(errorcode);
     }//}}}
     
     public static Object setProperty(String key, String value) {//{{{
@@ -447,7 +463,7 @@ public class jsXe {
     private static final String BuildVersion = "01";
     private static final String BuildType    = "alpha";
     private static Vector XMLDocuments = new Vector();
-    private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?><default_element>default_node</default_element>";
+    private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?>\n<default_element>default_node</default_element>";
     private static final ImageIcon jsXeIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/jsxe.jpg"), "jsXe");
     private static final String AppTitle = "jsXe";
     private static final Properties defaultProps = new Properties();

@@ -40,8 +40,10 @@ belongs to.
 */
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.dom.DOMSerializer;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
 //{{{ AWT components
@@ -75,9 +77,10 @@ import java.util.StringTokenizer;
 
 public class SourceViewDocument extends DefaultStyledDocument {
 
-    protected SourceViewDocument(Component view, XMLDocument doc) {//{{{
+    protected SourceViewDocument(TabbedView parent, XMLDocument doc) throws IOException {//{{{
         super(new GapContent(), new StyleContext());
         document = doc;
+        view = parent;
         
         if (doc != null) {
             StringWriter writer = new StringWriter();
@@ -89,10 +92,10 @@ public class SourceViewDocument extends DefaultStyledDocument {
                 //serializer.serialize(document.getDocument(), writer);
                 super.insertString(0, document.getSource(), new SimpleAttributeSet());
                 
-            } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
             } catch (BadLocationException ble) {
-                Toolkit.getDefaultToolkit().beep();
+                //This should never happen. If it does however jsXe will
+                //act abnormally so crash.
+                jsXe.exiterror(view, ble.toString(), 1);
             }
         }
     }//}}}
@@ -104,6 +107,10 @@ public class SourceViewDocument extends DefaultStyledDocument {
             document.setModel(super.getText(0,super.getLength()));
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
+        } catch (IOException ioe) {
+            //This should never happen. If it does however jsXe will
+            //act abnormally so crash.
+            jsXe.exiterror(view, ioe.toString(), 1);
         }
 
     }//}}}
@@ -115,11 +122,16 @@ public class SourceViewDocument extends DefaultStyledDocument {
             document.setModel(super.getText(0,super.getLength()));
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
+        } catch (IOException ioe) {
+            //This should never happen. If it does however jsXe will
+            //act abnormally so crash.
+            jsXe.exiterror(view, ioe.toString(), 1);
         }
         
     }//}}}
 
     //{{{ Private members
+    TabbedView view;
     XMLDocument document;
     //}}}
 
