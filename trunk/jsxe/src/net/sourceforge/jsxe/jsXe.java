@@ -38,6 +38,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.view.DocumentView;
 import net.sourceforge.jsxe.gui.view.DocumentViewFactory;
 import net.sourceforge.jsxe.dom.XMLDocument;
@@ -47,13 +48,17 @@ import net.sourceforge.jsxe.dom.UnrecognizedDocTypeException;
 
 //{{{ Swing Classes
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 //}}}
 
 //{{{ AWT Components
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 import java.awt.Toolkit;
 //}}}
 
@@ -489,6 +494,15 @@ public class jsXe {
 	} //}}}
     
     /**
+     * Gets the options panel for the jsXe application.
+     * @return The OptionsPanel with the options for jsXe.
+     */
+    public static final OptionsPanel getOptionsPanel() {//{{{
+        jsXeOptions = new jsXeOptionsPanel();
+        return jsXeOptions;
+    }//}}}
+    
+    /**
      * Indicates whether jsXe is exiting i.e. in the exit method.
      * @return true if jsXe is exiting.
      */
@@ -570,6 +584,22 @@ public class jsXe {
         
     }//}}}
     
+    private static class jsXeOptionsPanel extends OptionsPanel {//{{{
+        
+        public jsXeOptionsPanel() {//{{{
+            super();
+        }//}}}
+        
+        public void saveOptions() {//{{{
+            
+        }//}}}
+        
+        public String getTitle() {//{{{
+            return "jsXe Options";
+        }//}}}
+        
+    }//}}}
+    
     private static final String MajorVersion = "0";
     private static final String MinorVersion = "1";
     private static final String BuildVersion = "5";
@@ -582,6 +612,8 @@ public class jsXe {
     private static final Properties defaultProps = new Properties();
     private static boolean exiting=false;
     private static Properties props;
+    
+    private static OptionsPanel jsXeOptions;
     //}}}
     
 }

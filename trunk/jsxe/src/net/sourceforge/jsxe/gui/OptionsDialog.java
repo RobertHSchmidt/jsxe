@@ -40,6 +40,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.view.DocumentView;
 //}}}
@@ -97,21 +98,20 @@ public class OptionsDialog extends JDialog {
         GridBagConstraints constraints = new GridBagConstraints();
         frame.setLayout(layout);
         
+        OptionsPanel OptionsNorthPanel = jsXe.getOptionsPanel();
+        
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
         constraints.anchor = GridBagConstraints.NORTHWEST;
 	    constraints.weightx = 1.0f;
 		constraints.insets = new Insets(1,0,1,0);
-        
-        JLabel label = new JLabel("View Options");
+        JLabel label = new JLabel(OptionsNorthPanel.getTitle());
         layout.setConstraints(label, constraints);
         frame.add(label);
         JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
         layout.setConstraints(sep, constraints);
         frame.add(sep);
         
-        //Configure the north panel
-        OptionsNorthPanel = panel.getOptionsPanel();
         if (OptionsNorthPanel != null) {
             OptionsNorthPanel.setBorder(border2);
             constraints.fill = GridBagConstraints.NONE;
@@ -122,24 +122,29 @@ public class OptionsDialog extends JDialog {
         }
         
         constraints.fill = GridBagConstraints.BOTH;
-        label = new JLabel("jsXe Options");
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+	    constraints.weightx = 1.0f;
+		constraints.insets = new Insets(1,0,1,0);
+        
+        OptionsSouthPanel = panel.getOptionsPanel();
+        
+        label = new JLabel(OptionsSouthPanel.getTitle());
         layout.setConstraints(label, constraints);
         frame.add(label);
         sep = new JSeparator(JSeparator.HORIZONTAL);
         layout.setConstraints(sep, constraints);
         frame.add(sep);
         
-        //Configure south panel
-       // OptionsSouthPanel = new JPanel();
-       // OptionsSouthPanel.setBorder(border);
-       // layout.setConstraints(OptionsSouthPanel, constraints);
-       // frame.add(OptionsSouthPanel);
-        
-        //add dummy panel for now.
-        JPanel dummypanel = new JPanel();
-        constraints.weighty = 1.0;
-        layout.setConstraints(dummypanel, constraints);
-        frame.add(dummypanel);
+        //Configure the north panel
+        if (OptionsSouthPanel != null) {
+            OptionsSouthPanel.setBorder(border2);
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.weighty = 1.0f;
+            layout.setConstraints(OptionsSouthPanel, constraints);
+            frame.add(OptionsSouthPanel);
+            constraints.weighty = 0;
+        }
         
         JPanel ButtonsPanel = new JPanel();
         ButtonsPanel.add(OKButton);
