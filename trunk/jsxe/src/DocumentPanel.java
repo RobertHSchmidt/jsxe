@@ -53,8 +53,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
-//import javax.swing.event.TreeSelectionListener;
-//import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.filechooser.FileFilter;
@@ -155,9 +153,7 @@ public class DocumentPanel extends JPanel {
         attributesTable.setModel(adapter);
         //Clear the attributes table and right hand pane
         //of previous values.
-        while(adapter.getRowCount()>0) {
-            adapter.removeRow(0);
-        }
+        adapter.updateTable((AdapterNode)tree.getLastSelectedPathComponent());
         htmlPane.setText("");
         //update the UI so that the components
         //are redrawn.
@@ -193,7 +189,6 @@ public class DocumentPanel extends JPanel {
     private static DOMAdapter currentAdapter;
     private static JEditorPane htmlPane = new JEditorPane("text/plain","");
     private static JTable attributesTable = new JTable();
-    //private AttributesTableModel attrTableModel = new AttributesTableModel();
     private static JSplitPane vertSplitPane;
     private static JSplitPane horizSplitPane;
     private static DocumentPanel instance = new DocumentPanel(jsXe.getStartingSize());
