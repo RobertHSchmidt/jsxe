@@ -168,9 +168,11 @@ public class jsXe {
     public static String getVersion() {//{{{
         // Development - Major.Minor.Build
         // Stable      - Major.Minor
-        String version = MajorVersion + "." + MinorVersion;
-        if (BuildType == "development")
-            version += "." + BuildVersion;
+        String version = buildProps.getProperty("major.version") + "." +
+                         buildProps.getProperty("minor.version");
+        if (buildProps.getProperty("build.type").equals("development")) {
+            version += "." + buildProps.getProperty("build.version");
+        }
         return version;
     }//}}}
     
@@ -398,7 +400,7 @@ public class jsXe {
      * @return The title of the jsXe application.
      */
     public static String getAppTitle() {//{{{
-        return AppTitle;
+        return buildProps.getProperty("application.name");
     }//}}}
     
     /**
@@ -536,6 +538,7 @@ public class jsXe {
             System.err.println(getAppTitle() + ": Internal ERROR: Could not open default settings file");
             System.err.println(getAppTitle() + ": Internal ERROR: "+ioe.toString());
             System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
+            exiterror(null, ioe.getMessage(), 1);
         }
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int windowWidth = (int)(screenSize.getWidth() / 2);
@@ -548,6 +551,18 @@ public class jsXe {
         
         defaultProps.setProperty("tabbedview.x",Integer.toString(x));
         defaultProps.setProperty("tabbedview.y",Integer.toString(y));
+        //}}}
+        
+        //{{{ Load build properties
+        inputstream = jsXe.class.getResourceAsStream("/net/sourceforge/jsxe/build.properties");
+        try {
+            buildProps.load(inputstream);
+        } catch (IOException ioe) {
+            System.err.println(getAppTitle() + ": Internal ERROR: Could not open default settings file");
+            System.err.println(getAppTitle() + ": Internal ERROR: "+ioe.toString());
+            System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
+            exiterror(null, ioe.getMessage(), 1);
+        }
         //}}}
         
         //{{{ Load default properties of installed views
@@ -589,16 +604,11 @@ public class jsXe {
         
     }//}}}
     
-    private static final String MajorVersion = "0";
-    private static final String MinorVersion = "1";
-    private static final String BuildVersion = "17";
-    private static final String BuildType    = "development";
-   // private static final String BuildType    = "stable";
     private static ArrayList XMLDocuments = new ArrayList();
     private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?>\n<default_element>default_node</default_element>";
     private static final ImageIcon jsXeIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/jsxe.jpg"), "jsXe");
-    private static final String AppTitle = "jsXe";
     private static final Properties defaultProps = new Properties();
+    private static final Properties buildProps = new Properties();
     private static boolean exiting=false;
     private static Properties props;
     
