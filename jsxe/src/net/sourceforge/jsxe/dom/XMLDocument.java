@@ -112,6 +112,11 @@ public class XMLDocument {
      * using soft tabs.
      */
     public static String IS_USING_SOFT_TABS = DOMSerializerConfiguration.SOFT_TABS;
+   // /**
+   //  * The property key for the property defining whether to validate the
+   //  * document with a DTD or Schema
+   //  */
+   // public static String IS_VALIDATING = "validating";
     
     //}}}
     
@@ -163,6 +168,7 @@ public class XMLDocument {
             factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", new Boolean(false));
             factory.setAttribute("http://xml.org/sax/features/external-general-entities", new Boolean(false));
             factory.setAttribute("http://xml.org/sax/features/external-parameter-entities", new Boolean(false));
+           // factory.setAttribute("http://xml.org/sax/features/namespaces",new Boolean(true));
             DocumentBuilder builder = factory.newDocumentBuilder();
             
             builder.setErrorHandler(new org.xml.sax.ErrorHandler() {
@@ -675,7 +681,7 @@ public class XMLDocument {
                     }
                     m_content = content;
                 } catch (IOException ioe) {
-                    //Shouldn't happen.
+                    System.err.println("jsXe: "+ioe.getMessage());
                 }
             }
         }
@@ -873,7 +879,7 @@ public class XMLDocument {
     
     //{{{ ContentManagerInputStream class
     /**
-     * input stream for parsing reading current text content.
+     * Input stream for parsing reading current text content.
      */
     private class ContentManagerInputStream extends InputStream {
         

@@ -34,7 +34,7 @@
     <property name="main.class" value="net.sourceforge.jsxe.jsXe"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="3"/>
-		<property name="build.description" value="pre11"/>
+		<property name="build.description" value="pre12"/>
 		<property name="app.version" value="${major.version}.${minor.version} ${build.description}"/>
 		<property name="app_version" value="${major.version}_${minor.version}${build.description}"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
@@ -100,6 +100,7 @@
 		<javac debug="${javac.debug}" deprecation="${javac.deprecation}" includeJavaRuntime="${javac.include.runtime}" optimize="${javac.optimize}" source="${javac.source}" destdir="${build.dest}" srcdir="${build.src}">
 			<classpath refid="classpath"/>
 			<include name="**/*.java"/>
+      <exclude name="net/sourceforge/jsxe/dom/completion/**/*.java"/>
 		</javac>
 		<copy todir="${build.dest}">
 			<fileset dir="${build.src}">
