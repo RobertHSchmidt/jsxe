@@ -52,43 +52,51 @@ import org.apache.xerces.dom3.DOMLocator;
 public class DefaultDOMLocator implements DOMLocator {
     
     public DefaultDOMLocator() {//{{{
-        column = -1;
-        line   = -1;
-        offset = -1;
+        m_column = -1;
+        m_line   = -1;
+        m_offset = -1;
     }//}}}
     
-    public DefaultDOMLocator(Node node, int lineno, int col, int charOffset, String u) {//{{{
-        line = lineno;
-        column = col;
-        errorNode = node;
-        offset = charOffset;
-        uri = u;
+    public DefaultDOMLocator(Node node, int lineno, int col, int byteOffset, String uri) {//{{{
+        m_line = lineno;
+        m_column = col;
+        m_errorNode = node;
+        m_offset = byteOffset;
+        m_uri = uri;
+    }//}}}
+    
+    public int getByteOffset() {//{{{
+        return m_offset;
     }//}}}
     
     public int getColumnNumber() {//{{{
-        return column;
+        return m_column;
     }//}}}
     
-    public Node getErrorNode() {//{{{
-        return errorNode;
+    public Node getRelatedNode() {//{{{
+        return m_errorNode;
     }//}}}
     
     public int getLineNumber() {//{{{
-        return line;
-    }//}}}
-    
-    public int getOffset() {//{{{
-        return offset;
+        return m_line;
     }//}}}
     
     public String getUri() {//{{{
-        return uri;
+        return m_uri;
     }//}}}
     
-    private int column;
-    private int line;
-    private int offset;
-    private Node errorNode;
-    private String uri;
+    public int getUtf16Offset() {//{{{
+        //not sure how to approach the byte/UTF-16 offset stuff yet.
+        return -1;
+    }//}}}
     
+    //{{{ Private members
+    
+    private int m_column;
+    private int m_line;
+    private int m_offset;
+    private Node m_errorNode;
+    private String m_uri;
+    
+    //}}}
 }

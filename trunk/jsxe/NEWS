@@ -1,3 +1,15 @@
+11/23/2003  version 0.1.43
+
+    * jsXe can now open more than one file at a time.
+    * jsXe can now open and save files that are not well-formed.
+    * Fixed bug where jsXe would only open the first file given several files
+      on the command line.
+    * Fixed bug where the * dirty file indicator was going away when switching
+      views.
+    * Fixed a bug where a document was marked dirty when switching views.
+    * Fixed problem where the tree in the default view allowed you to select
+      multiple nodes and cause undesired operation.
+
 10/30/2003  version 0.1.39
 
     * Added support for dirty files. When you make changes to a document
