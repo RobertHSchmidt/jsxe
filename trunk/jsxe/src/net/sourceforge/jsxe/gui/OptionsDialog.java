@@ -103,7 +103,7 @@ public class OptionsDialog extends JDialog {
         
         // Create the North Panel
         
-        OptionsPanel OptionsNorthPanel = jsXe.getOptionsPanel();
+        OptionsNorthPanel = jsXe.getOptionsPanel();
         
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
@@ -203,12 +203,15 @@ public class OptionsDialog extends JDialog {
         //{{{ actionPerformed()
         
         public void actionPerformed(ActionEvent e) {
-            if (OptionsNorthPanel != null)
+            if (OptionsNorthPanel != null) {
                 OptionsNorthPanel.saveOptions();
-            if (OptionsSouthPanel != null)
+            }
+            if (OptionsSouthPanel != null) {
                 OptionsSouthPanel.saveOptions();
-            if (bufferOptionsPanel != null)
+            }
+            if (bufferOptionsPanel != null) {
                 bufferOptionsPanel.saveOptions();
+            }
             parent.dispose();
         }//}}}
         

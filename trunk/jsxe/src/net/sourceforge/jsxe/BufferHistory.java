@@ -158,41 +158,41 @@ public class BufferHistory {
         
         int index = 0;
         Iterator historyItr = m_history.iterator();
-        while (historyItr.hasNext()) {
+        while (historyItr.hasNext() && index < maxRecentFiles) {
+            
             ++index;
-            if (index < maxRecentFiles) {
-                BufferHistoryEntry entry = (BufferHistoryEntry) historyItr.next();
-                out.write("<entry>");
-                out.write(lineSep);
-                
-                String path = entry.getPath();
-                out.write("<path><![CDATA[");
-                out.write(path);
-                out.write("]]></path>");
-                out.write(lineSep);
-                
-                String viewName = entry.getViewName();
-                out.write("<view>");
-                out.write(viewName);
-                out.write("</view>");
-                out.write(lineSep);
-                
-                Properties props = entry.getProperties();
-                Enumeration propertyItr = props.keys();
-                while (propertyItr.hasMoreElements()) {
-                    String key = propertyItr.nextElement().toString();
-                    String value = props.getProperty(key);
-                    out.write("<property name=\"");
-                    out.write(key);
-                    out.write("\" value=\"");
-                    out.write(value);
-                    out.write("\"/>");
-                    out.write(lineSep);
-                }
-                
-                out.write("</entry>");
+            
+            BufferHistoryEntry entry = (BufferHistoryEntry) historyItr.next();
+            out.write("<entry>");
+            out.write(lineSep);
+            
+            String path = entry.getPath();
+            out.write("<path><![CDATA[");
+            out.write(path);
+            out.write("]]></path>");
+            out.write(lineSep);
+            
+            String viewName = entry.getViewName();
+            out.write("<view>");
+            out.write(viewName);
+            out.write("</view>");
+            out.write(lineSep);
+            
+            Properties props = entry.getProperties();
+            Enumeration propertyItr = props.keys();
+            while (propertyItr.hasMoreElements()) {
+                String key = propertyItr.nextElement().toString();
+                String value = props.getProperty(key);
+                out.write("<property name=\"");
+                out.write(key);
+                out.write("\" value=\"");
+                out.write(value);
+                out.write("\"/>");
                 out.write(lineSep);
             }
+            
+            out.write("</entry>");
+            out.write(lineSep);
         }
         
         out.write("</recent>");

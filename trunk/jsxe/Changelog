@@ -4,6 +4,8 @@
       files they have recently used.
     * Added an option to allow the user to specify the number of recent files
       that jsXe remembers
+    * When jsXe opens a file now it checks if it's in the recent files list
+      and opens it with the remembered properties automatically
 
 06/23/2004  version 0.2 pre10   Ian Lewis <IanLewis@member.fsf.org>
 

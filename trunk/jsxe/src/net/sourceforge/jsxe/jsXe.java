@@ -287,7 +287,16 @@ public class jsXe {
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
     public static boolean openXMLDocument(TabbedView view, File file) throws IOException {
-        return openXMLDocument(view, file, new Properties(), null);
+        /*
+        Check if it's in the recent file history
+        if so then use those properties
+        */
+        BufferHistory.BufferHistoryEntry entry = m_bufferHistory.getEntry(file.getPath());
+        if (entry != null) {
+            return openXMLDocument(view, file, entry.getProperties(), entry.getViewName());
+        } else {
+            return openXMLDocument(view, file, new Properties(), null);
+        }
     }//}}}
     
     //{{{ openXMLDocument()
@@ -316,6 +325,7 @@ public class jsXe {
             return true;
         } else {
             try {
+                
                 buffer = new DocumentBuffer(file, properties);
                 m_buffers.add(buffer);
                 if (viewName != null) {
@@ -797,7 +807,7 @@ public class jsXe {
         public void saveOptions() {
             try {
                 //don't need to set dirty, no change to text
-                jsXe.setProperty(XMLDocument.INDENT, (new Integer(maxRecentFilesComboBox.getSelectedItem().toString())).toString());
+                jsXe.setProperty("max.recent.files", (new Integer(maxRecentFilesComboBox.getSelectedItem().toString())).toString());
             } catch (NumberFormatException nfe) {
                 //Bad input, don't save.
             }
