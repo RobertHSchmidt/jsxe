@@ -643,7 +643,7 @@ public class DOMSerializer implements LSSerializer {
                         //set to zero here for error handling (if doWrite throws exception)
                         column = 0;
                         str = m_newLine + currentIndent;
-                        doWrite(writer, currentIndent, node, line, column, offset);
+                        doWrite(writer, str, node, line, column, offset);
                         column += currentIndent.length();
                         offset += str.length();
                     }
