@@ -3,9 +3,11 @@
     * Fixed a bug that caused non-dirty, non-untitled document to save when
       they were closed.
     * Added code for autoscrolling when doing drag and drop using the Autoscroll
-      interface and fuctionality but it's dumb.
+      interface and fuctionality.
     * Added logic to expand tree nodes when you hover over them for a period of
       time.
+    * Tooltip for processing instructions is now correct.
+    * Changed the text for some nodes in the tree.
 
 05/18/2004  version 0.3 pre1    Ian Lewis <IanLewis@member.fsf.org>
 

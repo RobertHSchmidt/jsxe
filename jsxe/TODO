@@ -27,10 +27,10 @@ TODO:
       whole cursor can be replaced with the image since the default drag
       cursor is dumb in linux.
     
-    * Extend the DropTarget.DropTargetAutoScroller class
-      to fix the fuctionality and make the autoscrolling smoother.
-    
     * Create a way to show a no-drop cursor when the drop is rejected.
+    
+    * Create a dialog that displays all dirty DocumentBuffers and allows you to
+      save the selected ones, like jEdit.
     
     * Store some options such as recent files and file specific options in
       an XML file with jsxe's options in the .jsxe folder in the home dir.
@@ -200,5 +200,5 @@ TODO:
     
     * Implement a Schema Diagram plugin that can show Shema as a flow like
       diagram. Look at the JGraph components for this. www.jgraph.com.
-      Eventually add support to the 
+      Eventually add support to allow editing of schemas
     
