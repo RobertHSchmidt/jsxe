@@ -66,6 +66,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
@@ -396,7 +397,7 @@ public class jsXe {
     private static final String BuildType    = "alpha";
     private static Vector XMLDocuments = new Vector();
     private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?><default_element>default_node</default_element>";
-    private static final ImageIcon jsXeIcon = new ImageIcon("net/sourceforge/jsxe/icons/jsxe.jpg", "jsXe");
+    private static final ImageIcon jsXeIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/jsxe.jpg"), "jsXe");
     private static final String AppTitle = "jsXe";
     private static final Properties defaultProps = new Properties();
     private static Properties props;
