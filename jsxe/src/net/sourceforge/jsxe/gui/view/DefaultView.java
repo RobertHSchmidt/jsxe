@@ -150,6 +150,8 @@ public class DefaultView extends DocumentView {
             throw new IOException(errormsg);
         }
         
+        ensureDefaultProps(buffer);
+        
         AdapterNode adapter = document.getAdapterNode();
         
         DefaultViewTreeModel treeModel = new DefaultViewTreeModel(this, document);
@@ -168,11 +170,11 @@ public class DefaultView extends DocumentView {
         styledDoc.addDocumentListener(docListener);
         
         //get the splitpane layout options
-        boolean layout = Boolean.valueOf(document.getProperty(viewname+".continuous.layout", "false")).booleanValue();
+        boolean layout = Boolean.valueOf(document.getProperty(_CONTINUOUS_LAYOUT)).booleanValue();
         vertSplitPane.setContinuousLayout(layout);
         horizSplitPane.setContinuousLayout(layout);
-        vertSplitPane.setDividerLocation(Integer.valueOf(document.getProperty(viewname+".splitpane.vert.loc", "200")).intValue());
-        horizSplitPane.setDividerLocation(Integer.valueOf(document.getProperty(viewname+".splitpane.horiz.loc", "200")).intValue());
+        vertSplitPane.setDividerLocation(Integer.valueOf(buffer.getProperty(_HORIZ_SPLIT_LOCATION)).intValue());
+        horizSplitPane.setDividerLocation(Integer.valueOf(buffer.getProperty(_HORIZ_SPLIT_LOCATION)).intValue());
         
         //update the UI so that the components
         //are redrawn.
@@ -239,8 +241,8 @@ public class DefaultView extends DocumentView {
             String vert = Integer.toString(vertSplitPane.getDividerLocation());
             String horiz = Integer.toString(horizSplitPane.getDividerLocation());
             
-            m_buffer.setProperty(viewname+".splitpane.vert.loc",vert);
-            m_buffer.setProperty(viewname+".splitpane.horiz.loc",horiz);
+            m_buffer.setProperty(_VERT_SPLIT_LOCATION,vert);
+            m_buffer.setProperty(_HORIZ_SPLIT_LOCATION,horiz);
         }
         
         return true;
@@ -252,6 +254,17 @@ public class DefaultView extends DocumentView {
     
     private boolean canEditInJEditorPane(AdapterNode node) {
         return (node.getNodeValue() != null);
+    }//}}}
+    
+    //{{{ ensureDefaultProps()
+    
+    private void ensureDefaultProps(DocumentBuffer buffer) {
+        //get default properties from jsXe
+        buffer.setProperty(_CONTINUOUS_LAYOUT, buffer.getProperty(_CONTINUOUS_LAYOUT, jsXe.getProperty(_CONTINUOUS_LAYOUT)));
+        buffer.setProperty(_HORIZ_SPLIT_LOCATION, buffer.getProperty(_HORIZ_SPLIT_LOCATION, jsXe.getProperty(_HORIZ_SPLIT_LOCATION)));
+        buffer.setProperty(_HORIZ_SPLIT_LOCATION, buffer.getProperty(_HORIZ_SPLIT_LOCATION, jsXe.getProperty(_HORIZ_SPLIT_LOCATION)));
+        buffer.setProperty(_SHOW_COMMENTS, buffer.getProperty(_SHOW_COMMENTS, jsXe.getProperty(_SHOW_COMMENTS)));
+        buffer.setProperty(_SHOW_EMPTY_NODES, buffer.getProperty(_SHOW_EMPTY_NODES, jsXe.getProperty(_SHOW_EMPTY_NODES)));
     }//}}}
     
     //{{{ DefaultViewOptionsPanel class
@@ -269,9 +282,9 @@ public class DefaultView extends DocumentView {
             
             int gridY = 0;
             
-            boolean showCommentNodes = Boolean.valueOf(m_buffer.getProperty(viewname+".show.comment.nodes", "false")).booleanValue();
-            boolean showEmptyNodes = Boolean.valueOf(m_buffer.getProperty(viewname+".show.empty.nodes", "false")).booleanValue();
-            boolean continuousLayout = Boolean.valueOf(m_buffer.getProperty(viewname+".continuous.layout", "false")).booleanValue();
+            boolean showCommentNodes = Boolean.valueOf(m_buffer.getProperty(_SHOW_COMMENTS, "false")).booleanValue();
+            boolean showEmptyNodes = Boolean.valueOf(m_buffer.getProperty(_SHOW_EMPTY_NODES, "false")).booleanValue();
+            boolean continuousLayout = Boolean.valueOf(m_buffer.getProperty(_CONTINUOUS_LAYOUT, "false")).booleanValue();
             
             showCommentsCheckBox = new JCheckBox("Show comment nodes",showCommentNodes);
             showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
@@ -314,11 +327,11 @@ public class DefaultView extends DocumentView {
         //{{{ saveOptions()
         
         public void saveOptions() {
-            m_buffer.setProperty(viewname+".show.comment.nodes",(new Boolean(showCommentsCheckBox.isSelected())).toString());
-            m_buffer.setProperty(viewname+".show.empty.nodes",(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
+            m_buffer.setProperty(_SHOW_COMMENTS,(new Boolean(showCommentsCheckBox.isSelected())).toString());
+            m_buffer.setProperty(_SHOW_EMPTY_NODES,(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
             
             boolean layout = ContinuousLayoutCheckBox.isSelected();
-            m_buffer.setProperty(viewname+".continuous.layout",(new Boolean(layout)).toString());
+            m_buffer.setProperty(_CONTINUOUS_LAYOUT,(new Boolean(layout)).toString());
             vertSplitPane.setContinuousLayout(layout);
             horizSplitPane.setContinuousLayout(layout);
             tree.updateUI();
@@ -479,7 +492,13 @@ public class DefaultView extends DocumentView {
     private JSplitPane horizSplitPane;
     private DocumentBuffer m_buffer;
     
-    private static final String viewname="documentview.default";
+    private static final String _VIEWNAME="documentview.default";
+    private static final String _CONTINUOUS_LAYOUT = _VIEWNAME+".continuous.layout";
+    private static final String _VERT_SPLIT_LOCATION = _VIEWNAME+".splitpane.vert.loc";
+    private static final String _HORIZ_SPLIT_LOCATION = _VIEWNAME+".splitpane.horiz.loc";
+    private static final String _SHOW_COMMENTS = _VIEWNAME+".show.comment.nodes";
+    private static final String _SHOW_EMPTY_NODES = _VIEWNAME+".show.empty.nodes";
+    
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {
            attributesTable.updateUI();
