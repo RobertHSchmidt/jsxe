@@ -631,7 +631,7 @@ public class DefaultView extends JPanel implements DocumentView {
         
         //{{{ propertiesChanged
         
-        public void propertiesChanged(XMLDocument source, String key) {}//}}}
+        public void propertiesChanged(XMLDocument source) {}//}}}
         
         //{{{ structureChanged()
         
