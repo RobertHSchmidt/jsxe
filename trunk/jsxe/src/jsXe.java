@@ -188,7 +188,7 @@ public class jsXe {
         return DefaultDocument;
     }//}}}
     
-    //this is probobly bad implementation
+    //this is bad implementation. It will be changed... eventually.
     public static Dimension getStartingSize() {//{{{
         return new Dimension(windowWidth, windowHeight);
     }//}}}
