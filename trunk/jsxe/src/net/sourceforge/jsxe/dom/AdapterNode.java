@@ -204,39 +204,74 @@ public class AdapterNode {
         return m_domNode.getChildNodes().getLength();
     }//}}}
     
+    //{{{ getNSPrefix()
+    /**
+     * Gets the namespace prefix for this node.
+     * @return the namespace prefix for this node.
+     */
+    public String getNSPrefix() {
+        return m_domNode.getPrefix();
+    }//}}}
+    
+    //{{{ setNSPrefix()
+    /**
+     * Sets the namespace prefix for this node.
+     * @param prefix The new prefix for this node
+     * @throws DOMException if this namespace prefix is not valid.
+     * INVALID_CHARACTER_ERR: Raised if the specified prefix contains an illegal character, per the XML 1.0 specification .
+     * NO_MODIFICATION_ALLOWED_ERR: Raised if this node is readonly.
+     * NAMESPACE_ERR: Raised if the specified prefix is malformed per the Namespaces in XML specification, if the namespaceURI of this node is null, if the specified prefix is "xml" and the namespaceURI of this node is different from "http://www.w3.org/XML/1998/namespace", if this node is an attribute and the specified prefix is "xmlns" and the namespaceURI of this node is different from " http://www.w3.org/2000/xmlns/", or if this node is an attribute and the qualifiedName of this node is "xmlns" .
+     */
+    public void setNSPrefix(String prefix) throws DOMException {
+        m_domNode.setPrefix(prefix);
+    }//}}}
+    
     //{{{ getNodeName()
     /**
-     * <p>Gets the name of this node.</p>
-     * @return the name of the node
+     * Gets the full name for this node including the local name and namespace
+     * prefix.
+     * @return the full qualified name of this node
      */
     public String getNodeName() {
         return m_domNode.getNodeName();
     }//}}}
     
-    //{{{ setNodeName()
+    //{{{ getLocalName()
     /**
-     * <p>Sets the name of the node. Only element nodes are currently
+     * <p>Gets the local name of this node.</p>
+     * @return the local name of the node
+     */
+    public String getLocalName() {
+        return m_domNode.getLocalName();
+    }//}}}
+    
+    //{{{ setLocalName()
+    /**
+     * <p>Sets the local name of the node. Only element nodes are currently
      * supported.</p>
-     * @param newValue the new name for this node
+     * @param newValue the new local name for this node
      * @throws DOMException INVALID_CHARACTER_ERR: Raised if the specified name
      *                      contains an illegal character.
      */
-    public void setNodeName(String newValue) throws DOMException {
+    public void setLocalName(String newValue) throws DOMException {
         if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
             //Verify that this really is a change
-            if (!m_domNode.getNodeName().equals(newValue)) {
+            if (!m_domNode.getLocalName().equals(newValue)) {
+                
                 //get the nodes needed
                 Node parent = m_domNode.getParentNode();
                 NodeList children = m_domNode.getChildNodes();
                 Document document = m_domNode.getOwnerDocument();
-                //replace the changed node
-                Element newNode = document.createElementNS("", newValue);
+                
+                //replace the changed node; maintain the namespace URI;
+                //newValue is a qualified name for now
+                Element newNode = document.createElementNS(m_domNode.getNamespaceURI(), newValue);
                 NamedNodeMap attrs = m_domNode.getAttributes();
                 int attrlength = attrs.getLength();
                 
                 for(int i = 0; i < attrlength; i++) {
                     Node attr = attrs.item(i);
-                    newNode.setAttribute(attr.getNodeName(), attr.getNodeValue());
+                    newNode.setAttributeNS(attr.getNamespaceURI(), attr.getNodeName(), attr.getNodeValue());
                 }
                 
                 int length = children.getLength();
