@@ -58,6 +58,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.xerces.dom3.DOMError;
+import org.apache.xerces.dom3.DOMErrorHandler;
 //}}}
 
 //{{{ Java base classes
@@ -80,6 +82,7 @@ import javax.swing.text.Segment;
 //}}}
 
 //}}}
+
 /**
  * The XMLDocument class represents an XML document as a  tree structure
  * that has nodes, implemented as AdapterNodes, as well as text. Methods are
@@ -137,7 +140,7 @@ public class XMLDocument {
         setModel(reader);
     }//}}}
     
-    //{{{ checkWellFormedNess()
+    //{{{ checkWellFormedness()
     /**
      * Checks the wellformedness of the document and throws appropriate
      * exceptions based on the errors encountered during parsing.
@@ -345,31 +348,48 @@ public class XMLDocument {
      *                                      properties is not supported.
      */
     public void serialize(OutputStream out) throws IOException, UnsupportedEncodingException {
-        if (m_parsedMode) {
+        
+        boolean parsedBeforeSerialization = m_parsedMode;
+        
+        syncContentWithDOM();
+        
+        //now just write out the text.
+        int length = m_content.getLength();
+        int index = 0;
+        java.io.BufferedWriter outbuf = new java.io.BufferedWriter(new java.io.OutputStreamWriter(out, getProperty(ENCODING)), IO_BUFFER_SIZE);
+        Segment seg = new Segment();
+        while (index < length) {
+            int size = WRITE_SIZE;
+            try {
+                size = Math.min(length - index, WRITE_SIZE);
+            } catch(NumberFormatException nf) {}
             
-            //since we are in parsed mode let's serialize.
-            
-            DOMOutput output = new DOMOutput(out, getProperty(ENCODING));
-            LSSerializer serializer = getSerializer();
-            
-            if (!serializer.write(m_document, output)) {
-                throw new IOException("Could not serialize XML document.");
-            }
-            
-        } else {
-            
-            //not in parsed mode. just write out the text.
-            int length = m_content.getLength();
-            int index = 0;
-            while (index < length) {
-                
-                int size = WRITE_SIZE;
-                try {
-                    size = Math.min(length - index, WRITE_SIZE);
-				} catch(NumberFormatException nf) {}
-                
-                out.write(m_content.getText(index, size).getBytes(getProperty(ENCODING)), index, size);
-                index += size;
+           // out.write(m_content.getText(index, size).getBytes(getProperty(ENCODING)), index, size);
+            m_content.getText(index, size, seg);
+            outbuf.write(seg.array, seg.offset, seg.count);
+            index += size;
+        }
+        
+        outbuf.close();
+        
+        //if something changed in the structure while serializing
+        //basically we don't want serialize() to cause the XMLDocument
+        //to go from parsed mode to non-parsed mode
+        if (!m_parsedMode && parsedBeforeSerialization) {
+            try {
+                checkWellFormedness();
+            } catch (SAXException saxe) {
+                throw new IOException(saxe.getMessage());
+            } catch (ParserConfigurationException pce) {
+                throw new IOException(pce.getMessage());
+            } finally {
+                /*
+                if there is an error parsing we want to be in parsed mode
+                using the old DOM before serializing.
+                if there is no error, we want to be in parsed mode with the
+                new DOM.
+                */
+                m_parsedMode = true;
             }
         }
         
@@ -547,12 +567,17 @@ public class XMLDocument {
     private void syncContentWithDOM() {
         if (m_parsedMode) {
             if (!m_syncedWithContent) {
-                //create a new content manager to be written to.
-                ContentManager content = new ContentManager();
-                //create the content manager's output stream
-                ContentManagerOutputStream out = new ContentManagerOutputStream(content);
                 try {
-                    serialize(out);
+                    //since we are in parsed mode let's serialize to the content
+                    LSSerializer serializer = getSerializer();
+                    //create a new content manager to be written to.
+                    ContentManager content = new ContentManager();
+                    //create the content manager's output stream
+                    ContentManagerOutputStream output = new ContentManagerOutputStream(content);
+                    DOMOutput out = new DOMOutput(output, getProperty(ENCODING));
+                    if (!serializer.write(m_document, out)) {
+                        throw new IOException("Could not serialize XML document.");
+                    }
                     m_content = content;
                 } catch (IOException ioe) {
                     //Shouldn't happen.
@@ -569,43 +594,9 @@ public class XMLDocument {
         config.setParameter(FORMAT_XML, getProperty(FORMAT_XML));
         config.setParameter(WS_IN_ELEMENT_CONTENT, getProperty(WS_IN_ELEMENT_CONTENT));
         config.setParameter(INDENT, new Integer(getProperty(INDENT)));
+        config.setParameter(DOMSerializerConfiguration.ERROR_HANDLER, new XMLDocErrorHandler());
         
         return new DOMSerializer(config);
-    }//}}}
-    
-    //{{{ XMLDocAdapterListener class
-    private class XMLDocAdapterListener implements AdapterNodeListener {
-        
-        // {{{ nodeAdded()
-        public void nodeAdded(AdapterNode source, AdapterNode added) {
-            fireStructureChanged(source);
-        }//}}}
-        
-        //{{{ nodeRemoved()
-        public void nodeRemoved(AdapterNode source, AdapterNode removed) {
-            fireStructureChanged(source);
-        }//}}}
-        
-        //{{{ localNameChanged()
-        public void localNameChanged(AdapterNode source) {
-            fireStructureChanged(source);
-        }//}}}
-        
-        //{{{ namespaceChanged()
-        public void namespaceChanged(AdapterNode source) {
-            fireStructureChanged(source);
-        }//}}}
-        
-        //{{{ nodeValueChanged()
-        public void nodeValueChanged(AdapterNode source) {
-            fireStructureChanged(source);
-        }//}}}
-        
-        //{{{ attributeChanged()
-        public void attributeChanged(AdapterNode source, String attr) {
-            fireStructureChanged(source);
-        }//}}}
-        
     }//}}}
     
     //{{{ ContentManager class
@@ -863,6 +854,66 @@ public class XMLDocument {
         //}}}
     }//}}}
     
+    //{{{ XMLDocAdapterListener class
+    private class XMLDocAdapterListener implements AdapterNodeListener {
+        
+        // {{{ nodeAdded()
+        public void nodeAdded(AdapterNode source, AdapterNode added) {
+            fireStructureChanged(source);
+        }//}}}
+        
+        //{{{ nodeRemoved()
+        public void nodeRemoved(AdapterNode source, AdapterNode removed) {
+            fireStructureChanged(source);
+        }//}}}
+        
+        //{{{ localNameChanged()
+        public void localNameChanged(AdapterNode source) {
+            fireStructureChanged(source);
+        }//}}}
+        
+        //{{{ namespaceChanged()
+        public void namespaceChanged(AdapterNode source) {
+            fireStructureChanged(source);
+        }//}}}
+        
+        //{{{ nodeValueChanged()
+        public void nodeValueChanged(AdapterNode source) {
+            fireStructureChanged(source);
+        }//}}}
+        
+        //{{{ attributeChanged()
+        public void attributeChanged(AdapterNode source, String attr) {
+            fireStructureChanged(source);
+        }//}}}
+        
+    }//}}}
+    
+    //{{{ XMLDocErrorHandler class
+    
+    public class XMLDocErrorHandler implements DOMErrorHandler {
+        
+        //{{{ handleError()
+        
+        public boolean handleError(DOMError error) {
+            
+            if (error.getType() == "cdata-sections-splitted") {
+                /*
+                make the source the valid model and
+                force reparsing when DOM objects are
+                requested.
+                */
+                m_syncedWithContent = true;
+                m_parsedMode = false;
+                fireStructureChanged(null);
+                return true;
+            }
+            
+            return false;
+        }//}}}
+        
+    }//}}}
+    
     private Document m_document;
     private AdapterNode m_adapterNode;
     private ContentManager m_content;
@@ -873,6 +924,7 @@ public class XMLDocument {
     private Properties props = new Properties();
     private static final int READ_SIZE = 5120;
     private static final int WRITE_SIZE = 5120;
+    private static final int IO_BUFFER_SIZE = 32768;
     
     private XMLDocAdapterListener docAdapterListener = new XMLDocAdapterListener();
     

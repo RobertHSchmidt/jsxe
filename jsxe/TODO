@@ -30,13 +30,6 @@ TODO:
           to entities.
         * Serialized XML should be 100% well-formed and parsable.
     
-    * Add a status bar to the bottom that will show a buffer's status. Like if
-      the buffer failed to be validated or parsed or whatever. It's not real
-      clear to the user why they got kicked to the source view when they
-      opened a document but a status bar could convey that info. Add an option
-      to the options menu that allows you to hide it. Maybe an error dialog
-      would be suitable.
-    
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
       Update the DefaultViewTreeModel to use a DefaultViewTreeNode class
       that defines the toString() method for how the node is displayed in the
