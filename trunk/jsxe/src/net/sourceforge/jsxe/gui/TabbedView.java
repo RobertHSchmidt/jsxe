@@ -55,6 +55,8 @@ import net.sourceforge.jsxe.action.ToolsOptionsAction;
 //}}}
 
 //{{{ Swing components
+import javax.swing.Action;
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -70,6 +72,7 @@ import javax.swing.event.ChangeEvent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 //}}}
 
 //{{{ Java base classes
@@ -228,6 +231,15 @@ public class TabbedView extends JFrame {
             }
         //}}}
         
+        //{{{ Add View Menu
+        JMenu viewMenu = new JMenu("View");
+            menuItem = new JMenuItem(new SetDefaultViewAction());
+            viewMenu.add( menuItem );
+            menuItem = new JMenuItem(new SetSourceViewAction());
+            viewMenu.add( menuItem );
+        menubar.add(viewMenu);
+        //}}}
+        
         //{{{ Add Tools Menu
         JMenu toolsMenu = new JMenu("Tools");
             menuItem = new JMenuItem(new ToolsOptionsAction(this));
@@ -241,6 +253,48 @@ public class TabbedView extends JFrame {
         menubar.add(helpMenu);//}}}
         
         setJMenuBar(menubar);
+    }//}}}
+    
+    //temporary classes to change views.
+    public class SetDefaultViewAction extends AbstractAction {//{{{
+        
+        public SetDefaultViewAction() {
+            putValue(Action.NAME, "Default View");
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+            DocumentViewFactory factory = DocumentViewFactory.newInstance();
+            DocumentView view = factory.newDocumentView();
+            setDocumentView(view);
+        }
+        
+    }//}}}
+    
+    public class SetSourceViewAction extends AbstractAction {//{{{
+        
+        public SetSourceViewAction() {
+            putValue(Action.NAME, "Source View");
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+            DocumentViewFactory factory = DocumentViewFactory.newInstance();
+            factory.setDocumentViewType("documentview.sourceview");
+            DocumentView view = factory.newDocumentView();
+            setDocumentView(view);
+        }
+        
+    }//}}}
+    
+    private void setDocumentView(DocumentView view) {//{{{
+        //close the previous view
+        docview.close();
+        ((JPanel)tabbedPane.getSelectedComponent()).remove(docview);
+        
+        //register the new view
+        docview = view;
+        XMLDocument[] docs = jsXe.getXMLDocuments();
+        setDocument(docs[tabbedPane.getSelectedIndex()]);
+        ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
     }//}}}
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
