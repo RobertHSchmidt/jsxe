@@ -23,6 +23,17 @@ TODO:
     
 * Version 0.2 beta
     
+    * Make DocumentViews use XMLDocuments instead of DocumentBuffers. This
+      will allow DocumentViews and XMLDocuments to be used as a separate
+      packages that can be imbedded in other applications. DocumentViews are
+      too specific to jsXe. Need to removed references to the TabbedView also.
+    
+    * Create new packages for the XMLDocument and DocumentViews. Provide
+      javadoc on the jsXe website. Rename AdapterNodes to something more
+      meaningful and update it's API. Maybe make XMLDocument an interface
+      so that XMLDocument classes can be created that use something othe
+      than Xerces.
+    
     * Store some options such as recent files and file specific options in
       an XML file with jsxe's options in the .jsxe folder in the home dir.
     
