@@ -85,7 +85,6 @@ public class AdapterNode {
     }//}}}
     
     public AdapterNode child(int searchIndex) {//{{{
-        //Note: JTree index is zero-based.
         Node node = domNode.getChildNodes().item(searchIndex);
         if (node == null)
             return null;
