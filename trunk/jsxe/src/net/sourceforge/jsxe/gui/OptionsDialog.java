@@ -105,14 +105,18 @@ public class OptionsDialog extends JDialog {
         constraints.anchor = GridBagConstraints.NORTHWEST;
 	    constraints.weightx = 1.0f;
 		constraints.insets = new Insets(1,0,1,0);
-        JLabel label = new JLabel(OptionsNorthPanel.getTitle());
-        layout.setConstraints(label, constraints);
-        frame.add(label);
-        JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
-        layout.setConstraints(sep, constraints);
-        frame.add(sep);
+        
+        JLabel label;
+        JSeparator sep;
         
         if (OptionsNorthPanel != null) {
+            label = new JLabel(OptionsNorthPanel.getTitle());
+            layout.setConstraints(label, constraints);
+            frame.add(label);
+            sep = new JSeparator(JSeparator.HORIZONTAL);
+            layout.setConstraints(sep, constraints);
+            frame.add(sep);
+            
             OptionsNorthPanel.setBorder(border2);
             constraints.fill = GridBagConstraints.NONE;
             constraints.weighty = 1.0f;
@@ -129,14 +133,14 @@ public class OptionsDialog extends JDialog {
         
         OptionsSouthPanel = panel.getOptionsPanel();
         
-        label = new JLabel(OptionsSouthPanel.getTitle());
-        layout.setConstraints(label, constraints);
-        frame.add(label);
-        sep = new JSeparator(JSeparator.HORIZONTAL);
-        layout.setConstraints(sep, constraints);
-        frame.add(sep);
-        
         if (OptionsSouthPanel != null) {
+            label = new JLabel(OptionsSouthPanel.getTitle());
+            layout.setConstraints(label, constraints);
+            frame.add(label);
+            sep = new JSeparator(JSeparator.HORIZONTAL);
+            layout.setConstraints(sep, constraints);
+            frame.add(sep);
+            
             OptionsSouthPanel.setBorder(border2);
             constraints.fill = GridBagConstraints.NONE;
             constraints.weighty = 1.0f;

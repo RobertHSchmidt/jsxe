@@ -72,23 +72,20 @@ import java.util.Vector;
 public class DefaultXMLDocument extends XMLDocument {
     
     protected DefaultXMLDocument(File file) throws FileNotFoundException, IOException {//{{{
-        setProperty("format-output",                 "false");
-        setProperty("whitespace-in-element-content", "true");
+        setDefaultProperties();
         setModel(file);
         validated=false;
     }//}}}
     
     protected DefaultXMLDocument(Reader reader) throws IOException {//{{{
-        setProperty("format-output",                 "false");
-        setProperty("whitespace-in-element-content", "true");
+        setDefaultProperties();
         setModel(reader);
         name = getUntitledLabel();
         validated=false;
     }//}}}
     
     protected DefaultXMLDocument(String string) throws IOException {//{{{
-        setProperty("format-output", "false");
-        setProperty("whitespace-in-element-content", "true");
+        setDefaultProperties();
         setModel(string);
         name = getUntitledLabel();
         validated=false;
@@ -123,6 +120,7 @@ public class DefaultXMLDocument extends XMLDocument {
             config.setParameter("format-output", getProperty("format-output"));
             config.setParameter("whitespace-in-element-content", getProperty("whitespace-in-element-content"));
             DOMSerializer serializer = new DOMSerializer(config);
+            serializer.setEncoding(getProperty("encoding"));
             return serializer.writeToString(getDocument());
         } else {
             return source;
@@ -209,6 +207,12 @@ public class DefaultXMLDocument extends XMLDocument {
             }
         }
         return "Untitled-" + Integer.toString(untitledNo+1);
+    }//}}}
+    
+    private void setDefaultProperties() {///{{{
+        setProperty("format-output", "false");
+        setProperty("whitespace-in-element-content", "true");
+        setProperty("encoding", "UTF-8");
     }//}}}
     
     private Document document;

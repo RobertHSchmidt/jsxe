@@ -2,10 +2,6 @@ TODO:
 
     * Document methods with javadoc.
     
-    * Change the DOMSerializer class to conform to the DOM3 standard
-      DOMWriter (old) interface. For encoding use the java.io.OutputStreamWriter
-      class. Add an encoding option to the option dialog.
-    
     * Fix bug that has to do with the DOM1 method createElement() making nodes
       so that localName returns null.
     
