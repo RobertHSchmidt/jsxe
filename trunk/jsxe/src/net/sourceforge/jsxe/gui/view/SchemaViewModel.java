@@ -40,15 +40,16 @@ import net.sourceforge.jsxe.dom.*;
 
 //{{{ Swing classes
 import javax.swing.event.UndoableEditListener;
+import javax.swing.undo.UndoableEdit;
 //}}}
 
 //{{{ Java base classes
-import java.util.Map;
-import java.util.Iterator;
+import java.util.*;
 //}}}
 
 //{{{ JGraph classes
 import org.jgraph.graph.*;
+import org.jgraph.event.*;
 //}}}
 
 //}}}
@@ -86,7 +87,7 @@ public class SchemaViewModel /*implements GraphModel*/ {
     //{{{ addUndoableEditListener()
     
     public void addUndoableEditListener(UndoableEditListener listener) {
-        if ( l != null && ! m_undoableEditListenerList.contains(listener) ) {
+        if ( listener != null && ! m_undoableEditListenerList.contains(listener) ) {
             m_undoableEditListenerList.add(listener);
         }
     }//}}}
@@ -180,7 +181,7 @@ public class SchemaViewModel /*implements GraphModel*/ {
     
     public Object getRootAt(int index) {
         if (index == 1) {
-            return document.getAdapterNode();
+            return m_document.getAdapterNode();
         }
         return null;
     }//}}}
@@ -240,8 +241,8 @@ public class SchemaViewModel /*implements GraphModel*/ {
     //{{{ removeGraphModelListener()
     
     public void removeGraphModelListener(GraphModelListener l) {
-        if ( listener != null ) {
-            m_graphModelListenerList.remove( listener );
+        if ( l != null ) {
+            m_graphModelListenerList.remove( l );
         }
     }//}}}
     
