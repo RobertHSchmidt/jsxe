@@ -155,8 +155,6 @@ public class TabbedView extends JFrame {
         
         DocumentView newDocView = factory.newDocumentView(buffer);
         
-       // newDocView.setDocumentBuffer(this, buffer);
-        
         buffer.addDocumentBufferListener(m_docBufListener);
         
         m_documentViews.add(newDocView);
@@ -165,7 +163,6 @@ public class TabbedView extends JFrame {
         tabbedPane.setSelectedComponent(comp);
         
         updateTitle();
-       // updateMenuBar();
         
         return;
     }//}}}
