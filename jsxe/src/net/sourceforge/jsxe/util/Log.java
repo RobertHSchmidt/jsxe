@@ -344,15 +344,16 @@ public class Log
 
       message = urgencyString +  message + '\n';
 
-      if(urgency >= level)
-      {
-         if(urgency == ERROR) {
-            realErr.print(message);
-         } else {
-            if (urgency != DEBUG || (urgency == DEBUG && debug)) { 
-               realOut.print(message);
-            }
-         }
+      if (urgency == DEBUG && debug) { 
+          realOut.print(message);
+      } else {
+          if(urgency >= level) {
+             if(urgency == ERROR) {
+                realErr.print(message);
+             } else {
+                 realOut.print(message);
+             }
+          }
       }
    }
 

@@ -1,3 +1,8 @@
+03/16/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug with the debug option in logging
+    * Added a command line option to enable printing debug to the command line.
+
 03/13/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated the getAdapterNode() method in XMLDocument to check if the
