@@ -544,6 +544,10 @@ public class AdapterNode {
         listeners.remove(listeners.indexOf(listener));
     }//}}}
     
+    public String serializeToString() {//{{{
+        return rootDocument.serializeNodeToString(this);
+    }//}}}
+    
     //{{{ Protected members
     
     /**
@@ -619,24 +623,6 @@ public class AdapterNode {
             children.add(null);
         }
     }//}}}
-    
-    public static void main(String[] args)
-    {
-        System.out.println("Testing AdapterNode class...");
-        java.io.Reader reader = null;
-        XMLDocument xmlDocument = null;
-        try
-        {
-            reader = new java.io.BufferedReader(new java.io.FileReader(new java.io.File("test.xml")));
-            xmlDocument = new DefaultXMLDocument(reader);
-        }
-        catch(java.io.IOException e)
-        {
-            System.out.println(e.toString());
-        }
-        
-        //AdapterNode aNode = new AdapterNode(xmlDocument, xmlDocument.getAdapterNode());       
-    }
     
     private AdapterNode parentNode;
     private XMLDocument rootDocument;

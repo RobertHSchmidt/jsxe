@@ -40,58 +40,20 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.dom.AdapterNode;
-import net.sourceforge.jsxe.dom.XMLDocument;
-import net.sourceforge.jsxe.gui.OptionsPanel;
-import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.*;
+import net.sourceforge.jsxe.dom.*;
+import net.sourceforge.jsxe.gui.*;
 //}}}
 
 //{{{ Swing components
-import javax.swing.JCheckBox;
-import javax.swing.JEditorPane;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTree;
-import javax.swing.ImageIcon;
-import javax.swing.Icon;
-import javax.swing.ToolTipManager;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.event.TreeModelListener;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
-import javax.swing.tree.DefaultTreeCellEditor;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.tree.*;
 //}}}
 
 //{{{ AWT components
-import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.Component;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 //}}}
 
 //{{{ DOM classes
@@ -125,11 +87,10 @@ public class DefaultView extends DocumentView {
         //create a table model
         JScrollPane attrView = new JScrollPane(attributesTable);
         
-        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
-        
         attributesTable.setColumnSelectionAllowed(false);
         attributesTable.setRowSelectionAllowed(false);
+        
+        tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
         
         //{{{ Create and set up the splitpanes
         vertSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treeView, attrView);
@@ -146,14 +107,10 @@ public class DefaultView extends DocumentView {
         
         //}}}
         
-        tree.addMouseListener(new TreePopupListener());
         attributesTable.addMouseListener(new TablePopupListener());
 
         setDocumentBuffer(buffer);
-        tree.setCellRenderer(new DefaultViewTreeCellRenderer());
-        tree.setCellEditor(new DefaultTreeCellEditor(tree, new ElementTreeCellRenderer()));
-        ToolTipManager.sharedInstance().registerComponent(tree);
-    } //}}}
+    }//}}}
     
     //{{{ setDocumentBuffer
     
@@ -267,29 +224,10 @@ public class DefaultView extends DocumentView {
     
     //{{{ Private Members
     
-    //{{{ canEditInJTree()
-    
-    private boolean canEditInJTree(AdapterNode node) {
-        return (node.getNodeType() == Node.ELEMENT_NODE);
-    }//}}}
-    
     //{{{ canEditInJEditorPane()
     
     private boolean canEditInJEditorPane(AdapterNode node) {
         return (node.getNodeValue() != null);
-    }//}}}
-    
-    //{{{ updateTree()
-    
-    private void updateTree() {
-        //We must settle for this but this doesn't
-        //update the tree properly. When the text node
-        //is changed the tree cell size doesn't change
-        //resulting in ... characters in the tree.
-        //Being able to update the tree the way we want
-        //to is going to be require more complex use of
-        //tree rendering I think.
-        tree.treeDidChange();
     }//}}}
     
     //{{{ DefaultViewOptionsPanel class
@@ -378,105 +316,6 @@ public class DefaultView extends DocumentView {
         
     }//}}}
     
-    //{{{ DefaultTreeSelectionListener class
-    
-    private class DefaultTreeSelectionListener implements TreeSelectionListener {
-        
-        //{{{ DefaultTreeSelectionListener constructor
-        
-        DefaultTreeSelectionListener(Component p) {
-            parent=p;
-        }//}}}
-        
-        //{{{ valueChanged()
-        
-        public void valueChanged(TreeSelectionEvent e) {
-            TreePath selPath = e.getPath();
-            AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-            if ( selectedNode != null ) {
-                
-                //if the selected node can be edited in either the tree
-                //or the text pane
-                tree.setEditable(canEditInJTree(selectedNode));
-                htmlPane.setEditable(canEditInJEditorPane(selectedNode));
-                
-                //update the attributes table with the current info.
-                DefaultViewTableModel tableModel = new DefaultViewTableModel(DefaultView.this, selectedNode);
-                attributesTable.setModel(tableModel);
-                tableModel.addTableModelListener(tableListener);
-                attributesTable.updateUI();
-                
-                //update the text pane with the current info
-                DefaultViewDocument styledDoc = new DefaultViewDocument(selectedNode);
-                htmlPane.setDocument(styledDoc);
-                styledDoc.addDocumentListener(docListener);
-                htmlPane.updateUI();
-                
-            } else {
-                htmlPane.setDocument(null);
-            }
-        }//}}}
-        
-        //{{{ Private members
-        private Component parent;
-        //}}}
-        
-    }//}}}
-    
-    //{{{ TreePopupListener class
-    
-    private class TreePopupListener extends MouseAdapter {
-        
-        //{{{ mousePressed()
-        
-        public void mousePressed(MouseEvent e) {
-            maybeShowPopup(e);
-        }//}}}
-        
-        //{{{ mouseReleased()
-        
-        public void mouseReleased(MouseEvent e) {
-            maybeShowPopup(e);
-        }//}}}
-        
-        //{{{ maybeShowPopup()
-        
-        private void maybeShowPopup(MouseEvent e) {
-            TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
-            if (e.isPopupTrigger() && selPath != null) {
-                
-                tree.setSelectionPath(selPath);
-                
-                AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                JMenuItem popupMenuItem;
-                JPopupMenu popup = new JPopupMenu();
-                boolean showpopup = false;
-                
-                if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                    popupMenuItem = new JMenuItem("Add Element Node");
-                    popupMenuItem.addActionListener(new AddElementNodeAction());
-                    popup.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem("Add Text Node");
-                    popupMenuItem.addActionListener(new AddTextNodeAction());
-                    popup.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem("Rename Node");
-                    popupMenuItem.addActionListener(new RenameElementAction());
-                    popup.add(popupMenuItem);
-                    showpopup = true;
-                }
-                //if the node is not the document or the document root.
-                if (selectedNode.getNodeType() != Node.DOCUMENT_NODE && selectedNode.getParentNode().getNodeType() != Node.DOCUMENT_NODE) {
-                    popupMenuItem = new JMenuItem("Remove Node");
-                    popupMenuItem.addActionListener(new RemoveNodeAction());
-                    popup.add(popupMenuItem);
-                    showpopup = true;
-                }
-                if (showpopup)
-                    popup.show(e.getComponent(), e.getX(), e.getY());
-            }
-        }//}}}
-    }//}}}
-    
     //{{{ TablePopupListener class
     
     private class TablePopupListener extends MouseAdapter {
@@ -523,215 +362,53 @@ public class DefaultView extends DocumentView {
         }//}}}
         
     }//}}}
+
+    //{{{ DefaultTreeSelectionListener class
     
-    //{{{ DefaultViewTreeCellRenderer class
-    
-    private class DefaultViewTreeCellRenderer extends DefaultTreeCellRenderer {
+    private class DefaultTreeSelectionListener implements TreeSelectionListener {
         
-        //{{{ DefaultViewTreeCellRenderer constructor
+        //{{{ DefaultTreeSelectionListener constructor
         
-        DefaultViewTreeCellRenderer() {
-            m_defaultLeafIcon = getLeafIcon();
-            m_defaultOpenIcon = getOpenIcon();
-            m_defaultClosedIcon = getClosedIcon();
+        DefaultTreeSelectionListener(Component p) {
+            parent=p;
         }//}}}
         
-        //{{{ getTreeCellRendererComponent()
+        //{{{ valueChanged()
         
-        public Component getTreeCellRendererComponent(JTree tree, 
-            Object value, boolean selected, boolean expanded,
-            boolean leaf, int row, boolean hasFocus) {
-            
-            AdapterNode node = (AdapterNode)value;
-            setText(node.toString());
-            this.selected = selected;
-            
-            switch (node.getNodeType()) {
-                case Node.ELEMENT_NODE:
-                    setIcon(m_elementIcon);
-                    setLeafIcon(m_elementIcon);
-                    setOpenIcon(m_elementIcon);
-                    setClosedIcon(m_elementIcon);
-                    setToolTipText("Element Node");
-                    break;
-                case Node.TEXT_NODE:
-                    setIcon(m_textIcon);
-                    setLeafIcon(m_textIcon);
-                    setOpenIcon(m_textIcon);
-                    setClosedIcon(m_textIcon);
-                    setToolTipText("Text Node");
-                    break;
-                case Node.CDATA_SECTION_NODE:
-                    setIcon(m_CDATAIcon);
-                    setLeafIcon(m_CDATAIcon);
-                    setOpenIcon(m_CDATAIcon);
-                    setClosedIcon(m_CDATAIcon);
-                    setToolTipText("CDATA Section");
-                    break;
-                case Node.COMMENT_NODE:
-                    setIcon(m_commentIcon);
-                    setLeafIcon(m_commentIcon);
-                    setOpenIcon(m_commentIcon);
-                    setClosedIcon(m_commentIcon);
-                    setToolTipText("Comment Node");
-                    break;
-                case Node.ENTITY_REFERENCE_NODE:
-                    setIcon(m_externalEntityIcon);
-                    setLeafIcon(m_externalEntityIcon);
-                    setOpenIcon(m_externalEntityIcon);
-                    setClosedIcon(m_externalEntityIcon);
-                    setToolTipText("Entity Reference");
-                    break;
-                case Node.DOCUMENT_NODE:
-                    setIcon(m_defaultClosedIcon);
-                    setLeafIcon(m_defaultLeafIcon);
-                    setOpenIcon(m_defaultOpenIcon);
-                    setClosedIcon(m_defaultClosedIcon);
-                    setToolTipText("XML Document");
-                    break;
-                default:
-                    if (leaf) {
-                        setIcon(m_defaultLeafIcon);
-                    } else {
-                        if (expanded) {
-                            setIcon(m_defaultOpenIcon);
-                        } else {
-                            setIcon(m_defaultClosedIcon);
-                        }
-                    }
-                    
-                    setLeafIcon(m_defaultLeafIcon);
-                    setOpenIcon(m_defaultOpenIcon);
-                    setClosedIcon(m_defaultClosedIcon);
-                    
-                    setToolTipText("Unknown Node Type");
-                    
-                    break;
+        public void valueChanged(TreeSelectionEvent e) {
+            TreePath selPath = e.getPath();
+            AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+            if ( selectedNode != null ) {
+                
+                //if the selected node can be edited in either the tree
+                //or the text pane
+                tree.setEditable(DefaultViewTree.isEditable(selectedNode));
+                htmlPane.setEditable(canEditInJEditorPane(selectedNode));
+                
+                //update the attributes table with the current info.
+                DefaultViewTableModel tableModel = new DefaultViewTableModel(DefaultView.this, selectedNode);
+                attributesTable.setModel(tableModel);
+                tableModel.addTableModelListener(tableListener);
+                attributesTable.updateUI();
+                
+                //update the text pane with the current info
+                DefaultViewDocument styledDoc = new DefaultViewDocument(selectedNode);
+                htmlPane.setDocument(styledDoc);
+                styledDoc.addDocumentListener(docListener);
+                htmlPane.updateUI();
+                
+            } else {
+                htmlPane.setDocument(null);
             }
-            
-            return this;
         }//}}}
         
         //{{{ Private members
-        private Icon m_defaultLeafIcon;
-        private Icon m_defaultOpenIcon;
-        private Icon m_defaultClosedIcon;
+        private Component parent;
         //}}}
         
     }//}}}
     
-    //{{{ ElementTreeCellRenderer class
-    
-    private class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
-        
-        //{{{ ElementTreeCellRenderer constructor
-        
-        public ElementTreeCellRenderer() {
-            //only element nodes can be edited in the tree
-            setIcon(m_elementIcon);
-            setLeafIcon(m_elementIcon);
-            setOpenIcon(m_elementIcon);
-            setClosedIcon(m_elementIcon);
-            setToolTipText("Element Node");
-        }//}}}
-        
-        //{{{ getTreeCellRendererComponent
-        
-        public Component getTreeCellRendererComponent(JTree tree, 
-            Object value, boolean selected, boolean expanded,
-            boolean leaf, int row, boolean hasFocus) {
-            
-            return this;
-            
-        }//}}}
-        
-    }//}}}
-
     //{{{ Actions
-    
-    //{{{ AddElementNodeAction class
-    
-    private class AddElementNodeAction implements ActionListener {
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            try {
-                TreePath selPath = tree.getLeadSelectionPath();
-                if (selPath != null) {
-                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    AdapterNode newNode = selectedNode.addAdapterNode("New_Element", "", Node.ELEMENT_NODE);
-                    //The TreeModel doesn't automatically treeNodesInserted() yet
-                   // updateComponents();
-                    tree.updateUI();
-                }
-            } catch (DOMException dome) {
-                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
-            }
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ RenameElementAction class
-    
-    private class RenameElementAction implements ActionListener {
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            TreePath selPath = tree.getLeadSelectionPath();
-            if (selPath != null) {
-                tree.startEditingAtPath(selPath);
-            }
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ AddTextNodeAction class
-    
-    private class AddTextNodeAction implements ActionListener {
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            try {
-                TreePath selPath = tree.getLeadSelectionPath();
-                if (selPath != null) {
-                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    selectedNode.addAdapterNode("", "New Text Node", Node.TEXT_NODE);
-                    //The TreeModel doesn't automatically treeNodesInserted() yet
-                   // updateComponents();
-                    tree.updateUI();
-                }
-            } catch (DOMException dome) {
-                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
-            }
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ RemoveNodeAction class
-    
-    private class RemoveNodeAction implements ActionListener {
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            try {
-                TreePath selPath = tree.getLeadSelectionPath();
-                if (selPath != null) {
-                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    selectedNode.getParentNode().remove(selectedNode);
-                    //The TreeModel doesn't automatically treeNodesRemoved() yet
-                   // updateComponents();
-                    tree.updateUI();
-                }
-            } catch (DOMException dome) {
-                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
-            }
-        }//}}}
-        
-    }//}}}
     
     //{{{ RemoveAttributeAction class
     
@@ -773,20 +450,13 @@ public class DefaultView extends DocumentView {
 
     //{{{ Instance variables
     
-    private JTree tree = new JTree();
+    private DefaultViewTree tree = new DefaultViewTree();
     private JEditorPane htmlPane = new JEditorPane("text/plain","");
     private JTable attributesTable = new JTable();
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
     private DocumentBuffer m_buffer;
     
-    private static final ImageIcon m_elementIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Element.png"), "Element");
-    private static final ImageIcon m_textIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Text.png"), "Text");
-    private static final ImageIcon m_CDATAIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/CDATA.png"), "CDATA");
-    private static final ImageIcon m_commentIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Comment.png"), "Comment");
-    private static final ImageIcon m_externalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/ExternalEntity.png"), "External Entity");
-   // private static final ImageIcon m_internalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/InternalEntity.png"), "Internal Entity");
-   
     private static final String viewname="documentview.default";
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {
@@ -796,7 +466,7 @@ public class DefaultView extends DocumentView {
     private TreeModelListener treeListener = new TreeModelListener() {//{{{
         
         public void treeNodesChanged(TreeModelEvent e) {
-            updateTree();
+           // updateTree();
         }
         
         //These aren't called yet.
@@ -817,13 +487,13 @@ public class DefaultView extends DocumentView {
     private DocumentListener docListener = new DocumentListener() {//{{{
         
         public void changedUpdate(DocumentEvent e) {
-            updateTree();
+           // updateTree();
         }
         public void insertUpdate(DocumentEvent e) {
-            updateTree();
+           // updateTree();
         }
         public void removeUpdate(DocumentEvent e) {
-            updateTree();
+           // updateTree();
         };
         
     };//}}}
