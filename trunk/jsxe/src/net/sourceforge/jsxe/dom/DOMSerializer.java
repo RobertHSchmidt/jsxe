@@ -15,7 +15,6 @@ This attempts to conform to the DOM3 implementation in Xerces. It conforms
 to DOM3 as of Xerces 2.3.0
 
 This file written by Ian Lewis (IanLewis@member.fsf.org)
-Copied extensively and modified from Java & XML by Brett McLaughlin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -51,9 +50,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.DOMWriter;
+import org.w3c.dom.ls.DOMWriterFilter;
 import org.apache.xerces.dom3.DOMConfiguration;
 import org.apache.xerces.dom3.DOMError;
 import org.apache.xerces.dom3.DOMErrorHandler;
+import org.apache.xerces.dom3.DOMLocator;
 //}}}
 
 //{{{ Java base classes
@@ -62,6 +63,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Hashtable;
 //}}}
@@ -72,13 +75,11 @@ public class DOMSerializer implements DOMWriter {
     
     public DOMSerializer() {//{{{
         DOMSerializerConfiguration config = new DOMSerializerConfiguration();
-        lineSeparator = "";
         newLine = System.getProperty("line.separator");
     }//}}}
     
     public DOMSerializer(DOMSerializerConfiguration config) {//{{{
         this.config = config;
-        lineSeparator = "";
         newLine = System.getProperty("line.separator");
     }//}}}
     
@@ -89,7 +90,7 @@ public class DOMSerializer implements DOMWriter {
     }//}}}
     
     public String getEncoding() {//{{{
-        return lineSeparator;
+        return encoding;
     }//}}}
     
     public DOMWriterFilter getFilter() {//{{{
@@ -97,11 +98,14 @@ public class DOMSerializer implements DOMWriter {
     }//}}}
     
     public String getNewLine() {//{{{
-        return lineSeparator;
+        return newLine;
     }//}}}
     
     public void setEncoding(String encoding) {//{{{
-        this.encoding = encoding;
+        if (encoding == null)
+            this.encoding = "UTF-8";
+        else
+            this.encoding = encoding;
     }//}}}
     
     public void setFilter(DOMWriterFilter filter) {//{{{
@@ -109,13 +113,18 @@ public class DOMSerializer implements DOMWriter {
     }//}}}
     
     public void setNewLine(String newLine) {//{{{
-        this.newLine=newLine;
+        if (newLine == null)
+            this.newLine = System.getProperty("line.separator");
+        else
+            this.newLine=newLine;
     }//}}}
     
     public boolean writeNode(OutputStream out, Node wnode) {//{{{
-        if (filter == null || filter.accept(wnode)) {
+        if (filter == null || filter.acceptNode(wnode) == 1) {
             
             OutputStreamWriter writer;
+            
+            DefaultDOMLocator loc = new DefaultDOMLocator(wnode, 1, 1, 0, "");
             
             try {
                 
@@ -127,8 +136,6 @@ public class DOMSerializer implements DOMWriter {
                 
                     DOMErrorHandler handler = (DOMErrorHandler)rawHandler;
                     
-                    DefaultDOMLocator loc = new DefaultDOMLocator(wnode, 1, 1, 0);
-                    
                     DOMSerializerError error = new DOMSerializerError(loc, uee, DOMError.SEVERITY_FATAL_ERROR);
                     
                     if (!handler.handleError(error)) {
@@ -136,7 +143,9 @@ public class DOMSerializer implements DOMWriter {
                         //is fatal but if it doesn't then use the
                         //default encoding. Java is guaranteed to support
                         //UTF-8
-                        writer = new OutputStreamWriter(out, "UTF-8");
+                        try {
+                            writer = new OutputStreamWriter(out, "UTF-8");
+                        } catch (UnsupportedEncodingException uee) {}
                     } else {
                         return false;
                     }
@@ -145,7 +154,7 @@ public class DOMSerializer implements DOMWriter {
                 }
             }
             
-            serializeNode(wnode, writer, 1, 0, 0);
+            serializeNode(writer, wnode);
             
         }
         return true;
@@ -153,7 +162,7 @@ public class DOMSerializer implements DOMWriter {
     
     public String writeToString(Node wnode) throws DOMException {//{{{
         StringWriter writer = new StringWriter();
-        serializeNode(wnode, writer, 1, 1, 0);
+        serializeNode(writer, wnode);
         return writer.toString();
     }//}}}
     
@@ -164,7 +173,7 @@ public class DOMSerializer implements DOMWriter {
         public DOMSerializerConfiguration() {//{{{
             
             //set the default parameters for DOMConfiguration
-            setParameter("error-handler", new DOMSerializerErrorHandler());
+            setParameter("error-handler", null);
             
             //set the default boolean parameters for a DOMConfiguration
             setFeature("canonical-form",                false);
@@ -212,8 +221,8 @@ public class DOMSerializer implements DOMWriter {
         }//}}}
         
         public boolean canSetParameter(String name, Object value) {///{{{
-            if (Boolean.isInstance(value) {
-                boolean booleanValue = (Boolean)value;
+            if (value instanceof Boolean) {
+                boolean booleanValue = ((Boolean)value).booleanValue();
                 
                 //couldn't think of a slicker way to do this
                 //that was worth the time to implement
@@ -260,9 +269,15 @@ public class DOMSerializer implements DOMWriter {
                 if (name == "whitespace-in-element-content") {
                     return !booleanValue;
                 }
+                if (name == "formatting") {
+                    return true;
+                }
                 return false;
             } else {
-                return (name == "error-handler" && DOMErrorHandler.isInstance(value));
+                if (name == "error-handler" && value instanceof DOMErrorHandler) {
+                    return true;
+                }
+                return (name == "indent" && value instanceof Integer);
             }
         }//}}}
         
@@ -276,7 +291,7 @@ public class DOMSerializer implements DOMWriter {
             } else {
                 if (name == "error-handler")
                     return null;
-                throw new DOMException("NOT_FOUND_ERR: Parameter "+name+" not recognized");
+                throw new DOMException(DOMException.NOT_FOUND_ERR ,"NOT_FOUND_ERR: Parameter "+name+" not recognized");
             }
         }//}}}
         
@@ -284,21 +299,21 @@ public class DOMSerializer implements DOMWriter {
         public void setParameter(String name, Object value) throws DOMException {//{{{
             //all parameters (except error-handler) have default values so
             //if its not set then its not recognized.
-            Object value = parameters.get(name);
-            if (value == null) {
+            Object valueTest = parameters.get(name);
+            if (valueTest == null) {
                 if (name != "error-handler")
-                    throw new DOMException("NOT_FOUND_ERR: Parameter "+name+" not recognized");
+                    throw new DOMException(DOMException.NOT_FOUND_ERR, "NOT_FOUND_ERR: Parameter "+name+" not recognized");
             }
             if (canSetParameter(name, value)) {
                 parameters.put(name, value);
             } else {
-                throw new DOMException("NOT_SUPPORTED_ERR: Parameter "+name+" not supported.");
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "NOT_SUPPORTED_ERR: Parameter "+name+" not supported.");
             }
         }//}}}
         
         public boolean getFeature(String name) throws DOMException {//{{{
             if (name == "error-handler")
-                throw new DOMException("NOT_FOUND_ERR: "+name+" is not a feature.");
+                throw new DOMException(DOMException.NOT_FOUND_ERR, "NOT_FOUND_ERR: "+name+" is not a feature.");
             return ((Boolean)getParameter(name)).booleanValue();
             
         }//}}}
@@ -347,125 +362,176 @@ public class DOMSerializer implements DOMWriter {
             return "";
         }//}}}
         
+        private Exception exception;
+        private DOMLocator location;
+        private short severity;
     }//}}}
     
-    private void serializeNode(Node node, Writer writer, int line, int column, int offset) {//{{{
-        switch (node.getNodeType()) {
-            case Node.DOCUMENT_NODE:
-                writer.write("<?xml version=\"1.0\" encoding="+encoding+"?>");
-                writer.write(newLine);
-                
-                NodeList nodes = node.getChildNodes();
-                if (nodes != null) {
-                    for (int i=0; i<nodes.getLength(); i++) {
-                        serializeNode(nodes.item(i), writer, );
-                    }
-                }
-                /*
-                Document doc = (Document)node;
-                serializeNode(doc.getDocumentElement(), writer, "");
-                */
-                break;
-            case Node.ELEMENT_NODE:
-                String nodeName = node.getNodeName();
-                writer.write(indentLevel + "<" + nodeName);
-                NamedNodeMap attr = node.getAttributes();
-                for (int i=0; i<attr.getLength(); i++) {
-                    Node currentAttr = attr.item(i);
-                    writer.write(" " + currentAttr.getNodeName() + "=\"" +
-                        currentAttr.getNodeValue() + "\"");
-                }
-                writer.write(">");
-                NodeList children = node.getChildNodes();
-                if (children != null) {
-                    if (children.item(0) != null) {
-                        if (children.getLength() != 1 && children.item(0).getNodeType() == Node.TEXT_NODE)
-                            writer.write(lineSeparator);
-                    }
-                    for(int i=0; i<children.getLength();i++) {
-                        serializeNode(
-                            children.item(i), writer, indentLevel + indent);
-                    }
-                    if (children.item(0) != null) {
-                        if (children.getLength() != 1 && children.item(0).getNodeType() == Node.TEXT_NODE)
-                            writer.write(indentLevel);
-                    }
-                }
-                writer.write("</" + nodeName + ">");
-                writer.write(lineSeparator);
-                break;
-            case Node.TEXT_NODE:
-                String text = node.getNodeValue();
-                if (formatText)
-                    text = text.trim();
-                if (!text.equals("")) {
-                    //pass through the text and add entities where we find
-                    // '>' or '<' characters
-                    for (int i=0; i<text.length();i++) {
-                        //this must be first or it picks up the other
-                        //entities.
-                        if (text.charAt(i)=='&') {
-                            String before = text.substring(0,i);
-                            String after = text.substring(i+1);
-                            text = before + "&amp;";
-                        }
-                        if (text.charAt(i)=='>') {
-                            String before = text.substring(0,i);
-                            String after = text.substring(i+1);
-                            text = before + "&gt;";
-                        }
-                        if (text.charAt(i)=='<') {
-                            String before = text.substring(0,i);
-                            String after = text.substring(i+1);
-                            text = before + "&lt;";
-                        }
-                        if (text.charAt(i)=='\'') {
-                            String before = text.substring(0,i);
-                            String after = text.substring(i+1);
-                            text = before + "&apos;";
-                        }
-                        if (text.charAt(i)=='\"') {
-                            String before = text.substring(0,i);
-                            String after = text.substring(i+1);
-                            text = before + "&quot;";
+    private void serializeNode(Writer writer, Node node) {//{{{
+        rSerializeNode(writer, node, "");
+    }//}}}
+    
+    private void rSerializeNode(Writer writer, Node node, String currentIndent) {//{{{
+        
+        boolean formatting = config.getFeature("formatting");
+        
+        if (filter == null || filter.acceptNode(node) == 1) {
+            switch (node.getNodeType()) {
+                case Node.DOCUMENT_NODE://{{{
+                    String header = "<?xml version=\"1.0\" encoding="+encoding+"?>";
+                    writer.write(header);
+                    //write newLine no matter what here.
+                    writer.write(newLine);
+                    
+                    NodeList nodes = node.getChildNodes();
+                    if (nodes != null) {
+                        for (int i=0; i<nodes.getLength(); i++) {
+                            rSerializeNode(writer, nodes.item(i), currentIndent);
                         }
                     }
-                    writer.write(indentLevel + text);
-                    writer.write(lineSeparator);
-                }
-                break;
-            case Node.CDATA_SECTION_NODE:
-                writer.write("<![CDATA[" + node.getNodeValue() + "]]>");
-                break;
-            case Node.COMMENT_NODE:
-                writer.write(indentLevel+"<!--"+node.getNodeValue()+"-->");
-                writer.write(lineSeparator);
-                break;
-            case Node.PROCESSING_INSTRUCTION_NODE:
-                writer.write("<?" + node.getNodeName() + " " +
-                    node.getNodeValue() + "?>");
-                writer.write(lineSeparator);
-                break;
-            case Node.ENTITY_REFERENCE_NODE:
-                writer.write("&" + node.getNodeName() + ";");
-                break;
-            case Node.DOCUMENT_TYPE_NODE:
-                DocumentType docType = (DocumentType)node;
-                writer.write("<!DOCTYPE " + docType.getName());
-                if (docType.getPublicId() != null) {
-                    writer.write(" PUBLIC \"" + docType.getPublicId() + "\" "); 
-                } else {
-                    writer.write(" SYSTEM ");
-                }
-                writer.write("\"" + docType.getSystemId() + "\">");
-                writer.write(lineSeparator);
-                break;
+                    
+                    break;//}}}
+                case Node.ELEMENT_NODE://{{{
+                    String nodeName = node.getNodeName();
+                    
+                    if (formatting)
+                        writer.write(currentIndent);
+                    
+                    writer.write("<" + nodeName);
+                    NamedNodeMap attr = node.getAttributes();
+                    for (int i=0; i<attr.getLength(); i++) {
+                        Node currentAttr = attr.item(i);
+                        writer.write(" " + currentAttr.getNodeName() + "=\"" +
+                            currentAttr.getNodeValue() + "\"");
+                    }
+                    NodeList children = node.getChildNodes();
+                    if (children != null) {
+                        if (children.getLength() > 0) {
+                            
+                            writer.write(">");
+                            
+                           // if (children.getLength() != 1 && children.item(0).getNodeType() == Node.TEXT_NODE)
+                           //     writer.write(newLine);
+                            
+                            String indentUnit = "";
+                            
+                            if (formatting) {
+                                //get the indent size and use it when serializing the children nodes.
+                                Integer indentSize = (Integer)config.getParameter("indent");
+                                if (indentSize != null) {
+                                    int size = indentSize.intValue();
+                                    for (int i=0; i < size; i++) {
+                                        indentUnit += " ";
+                                    }
+                                }
+                            }
+                            
+                            
+                            for(int i=0; i<children.getLength();i++) {
+                                rSerializeNode(writer, children.item(i), currentIndent + indentUnit);
+                            }
+                            
+                           // if (children.getLength() != 1 && children.item(0).getNodeType() == Node.TEXT_NODE)
+                           //     writer.write(indentLevel);
+                            
+                            writer.write("</" + nodeName + ">");
+                        } else {
+                            writer.write("/>");
+                        }
+                    }
+                    
+                    if (formatting)
+                        writer.write(newLine);
+                    break;//}}}
+                case Node.TEXT_NODE://{{{
+                    String text = node.getNodeValue();
+                    if (formatting)
+                        text = text.trim();
+                    if (!text.equals("")) {
+                        //pass through the text and add entities where we find
+                        // '>' or '<' characters
+                        for (int i=0; i<text.length();i++) {
+                            //this must be first or it picks up the other
+                            //entities.
+                            if (text.charAt(i)=='&') {
+                                String before = text.substring(0,i);
+                                String after = text.substring(i+1);
+                                text = before + "&amp;" + after;
+                            }
+                            if (text.charAt(i)=='>') {
+                                String before = text.substring(0,i);
+                                String after = text.substring(i+1);
+                                text = before + "&gt;" + after;
+                            }
+                            if (text.charAt(i)=='<') {
+                                String before = text.substring(0,i);
+                                String after = text.substring(i+1);
+                                text = before + "&lt;" + after;
+                            }
+                            if (text.charAt(i)=='\'') {
+                                String before = text.substring(0,i);
+                                String after = text.substring(i+1);
+                                text = before + "&apos;" + after;
+                            }
+                            if (text.charAt(i)=='\"') {
+                                String before = text.substring(0,i);
+                                String after = text.substring(i+1);
+                                text = before + "&quot;" + after;
+                            }
+                        }
+                        writer.write(text);
+                        if (formatting)
+                            writer.write(newLine);
+                    }
+                    break;//}}}
+                case Node.CDATA_SECTION_NODE://{{{
+                    if (formatting)
+                        writer.write(currentIndent);
+                    writer.write("<![CDATA[" + node.getNodeValue() + "]]>");
+                    if (formatting)
+                        writer.write(newLine);
+                    break;//}}}
+                case Node.COMMENT_NODE://{{{
+                    if (formatting)
+                        writer.write(currentIndent);
+                    writer.write(currentIndent+"<!--"+node.getNodeValue()+"-->");
+                    if (formatting)
+                        writer.write(newLine);
+                    break;//}}}
+                case Node.PROCESSING_INSTRUCTION_NODE://{{{
+                    
+                    if (formatting)
+                        writer.write(currentIndent);
+                    
+                    writer.write("<?" + node.getNodeName() + " " + node.getNodeValue() + "?>");
+                    if (formatting)
+                        writer.write(newLine);
+                    break;//}}}
+                case Node.ENTITY_REFERENCE_NODE://{{{
+                    writer.write("&" + node.getNodeName() + ";");
+                    break;//}}}
+                case Node.DOCUMENT_TYPE_NODE://{{{
+                    DocumentType docType = (DocumentType)node;
+                    
+                    if (formatting)
+                        writer.write(currentIndent);
+                    
+                    writer.write("<!DOCTYPE " + docType.getName());
+                    if (docType.getPublicId() != null) {
+                        writer.write(" PUBLIC \"" + docType.getPublicId() + "\" "); 
+                    } else {
+                        writer.write(" SYSTEM ");
+                    }
+                    writer.write("\"" + docType.getSystemId() + "\">");
+                    if (formatting)
+                        writer.write(newLine);
+                    break;//}}}
+            }
         }
     }//}}}
     
     private DOMSerializerConfiguration config;
     private DOMWriterFilter filter;
-    private String lineSeparator;
     private String newLine;
     private String encoding;
     //}}}

@@ -58,6 +58,7 @@ import javax.xml.parsers.ParserConfigurationException;
 //{{{ Java base classes
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.Reader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -114,10 +115,8 @@ public class DefaultXMLDocument extends XMLDocument {
         //if it's not we go by the source.
         
         if (isValidated()) {
-            StringWriter writer = new StringWriter();
-            DOMSerializer serializer = new DOMSerializer(false);
-            serializer.serialize(document, writer);
-            return writer.toString();
+            DOMSerializer serializer = new DOMSerializer();
+            return serializer.writeToString(getDocument());
         } else {
             return source;
         }
@@ -180,8 +179,9 @@ public class DefaultXMLDocument extends XMLDocument {
     public void saveAs(File file) throws IOException, SAXParseException, SAXException, ParserConfigurationException {//{{{
         validate();
         //formatting the document is disabled because it doesn't work right
-        DOMSerializer serializer = new DOMSerializer(false);
-        serializer.serialize(getDocument(), file);
+        DOMSerializer serializer = new DOMSerializer();
+        FileOutputStream out = new FileOutputStream(file);
+        serializer.writeNode(out, getDocument());
         setModel(file);
     }//}}}
     
