@@ -226,9 +226,7 @@ public class DOMSerializer implements DOMWriter {
             setFeature("whitespace-in-element-content", true);
             
             //set DOMSerializer specific features
-            setFeature("format-output",                 true);
-            setParameter("indent",                        new Integer(4));
-            
+            setFeature("format-output",                 false);
         }//}}}
         
         public DOMSerializerConfiguration(DOMConfiguration config) throws DOMException {//{{{
