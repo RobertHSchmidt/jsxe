@@ -10,10 +10,11 @@
 	<target name="init">
 		<tstamp/>
 		<property name="app.name" value="jsXe"/>
-		<property name="build.dir" value="./build"/>
-		<property name="src.dir" value="./src"/>
-		<property name="lib.dir" value="./lib"/>
-		<property name="bin.dir" value="./bin"/>
+		<property name="root.dir" value="."/>
+    <property name="build.dir" value="${root.dir}/build"/>
+		<property name="src.dir" value="${root.dir}/src"/>
+		<property name="lib.dir" value="${root.dir}/lib"/>
+		<property name="bin.dir" value="${root.dir}/bin"/>
 		<property name="docs.dir" value="${src.dir}/doc"/>
 		<property name="build.src" value="${build.dir}/src"/>
 		<property name="build.dest" value="${build.dir}/classes"/>
@@ -83,6 +84,12 @@
 				<include name="**/*.png"/>
 			</fileset>
 		</copy>
+    <copy todir="${build.src}">
+      <fileset dir="${root.dir}">
+        <include name="build.xml"/>
+        <include name="${app.name}.manifest"/>
+      </fileset>
+    </copy>
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Compiles the program ============================= -->
@@ -188,6 +195,13 @@
 				<include name="**/*"/>
 			</fileset>
 		</copy>
+    <!-- build files -->
+    <copy todir="${distsrc.dir}">
+      <fileset dir="${build.src}">
+        <include name="build.xml"/>
+        <include name="${app.name}.manifest"/>
+      </fileset>
+    </copy>
 		<!-- bin -->
 		<mkdir dir="${distsrc.dir}/bin"/>
 		<copy todir="${distsrc.dir}/bin">
