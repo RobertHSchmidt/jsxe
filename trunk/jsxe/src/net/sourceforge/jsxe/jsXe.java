@@ -507,7 +507,7 @@ public class jsXe {
         if (m_buffers.contains(buffer)) {
             
             if (buffer.close(view)) {
-                m_bufferHistory.setEntry(buffer, view.getDocumentView().getViewName());
+                m_bufferHistory.setEntry(buffer, view.getDocumentView().getViewPlugin().getName());
                 view.removeDocumentBuffer(buffer);
                 m_buffers.remove(buffer);
                 
