@@ -24,7 +24,8 @@ TODO:
 * Version 0.2 beta
     
     * Add the ability for XMLDocuments to have a structure for non-wellformed
-      documents. Should I bother?
+      documents. Should I bother? Maybe not since some views will require
+      documents to be well formed.
     
     * Create new packages for the XMLDocument and DocumentViews. Provide
       javadoc on the jsXe website. Rename AdapterNodes to something more
@@ -32,12 +33,15 @@ TODO:
       so that XMLDocument classes can be created that use something other
       than Xerces.
     
-    * Updated javadoc for the DocumentViews and XMLDocument classes to be
+    * Update javadoc for the DocumentViews and XMLDocument classes to be
       more descriptive and less specific to jsXe.
     
     * Change ant build file to build the DocumentViews and XMLDocuments into
       a different jar file. Also change the jsXe.bat and jsXe.sh to use the new
       jar file.
+    
+    * Make a test program that uses DocumentViews to prove that they don't
+      need jsXe.
     
     * Change the way the TabbedView keeps track of the DocumentViews and
       DocumentBuffers so that it's easier to get the DocumentBuffer for a
@@ -64,6 +68,8 @@ TODO:
     
     * Make the XML document declaration header non-editable in source-view
       mode. (how?) Update it when the user changes options in the options panel.
+      Maybe make a non-editable text-panel or label above the source area and
+      only show the part after the header?
     
     * Add option to use soft tabs in the source view. Override processKeyEvent
       in JEditorPane to accomplish this.
@@ -116,10 +122,10 @@ TODO:
       using some sort of listener interface.
     
     * Implement BeanShell support. This is required for dynamic actions like
-      those in jEdit.
-    
-    * Create a way for actions to be created dynamically and then registered
-      with jsXe. Much the same way that jEdit does. Is this necessary?
+      those in jEdit. Create a way for actions to be created dynamically and
+      then registered with jsXe. Much the same way that jEdit does.Is this
+      really necessary? Can I achieve the same effect with actions that are not
+      BeanShell actions?
     
     * Fully implement gui actions to include key mnemonics etc. so the actions
       act like you would expect. Allow users to define keys shortcuts to

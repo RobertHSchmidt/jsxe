@@ -90,7 +90,11 @@ public interface DocumentView {
     public Component getDocumentViewComponent();//}}}
     
     //{{{ getHumanReadableName()
-    
+    /**
+     * The human readable name that is displayed on menus and user visible
+     * things
+     * @return the human readable name of this view
+     */
     public String getHumanReadableName();
     //}}}
     

@@ -236,6 +236,12 @@ public class XMLDocument {
         return returnValue;
     }//}}}
     
+    //{{{ getProperties()
+    
+    public Properties getProperties() {
+        return props;
+    }//}}}
+    
     //{{{ getProperty()
     /**
      * Gets a property for the key given.
