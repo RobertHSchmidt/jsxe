@@ -48,14 +48,13 @@ import javax.swing.filechooser.FileFilter;
 
 //}}}
 
-
 class CustomFileFilter extends FileFilter {
-
+    
     public CustomFileFilter(Vector exts, String desc) {//{{{
         extentions = exts;
         description = desc;
     }//}}}
-
+    
     public boolean accept(File f) {//{{{
         if(f != null) {
             if(f.isDirectory()) {
@@ -70,11 +69,11 @@ class CustomFileFilter extends FileFilter {
         }
         return false;
     }//}}}
-
+    
     public String getDescription() {//{{{
         return description;
     }//}}}
-
+    
     private String getExtension(File f) {//{{{
         if(f != null) {
             String filename = f.getName();
@@ -85,7 +84,7 @@ class CustomFileFilter extends FileFilter {
         }
         return null;
     }//}}}
-
+    
     /*
     *************************************************
     Private Data Fields

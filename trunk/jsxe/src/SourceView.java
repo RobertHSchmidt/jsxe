@@ -79,7 +79,7 @@ public class SourceView extends JDialog {
         super(view, true);
         //{{{ Construct Menu Bar
         JMenuBar menuBar = new JMenuBar();
-
+        
         //{{{ Construct File Menu
         JMenu menu = new JMenu("File");
             JMenuItem menuItem = new JMenuItem("Save & Close");
@@ -88,7 +88,7 @@ public class SourceView extends JDialog {
             menuItem = new JMenuItem( new FileCloseAction(this) );
             menu.add( menuItem );
         menuBar.add( menu );//}}}
-
+        
         //{{{ Construct Edit Menu
         menu = new JMenu("Edit");
             /*menuItem = new JMenuItem("Undo");
@@ -105,9 +105,9 @@ public class SourceView extends JDialog {
             menuItem = new JMenuItem( new EditPasteAction() );
             menu.add( menuItem );
         menuBar.add( menu );//}}}
-
+        
         setJMenuBar( menuBar );//}}}
-
+        
         panel = new textPanel(adapter.getSource());
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(panel, BorderLayout.CENTER);
@@ -115,12 +115,12 @@ public class SourceView extends JDialog {
         //Set Dialog Options
         setSize(dialogWidth,dialogHeight);
         setLocationRelativeTo(view);
-
+        
         setTitle("View Source");
     }//}}}
-
+    
     private class textPanel extends JPanel {//{{{
-
+        
         public textPanel(String text) {//{{{
             textPane = new JTextArea(text);
             textPane.setTabSize(4);
@@ -131,36 +131,36 @@ public class SourceView extends JDialog {
             addComponentListener(new ResizeListener());
             add( scrollPane );
         }//}}}
-
+        
         public String getText() {//{{{
             return textPane.getText();
         }//}}}
-
+        
         private class ResizeListener implements ComponentListener {//{{{
-
+            
             public void componentHidden(ComponentEvent e) {}
-
+            
             public void componentMoved(ComponentEvent e) {}
-
+            
             public void componentResized(ComponentEvent e) {//{{{
                 int textWidth=getWidth()-10;
                 int textHeight=getHeight()-10;
-
+                
                 scrollPane.setPreferredSize(
                     new Dimension(textWidth, textHeight) );
                 updateUI();
             }//}}}
-
+            
             public void componentShown(ComponentEvent e) {}
-
+            
         }//}}}
-
+        
         private JScrollPane scrollPane;
-
+        
     }//}}}
-
+    
     private class FileSaveAction implements ActionListener {//{{{
-
+        
         public FileSaveAction(Window p, TabbedView v, DOMAdapter a) {
             adapter = a;
             view = v;
@@ -174,7 +174,7 @@ public class SourceView extends JDialog {
         private TabbedView view;
         private DOMAdapter adapter;
     }//}}}
-
+    
     private class FileCloseAction extends AbstractAction {//{{{
         public FileCloseAction(Window p) {
             putValue(Action.NAME, "Close");
@@ -186,19 +186,19 @@ public class SourceView extends JDialog {
         }
         private Window parent;
     }//}}}
-
+    
     /*private class EditUndoAction implements ActionListener {//{{{
         public void actionPerformed(ActionEvent e) {
-
+        
         }
     }//}}}
-
+    
     private class EditRedoAction implements ActionListener {//{{{
         public void actionPerformed(ActionEvent e) {
-
+        
         }
     }//}}}*/
-
+    
     private class EditCutAction extends AbstractAction {//{{{
         public EditCutAction() {
             putValue(Action.NAME, "Cut");
@@ -208,7 +208,7 @@ public class SourceView extends JDialog {
             textPane.cut();
         }
     }//}}}
-
+    
     private class EditCopyAction extends AbstractAction {//{{{
         public EditCopyAction() {
             putValue(Action.NAME, "Copy");
@@ -218,7 +218,7 @@ public class SourceView extends JDialog {
             textPane.copy();
         }
     }//}}}
-
+    
     private class EditPasteAction extends AbstractAction {//{{{
         public EditPasteAction() {
             putValue(Action.NAME, "Paste");
@@ -228,7 +228,7 @@ public class SourceView extends JDialog {
             textPane.paste();
         }
     }//}}}
-
+    
     /*
     *************************************************
     Data Fields

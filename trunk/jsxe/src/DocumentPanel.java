@@ -102,26 +102,26 @@ import org.w3c.dom.Element;
 public class DocumentPanel extends JPanel {
     
     private DocumentPanel(Dimension size) {//{{{
-
+        
         JScrollPane treeView = new JScrollPane(tree);
-
+        
         //Create html editor pane
         htmlPane.setEditable(false);
         JScrollPane htmlView = new JScrollPane(htmlPane);
-
+        
         //create a table model
         //attributesTable = new JTable(attrTableModel);
         JScrollPane attrView = new JScrollPane(attributesTable);
-
+        
         //layout of the panes is defined by splitpanes
         vertSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treeView, attrView);
-
+        
         horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, vertSplitPane, htmlView ); 
         horizSplitPane.setContinuousLayout(true);
-
+        
         vertSplitPane.setDividerLocation(size.height/2);
         horizSplitPane.setDividerLocation(size.width/2);
-
+        
         tree.addTreeSelectionListener(//{{{
             new TreeSelectionListener() {
                 public void valueChanged(TreeSelectionEvent e) {
@@ -138,15 +138,15 @@ public class DocumentPanel extends JPanel {
                     previousSelection = selPath;
                 }
             });//}}}
-
+        
         setLayout(new BorderLayout());
         add(horizSplitPane, BorderLayout.CENTER);
     } //}}}
-
+    
     private static void open(TabbedView view, DOMAdapter adapter) {//{{{
         //This adapter may have the listener already.
         //addTreeModelListener does not add the listener
-        //if it is already added.
+        //again if it is already added.
         adapter.addTreeModelListener(treeListener);
         adapter.addTableModelListener(tableListener);
         tree.setModel(adapter);
@@ -162,7 +162,7 @@ public class DocumentPanel extends JPanel {
         instance.updateUI();
         currentAdapter = adapter;
     } //}}}
-
+    
     public static DocumentPanel getDocumentPanel(TabbedView view, DOMAdapter adapter) {//{{{
         if (view == null) {
             return null;
@@ -171,14 +171,14 @@ public class DocumentPanel extends JPanel {
             return instance;
         }
         instance.open(view, adapter);
-
+        
         return instance;
     }//}}}
-
+    
     public static DOMAdapter getDOMAdapter() {//{{{
         return currentAdapter;
     }//}}}
-
+    
     /*
     *************************************************
     Private Data Fields
@@ -193,13 +193,10 @@ public class DocumentPanel extends JPanel {
     private static JSplitPane horizSplitPane;
     private static DocumentPanel instance = new DocumentPanel(jsXe.getStartingSize());
     private static TableModelListener tableListener = new TableModelListener() {
-        public void tableChanged(TableModelEvent e) {
-           // int firstRow = e.getFirstRow();
-           // int lastRow = e.getLastRow();
-           // int column = e.getColumn();
+    public void tableChanged(TableModelEvent e) {//{{{
            attributesTable.updateUI();
         }
-    };
+    };//}}}
     private static TreeModelListener treeListener = new TreeModelListener() {//{{{
             public void treeNodesChanged(TreeModelEvent e) {
                 tree.updateUI();

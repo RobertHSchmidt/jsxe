@@ -57,10 +57,10 @@ import java.awt.event.ActionEvent;
 //}}}
 
 public class OptionsDialog extends JDialog {
-
+    
     public OptionsDialog(TabbedView view) {//{{{
         super(view, true);
-
+        
         DocumentPanel panel = view.getDocumentPanel();
         adapter = panel.getDOMAdapter();
         
@@ -89,7 +89,7 @@ public class OptionsDialog extends JDialog {
         getContentPane().add(OptionsNorthPanel, BorderLayout.NORTH);
         getContentPane().add(OptionsSouthPanel, BorderLayout.SOUTH);
     } //}}}
-
+    
     private class OKAction implements ActionListener {//{{{
         public OKAction(Dialog p) {
             parent = p;
@@ -100,7 +100,7 @@ public class OptionsDialog extends JDialog {
         }
         private Dialog parent;
     } //}}}
-
+    
     private class CancelAction implements ActionListener {//{{{
         public CancelAction(Dialog p) {
             parent = p;
@@ -111,8 +111,14 @@ public class OptionsDialog extends JDialog {
         private Dialog parent;
     } //}}}
     
+    /*
+    *************************************************
+    Data Fields
+    *************************************************
+    *///{{{
     private int dialogWidth=200;
     private int dialogHeight=200;
     private JCheckBox formatCheckBox;
     private DOMAdapter adapter;
+    //}}}
 }

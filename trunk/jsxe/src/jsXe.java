@@ -69,9 +69,9 @@ import org.xml.sax.SAXParseException;
 //}}}
 
 public class jsXe {
-
+    
     public static void main(String args[]) {//{{{
-
+        
         //check the java version
         String javaVersion = System.getProperty("java.version");
 		if(javaVersion.compareTo("1.3") < 0)
@@ -88,7 +88,7 @@ public class jsXe {
         windowHeight = (int)(3 * screenSize.getHeight() / 4);
         
         view = new TabbedView(windowWidth, windowHeight);
-
+        
         if (args.length >= 1) {
             if (!openXMLDocuments(view, args)) {
                 openXMLDocument(view, DefaultDocument);
@@ -98,11 +98,11 @@ public class jsXe {
         }
         view.show();
     }//}}}
-
+    
     public static String getVersion() {//{{{
         return MajorVersion + "." + MinorVersion + "." + BuildVersion + " " + BuildType;
     }//}}}
-
+    
     public static void showOpenFileDialog(TabbedView view) {//{{{
             // if current file is null, defaults to home directory
             JFileChooser loadDialog = new JFileChooser(view.getDocumentPanel().getDOMAdapter().getFile());
@@ -111,24 +111,28 @@ public class jsXe {
             extentionList.add(new String("xml"));
             CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
             loadDialog.addChoosableFileFilter(firstFilter);
+            //Add a filter to display only XSL files
             extentionList = new Vector();
             extentionList.add(new String("xsl"));
             loadDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
+            //Add a filter to display only XSL:FO files
             extentionList = new Vector();
             extentionList.add(new String("fo"));
             loadDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
+            //Add a filter to display all formats
             extentionList = new Vector();
             extentionList.add(new String("xml"));
             extentionList.add(new String("xsl"));
             extentionList.add(new String("fo"));
             loadDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "All XML Documents"));
-
-            //put the choose all file filter at the end of the list
+            
+            //The "All Files" file filter is added to the dialog
+            //by default. Put it at the end of the list.
             FileFilter all = loadDialog.getAcceptAllFileFilter();
             loadDialog.removeChoosableFileFilter(all);
             loadDialog.addChoosableFileFilter(all);
             loadDialog.setFileFilter(firstFilter);
-
+            
             int returnVal = loadDialog.showOpenDialog(view);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
                 openXMLDocument(view, loadDialog.getSelectedFile());
@@ -144,11 +148,11 @@ public class jsXe {
             return false;
         }
     }//}}}
-
+    
     public static boolean openXMLDocument(TabbedView view, String doc) {//{{{
         return openXMLDocument(view, new StringReader(doc));
     }//}}}
-
+    
     public static boolean openXMLDocument(TabbedView view, Reader reader) {//{{{
         DOMAdapter adapter = DOMAdapter.getDOMAdapter(view, reader);
         if (adapter != null) {
@@ -158,9 +162,9 @@ public class jsXe {
             return false;
         }
     }//}}}
-
+    
     public static boolean openXMLDocuments(TabbedView view, String args[]) {//{{{
-
+    
         boolean success = false;
         for (int i = 0; i < args.length; i++) {
             //success becomes true if at least one document is opened
@@ -170,25 +174,25 @@ public class jsXe {
             }
         }
         return success;
-
+    
     }//}}}
-
+    
     public static boolean closeXMLDocument(TabbedView view, DOMAdapter adapter) {//{{{
         view.close(adapter);
         if (view.getDocumentCount() == 0)
             openXMLDocument(view, DefaultDocument);
         return true;
     }//}}}
-
+    
     public static String getDefaultDocument() {//{{{
         return DefaultDocument;
     }//}}}
-
+    
     //this is probobly bad implementation
     public static Dimension getStartingSize() {//{{{
         return new Dimension(windowWidth, windowHeight);
     }//}}}
-
+    
     /*
     *************************************************
     Data Fields

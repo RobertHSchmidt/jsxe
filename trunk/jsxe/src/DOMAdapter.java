@@ -91,7 +91,7 @@ import java.util.Enumeration;
 import java.io.PrintWriter;
 
 public class DOMAdapter implements TreeModel, TableModel {
-
+    
     private DOMAdapter(TabbedView parent, File file, Document doc, String docname) {//{{{
         props.setProperty("format.output", "true");
         view = parent;
@@ -99,7 +99,7 @@ public class DOMAdapter implements TreeModel, TableModel {
         document = doc;
         name = docname;
     }//}}}
-
+    
     public static DOMAdapter getDOMAdapter(TabbedView parent, File file) {//{{{
         if (file == null) {
             return null;
@@ -149,7 +149,7 @@ public class DOMAdapter implements TreeModel, TableModel {
         }
         return instance;
     }//}}}
-
+    
     public static DOMAdapter getDOMAdapter(TabbedView parent, Reader reader) {//{{{
         if (reader == null) {
             return null;
@@ -177,29 +177,29 @@ public class DOMAdapter implements TreeModel, TableModel {
         }
         return instance;
     }//}}}
-
+    
     public static DOMAdapter getDOMAdapter(TabbedView parent, String doc) {//{{{
         return getDOMAdapter(parent, new StringReader(doc));
     }//}}}
-
+    
     // {{{ Implemented TreeModel methods
-
+    
     public void addTreeModelListener( TreeModelListener listener ) {//{{{
         if ( listener != null && ! treeListenerList.contains( listener ) ) {
             treeListenerList.addElement( listener );
         }
     }//}}}
-
+    
     public Object getChild(Object parent, int index) {//{{{
         AdapterNode node = (AdapterNode) parent;
         return node.child(index);
     }//}}}
-
+    
     public int getChildCount(Object parent) {//{{{
         AdapterNode node = (AdapterNode) parent;
         return node.childCount();
     }//}}}
-
+    
     public int getIndexOfChild(Object parent, Object child) {//{{{
         AdapterNode node = (AdapterNode) parent;
         return node.index((AdapterNode) child);
@@ -208,20 +208,20 @@ public class DOMAdapter implements TreeModel, TableModel {
     public Object getRoot() {//{{{
         return new AdapterNode(document);
     }//}}}
-
+    
     public boolean isLeaf(Object aNode) {//{{{
         // Return true for any node with no children
         AdapterNode node = (AdapterNode) aNode;
         if (node.childCount() > 0) return false;
         return true;
     }//}}}
-
+    
     public void removeTreeModelListener(TreeModelListener listener) {//{{{
         if ( listener != null ) {
             treeListenerList.removeElement( listener );
         }
     }//}}}
-
+    
     public void valueForPathChanged(TreePath path, Object newValue) {//{{{
         AdapterNode changedNode = (AdapterNode)path.getLastPathComponent();
         //Verify that this really is a change
@@ -247,35 +247,35 @@ public class DOMAdapter implements TreeModel, TableModel {
             fireTreeNodesChanged(new TreeModelEvent(this, path));
         }
     }//}}}
-
+    
     //}}}
-
+    
     // {{{ Implemented TableModel methods
-
+    
     public void addTableModelListener(TableModelListener l) {//{{{
         if (l != null && !tableListenerList.contains(l) ) {
             tableListenerList.addElement(l);
         }
     }//}}}
-
+    
     public Class getColumnClass(int columnIndex) {//{{{
         //the attributes table should contain strings only
         return (new String()).getClass();
     }//}}}
-
+    
     public int getColumnCount() {//{{{
         //the attributes table will always contain 2 columns
         //an attribute and value
         return 2;
     }//}}}
-
+    
     public String getColumnName(int columnIndex) {//{{{
         if (columnIndex==0)
             return "Attribute";
         else
             return "Value";
     }//}}}
-
+    
     public int getRowCount() {//{{{
         return data[0].size();
     }//}}}
@@ -283,7 +283,7 @@ public class DOMAdapter implements TreeModel, TableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {//{{{
         return data[columnIndex].get(rowIndex);
     }//}}}
-
+    
     public boolean isCellEditable(int rowIndex, int columnIndex) {//{{{
         //Do not allow editing of attribute values that have no
         //attribute defined yet.
@@ -292,13 +292,13 @@ public class DOMAdapter implements TreeModel, TableModel {
         }
         return true;
     }//}}}
-
+    
     public void removeTableModelListener(TableModelListener listener) {//{{{
         if (listener!=null) {
             tableListenerList.removeElement(listener);
         }
     }//}}}
-
+    
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {//{{{
         //If setting a value on the last row (greater shouldn't happen)
         if (rowIndex + 1 >= getRowCount()) {
@@ -335,9 +335,9 @@ public class DOMAdapter implements TreeModel, TableModel {
             }
         }
     }//}}}
-
+    
     //}}}
-
+    
     public void updateTable(AdapterNode selectedNode) {//{{{
         currentNode = selectedNode;
         data[0].removeAllElements();
@@ -357,9 +357,9 @@ public class DOMAdapter implements TreeModel, TableModel {
             }
         }
     }//}}}
-
+    
     // {{{ Event notification methods
-
+    
     private void fireTreeNodesChanged(TreeModelEvent e) {//{{{
         Enumeration listeners = treeListenerList.elements();
         while ( listeners.hasMoreElements() ) {
@@ -367,7 +367,7 @@ public class DOMAdapter implements TreeModel, TableModel {
             listener.treeNodesChanged( e );
         }
     }//}}}
-
+    
     private void fireTreeNodesInserted(TreeModelEvent e) {//{{{
         Enumeration listeners = treeListenerList.elements();
         while ( listeners.hasMoreElements() ) {
@@ -375,7 +375,7 @@ public class DOMAdapter implements TreeModel, TableModel {
             listener.treeNodesInserted( e );
         }
     }//}}}
-
+    
     private void fireTreeNodesRemoved(TreeModelEvent e) {//{{{
         Enumeration listeners = treeListenerList.elements();
         while ( listeners.hasMoreElements() ) {
@@ -383,7 +383,7 @@ public class DOMAdapter implements TreeModel, TableModel {
             listener.treeNodesRemoved( e );
         }
     }//}}}
-
+    
     private void fireTreeStructureChanged(TreeModelEvent e) {//{{{
         Enumeration listeners = treeListenerList.elements();
         while ( listeners.hasMoreElements() ) {
@@ -391,7 +391,7 @@ public class DOMAdapter implements TreeModel, TableModel {
             listener.treeStructureChanged( e );
         }
     }//}}}
-
+    
     private void fireTableChanged(TableModelEvent e) {//{{{
         Enumeration listeners = tableListenerList.elements();
         while (listeners.hasMoreElements()) {
@@ -399,17 +399,17 @@ public class DOMAdapter implements TreeModel, TableModel {
             listener.tableChanged(e);
         }
     }//}}}
-
+    
     // }}}
-
+    
     public boolean isUntitled() {//{{{
         return (XMLFile == null);
     }//}}}
-
+    
     public String getName() {//{{{
         return name;
     }//}}}
-
+    
     public void save() {//{{{
         if (XMLFile == null) {
             saveAs();
@@ -424,7 +424,7 @@ public class DOMAdapter implements TreeModel, TableModel {
             }
         }
     }//}}}
-
+    
     public void saveAs() {//{{{
         //  if XMLFile is null, defaults to home directory
         JFileChooser saveDialog = new JFileChooser(XMLFile);
@@ -456,7 +456,7 @@ public class DOMAdapter implements TreeModel, TableModel {
                     return null;
                 }
             });//}}}
-
+        
         int returnVal = saveDialog.showOpenDialog(view);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             DOMSerializer serializer = new DOMSerializer((Boolean.valueOf(getProperty("format.output"))).booleanValue());
@@ -470,11 +470,11 @@ public class DOMAdapter implements TreeModel, TableModel {
             }
         }
     }//}}}
-
+    
     public File getFile() {//{{{
         return XMLFile;
     }//}}}
-
+    
     public String getSource() {//{{{
         String source = null;
         DOMSerializer serializer = new DOMSerializer((Boolean.valueOf(getProperty("format.output"))).booleanValue());
@@ -488,7 +488,7 @@ public class DOMAdapter implements TreeModel, TableModel {
         }
         return source;
     }//}}}
-
+    
     public void setSource(TabbedView view, String source) { //{{{
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -511,32 +511,32 @@ public class DOMAdapter implements TreeModel, TableModel {
         //notify the listeners that the tree structure has changed
         fireTreeStructureChanged(new TreeModelEvent(this, new TreePath(document.getDocumentElement())));
     }//}}}
-
+    
     public Document getDocument() {//{{{
         return document;
     }//}}}
-
+    
     public Object setProperty(String key, String value) {//{{{
         return props.setProperty(key, value);
     }//}}}
-
+    
     public String getProperty(String key) {//{{{
         return props.getProperty(key);
     }//}}}
-
+    
     private void updateAttributes() {//{{{
         Node node = currentNode.getNode();
         Node parent = node.getParentNode();
         NodeList children = node.getChildNodes();
         try {
             Element newNode = document.createElement(node.getNodeName());
-
+            
             //add the attributes that were there previously.
             for(int i = 0; i < data[0].size()-1; i++) {
                 //Set the name or value
                 newNode.setAttribute(data[0].get(i).toString(), data[1].get(i).toString());
             }
-
+            
             //replace the changed node
             parent.replaceChild(newNode, node);
             for (int i = 0; i < children.getLength(); i++ ) {
@@ -545,12 +545,12 @@ public class DOMAdapter implements TreeModel, TableModel {
                 newNode.appendChild(child);
             }
             currentNode = new AdapterNode(newNode);
-
+            
         } catch (DOMException dome) {
            JOptionPane.showMessageDialog(view, dome, "Internal Error", JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
-
+    
     /*
     *************************************************
     Private Data Fields

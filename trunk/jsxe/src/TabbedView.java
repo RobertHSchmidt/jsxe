@@ -103,7 +103,7 @@ import org.w3c.dom.DOMException;
 //}}}
 
 public class TabbedView extends JFrame {
-
+    
     public TabbedView(int width, int height) {//{{{
         
         //{{{ Construct the Menu Bar
@@ -154,18 +154,18 @@ public class TabbedView extends JFrame {
             menuItem = new JMenuItem(new ToolsViewSourceAction(this));
             toolsMenu.add( menuItem );
         menubar.add(toolsMenu);//}}}
-
+        
         //Add Help Menu {{{
         JMenu helpMenu = new JMenu("Help");
             menuItem = new JMenuItem(new jsxeAboutDialog(this));
             helpMenu.add( menuItem );
         menubar.add(helpMenu);//}}}
-
+        
         setJMenuBar(menubar);
         //}}}
-
+        
         docpanel = DocumentPanel.getDocumentPanel(this, null);
-
+        
         tabbedPane.addChangeListener(//{{{
             new ChangeListener() {
                 public void stateChanged(ChangeEvent e) {
@@ -182,24 +182,24 @@ public class TabbedView extends JFrame {
                     }
                 }
         });//}}}
-
+        
         tabbedPane.setPreferredSize(new Dimension(width, height));
-
+        
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(tabbedPane, BorderLayout.CENTER);
         pack();
-
+        
         //Set window options
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        
         ImageIcon icon = new ImageIcon("icons"+System.getProperty("file.separator")+"jsxe.jpg", "Jsxe");
         setIconImage(icon.getImage());
     }//}}}
-
+    
     public DocumentPanel getDocumentPanel() {//{{{
         return docpanel;
     }//}}}
-
+    
     public void setAdapter(DOMAdapter adapter) {//{{{
         if (adapter != null) {
             docpanel = DocumentPanel.getDocumentPanel(this, adapter);
@@ -212,7 +212,7 @@ public class TabbedView extends JFrame {
         tabbedPane.setSelectedIndex(adapterList.indexOf(adapter));
         }
     }//}}}
-
+    
     public void close(DOMAdapter adapter) {//{{{
         if (adapterList.contains(adapter)) {
             int index = adapterList.indexOf(adapter);
@@ -232,7 +232,7 @@ public class TabbedView extends JFrame {
             }
         }
     }//}}}
-
+    
     public String getUntitledLabel() {//{{{
         int untitledNo = 0;
         for (int i=0; i < adapterList.size(); i++) {
@@ -247,11 +247,11 @@ public class TabbedView extends JFrame {
         }
         return "Untitled-" + Integer.toString(untitledNo+1);
     }//}}}
-
+    
     public int getDocumentCount() {//{{{
         return adapterList.size();
     }//}}}
-
+    
     private class FileNewAction extends AbstractAction {//{{{
         public FileNewAction(TabbedView parent) {
             putValue(Action.NAME, "New");
@@ -263,20 +263,20 @@ public class TabbedView extends JFrame {
         }
         private TabbedView view;
     }//}}}
-
+    
     private class FileOpenAction extends AbstractAction {//{{{
         public FileOpenAction(TabbedView parent) {
             putValue(Action.NAME, "Open...");
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl O"));
             view = parent;
         }
-
+        
         public void actionPerformed(ActionEvent e) {
             jsXe.showOpenFileDialog(view);
         }
         private TabbedView view;
     }//}}}
-
+    
     private class FileSaveAction extends AbstractAction {//{{{
         public FileSaveAction(TabbedView parent) {
             putValue(Action.NAME, "Save");
@@ -289,7 +289,7 @@ public class TabbedView extends JFrame {
         }
         private TabbedView view;
     }//}}}
-
+    
     private class FileSaveAsAction extends AbstractAction {//{{{
         public FileSaveAsAction(TabbedView parent) {
             putValue(Action.NAME, "Save As...");
@@ -301,7 +301,7 @@ public class TabbedView extends JFrame {
         }
         private TabbedView view;
     }//}}}
-
+    
     private class FileCloseAction extends AbstractAction {//{{{
         public FileCloseAction(TabbedView parent) {
             putValue(Action.NAME, "Close");
@@ -313,7 +313,7 @@ public class TabbedView extends JFrame {
         }
         private TabbedView view;
     } //}}}
-
+    
     private class FileExitAction extends AbstractAction {//{{{
         public FileExitAction(TabbedView parent) {
             putValue(Action.NAME, "Exit");
@@ -326,7 +326,7 @@ public class TabbedView extends JFrame {
         }
         private TabbedView view;
     }//}}}
-
+    
     private class ToolsOptionsAction extends AbstractAction {//{{{
         public ToolsOptionsAction(TabbedView parent) {
             putValue(Action.NAME, "Options...");
@@ -338,7 +338,7 @@ public class TabbedView extends JFrame {
         }
         private TabbedView view;
     }//}}}
-
+    
     private class ToolsViewSourceAction extends AbstractAction {//{{{
         public ToolsViewSourceAction(TabbedView parent) {
             putValue(Action.NAME, "View Source...");
@@ -350,7 +350,7 @@ public class TabbedView extends JFrame {
         }
         private TabbedView view;
     }//}}}
-
+    
     private class jsxeAboutDialog extends AbstractAction {//{{{
         public jsxeAboutDialog(TabbedView parent) {
             putValue(Action.NAME, "About jsXe...");
@@ -379,7 +379,7 @@ public class TabbedView extends JFrame {
         }
         private TabbedView view;
     } //}}}
-
+    
     /*
     *************************************************
     Data Fields
