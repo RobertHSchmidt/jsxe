@@ -65,8 +65,7 @@ public class GlobalOptionsDialog extends OptionsDialog {
 
         TabbedView view = (TabbedView)getOwner();
         
-        DocumentView docView = view.getDocumentView();
-        DocumentBuffer buffer = docView.getDocumentBuffer();
+        DocumentBuffer buffer = view.getDocumentView().getDocumentBuffer();
         
         OptionPane pane = jsXe.getOptionsPanel();
         if (pane != null) {
@@ -82,10 +81,6 @@ public class GlobalOptionsDialog extends OptionsDialog {
             }
         }
         
-       // pane = docView.getOptionsPanel();
-       // if (pane != null) {
-       //     addOptionPane(pane);
-       // }
         pane = buffer.getOptionsPanel();
         if (pane != null) {
             addOptionPane(pane);

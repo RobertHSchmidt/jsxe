@@ -114,7 +114,6 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = null;
         m_name = getUntitledLabel();
-        addXMLDocumentListener(m_bufferDocListener);
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -129,7 +128,6 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = file;
         m_name = file.getName();
-        addXMLDocumentListener(m_bufferDocListener);
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -145,7 +143,6 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = null;
         m_name = getUntitledLabel();
-        addXMLDocumentListener(m_bufferDocListener);
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -495,6 +492,13 @@ public class DocumentBuffer extends XMLDocument {
         return new DocumentBufferOptionsPanel();
     }//}}}
     
+    //{{{ fireStructureChanged()
+    
+    protected void fireStructureChanged(AdapterNode location) {
+        setDirty(true);
+        super.fireStructureChanged(location);
+    }//}}}
+    
     //{{{ Private members
     
     //{{{ setDirty()
@@ -784,20 +788,6 @@ public class DocumentBuffer extends XMLDocument {
         }//}}}
         
     }//}}}
-    
-    private XMLDocumentListener m_bufferDocListener = new XMLDocumentListener() {//{{{
-        
-        //{{{ propertiesChanged()
-        
-        public void propertiesChanged(XMLDocument source) {}//}}}
-        
-        //{{{ structureChanged()
-        
-        public void structureChanged(XMLDocument source, AdapterNode location) {
-            setDirty(true);
-        }//}}}
-        
-    };//}}}
     
     private String m_name;
     private File m_file;

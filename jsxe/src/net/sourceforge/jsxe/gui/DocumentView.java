@@ -77,6 +77,7 @@ public interface DocumentView {
     //{{{ getDescription()
     /**
      * Gets a short, one line, description of this view.
+     * @deprecated use {@link net.sourceforge.jsxe.ActionPlugin#getDescription()} instead
      * @return a short description of the view
      */
     public String getDescription();
@@ -102,6 +103,7 @@ public interface DocumentView {
     /**
      * Gets the name of the view used when the DocumentViewFactory selects
      * a view to create.
+     * @deprecated use {@link net.sourceforge.jsxe.ActionPlugin#getName()} instead
      * @return the name of the view
      */
     public String getViewName();

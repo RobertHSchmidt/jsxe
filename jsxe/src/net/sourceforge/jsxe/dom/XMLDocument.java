@@ -199,35 +199,29 @@ public class XMLDocument {
      */
     public String setProperty(String key, String value) {
         String oldValue = getProperty(key);
-        if (!value.equals(oldValue)) {
-            _setProperty(key, value);
-            firePropertiesChanged();
+        
+        if (oldValue == null || !oldValue.equals(value)) {
+            // do this first so NullPointerExceptions are thrown
+            oldValue = (String)props.setProperty(key, value);
+            
+            if (key == ENCODING) {
+                m_syncedWithContent = false;
+            }
+            if (key == FORMAT_XML) {
+                m_syncedWithContent = false;
+                if (Boolean.valueOf(value).booleanValue()) {
+                    setProperty(WS_IN_ELEMENT_CONTENT, "false");
+                }
+            }
+            if (key == WS_IN_ELEMENT_CONTENT) {
+                m_syncedWithContent = false;
+                if (Boolean.valueOf(value).booleanValue()) {
+                    setProperty(FORMAT_XML, "false");
+                }
+            }
+            firePropertyChanged(key, oldValue);
         }
         return oldValue;
-    }//}}}
-    
-    //{{{ mergeProperties()
-    /**
-     * Merges a set of properties into this object overwriting any
-     * existing values. Think of this as a batch call to setProperties()
-     * but XMLDocumentListeners will be notified only once of a change in
-     * properties.
-     * @param properties the properties to merge in
-     */
-    public void mergeProperties(Properties properties) {
-        Enumeration names = properties.propertyNames();
-        boolean changed = false;
-        while (names.hasMoreElements()) {
-            String name = names.nextElement().toString();
-            String newValue = properties.getProperty(name);
-            if (!newValue.equals(getProperty(name))) {
-                changed = true;
-                _setProperty(name, newValue);
-            }
-        }
-        if (changed) {
-            firePropertiesChanged();
-        }
     }//}}}
     
     //{{{ getProperties()
@@ -599,6 +593,17 @@ public class XMLDocument {
         }
     }//}}}
     
+    //{{{ fireStructureChanged()
+    
+    protected void fireStructureChanged(AdapterNode location) {
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
+            listener.structureChanged(this, location);
+        }
+        m_syncedWithContent = false;
+    }//}}}
+    
     //{{{ Private static members
     private static final int READ_SIZE = 5120;
     private static final int WRITE_SIZE = 5120;
@@ -616,25 +621,14 @@ public class XMLDocument {
         setProperty(INDENT, "4");
     }//}}}
     
-    //{{{ firePropertiesChanged()
+    //{{{ firePropertyChanged()
     
-    private void firePropertiesChanged() {
+    private void firePropertyChanged(String key, String oldValue) {
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
             XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
-            listener.propertiesChanged(this);
+            listener.propertyChanged(this, key, oldValue);
         }
-    }//}}}
-    
-    //{{{ fireStructureChanged()
-    
-    private void fireStructureChanged(AdapterNode location) {
-        ListIterator iterator = listeners.listIterator();
-        while (iterator.hasNext()) {
-            XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
-            listener.structureChanged(this, location);
-        }
-        m_syncedWithContent = false;
     }//}}}
     
     //{{{ setDocument()
@@ -644,37 +638,6 @@ public class XMLDocument {
         m_adapterNode = new AdapterNode(this, m_document);
         m_adapterNode.addAdapterNodeListener(docAdapterListener);
         m_syncedWithContent = false;
-    }//}}}
-    
-    //{{{ _setProperty()
-    private String _setProperty(String key, String value) {    
-        String oldValue = getProperty(key);
-        String returnValue = oldValue;
-        
-        if (oldValue == null || !oldValue.equals(value)) {
-            // do this first so NullPointerExceptions are thrown
-            returnValue = (String)props.setProperty(key, value);
-            
-            if (key == ENCODING) {
-                m_syncedWithContent = false;
-            }
-            if (key == FORMAT_XML) {
-                m_syncedWithContent = false;
-                if (Boolean.valueOf(value).booleanValue()) {
-                    setProperty(WS_IN_ELEMENT_CONTENT, "false");
-                }
-            }
-            if (key == WS_IN_ELEMENT_CONTENT) {
-                m_syncedWithContent = false;
-                if (Boolean.valueOf(value).booleanValue()) {
-                    setProperty(FORMAT_XML, "false");
-                }
-            }
-            return returnValue;
-            
-        }
-        
-        return returnValue;
     }//}}}
     
     //{{{ syncContentWithDOM()

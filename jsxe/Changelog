@@ -3,6 +3,7 @@
     * Fixed bug that tried to create a new instance of a main class
       even if the jar wasn't a plugin
     * Updated logic to created the options panels for plugins
+    * Updated the XMLDocumentListener again
 
 12/08/2004  version 0.3 pre5    Ian Lewis <IanLewis@member.fsf.org>
 
