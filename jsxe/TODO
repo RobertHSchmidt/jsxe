@@ -23,8 +23,6 @@ TODO:
     
 * Version 0.2 beta
     
-    * Documents that are not well formed seem not to open any more. Fix this.
-    
     * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother? Maybe not since some views will require
       documents to be well formed.

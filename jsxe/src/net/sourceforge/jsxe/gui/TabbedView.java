@@ -139,8 +139,7 @@ public class TabbedView extends JFrame {
     //{{{ addDocumentBuffer()
     /**
      * Adds a buffer to the main view. This is essentially opening
-     * the document in jsXe. The TabbedView attempts to open the buffer
-     * in each registered DocumentView until it is successfull.
+     * the document in jsXe.
      * @param buffer The DocumentBuffer to add to the view
      * @throws IOException if the buffer could not be opened
      */
@@ -196,8 +195,9 @@ public class TabbedView extends JFrame {
     
     //{{{ addDocumentBuffer()
     /**
-     * Adds a buffer to the main view using the document view specified.
-     * This is essentially opening the document in jsXe.
+     * Adds a buffer to the main view. This is essentially opening the document
+     * in jsXe. The TabbedView attempts to open the buffer
+     * in each registered DocumentView until it is successful.
      * @param buffer The DocumentBuffer to add to the view
      * @throws IOException if the buffer could not be opened.
      */
@@ -209,9 +209,9 @@ public class TabbedView extends JFrame {
             String error = null;
             
             while (types.hasMoreElements()) {
-                
+                String viewName = types.nextElement().toString();
                 try {
-                    addDocumentBuffer(buffer, types.nextElement().toString());
+                    addDocumentBuffer(buffer, viewName);
                     return;
                 } catch (IOException ioe) {
                     if (error == null) {
