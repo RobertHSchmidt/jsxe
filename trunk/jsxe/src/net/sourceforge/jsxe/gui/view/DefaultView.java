@@ -114,19 +114,17 @@ public class DefaultView extends DocumentView {
         
         //{{{ Create and set up the splitpanes
         vertSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treeView, attrView);
-        vertSplitPane.setContinuousLayout(true);
+        vertSplitPane.setContinuousLayout(false);
+                
+        horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, vertSplitPane, htmlView);
+        horizSplitPane.setContinuousLayout(false);
         
-        horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, vertSplitPane, htmlView ); 
-        horizSplitPane.setContinuousLayout(true);
-        
+        //set to arbitrary size.
+        vertSplitPane.setDividerLocation(200);
+        horizSplitPane.setDividerLocation(200);
         
         add(horizSplitPane, BorderLayout.CENTER);
         
-        int vertical = Integer.valueOf(jsXe.getProperty(viewname+".splitpane.vert.loc")).intValue();
-        int horizontal = Integer.valueOf(jsXe.getProperty(viewname+".splitpane.horiz.loc")).intValue();
-        
-        vertSplitPane.setDividerLocation(vertical);
-        horizSplitPane.setDividerLocation(horizontal);
         //}}}
         
         //{{{ Create and set up the Context menu
@@ -163,6 +161,11 @@ public class DefaultView extends DocumentView {
         styledDoc.addDocumentListener(docListener);
         //Clear the right hand pane of previous values.
         htmlPane.setText("");
+        
+        //get the splitpane layout options
+        boolean layout = Boolean.valueOf(document.getProperty("default.view.continuous.layout", "false")).booleanValue();
+        vertSplitPane.setContinuousLayout(layout);
+        horizSplitPane.setContinuousLayout(layout);
         
         //update the UI so that the components
         //are redrawn.
@@ -208,14 +211,15 @@ public class DefaultView extends DocumentView {
     }//}}}
     
     public void close(TabbedView view) {//{{{
-        //do nothing if there is no current document.
-        if (currentDoc != null) {
-            String vert = Integer.toString(vertSplitPane.getDividerLocation());
-            String horiz = Integer.toString(horizSplitPane.getDividerLocation());
-            
-            jsXe.setProperty(viewname+".splitpane.vert.loc",vert);
-            jsXe.setProperty(viewname+".splitpane.horiz.loc",horiz);
-        }
+        //this isn't really applicable since the splitpane locations
+        //are different for each file now.
+       // if (currentDoc != null) {
+       //     String vert = Integer.toString(vertSplitPane.getDividerLocation());
+       //     String horiz = Integer.toString(horizSplitPane.getDividerLocation());
+       //     
+       //     jsXe.setProperty(viewname+".splitpane.vert.loc",vert);
+       //     jsXe.setProperty(viewname+".splitpane.horiz.loc",horiz);
+       // }
     }//}}}
     
     //{{{ Private Members
@@ -242,27 +246,35 @@ public class DefaultView extends DocumentView {
     private class DefaultViewOptionsPanel extends OptionsPanel {//{{{
         
         public DefaultViewOptionsPanel() {
-            boolean showCommentNodes = Boolean.valueOf(currentDoc.getProperty("show.comment.nodes", "false")).booleanValue();
-            boolean showEmptyNodes = Boolean.valueOf(currentDoc.getProperty("show.empty.nodes", "false")).booleanValue();
+            boolean showCommentNodes = Boolean.valueOf(currentDoc.getProperty("default.view.show.comment.nodes", "false")).booleanValue();
+            boolean showEmptyNodes = Boolean.valueOf(currentDoc.getProperty("default.view.show.empty.nodes", "false")).booleanValue();
+            boolean continuousLayout = Boolean.valueOf(currentDoc.getProperty("default.view.continuous.layout", "false")).booleanValue();
             
             showCommentsCheckBox = new JCheckBox("Show comment nodes",showCommentNodes);
             showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
-            
+            ContinuousLayoutCheckBox = new JCheckBox("Continuous layout for split-panes",continuousLayout);
             
             setLayout(new FlowLayout(FlowLayout.LEFT));
             
             add(showCommentsCheckBox);
             add(showEmptyNodesCheckBox);
+            add(ContinuousLayoutCheckBox);
         }
         
         public void saveOptions() {
-            currentDoc.setProperty("show.comment.nodes",Boolean.toString(showCommentsCheckBox.isSelected()));
-            currentDoc.setProperty("show.empty.nodes",Boolean.toString(showEmptyNodesCheckBox.isSelected()));
+            currentDoc.setProperty("default.view.show.comment.nodes",Boolean.toString(showCommentsCheckBox.isSelected()));
+            currentDoc.setProperty("default.view.show.empty.nodes",Boolean.toString(showEmptyNodesCheckBox.isSelected()));
+            
+            boolean layout = ContinuousLayoutCheckBox.isSelected();
+            currentDoc.setProperty("default.view.continuous.layout",Boolean.toString(layout));
+            vertSplitPane.setContinuousLayout(layout);
+            horizSplitPane.setContinuousLayout(layout);
             tree.updateUI();
         }
         
         private JCheckBox showCommentsCheckBox;
         private JCheckBox showEmptyNodesCheckBox;
+        private JCheckBox ContinuousLayoutCheckBox;
         
     }//}}}
     
