@@ -50,21 +50,17 @@ import net.sourceforge.jsxe.dom.DOMAdapter;
 
 //{{{ Swing components
 import javax.swing.JPanel;
-import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.JEditorPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
-import javax.swing.JFileChooser;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.text.EditorKit;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 //}}}
@@ -72,40 +68,6 @@ import javax.swing.tree.TreePath;
 //{{{ AWT components
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-//}}}
-
-//{{{ Java base classes
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-//}}}
-
-//{{{ JAXP classes
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-//}}}
-
-//{{{ DOM uses SAX Exceptions
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-//}}}
-
-//{{{ DOM classes
-import org.w3c.dom.Document;    
-import org.w3c.dom.DOMException;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
 //}}}
 
 //}}}
