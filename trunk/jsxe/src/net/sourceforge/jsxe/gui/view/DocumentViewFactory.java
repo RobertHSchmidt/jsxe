@@ -70,7 +70,11 @@ public class DocumentViewFactory {
         if (viewType == "documentview.default") {
             return new DefaultView();
         } else {
-            throw new UnrecognizedDocViewException();
+            if (viewType == "documentview.sourceview") {
+                return new SourceView();
+            } else {
+                throw new UnrecognizedDocViewException();
+            }
         }
     }//}}}
 
@@ -84,6 +88,7 @@ public class DocumentViewFactory {
         
         DocumentViews() {
             elements.add("documentview.default");
+            elements.add("documentview.sourceview");
         }
         
         public boolean hasMoreElements() {
@@ -97,7 +102,7 @@ public class DocumentViewFactory {
                 throw new NoSuchElementException();
         }
         
-        private Vector elements = new Vector(1);
+        private Vector elements = new Vector(2);
     }//}}}
     
     private String viewType = "documentview.default";

@@ -88,6 +88,7 @@ public class TabbedView extends JFrame {
         int y = Integer.valueOf(jsXe.getProperty("tabbedview.y")).intValue();
         
         DocumentViewFactory factory = DocumentViewFactory.newInstance();
+        factory.setDocumentViewType("documentview.sourceview");
         docview = factory.newDocumentView();
         
         updateMenuBar();
