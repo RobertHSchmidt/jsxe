@@ -111,8 +111,12 @@ public class AdapterNode {
         if (domNode.getNodeValue() != null) {
             String t = domNode.getNodeValue().trim();
             int x = t.indexOf("\n");
-            if (x >= 0)
+            if (x >= 0) {
                 t = t.substring(0, x);
+            }
+            if (t.length() > 20) {
+                t = t.substring(0, 20) + "...";
+            }
             s += t;
         }
         return s;

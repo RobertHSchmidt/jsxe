@@ -48,6 +48,9 @@ TODO:
       to the options menu that allows you to hide it.
     
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
+      Update the DefaultViewTreeModel to use a DefaultViewTreeNode class
+      that defines the toString() method for how the node is displayed in the
+      JTree (the AdapterNode is too coupled to the gui by defining this method).
     
 * Version 0.3.0
     
