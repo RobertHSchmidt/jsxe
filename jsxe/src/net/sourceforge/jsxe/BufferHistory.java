@@ -251,7 +251,7 @@ public class BufferHistory {
      * was used to edit the document, and the properties that are associated
      * with that document.
      */
-    public class BufferHistoryEntry {
+    public static class BufferHistoryEntry {
         
         //{{{ BufferHistoryEntry constructor
         /**
@@ -344,8 +344,8 @@ public class BufferHistory {
             
             if (qName.equals("property")) {
                 int length = attributes.getLength();
-                String propName = new String();
-                String propValue = new String();
+                String propName = null;
+                String propValue = null;
                 for (int i=0; i<length; i++) {
                     String name = attributes.getQName(i);
                     if (name.equals("name")) {
@@ -355,7 +355,9 @@ public class BufferHistory {
                         propValue = attributes.getValue(i);
                     }
                 }
-                m_m_properties.setProperty(propName, propValue);
+                if (propName != null && propValue != null) {
+                    m_m_properties.setProperty(propName, propValue);
+                }
             }
         }//}}}
         

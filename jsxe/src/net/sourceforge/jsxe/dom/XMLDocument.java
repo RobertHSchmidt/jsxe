@@ -90,28 +90,28 @@ public class XMLDocument {
     /**
      * The property key for the encoding of this XML document
      */
-    public static String ENCODING = "encoding";
+    public static final String ENCODING = "encoding";
     /**
      * The property key for the boolean property specifying if whitespace
      * is allowed in element content.
      */
-    public static String WS_IN_ELEMENT_CONTENT = DOMSerializerConfiguration.WS_IN_ELEMENT_CONTENT;
+    public static final String WS_IN_ELEMENT_CONTENT = DOMSerializerConfiguration.WS_IN_ELEMENT_CONTENT;
     /**
      * The property key for the boolean property specifying that the XML text
      * should be formatted to look pleasing to the eye.
      */
-    public static String FORMAT_XML = DOMSerializerConfiguration.FORMAT_XML;
+    public static final String FORMAT_XML = DOMSerializerConfiguration.FORMAT_XML;
     /**
      * The property key for the property defining the size of a tab when the
      * document is displayed as text or otherwise.
      */
-    public static String INDENT = DOMSerializerConfiguration.INDENT;
+    public static final String INDENT = DOMSerializerConfiguration.INDENT;
     /**
      * The property key for the property defining whether to serialize
      * using soft tabs (tabs replaced by spaces). Has a value of "true" if
      * using soft tabs.
      */
-    public static String IS_USING_SOFT_TABS = DOMSerializerConfiguration.SOFT_TABS;
+    public static final String IS_USING_SOFT_TABS = DOMSerializerConfiguration.SOFT_TABS;
    // /**
    //  * The property key for the property defining whether to validate the
    //  * document with a DTD or Schema
@@ -554,7 +554,6 @@ public class XMLDocument {
      */
     public void setModel(Reader reader) throws IOException {
         
-        StringBuffer text = new StringBuffer();
         char[] buffer = new char[READ_SIZE];
         
         m_content = new ContentManager();
@@ -705,7 +704,7 @@ public class XMLDocument {
     /**
      * Text content manager based off of jEdit's ContentManager class.
      */
-    private class ContentManager {
+    private static class ContentManager {
         
         // {{{ ContentManager constructor
         public ContentManager() {
@@ -849,7 +848,7 @@ public class XMLDocument {
      * output stream to write to the content manager when the serialized. Used
      * when syncing the source with the current Document.
      */
-    private class ContentManagerOutputStream extends OutputStream {
+    private static class ContentManagerOutputStream extends OutputStream {
         
         //{{{ ContentManagerOutputStream constructor
         public ContentManagerOutputStream(ContentManager content) {
@@ -881,7 +880,7 @@ public class XMLDocument {
     /**
      * Input stream for parsing reading current text content.
      */
-    private class ContentManagerInputStream extends InputStream {
+    private static class ContentManagerInputStream extends InputStream {
         
         //{{{ ContentManagerInputStream constructor
         public ContentManagerInputStream(ContentManager content) {

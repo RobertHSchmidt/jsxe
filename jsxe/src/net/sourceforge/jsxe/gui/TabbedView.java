@@ -196,7 +196,7 @@ public class TabbedView extends JFrame {
             
             Iterator types = jsXe.getPluginLoader().getViewPluginNames().iterator();
             
-            String error = null;
+            StringBuffer buf = new StringBuffer();
             
             while (types.hasNext()) {
                 String viewName = types.next().toString();
@@ -204,16 +204,13 @@ public class TabbedView extends JFrame {
                     addDocumentBuffer(buffer, viewName);
                     return;
                 } catch (IOException ioe) {
-                    if (error == null) {
-                        error = buffer.getName() + ": "+ioe.getMessage() + "\n";
-                    } else {
-                        error += buffer.getName() + ": "+ioe.getMessage() + "\n";
-                    }
+                    buf.append(buffer.getName() + ": "+ioe.getMessage() + "\n");
                 }
             }
             
             String msg = "Could not open buffer in any installed document views";
-            if (error != null) {
+            String error = buf.toString();
+            if (!error.equals("")) {
                 msg=msg+"\n\n"+error;
             }
             throw new IOException(msg);

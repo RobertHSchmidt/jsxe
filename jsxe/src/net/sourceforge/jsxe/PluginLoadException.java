@@ -52,4 +52,9 @@ public class PluginLoadException extends RuntimeException {
         super(file.getName() + " cannot be loaded as a plugin: "+message);
     }//}}}
 
+    //{{{ PluginLoadException constructor
+    
+    public PluginLoadException(String message) {
+        super(message);
+    }//}}}
 }

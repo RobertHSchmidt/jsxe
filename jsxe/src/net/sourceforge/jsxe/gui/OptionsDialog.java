@@ -391,7 +391,7 @@ public abstract class OptionsDialog extends EnhancedDialog
     //}}}
 
     //{{{ PaneNameRenderer class
-    class PaneNameRenderer extends DefaultTreeCellRenderer
+    static class PaneNameRenderer extends DefaultTreeCellRenderer
     {
         public PaneNameRenderer()
         {
@@ -459,7 +459,7 @@ public abstract class OptionsDialog extends EnhancedDialog
     } //}}}
 
     //{{{ OptionTreeModel class
-    public class OptionTreeModel implements TreeModel
+    public static class OptionTreeModel implements TreeModel
     {
         public void addTreeModelListener(TreeModelListener l)
         {

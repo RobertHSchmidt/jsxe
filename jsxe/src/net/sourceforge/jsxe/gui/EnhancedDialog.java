@@ -227,7 +227,10 @@ public abstract class EnhancedDialog extends JDialog
 
                 meth.invoke(win, new Object[] {new Integer(extState)});
             }
-            catch(Exception e) {}
+            catch(NoSuchMethodException e) {}
+            catch(SecurityException e2) {}
+            catch(IllegalAccessException e3) {}
+            catch(java.lang.reflect.InvocationTargetException e4) {}
         }
     } //}}}
     
@@ -254,7 +257,10 @@ public abstract class EnhancedDialog extends JDialog
                     return;
                 }
             }
-            catch(Exception e) {}
+            catch(NoSuchMethodException e) {}
+            catch(SecurityException e2) {}
+            catch(IllegalAccessException e3) {}
+            catch(java.lang.reflect.InvocationTargetException e4) {}
         }
 
         Rectangle bounds = win.getBounds();

@@ -968,7 +968,7 @@ public class jsXe {
             layout.setConstraints(maxRecentFilesLabel, constraints);
             add(maxRecentFilesLabel);
             
-            constraints.gridy      = gridY++;
+            constraints.gridy      = gridY;
             constraints.gridx      = 1;
             constraints.gridheight = 1;
             constraints.gridwidth  = 1;

@@ -77,29 +77,29 @@ import java.util.Iterator;
 public class DOMSerializerConfiguration implements DOMConfiguration {
     
     //{{{ DOMConfiguration defined parameters
-    public static String CANONICAL_FORM         = "canonical-form";
-    public static String CDATA_SECTIONS         = "cdata-sections";
-    public static String CHAR_NORMALIZATION     = "check-character-normalization";
-    public static String COMMENTS               = "comments";
-    public static String DATATYPE_NORMALIZATION = "datatype-normalization";
-    public static String ENTITIES               = "entities";
-    public static String ERROR_HANDLER          = "error-handler";
-    public static String INFOSET                = "infoset";
-    public static String NAMESPACES             = "namespaces";
-    public static String NAMESPACE_DECLARATIONS = "namespace-declarations";
-    public static String NORMALIZE_CHARS        = "normalize-characters";
-    public static String SPLIT_CDATA            = "split-cdata-sections";
-    public static String VALIDATE_XML           = "validate";
-    public static String VALIDATE_IF_SCHEMA     = "validate-if-schema";
-    public static String WELL_FORMED            = "well-formed";
-    public static String WS_IN_ELEMENT_CONTENT  = "element-content-whitespace";
+    public static final String CANONICAL_FORM         = "canonical-form";
+    public static final String CDATA_SECTIONS         = "cdata-sections";
+    public static final String CHAR_NORMALIZATION     = "check-character-normalization";
+    public static final String COMMENTS               = "comments";
+    public static final String DATATYPE_NORMALIZATION = "datatype-normalization";
+    public static final String ENTITIES               = "entities";
+    public static final String ERROR_HANDLER          = "error-handler";
+    public static final String INFOSET                = "infoset";
+    public static final String NAMESPACES             = "namespaces";
+    public static final String NAMESPACE_DECLARATIONS = "namespace-declarations";
+    public static final String NORMALIZE_CHARS        = "normalize-characters";
+    public static final String SPLIT_CDATA            = "split-cdata-sections";
+    public static final String VALIDATE_XML           = "validate";
+    public static final String VALIDATE_IF_SCHEMA     = "validate-if-schema";
+    public static final String WELL_FORMED            = "well-formed";
+    public static final String WS_IN_ELEMENT_CONTENT  = "element-content-whitespace";
     //}}}
     
     //{{{ LSSerializer defined parameters
-    public static String DISCARD_DEFAULT_CONTENT    = "discard-default-content";
-    public static String FORMAT_XML                 = "format-pretty-print";
-    public static String IGNORE_UNKNOWN_CHAR_DENORM = "ignore-unknown-character-denormalizations";
-    public static String XML_DECLARATION            = "xml-declaration";
+    public static final String DISCARD_DEFAULT_CONTENT    = "discard-default-content";
+    public static final String FORMAT_XML                 = "format-pretty-print";
+    public static final String IGNORE_UNKNOWN_CHAR_DENORM = "ignore-unknown-character-denormalizations";
+    public static final String XML_DECLARATION            = "xml-declaration";
     //}}}
     
     //{{{ Additional parameters supported by DOMSerializerConfiguration
@@ -292,7 +292,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         
         //if a string, attempt to use it as a boolean value.
         if (value instanceof String) {
-            value = new Boolean((String)value);
+            value = Boolean.valueOf((String)value);
         }
         
         if (m_supportedParameters.indexOf(name) != -1) {
@@ -423,7 +423,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
     
     //{{{ DOMStringListImpl class
     
-    private class DOMStringListImpl implements DOMStringList {
+    private static class DOMStringListImpl implements DOMStringList {
         
         //{{{ DOMStringListImpl constructor
         

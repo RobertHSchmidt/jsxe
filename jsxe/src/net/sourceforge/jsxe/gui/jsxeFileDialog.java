@@ -96,12 +96,12 @@ public class jsxeFileDialog extends JFileChooser {
     private void init() {
         //Add a filter to display only XML files
         ArrayList extentionList = new ArrayList();
-        extentionList.add(new String("xml"));
+        extentionList.add("xml");
         CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
         addChoosableFileFilter(firstFilter);
         //Add a filter to display only XSL files
         extentionList = new ArrayList();
-        extentionList.add(new String("xsl"));
+        extentionList.add("xsl");
         addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
         //Add a filter to display only XSL:FO files
         extentionList = new ArrayList();
