@@ -52,6 +52,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -331,7 +332,7 @@ public class XMLDocument {
             //since we are in parsed mode let's serialize.
             
             DOMOutput output = new DOMOutput(out, getProperty(ENCODING));
-            DOMSerializer serializer = getSerializer();
+            LSSerializer serializer = getSerializer();
             
             if (!serializer.write(m_document, output)) {
                 throw new IOException("Could not serialize XML document.");
@@ -366,7 +367,7 @@ public class XMLDocument {
     public String serializeNodeToString(AdapterNode node) {
         String value = null;
         try {
-            DOMSerializer serializer = getSerializer();
+            LSSerializer serializer = getSerializer();
             value = serializer.writeToString(node.getNode());
         } catch (DOMException e) {}
         return value;
@@ -545,7 +546,7 @@ public class XMLDocument {
     
     //{{{ getSerializer()
     
-    private DOMSerializer getSerializer() {
+    private LSSerializer getSerializer() {
         DOMSerializerConfiguration config = new DOMSerializerConfiguration();
         config.setParameter(FORMAT_XML, getProperty(FORMAT_XML));
         config.setParameter(WS_IN_ELEMENT_CONTENT, getProperty(WS_IN_ELEMENT_CONTENT));

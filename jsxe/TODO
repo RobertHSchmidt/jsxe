@@ -26,7 +26,6 @@ TODO:
 * Version 0.2.0
     
     * DOMSerializer needs to support the following parameters:
-        cdata-sections
         normalize-characters
         ignore-unknown-character-denormalizations
         split-cdata-sections
@@ -45,7 +44,8 @@ TODO:
     * Add a status bar to the bottom that will show a buffer's status. Like if
       the buffer failed to be validated or parsed or whatever. It's not real
       clear to the user why they got kicked to the source view when they
-      opened a document but a status bar could convey that info.
+      opened a document but a status bar could convey that info. Add an option
+      to the options menu that allows you to hide it.
     
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
     

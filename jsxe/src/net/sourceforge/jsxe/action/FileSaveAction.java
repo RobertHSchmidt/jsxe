@@ -86,7 +86,6 @@ public class FileSaveAction extends AbstractAction {
             try {
                 
                 buffer.save();
-                view.update();
                 
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);

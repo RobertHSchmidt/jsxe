@@ -150,21 +150,17 @@ public class DefaultViewTree extends JTree {
                 boolean showpopup = false;
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                    popupMenuItem = new JMenuItem("Add Element Node");
-                    popupMenuItem.addActionListener(new AddElementNodeAction());
+                    popupMenuItem = new JMenuItem(new AddElementNodeAction());
                     popup.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem("Add Text Node");
-                    popupMenuItem.addActionListener(new AddTextNodeAction());
+                    popupMenuItem = new JMenuItem(new AddTextNodeAction());
                     popup.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem("Rename Node");
-                    popupMenuItem.addActionListener(new RenameElementAction());
+                    popupMenuItem = new JMenuItem(new RenameElementAction());
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
                 //if the node is not the document or the document root.
                 if (selectedNode.getNodeType() != Node.DOCUMENT_NODE && selectedNode.getParentNode().getNodeType() != Node.DOCUMENT_NODE) {
-                    popupMenuItem = new JMenuItem("Remove Node");
-                    popupMenuItem.addActionListener(new RemoveNodeAction());
+                    popupMenuItem = new JMenuItem(new RemoveNodeAction());
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
@@ -178,7 +174,13 @@ public class DefaultViewTree extends JTree {
     
     //{{{ AddElementNodeAction class
     
-    private class AddElementNodeAction implements ActionListener {
+    private class AddElementNodeAction extends AbstractAction {
+        
+        //{{{ AddElementNodeAction constructor
+        
+        public AddElementNodeAction() {
+            putValue(Action.NAME, "Add Element Node");
+        }//}}}
         
         //{{{ actionPerformed()
         
@@ -202,7 +204,13 @@ public class DefaultViewTree extends JTree {
     
     //{{{ RenameElementAction class
     
-    private class RenameElementAction implements ActionListener {
+    private class RenameElementAction extends AbstractAction {
+        
+        //{{{ RenameElementAction constructor
+        
+        public RenameElementAction() {
+            putValue(Action.NAME, "Rename Node");
+        }//}}}
         
         //{{{ actionPerformed()
         
@@ -217,7 +225,14 @@ public class DefaultViewTree extends JTree {
     
     //{{{ AddTextNodeAction class
     
-    private class AddTextNodeAction implements ActionListener {
+    private class AddTextNodeAction extends AbstractAction {
+        
+        ///{{{ AddTextNodeAction constructor
+        
+        public AddTextNodeAction() {
+            putValue(Action.NAME, "Add Text Node");
+        }
+        //}}}
         
         //{{{ actionPerformed()
         
@@ -241,7 +256,13 @@ public class DefaultViewTree extends JTree {
     
     //{{{ RemoveNodeAction class
     
-    private class RemoveNodeAction implements ActionListener {
+    private class RemoveNodeAction extends AbstractAction {
+        
+        //{{{ RemoveNodeAction constructor
+        
+        public RemoveNodeAction() {
+            putValue(Action.NAME, "Remove Node");
+        }//}}}
         
         //{{{ actionPerformed()
         
