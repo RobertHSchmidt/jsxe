@@ -103,14 +103,15 @@ public class SourceView extends DocumentView {
         
         //{{{ Construct Edit Menu
         JMenu menu = new JMenu("Edit");
-            JMenuItem menuItem = new JMenuItem("Undo");
-            menuItem.addActionListener( new EditUndoAction() );
-            menu.add( menuItem );
-            menuItem = new JMenuItem("Redo");
-            menuItem.addActionListener( new EditRedoAction() );
-            menu.add(menuItem);
-            menu.addSeparator();
-            menuItem = new JMenuItem( new EditCutAction() );
+           // These don't do anything yet.
+           // JMenuItem menuItem = new JMenuItem("Undo");
+           // menuItem.addActionListener( new EditUndoAction() );
+           // menu.add( menuItem );
+           // menuItem = new JMenuItem("Redo");
+           // menuItem.addActionListener( new EditRedoAction() );
+           // menu.add(menuItem);
+           // menu.addSeparator();
+            JMenuItem menuItem = new JMenuItem( new EditCutAction() );
             menu.add( menuItem );
             menuItem = new JMenuItem( new EditCopyAction() );
             menu.add(menuItem);

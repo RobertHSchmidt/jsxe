@@ -71,29 +71,31 @@ public class OptionsDialog extends JDialog {
         DocumentView panel = view.getDocumentView();
         document = panel.getXMLDocument();
         
-        //Create components
-        OptionsNorthPanel = panel.getOptionsPanel();
-        OptionsSouthPanel = new JPanel();
         JButton OKButton = new JButton("OK");
         JButton CancelButton = new JButton("Cancel");
-        Border border = BorderFactory.createEmptyBorder(10,10,10,10);
-        
-        //set component options
         OKButton.addActionListener(new OKAction(this));
         CancelButton.addActionListener(new CancelAction(this));
-        OptionsNorthPanel.setBorder(border);
+        
+        Border border = BorderFactory.createEmptyBorder(10,10,10,10);
+        
+        //Configure the north panel
+        OptionsNorthPanel = panel.getOptionsPanel();
+        if (OptionsNorthPanel != null) {
+            OptionsNorthPanel.setBorder(border);
+            getContentPane().add(OptionsNorthPanel, BorderLayout.CENTER);
+        }
+        
+        //Configure south panel
+        OptionsSouthPanel = new JPanel();
         OptionsSouthPanel.setBorder(border);
+        OptionsSouthPanel.add(OKButton);
+        OptionsSouthPanel.add(CancelButton);
+        getContentPane().add(OptionsSouthPanel, BorderLayout.SOUTH);
+        
         setTitle("Options");
         setSize(dialogWidth,dialogHeight);
         setLocationRelativeTo(view);
         
-        //add components to build the dialog
-        OptionsNorthPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        
-        OptionsSouthPanel.add(OKButton);
-        OptionsSouthPanel.add(CancelButton);
-        getContentPane().add(OptionsNorthPanel, BorderLayout.CENTER);
-        getContentPane().add(OptionsSouthPanel, BorderLayout.SOUTH);
     } //}}}
     
     //{{{ Private members
@@ -103,7 +105,8 @@ public class OptionsDialog extends JDialog {
             parent = p;
         }
         public void actionPerformed(ActionEvent e) {
-            OptionsNorthPanel.saveOptions();
+            if (OptionsNorthPanel != null)
+                OptionsNorthPanel.saveOptions();
             parent.dispose();
         }
         private Dialog parent;
