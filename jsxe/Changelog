@@ -7,6 +7,8 @@
       writing a document over 5120 bytes.
     * Fixed a bug in the serializer that caused the root element opening tag
       to be placed directly after a document type definition.
+    * updated how the DOMSerializer uses Writers. It uses them in a better way
+      now.
 
 04/23/2004  version 0.1.69  Ian Lewis <IanLewis@member.fsf.org>
 
