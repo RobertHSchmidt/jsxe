@@ -49,8 +49,9 @@ import java.awt.Component;
 //}}}
 
 /**
- * Defines methods that are required for panels that are placed in jsXe's options
- * panel
+ * Defines methods that are required for panels that are placed in jsXe's
+ * options dialogs
+ *
  * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
  * @version $Id$
  * @see OptionsDialog

@@ -433,6 +433,7 @@ public class TabbedView extends JFrame {
         set.addAction("close-all", new FileCloseAllAction(this));
         set.addAction("exit", new FileExitAction(this));
         set.addAction("general-options", new ToolsOptionsAction(this));
+        set.addAction("plugin-manager", new ToolsPluginManagerAction(this));
         set.addAction("about-jsxe", new jsxeAboutDialog(this));
         jsXe.addActionSet(set);
         //}}}
@@ -515,7 +516,9 @@ public class TabbedView extends JFrame {
         m_toolsMenu = new JMenu("Tools");
         m_toolsMenu.setMnemonic('T');
             menuItem = new JMenuItem(jsXe.getAction("general-options"));
-            m_toolsMenu.add( menuItem );
+            m_toolsMenu.add(menuItem);
+            menuItem = new JMenuItem(jsXe.getAction("plugin-manager"));
+            m_toolsMenu.add(menuItem);
         //}}}
         
         //{{{ Create Help Menu
