@@ -209,7 +209,7 @@ public class JARClassLoader extends ClassLoader {
                 try {
                     addJarFile(files[i]);
                 } catch (IOException e) {
-                    errors.add(files[i].getPath());
+                    errors.add(e);
                 }
             }
         }
@@ -324,7 +324,11 @@ public class JARClassLoader extends ClassLoader {
             try {
                 startPlugin(jarFile);
             } catch (IOException e) {
-                errors.add(e.getMessage());
+                errors.add(e);
+            } catch (PluginDependencyException e2) {
+                errors.add(e2);
+            } catch (PluginLoadException e3) {
+                errors.add(e3);
             }
         }
         
@@ -574,46 +578,51 @@ public class JARClassLoader extends ClassLoader {
     
     //{{{ startPlugin()
     
-    private void startPlugin(JarFile jarfile) throws IOException, PluginDependencyException {
+    private void startPlugin(JarFile jarfile) throws IOException, PluginDependencyException, PluginLoadException {
         
         String mainPluginClass = getManifestAttribute(jarfile, Attributes.Name.MAIN_CLASS);
         //TODO String pluginName = getManifestAttribute(jarfile, Attributes.Name.IMPLEMENTATION_TITLE);
         
         checkDependencies(jarfile);
         
-        try {
-            Class pluginClass = loadClass(mainPluginClass);
-            
-            int modifiers = pluginClass.getModifiers();
-            if (!Modifier.isInterface(modifiers)
-                && !Modifier.isAbstract(modifiers)
-                && ActionPlugin.class.isAssignableFrom(pluginClass)) {
+        if (mainPluginClass != null) {
+            try {
+                Class pluginClass = loadClass(mainPluginClass);
                 
-                Object plugin = pluginClass.newInstance();
-                
-                if (ViewPlugin.class.isAssignableFrom(pluginClass)) {
-                    //It's a view plugin
-                    ViewPlugin viewPlugin = (ViewPlugin)plugin;
-                    //TODO m_viewPlugins.put(pluginName, viewPlugin);
-                    m_viewPlugins.put(viewPlugin.getName(), viewPlugin);
+                int modifiers = pluginClass.getModifiers();
+                if (!Modifier.isInterface(modifiers)
+                    && !Modifier.isAbstract(modifiers)
+                    && ActionPlugin.class.isAssignableFrom(pluginClass)) {
+                    
+                    Object plugin = pluginClass.newInstance();
+                    
+                    if (ViewPlugin.class.isAssignableFrom(pluginClass)) {
+                        //It's a view plugin
+                        ViewPlugin viewPlugin = (ViewPlugin)plugin;
+                        //TODO m_viewPlugins.put(pluginName, viewPlugin);
+                        m_viewPlugins.put(viewPlugin.getName(), viewPlugin);
+                    } else {
+                        //It's an Action plugin
+                        ActionPlugin actionPlugin = (ActionPlugin)plugin;
+                        //TODO m_actionPlugins.put(pluginName, actionPlugin);
+                        m_actionPlugins.put(actionPlugin.getName(), actionPlugin);
+                    }
                 } else {
-                    //It's an Action plugin
-                    ActionPlugin actionPlugin = (ActionPlugin)plugin;
-                    //TODO m_actionPlugins.put(pluginName, actionPlugin);
-                    m_actionPlugins.put(actionPlugin.getName(), actionPlugin);
+                    /*
+                    It's not a plugin. No biggie. We need it to be loaded
+                    anyway.
+                    */
+                    throw new PluginLoadException(jarfile, "Main class is not a plugin class");
                 }
-            } else {
-                /*
-                It's not a plugin. No biggie. We need it to be loaded
-                anyway.
-                */
+            } catch (ClassNotFoundException e) {
+                throw new IOException(e.getMessage());
+            } catch (InstantiationException e) {
+                throw new IOException(e.getMessage());
+            } catch (IllegalAccessException e) {
+                throw new IOException(e.getMessage());
             }
-        } catch (ClassNotFoundException e) {
-            throw new IOException(e.getMessage());
-        } catch (InstantiationException e) {
-            throw new IOException(e.getMessage());
-        } catch (IllegalAccessException e) {
-            throw new IOException(e.getMessage());
+        } else {
+            throw new PluginLoadException(jarfile, "No main class defined.");
         }
     }//}}}
     
