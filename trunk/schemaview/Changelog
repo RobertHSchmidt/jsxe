@@ -1,3 +1,10 @@
+03/16/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Extended the DefaultGraphCell class to hold schema children thus forming
+      a schema tree model within the graph model. This should make it easier
+      to perform edits and such.
+    * Improved parsing time a bit.
+
 03/15/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated the parser and layout management for the graph cells.
