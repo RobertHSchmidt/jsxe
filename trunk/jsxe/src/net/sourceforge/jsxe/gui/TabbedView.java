@@ -368,6 +368,9 @@ public class TabbedView extends JFrame {
             menuItem = new JMenuItem(new FileSaveAsAction(this));
             m_fileMenu.add( menuItem );
             m_fileMenu.addSeparator();
+            menuItem = new JMenuItem(new FileReloadAction(this));
+            m_fileMenu.add( menuItem );
+            m_fileMenu.addSeparator();
             menuItem = new JMenuItem(new FileCloseAction(this));
             m_fileMenu.add( menuItem );
             menuItem = new JMenuItem(new FileCloseAllAction(this));
