@@ -6,7 +6,7 @@ TODO:
       in DefaultXMLDocument.java)
     
     * Change the XMLDocument interface to use something else but validate().
-      This is confusing and dumb.
+      i.e. rename it. This is confusing and dumb.
     
     * Research the EntityResolver class and see if it can be used to resolve
       DTD files.
