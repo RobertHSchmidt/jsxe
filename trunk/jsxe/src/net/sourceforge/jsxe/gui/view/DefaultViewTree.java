@@ -594,12 +594,13 @@ public class DefaultViewTree extends JTree {
             
             Point loc = dtde.getLocation();
             TreePath path = getPathForLocation(loc.x, loc.y);
+            
+            m_dragOverTarget = null;
+            paintImmediately(m_cueLine);
             if (path != null) {
                 Rectangle bounds = getPathBounds(path);
                 //erase old cue line
                 Graphics g = getGraphics();
-                m_dragOverTarget = null;
-                paintImmediately(m_cueLine);
                 
                 int x = bounds.x;
                 int y = bounds.y;
