@@ -264,30 +264,6 @@ public class AdapterNode {
             fireLocalNameChanged(this);
         }
         
-       // try {
-       //     if (!(oldPrefix == null && prefix == null)) {
-       //         if ((oldPrefix != prefix) || ((oldPrefix != null) ? !oldPrefix.equals(prefix) : !prefix.equals(oldPrefix))) {
-       //             setNSPrefix(prefix);
-       //             setPrefix = true;
-       //         }
-       //     }
-       //     //oldLocalName should never be null but we'll check anyway
-       //     if (!(oldLocalName == null && localName == null)) {
-       //         if ((oldLocalName != prefix) || ((oldLocalName != null) ? !oldLocalName.equals(prefix) : !localName.equals(oldPrefix))) {
-       //             setLocalName(localName);
-       //         }
-       //     }
-       // } catch (DOMException e) {
-       //     try {
-       //         //if we set the prefix successfully but the local name fails.
-       //         if (setPrefix) {
-       //             setNSPrefix(oldPrefix);
-       //         }
-       //     } catch (DOMException e2) {
-       //         jsXe.exiterror(null, e2, 0);
-       //     }
-       //     throw e;
-       // }
     }//}}}
     
     //{{{ getLocalName()
@@ -842,7 +818,7 @@ public class AdapterNode {
     
     //{{{ getLocalNameFromQualifiedName()
     
-    public String getLocalNameFromQualifiedName(String qualifiedName) {
+    private String getLocalNameFromQualifiedName(String qualifiedName) {
         int index = qualifiedName.indexOf(":");
         String localName;
         if (index != -1) {
@@ -869,7 +845,7 @@ public class AdapterNode {
      * Renames this element node to the prefix and local name given. This
      * should only be called on an element node.
      */
-    public void renameElementNode(String prefix, String localName) throws DOMException {
+    private void renameElementNode(String prefix, String localName) throws DOMException {
         //get the nodes needed
         Node parent = m_domNode.getParentNode();
         NodeList children = m_domNode.getChildNodes();
@@ -902,45 +878,9 @@ public class AdapterNode {
         m_domNode = newNode;
     }//}}}
     
-   // //{{{ getBoundNamespaces()
-   // /**
-   //  * Gets the namespaces that have been bound to the document and are
-   //  * available at this node.
-   //  * @return a HashMap containing the namespace prefix as a key and URI as the value
-   //  */
-   // private HashMap getBoundNamespaces() {
-   //     Log.log(Log.DEBUG, this, "getBoundNamespaces: "+this.getNodeName());
-   //     //Get the namespaces bound above this node in the tree
-   //     HashMap map;
-   //     if (m_parentNode != null) {
-   //         map = m_parentNode.getBoundNamespaces();
-   //     } else {
-   //         map = new HashMap();
-   //     }
-        
-   //     //merge with the namespaces at this level
-   //     //Find attributes like xmlns:ns="http://some.url"
-   //     NamedNodeMap attributes = getAttributes();
-   //     if (attributes != null) {
-   //         int length = attributes.getLength();
-   //         for (int i=0; i<length; i++) {
-   //             Attr attr = (Attr)attributes.item(0);
-   //             Log.log(Log.DEBUG, this, "getBoundNamespaces: checking attr: "+attr.getNodeName());
-   //             Log.log(Log.DEBUG, this, "getBoundNamespaces: attr uri: "+attr.getNamespaceURI());
-   //             String prefix = getNSPrefixFromQualifiedName(attr.getNodeName());
-   //             String localName = getLocalNameFromQualifiedName(attr.getNodeName());
-   //             if (prefix != null && prefix.equals("xmlns")) {
-   //                 map.put(localName, attr.getNodeValue());
-   //             }
-   //         }
-   //     }
-        
-   //     return map;
-   // }//}}}
-    
     //{{{ lookupNamespaceURI()
     
-    public String lookupNamespaceURI(String prefix) {
+    private String lookupNamespaceURI(String prefix) {
         //temporary xerces dependent solution
         if ("xmlns".equals(prefix)) {
             return "http://www.w3.org/2000/xmlns/";
