@@ -559,7 +559,7 @@ public class XMLDocument {
      */
     public void removeXMLDocumentListener(XMLDocumentListener listener) {
         if (listener != null) {
-            listeners.remove(listeners.indexOf(listener));
+            listeners.remove(listener);
         }
     }//}}}
     

@@ -23,6 +23,11 @@ TODO:
     
 * Version 0.2 beta
     
+    * Add support for adding processing instructions outside the root element.
+    
+    * Fix bug where jsXe saves the dirty property. Make this a boolean instance
+      variable instead of a property.
+    
     * Need to set up default document properties for each view and default
       app properties for each view. Default document properties get set
       to the document each time one is loaded. Default app properties get set
@@ -36,15 +41,9 @@ TODO:
       whole cursor can be replaced with the image since the default drag
       cursor is dumb in linux.
     
-    * Create a dialog that displays all dirty DocumentBuffers and allows you to
-      save the selected ones, like jEdit.
-    
     * Add support for creating and editing Processing instructions. New
       tree cell renderer/editor for the different parts of the processing
       instruction?
-    
-    * Create some sort of interface to deal with editing of entity reference
-      nodes. Can this be done before adding more support for DTDs?
     
     * Make the XML document declaration header non-editable in source-view
       mode. (how?) Update it when the user changes options in the options panel.
@@ -54,15 +53,6 @@ TODO:
     * Add a feature that allows the cursor to be set to the location of a
       parse error in the source view. Maybe add this later when a side-kick
       like feature is implemented.
-    
-    * Fix the options dialog and make it look better. Maybe split into two
-      dialogs, global options and view/document specific? Maybe even three
-      dialogs, one for global options, one for view options, one for document
-      options. Maybe make it like jEdit with a tree thing that displays
-      option categories. So that way jsXe can have separate options for
-      serialization and visualization and etc. General options should set
-      defaults and application level options and the document options should
-      set document/view level options.
     
     * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
       support for this. jsXe needs to recognize when a document has a DTD and
@@ -147,6 +137,14 @@ TODO:
       current document can be validated by the DTD and what needs to be done to
       the document before it will comply with the DTD. Create interfaces to
       coincide with the XMLDocument interfaces that handles various Schema.
+        * Look at some projects that convert DTD to Schema. This may be useful
+          so that DTDs can be edited as Schema. Is that possible? DTDs seem to
+          have features that aren't in Schema and don't translate at all.
+        * Look at the XML plugin for jEdit for ways of finding what nodes can
+          be inserted at various locations in the document.
+    
+    * Create some sort of interface to deal with editing of entity reference
+      nodes. Can this be done before adding more support for DTDs?
     
 * Version 0.5 beta
     
@@ -154,6 +152,18 @@ TODO:
       such as the registering of listeners that can tell when the structure
       has changed and a builder that can give the location of a parser error
       etc. Is this reasonable/possible?
+    
+    * Fix the options dialog and make it look better. Maybe split into two
+      dialogs, global options and view/document specific? Maybe even three
+      dialogs, one for global options, one for view options, one for document
+      options. Maybe make it like jEdit with a tree thing that displays
+      option categories. So that way jsXe can have separate options for
+      serialization and visualization and etc. General options should set
+      defaults and application level options and the document options should
+      set document/view level options.
+    
+    * Create a dialog that displays all dirty DocumentBuffers and allows you to
+      save the selected ones, like jEdit.
     
     * Create an install program for jsXe.
     

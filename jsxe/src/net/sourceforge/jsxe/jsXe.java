@@ -371,7 +371,7 @@ public class jsXe {
                 workspace.
                 */
                 DocumentBuffer[] buffers = getDocumentBuffers();
-                if (buffers.length == 2 && buffers[0].isUntitled() && !buffers[0].isDirty()) {
+                if (buffers.length == 2 && buffers[0].isUntitled() && !buffers[0].getStatus(DocumentBuffer.DIRTY)) {
                     closeDocumentBuffer(view, buffers[0]);
                 }
                 return true;
@@ -513,22 +513,22 @@ public class jsXe {
         return buffers;
     }//}}}
     
-    //{{{ getBufferForDocument()
-    /**
-     * Gets the DocumentBuffer for the document.
-     * @param doc the XMLDocument
-     * @return the DocumentBuffer for the XMLDocument or null if there is none registered
-     */
-    public static DocumentBuffer getBufferForDocument(XMLDocument doc) {
-        Iterator bufferItr = m_buffers.iterator();
-        while (bufferItr.hasNext()) {
-            DocumentBuffer buf = (DocumentBuffer)bufferItr.next();
-            if (buf.getXMLDocument() == doc) {
-                return buf;
-            }
-        }
-        return null;
-    }//}}}
+   // //{{{ getBufferForDocument()
+   // /**
+   //  * Gets the DocumentBuffer for the document.
+   //  * @param doc the XMLDocument
+   //  * @return the DocumentBuffer for the XMLDocument or null if there is none registered
+   //  */
+   // public static DocumentBuffer getBufferForDocument(XMLDocument doc) {
+   //     Iterator bufferItr = m_buffers.iterator();
+   //     while (bufferItr.hasNext()) {
+   //         DocumentBuffer buf = (DocumentBuffer)bufferItr.next();
+   //         if (buf.getXMLDocument() == doc) {
+   //             return buf;
+   //         }
+   //     }
+   //     return null;
+   // }//}}}
     
     //{{{ exit()
     /**

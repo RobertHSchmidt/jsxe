@@ -1,3 +1,9 @@
+8/18/2004   version 0.2 pre19   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug with reloading a document in the source view.
+    * Fixed a bug that caused a document to be loaded dirty because the fact
+      that it was dirty was saved to the recent files list
+
 8/12/2004   version 0.2 pre18   Ian Lewis <IanLewis@member.fsf.org>
 
     * The OptionsPanel now extends the EnhancedDialog class. This makes it so

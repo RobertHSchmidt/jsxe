@@ -157,35 +157,7 @@ public class TabbedView extends JFrame {
         
        // newDocView.setDocumentBuffer(this, buffer);
         
-        buffer.addDocumentBufferListener(new DocumentBufferListener() {//{{{
-    
-            public void propertiesChanged(DocumentBuffer source, String propertyKey) {//{{{
-                if (propertyKey.equals("dirty")) {
-                    //It's dirtyness has changed
-                    //change the tab title
-                    
-                    DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
-                    for (int i=0; i < buffers.length; i++) {
-                        if (buffers[i] == source) {
-                            tabbedPane.setIconAt(i, getTabIcon(source));
-                            return;
-                        }
-                    }
-                }
-            }//}}}
-            
-            public void nameChanged(DocumentBuffer source, String newName) {//{{{
-                DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
-                for (int i=0; i < buffers.length; i++) {
-                    if (buffers[i] == source) {
-                        tabbedPane.setTitleAt(i, source.getName());
-                    }
-                }
-            };//}}}
-            
-            public void bufferSaved(DocumentBuffer source) {}
-            
-        });//}}}
+        buffer.addDocumentBufferListener(m_docBufListener);
         
         m_documentViews.add(newDocView);
         tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), newDocView.getDocumentViewComponent());
@@ -193,8 +165,6 @@ public class TabbedView extends JFrame {
         
         updateTitle();
         updateMenuBar();
-        
-        buffer.addDocumentBufferListener(m_bufferListener);
         
         return;
     }//}}}
@@ -266,7 +236,7 @@ public class TabbedView extends JFrame {
      */
     public boolean removeDocumentBuffer(DocumentBuffer buffer) {
         if (buffer != null) {
-            
+            buffer.removeDocumentBufferListener(m_docBufListener);
             for (int i=0; i<m_documentViews.size(); i++) {
                 DocumentView docView = (DocumentView)m_documentViews.get(i);
                 if (docView.getDocumentBuffer() == buffer) {
@@ -578,7 +548,7 @@ public class TabbedView extends JFrame {
     
     private ImageIcon getTabIcon(DocumentBuffer buffer) {
         
-        if (buffer.isDirty()) {
+        if (buffer.getStatus(DocumentBuffer.DIRTY)) {
             //Mark the tab title as dirty
             return m_dirtyIcon;
         }
@@ -667,19 +637,39 @@ public class TabbedView extends JFrame {
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     //The current document
     private JPanel panel;
-    private DocumentBufferListener m_bufferListener = new DocumentBufferListener() {//{{{
-        
-        public void nameChanged(DocumentBuffer source, String newName) {
-            updateTitle();
-           // tabbedPane.updateUI();
-        }
-        
-        public void propertiesChanged(DocumentBuffer source, String key) {}
     
-        public void bufferSaved(DocumentBuffer source) {}
-        
-    };//}}}
+    private DocumentBufferListener m_docBufListener = new DocumentBufferListener() {//{{{
     
+            public void propertiesChanged(DocumentBuffer source, String propertyKey) {}
+            
+            public void nameChanged(DocumentBuffer source, String newName) {//{{{
+                updateTitle();
+                DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+                for (int i=0; i < buffers.length; i++) {
+                    if (buffers[i] == source) {
+                        tabbedPane.setTitleAt(i, source.getName());
+                    }
+                }
+            };//}}}
+            
+            public void bufferSaved(DocumentBuffer source) {}
+            
+            public void statusChanged(DocumentBuffer source, int status, boolean oldStatus) {//{{{
+                if (status == DocumentBuffer.DIRTY) {
+                    //It's dirtyness has changed
+                    //change the tab title
+                    
+                    DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+                    for (int i=0; i < buffers.length; i++) {
+                        if (buffers[i] == source) {
+                            tabbedPane.setIconAt(i, getTabIcon(source));
+                            return;
+                        }
+                    }
+                }
+            }//}}}
+            
+        };//}}}
     //}}}
     
     //}}}
