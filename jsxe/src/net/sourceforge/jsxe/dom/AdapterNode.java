@@ -101,7 +101,7 @@ public class AdapterNode {
         if (domNode.getNodeType() == Node.DOCUMENT_NODE)
             return "Document Root";
         String nodeName = domNode.getNodeName();
-        if (! nodeName.startsWith("#")) {	
+        if (! nodeName.startsWith("#")) {   
             s += nodeName;
         }
         if (domNode.getNodeValue() != null) {
@@ -219,7 +219,31 @@ public class AdapterNode {
                 domNode = newNode;
                 fireLocalNameChanged(this);
             }
-        } else {
+        }
+        else if(domNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE)
+        {
+            if(domNode.getNodeName() != newValue)
+            {
+                Node newNode = domNode.getOwnerDocument().createProcessingInstruction(newValue, domNode.getNodeValue());
+                domNode.getParentNode().replaceChild(newNode, domNode);
+                domNode = newNode;
+            }           
+        }
+        else if(domNode.getNodeType() == Node.ENTITY_REFERENCE_NODE)
+        {
+            if(domNode.getNodeName() != newValue)
+            {
+                if(entityDeclared(newValue))
+                {
+                    Node newNode = domNode.getOwnerDocument().createEntityReference(newValue);
+                    domNode.getParentNode().replaceChild(newNode, domNode);
+                    domNode = newNode;
+                }
+                else
+                    throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+newValue+"\""+" is not declared in the DTD");
+            }
+        }
+        else {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element can be renamed at this time.");
         }
     }//}}}
@@ -283,8 +307,18 @@ public class AdapterNode {
      * @return the new child that was created
      * @throws DOMException INVALID_CHARACTER_ERR: Raised if the specified name
      *                      or value contains an illegal character.
-     *                      NOT_SUPPORTED_ERR: Raised if the node type is not
+     * @throws DOMException NOT_SUPPORTED_ERR: Raised if the node type is not
      *                      supported.
+     * @throws DOMException HIERARCHY_REQUEST_ERR: Raised if this node is of a
+     *                      type that does not allow children of the type of the
+     *                      newChild node, or if the node to append is one of this
+     *                      node's ancestors or this node itself.
+     * @throws DOMException WRONG_DOCUMENT_ERR: Raised if newChild was created
+     *                      from a different document than the one that created
+     *                      this node.
+     * @throws DOMException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
+     *                      readonly or if the previous parent of the node being
+     *                      inserted is readonly.
      */
     public AdapterNode addAdapterNode(String name, String value, short type) throws DOMException {//{{{
         
@@ -299,59 +333,70 @@ public class AdapterNode {
             case Node.TEXT_NODE:
                 newNode = document.createTextNode(value);
                 break;
-           // case Node.CDATA_SECTION_NODE:
-           //     
-           //     break;
-           // case Node.COMMENT_NODE:
-           //     
-           //     break;
-           // case Node.PROCESSING_INSTRUCTION_NODE:
-           //     
-           //     break;
-           // case Node.ENTITY_REFERENCE_NODE:
-           //     
-           //     break;
-           // case Node.DOCUMENT_TYPE_NODE:
-           //     
-           //     break;
+            case Node.CDATA_SECTION_NODE:
+                newNode = document.createCDATASection(value);     
+                break;
+            case Node.COMMENT_NODE:
+                newNode = document.createComment(value);
+                break;
+            case Node.PROCESSING_INSTRUCTION_NODE:
+                newNode = document.createProcessingInstruction(name, value);
+                break;
+            case Node.ENTITY_REFERENCE_NODE:
+                if (domNode.getOwnerDocument().getDoctype() ==  null) {
+                    throw new DOMException(DOMException.NOT_FOUND_ERR, "No DTD defined");
+                } else {
+                    if (domNode.getOwnerDocument().getDoctype().getEntities().getNamedItem(name) != null) {
+                        newNode = document.createEntityReference(name);
+                    } else {
+                        throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+name+"\""+" is not declared in the DTD");
+                    }
+                }
+                break;
+            case Node.DOCUMENT_TYPE_NODE:
+                throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, "DOM level 2 does not allow modification of the document type node");
             default:
                 throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element and Text Nodes can be added at this time.");
         }
         
         AdapterNode newAdapterNode = rootDocument.newAdapterNode(this, newNode);
         //add to this AdapterNode and the DOM.
-        domNode.appendChild(newNode);
-        children.add(newAdapterNode);
-        
-        fireNodeAdded(this, newAdapterNode);
-        
-        return newAdapterNode;
+        return addAdapterNode(newAdapterNode);
     }//}}}
     
     /**
      * <p>Adds an already existing AdapterNode to this node as a child.</p>
      * @param node the node to be added.
      * @return a reference to the node that was added.
+     * @throws DOMException HIERARCHY_REQUEST_ERR: Raised if this node is of a
+     *                      type that does not allow children of the type of the
+     *                      newChild node, or if the node to append is one of this
+     *                      node's ancestors or this node itself.
+     * @throws DOMException WRONG_DOCUMENT_ERR: Raised if newChild was created
+     *                      from a different document than the one that created
+     *                      this node.
+     * @throws DOMException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
+     *                      readonly or if the previous parent of the node being
+     *                      inserted is readonly.
      */
-    public AdapterNode addAdapterNode(AdapterNode node) {//{{{
+    public AdapterNode addAdapterNode(AdapterNode node) throws DOMException {//{{{
         //add to this AdapterNode and the DOM.
         if (node != null) {
-            domNode.appendChild(node.getNode());
-            children.add(node);
-            node.setParent(this);
-            
-            fireNodeAdded(this, node);
+            if(node.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE) {
+                //Add all children of the document fragment
+                for(int i=0; i<node.childCount(); i++) {
+                    addAdapterNode(node.child(i));
+                }
+            } else {
+                domNode.appendChild(node.getNode());
+                children.add(node);
+                node.setParent(this);
+                fireNodeAdded(this, node);
+            }
         }
         
         return node;
     }//}}}
-    
-   // public void remove() throws DOMException {//{{{
-   //     Node parent = domNode.getParentNode();
-   //     parent.removeChild(domNode);
-   //     parentNode.remove(this);
-   //     fireNodeRemoved(this, this);
-   // }//}}}
     
     /**
      * <p>Removes a child from this node.</p>
@@ -366,6 +411,21 @@ public class AdapterNode {
             domNode.removeChild(child.getNode());
             children.remove(child);
             fireNodeRemoved(this, child);
+        }
+    }//}}}
+    
+    /**
+     * Determines if the entity was declared by the DTD.
+     * @param entityName the name of the entity
+     * @return true if the entity was declared in this document
+     */
+    public boolean entityDeclared(String entityName) {///{{{
+        if(domNode.getOwnerDocument().getDoctype() != null) {
+            NamedNodeMap entities = domNode.getOwnerDocument().getDoctype().getEntities();
+            
+            return (entities.getNamedItem(entityName) != null);
+        } else {
+            return false;
         }
     }//}}}
     
@@ -554,6 +614,24 @@ public class AdapterNode {
             listener.attributeChanged(source, attr);
         }
     }//}}}
+    
+    public static void main(String[] args)
+    {
+        System.out.println("Testing AdapterNode class...");
+        java.io.Reader reader = null;
+        XMLDocument xmlDocument = null;
+        try
+        {
+            reader = new java.io.BufferedReader(new java.io.FileReader(new java.io.File("test.xml")));
+            xmlDocument = new DefaultXMLDocument(reader);
+        }
+        catch(java.io.IOException e)
+        {
+            System.out.println(e.toString());
+        }
+        
+        //AdapterNode aNode = new AdapterNode(xmlDocument, xmlDocument.getAdapterNode());       
+    }
     
     private AdapterNode parentNode;
     private XMLDocument rootDocument;
