@@ -164,7 +164,9 @@ public class DOMSerializer implements LSSerializer {
                         encoding = destination.getEncoding();
                     } catch (UnsupportedEncodingException uee) {
                         DefaultDOMLocator loc = new DefaultDOMLocator(nodeArg, 1, 1, 0, "");
-                        throwError(loc, "unsupported-encoding", uee);
+                        try {
+                            throwError(loc, "unsupported-encoding", DOMError.SEVERITY_FATAL_ERROR, uee);
+                        } catch (DOMSerializerException e) {/*we know this will happen*/}
                         //This is a fatal error, quit.
                         return false;
                     }
@@ -195,19 +197,25 @@ public class DOMSerializer implements LSSerializer {
                             
                         } catch (MalformedURLException mue) {
                             DefaultDOMLocator loc = new DefaultDOMLocator(nodeArg, 1, 1, 0, "");
-                            throwError(loc, "bad-uri", mue);
+                            try {
+                                throwError(loc, "bad-uri", DOMError.SEVERITY_FATAL_ERROR, mue);
+                            } catch (DOMSerializerException e) {/*we know this will happen*/}
                             //this is a fatal error
                             return false;
                         } catch (IOException ioe) {
                             DefaultDOMLocator loc = new DefaultDOMLocator(nodeArg, 1, 1, 0, "");
-                            throwError(loc, "io-error", ioe);
+                            try {
+                                throwError(loc, "io-error", DOMError.SEVERITY_FATAL_ERROR, ioe);
+                            } catch (DOMSerializerException e) {/*we know this will happen*/}
                             //this is a fatal error
                             return false;
                         }
                         
                     } else {
                         DefaultDOMLocator loc = new DefaultDOMLocator(nodeArg, 1, 1, 0, "");
-                        throwError(loc, "no-output-specified", null);
+                        try {
+                            throwError(loc, "no-output-specified", DOMError.SEVERITY_FATAL_ERROR, null);
+                        } catch (DOMSerializerException e) {/*we know this will happen*/}
                         //this is a fatal error
                         return false;
                     }
@@ -548,7 +556,40 @@ public class DOMSerializer implements LSSerializer {
                             column += currentIndent.length();
                             offset += str.length();
                         }
-                        str = "<![CDATA[" + node.getNodeValue() + "]]>";
+                        str = "<![CDATA[";
+                        doWrite(writer, str, node, line, column, offset);
+                        column += str.length();
+                        offset += str.length();
+                        
+                        String cdata = node.getNodeValue();
+                        for (int i=0; i<cdata.length(); i++) {
+                            
+                            str = cdata.substring(i, i+1);
+                            if (str.equals("]") && i+3 < cdata.length() && cdata.substring(i, i+3).equals("]]>")) {
+                                //split the cdata
+                                DefaultDOMLocator loc = new DefaultDOMLocator(node, line, column, offset, "");
+                                if (config.getFeature(DOMSerializerConfiguration.SPLIT_CDATA)) {
+                                    i+=2;
+                                    str = "]]]]><![CDATA[>";
+                                    throwError(loc, "cdata-sections-splitted", DOMError.SEVERITY_WARNING, null);
+                                } else {
+                                    throwError(loc, "invalid-data-in-cdata-section", DOMError.SEVERITY_FATAL_ERROR, null);
+                                }
+                            }
+                            if (str.equals(m_newLine)) {
+                                line++;
+                                column=0;
+                                doWrite(writer, m_newLine, node, line, column, offset);
+                                offset += m_newLine.length();
+                            } else {
+                                doWrite(writer, str, node, line, column, offset);
+                                column += str.length();
+                                offset += str.length();
+                            }
+                            
+                        }
+                        
+                        str = "]]>";
                         doWrite(writer, str, node, line, column, offset);
                         column += str.length();
                         offset += str.length();
@@ -659,32 +700,29 @@ public class DOMSerializer implements LSSerializer {
             
             DefaultDOMLocator loc = new DefaultDOMLocator(wnode, line, column, offset, "");
             
-            DOMSerializerError error = new DOMSerializerError(loc, ioe, DOMError.SEVERITY_FATAL_ERROR, "io-error");
-            Object rawHandler = config.getParameter(DOMSerializerConfiguration.ERROR_HANDLER);
-            if (rawHandler != null) {
-                
-                DOMErrorHandler handler = (DOMErrorHandler)rawHandler;
-                if (!handler.handleError(error)) {
-                    //fatal error. Don't continue.
-                    throw new DOMSerializerException(error);
-                }
-            } else {
-                throw new DOMSerializerException(error);
-            }
+            throwError(loc, "io-error", DOMError.SEVERITY_FATAL_ERROR, ioe);
         }
     }//}}}
     
     //{{{ throwError()
     /**
      * Throws an error, notifying the ErrorHandler object if necessary.
+     * @return the value returned by the error handler or false if the severity was SEVERITY_FATAL_ERROR
      */
-    private void throwError(DOMLocator loc, String type, Exception e) {
+    private void throwError(DOMLocator loc, String type, short severity, Exception e) throws DOMSerializerException {
         Object rawHandler = config.getParameter(DOMSerializerConfiguration.ERROR_HANDLER);
+        boolean handled = false;
+        if (severity == DOMError.SEVERITY_WARNING) {
+            handled = true;
+        }
+        DOMSerializerError error = new DOMSerializerError(loc, e, severity, type);
         if (rawHandler != null) {
-            
             DOMErrorHandler handler = (DOMErrorHandler)rawHandler;
-            DOMSerializerError error = new DOMSerializerError(loc, e, DOMError.SEVERITY_FATAL_ERROR, type);
-            handler.handleError(error);
+            handled = handler.handleError(error);
+        }
+        
+        if ((severity == DOMError.SEVERITY_ERROR && !handled) || severity == DOMError.SEVERITY_FATAL_ERROR) {
+            throw new DOMSerializerException(error);
         }
     }//}}}
     

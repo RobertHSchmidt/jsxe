@@ -22,7 +22,6 @@ TODO:
             This maybe needs to be done after I better understand and have
             built methods for interacting with the DTD.
         ignore-unknown-character-denormalizations
-        split-cdata-sections
     
     * Update to use the newest version of Xerces.
     
