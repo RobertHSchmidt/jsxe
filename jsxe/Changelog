@@ -1,3 +1,12 @@
+8/24/2003   version 0.1.6   Ian Lewis  <IanLewis@member.fsf.org>
+
+    * Updated Serialization and options dialog.
+
+8/24/2003   version 0.1.6   Ian Lewis  <IanLewis@member.fsf.org>
+
+    * Implemented more features for DOMSerializer.
+    * Updated the Options Dialog to have serialization options.
+
 8/18/2003   version 0.1.5   Ian Lewis  <IanLewis@member.fsf.org>
 
     * Updated DOMSerializer to work with basic features and formatting.
