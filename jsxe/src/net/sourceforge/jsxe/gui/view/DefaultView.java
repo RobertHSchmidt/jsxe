@@ -126,6 +126,28 @@ public class DefaultView extends JPanel implements DocumentView {
         //{{{ init tree
         JScrollPane treeView = new JScrollPane(tree);
         tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
+        
+        //starts editing if the user start typing on one of the nodes
+        tree.addKeyListener(new KeyListener() {//{{{
+            
+            public void keyPressed(KeyEvent e) {}
+            
+            public void keyReleased(KeyEvent e) {}
+            
+            public void keyTyped(KeyEvent e) {
+                if (!e.isActionKey()) {
+                    DefaultViewTreeNode node = (DefaultViewTreeNode)tree.getLastSelectedPathComponent();
+                    if (tree.isEditable(node)) {
+                        tree.startEditingAtPath(tree.getLeadSelectionPath());
+                    } else {
+                        if (canEditInJEditorPane(node)) {
+                            htmlPane.requestFocus();
+                        }
+                    }
+                }
+            }
+            
+        });//}}}
         //}}}
         
         //{{{ Create and set up the splitpanes

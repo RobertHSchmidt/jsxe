@@ -128,6 +128,41 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         
     }//}}}
     
+    //{{{ isEditable()
+    /**
+     * Indicates if a node is capable of being edited in
+     * this tree.
+     * @param node the node to check
+     * @return true if the node can be edited in this tree
+     */
+    public boolean isEditable(DefaultViewTreeNode node) {
+        if (node != null) {
+            return (node.getAdapterNode().getNodeType() == Node.ELEMENT_NODE);
+        } else {
+            return false;
+        }
+    }//}}}
+    
+    //{{{ startEditingAtPath()
+    
+    public void startEditingAtPath(TreePath path) {
+        if (path != null && isEditable((DefaultViewTreeNode)path.getLastPathComponent())) {
+            //When editing is finished go back to uneditable
+            getCellEditor().addCellEditorListener(new CellEditorListener() {//{{{
+                public void editingCanceled(ChangeEvent e) {
+                    setEditable(false);
+                    getCellEditor().removeCellEditorListener(this);
+                }
+                public void editingStopped(ChangeEvent e) {
+                    setEditable(false);
+                    getCellEditor().removeCellEditorListener(this);
+                }
+            });//}}}
+            setEditable(true);
+            super.startEditingAtPath(path);
+        }
+    }//}}}
+    
     //{{{ Autoscroll methods
     
     //{{{ autoscroll()
@@ -180,21 +215,6 @@ public class DefaultViewTree extends JTree implements Autoscroll {
     
     private static final int m_AUTOSCROLL_MARGIN = 12;
     
-    //{{{ isEditable()
-    /**
-     * Indicates if a node is capable of being edited in
-     * this tree.
-     * @param node the node to check
-     * @return true if the node can be edited in this tree
-     */
-    private static boolean isEditable(DefaultViewTreeNode node) {
-        if (node != null) {
-            return (node.getAdapterNode().getNodeType() == Node.ELEMENT_NODE);
-        } else {
-            return false;
-        }
-    }//}}}
-
     //}}}
     
     //{{{ Private members
@@ -385,18 +405,6 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         public void actionPerformed(ActionEvent e) {
             TreePath selPath = getLeadSelectionPath();
             if (selPath != null) {
-                //When editing is finished go back to uneditable
-                getCellEditor().addCellEditorListener(new CellEditorListener() {//{{{
-                    public void editingCanceled(ChangeEvent e) {
-                        setEditable(false);
-                        getCellEditor().removeCellEditorListener(this);
-                    }
-                    public void editingStopped(ChangeEvent e) {
-                        setEditable(false);
-                        getCellEditor().removeCellEditorListener(this);
-                    }
-                });//}}}
-                setEditable(true);
                 startEditingAtPath(selPath);
             }
         }//}}}
