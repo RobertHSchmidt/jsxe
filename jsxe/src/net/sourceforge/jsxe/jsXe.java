@@ -200,6 +200,9 @@ public class jsXe {
                 System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
             }
         }
+        //}}}
+        
+        //{{{ start plugins
         
         errors = m_pluginLoader.startPlugins();
         if (errors.size() != 0) {
@@ -998,6 +1001,7 @@ public class jsXe {
     private static BufferHistory m_bufferHistory;
     private static ArrayList m_actionSets = new ArrayList();
     private static JARClassLoader m_pluginLoader;
+    private static TabbedView m_tabbedview;
     
     private static OptionsPanel jsXeOptions;
     //}}}
