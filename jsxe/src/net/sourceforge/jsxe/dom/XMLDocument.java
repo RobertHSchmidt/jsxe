@@ -79,7 +79,12 @@ import javax.swing.text.Segment;
 //}}}
 
 //}}}
-
+/**
+ * The XMLDocument class represents an XML document as a  tree structure
+ * that has nodes, implemented as AdapterNodes, as well as text. Methods are
+ * provided to allow user objects to interact with the XML document as text
+ * or as a tree structure seamlessly.
+ */
 public class XMLDocument {
     
     public static String ENCODING = "encoding";
@@ -87,18 +92,44 @@ public class XMLDocument {
     public static String FORMAT_XML = DOMSerializerConfiguration.FORMAT_XML;
     public static String INDENT = DOMSerializerConfiguration.INDENT;
     
-    XMLDocument(Reader reader) throws IOException {//{{{
+    //{{{ XMLDocument constructor
+    /**
+     * Creates a new XMLDocument for a document that can be read by the given
+     * Reader.
+     * @param reader the Reader object to read the XML document from.
+     * @throws IOException if there was a problem reading the document
+     */
+    XMLDocument(Reader reader) throws IOException {
         setDefaultProperties();
         setModel(reader);
     }//}}}
     
-    XMLDocument(Reader reader, EntityResolver resolver) throws IOException {//{{{
+    //{{{ XMLDocument constructor
+    /**
+     * Creates a new XMLDocument for a document that can be read by the given
+     * Reader.
+     * @param reader the Reader object to read the XML document from.
+     * @param resolver the EntityResolver to use when resolving external
+     *                 entities.
+     * @throws IOException if there was a problem reading the document
+     */
+    XMLDocument(Reader reader, EntityResolver resolver) throws IOException {
         m_entityResolver = resolver;
         setDefaultProperties();
         setModel(reader);
     }//}}}
     
-    public boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {//{{{
+    //{{{ checkWellFormedNess()
+    /**
+     * Checks the wellformedness of the document and throws appropriate
+     * exceptions based on the errors encountered during parsing.
+     * @return true if the document is well formed.
+     * @throws SAXParseException if there was a SAX error when parsing.
+     * @throws SAXException if there was a problem with the SAX parser.
+     * @throws ParserConfigurationException if the parser is not configured properly
+     * @throws IOException if there was a problem reading the document
+     */
+    public boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
         
         if (!m_parsedMode) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -119,7 +150,14 @@ public class XMLDocument {
         return m_parsedMode;
     }//}}}
     
-    public String setProperty(String key, String value) {//{{{
+    //{{{ setProperty()
+    /**
+     * Sets a property of the XMLDocument
+     * @param key the key to the property
+     * @param value the value of the property
+     * @return the old value of the property
+     */
+    public String setProperty(String key, String value) {
         
         String oldValue = getProperty(key);
         String returnValue = oldValue;
@@ -151,19 +189,46 @@ public class XMLDocument {
         return returnValue;
     }//}}}
     
-    public String getProperty(String key) {//{{{
+    //{{{ getProperty()
+    /**
+     * Gets a property for the key given.
+     * @param key the key to the properties list
+     * @return the value of the property for the given key.
+     */
+    public String getProperty(String key) {
         return props.getProperty(key);
     }//}}}
     
-    public String getProperty(String key, String defaultValue) {//{{{
+    //{{{ getProperty()
+    /**
+     * Gets a property for the key given or returns the default value
+     * if there is no property for the given key.
+     * @param key the key to the properties list
+     * @param defaultValue the default value for the property requested
+     * @return the value of the property for the given key.
+     */
+    public String getProperty(String key, String defaultValue) {
         return props.getProperty(key, defaultValue);
     }//}}}
     
-    public AdapterNode getAdapterNode() {//{{{
+    //{{{ getAdapterNode()
+    /**
+     * Returns the AdapterNode object for the root of the XML document.
+     * @return the root node as an AdapterNode
+     */
+    public AdapterNode getAdapterNode() {
         return m_adapterNode;
     }//}}}
     
-    public AdapterNode newAdapterNode(AdapterNode parent, Node node) {//{{{
+    //{{{ newAdapterNode()
+    /**
+     * Factory method that creates a new AdapterNode object wrapping the Node
+     * object and AdapterNode object wrapping the Node's parent Node object.
+     * @param parent the AdapterNode for the parent of the new node
+     * @param node the Node object that the new AdapterNode should wrap
+     * @return the new AdapterNode object
+     */
+    public AdapterNode newAdapterNode(AdapterNode parent, Node node) {
         AdapterNode newNode = null;
         if (node != null && parent != null) {
             newNode = new AdapterNode(this, parent, node);
@@ -172,7 +237,17 @@ public class XMLDocument {
         return newNode;
     }//}}}
     
-    public String getText(int start, int length) throws IOException {//{{{
+    //{{{ getText()
+    /**
+     * Gets the text at a specified location in the document. This method
+     * method should be used sparingly as changes to the properties of this
+     * document or the tree structure could change the location of text
+     * within the document.
+     * @param start the starting index of the text to retrieve
+     * @param length the length of the text needed
+     * @return the text requested
+     */
+    public String getText(int start, int length) throws IOException {
         
         if (start < 0 || length < 0 || start + length > m_content.getLength()) {
             throw new ArrayIndexOutOfBoundsException(start + ":" + length);
@@ -191,14 +266,25 @@ public class XMLDocument {
         }
     }//}}}
     
-    public int getLength() {//{{{
+    //{{{ getLength()
+    /**
+     * Gets the total number of characters in the document.
+     * @return the length of the document
+     */
+    public int getLength() {
         
         syncContentWithDOM();
         
         return m_content.getLength();
     }//}}}
     
-    public boolean isWellFormed() throws IOException {//{{{
+    //{{{ isWellFormed()
+    /**
+     * Indicates if the document is well formed.
+     * @return true of the document is well formed
+     * @throws IOException if there was a problem checking the wellformedness
+     */
+    public boolean isWellFormed() throws IOException {
         
         if (!m_parsedMode) {
             try {
@@ -214,22 +300,15 @@ public class XMLDocument {
         return m_parsedMode;
     }//}}}
     
-   // public void save() throws IOException, SAXParseException, SAXException, ParserConfigurationException {//{{{
-   //     if (getFile() != null) {
-   //         saveAs(getFile());
-   //     } else {
-   //         //You shouldn't call this when the document is untitled but
-   //         //if you do default to saving to the home directory.
-   //         File newFile = new File(System.getProperty("user.home") + getName());
-   //         //don't really need to do this.
-   //        // setModel(newFile);
-   //         //just set m and name instead.
-   //         XMLFile = newFile;
-   //         name = newFile.getName();
-   //     }
-   // }//}}}
-    
-    public void serialize(OutputStream out) throws IOException, UnsupportedEncodingException {//{{{
+    //{{{ serialize()
+    /**
+     * Writes the XML document to the output stream specified.
+     * @param out the output stream to write the document to.
+     * @throws IOException if there was a problem writing the document
+     * @throws UnsupportedEncodingException if the encoding specified in the
+     *                                      properties is not supported.
+     */
+    public void serialize(OutputStream out) throws IOException, UnsupportedEncodingException {
         if (m_parsedMode) {
             
             //since we are in parsed mode let's serialize.
@@ -260,7 +339,14 @@ public class XMLDocument {
         
     }//}}}
     
-    public String serializeNodeToString(AdapterNode node) {//{{{
+    //{{{ serializeNodeToString()
+    /**
+     * Serializes a child node to a string using the properties specified in
+     * this XMLDocument object.
+     * @param node the node to serialize
+     * @return the serialized version of the node given
+     */
+    public String serializeNodeToString(AdapterNode node) {
         String value = null;
         try {
             DOMSerializer serializer = getSerializer();
@@ -269,29 +355,59 @@ public class XMLDocument {
         return value;
     }//}}}
     
-    public void setEntityResolver(EntityResolver resolver) {//{{{
+    //{{{ setEntityResolver()
+    /**
+     * Sets the EntityResolver object that is used when resolving external
+     * entities.
+     * @param resolver the entity resolver
+     */
+    public void setEntityResolver(EntityResolver resolver) {
         m_entityResolver = resolver;
     }//}}}
     
-    public void insertText(int offset, String text) throws IOException {//{{{
+    //{{{ insertText()
+    /**
+     * Inserts text into the document at the specified location
+     * @param offset the character offset where the text should be inserted
+     * @param text the text to insert
+     * @throws IOException if the text could not be inserted
+     */
+    public void insertText(int offset, String text) throws IOException {
         m_content.insert(offset, text);
         m_parsedMode = false;
         fireStructureChanged(null);
     }//}}}
     
-    public void removeText(int offset, int length) throws IOException {//{{{
+    //{{{ removeText()
+    /**
+     * Removes text at the specifed character offset.
+     * @param offset the character offset where the text is removed form
+     * @param length the length of the text segment to remove
+     * @throws IOException if the text could not be removed
+     */
+    public void removeText(int offset, int length) throws IOException {
         m_content.remove(offset, length);
         m_parsedMode = false;
         fireStructureChanged(null);
     }//}}}
     
-    public void addXMLDocumentListener(XMLDocumentListener listener) {//{{{
+    //{{{ addXMLDocumentListener()
+    /**
+     * Registers a change listener with the XMLDocument
+     * @param listener the listener to register with this document
+     */
+    public void addXMLDocumentListener(XMLDocumentListener listener) {
         if (listener != null) {
             listeners.add(listener);
         }
     }//}}}
     
-    public void removeXMLDocumentListener(XMLDocumentListener listener) {//{{{
+    //{{{ removeXMLDocumentListener()
+    /**
+     * Unregisters a change listener from this document
+     * @param listener the listener to unregister
+     */
+    public void removeXMLDocumentListener(XMLDocumentListener listener) {
         if (listener != null) {
             listeners.remove(listeners.indexOf(listener));
         }
@@ -299,53 +415,7 @@ public class XMLDocument {
     
     //{{{ Private members
     
-   // private void setModel(File file) throws FileNotFoundException, IOException {//{{{
-   //     if (file!=null) {
-   //         int nextchar=0;
-   //         name = file.getName();
-   //         FileReader reader=new FileReader(file);
-   //         
-   //         
-   //         StringBuffer text = new StringBuffer();
-   //         char[] buffer = new char[READ_SIZE];
-   //         
-   //         //Save the document to a string
-   //         int bytesRead;
-   //         do {
-   //             bytesRead = reader.read(buffer, 0, READ_SIZE);
-   //             if (bytesRead != -1)
-   //                 text.append(buffer, 0, bytesRead);
-   //         }
-   //         while (bytesRead != -1);
-   //         m_text = text.toString();
-   //         
-   //         File oldFile = m_file;
-   //         m_file = file;
-   //         
-   //         m_parsedMode = false;
-   //         
-   //         try {
-   //             checkWellFormedness();
-   //         } catch (SAXException saxe) {
-   //             m_file = oldFile;
-   //         } catch (ParserConfigurationException pce) {
-   //             m_file = oldFile;
-   //             throw new IOException(pce.getMessage());
-   //         } catch (IOException ioe) {
-   //             m_file = oldFile;
-   //             throw ioe;
-   //         }
-   //         
-   //         if (!file.equals(oldFile)) {
-   //             fireFileChanged();
-   //         }
-   //         
-   //         fireStructureChanged(m_adapterNode);
-   //     } else {
-   //         throw new FileNotFoundException("File Not Found: null");
-   //     }
-   // }//}}}
-    
+    //{{{ setModel()
     /**
      * Sets up the DefaultXMLDocument given a Reader.
      * This should only be called in the constructor since if
@@ -356,7 +426,7 @@ public class XMLDocument {
      * has changed when we are building the DOM for the first
      * time.
      */
-    private void setModel(Reader reader) throws IOException {//{{{
+    private void setModel(Reader reader) throws IOException {
         
         StringBuffer text = new StringBuffer();
         char[] buffer = new char[READ_SIZE];
@@ -388,34 +458,18 @@ public class XMLDocument {
         }
     }//}}}
     
-   // private void setModel(String string) throws IOException {//{{{
-   //     String backupSource = source;
-   //     m_text = string;
-   //     m_parsedMode = false;
-   //     
-   //     try {
-   //         checkWellFormedness();
-   //     } catch (SAXException saxe) {
-   //     } catch (ParserConfigurationException pce) {
-   //         //resore the source text
-   //         m_text = backupSource;
-   //         throw new IOException(pce.getMessage());
-   //     } catch (IOException ioe) {
-   //         //restore the source text
-   //         m_text = backupSource;
-   //         throw ioe;
-   //     }
-   //     fireStructureChanged(m_adapterNode);
-   // }//}}}
+    //{{{ setDefaultProperties()
     
-    private void setDefaultProperties() {//{{{
+    private void setDefaultProperties() {
         setProperty(FORMAT_XML, "false");
         setProperty(WS_IN_ELEMENT_CONTENT, "true");
         setProperty(ENCODING, "UTF-8");
         setProperty(INDENT, "4");
     }//}}}
     
-    private void firePropertiesChanged(String key) {//{{{
+    //{{{ firePropertiesChanged()
+    
+    private void firePropertiesChanged(String key) {
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
             XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
@@ -423,7 +477,9 @@ public class XMLDocument {
         }
     }//}}}
     
-    private void fireStructureChanged(AdapterNode location) {//{{{
+    //{{{ fireStructureChanged()
+    
+    private void fireStructureChanged(AdapterNode location) {
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
             XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
@@ -432,18 +488,21 @@ public class XMLDocument {
         m_syncedWithContent = false;
     }//}}}
     
-    private void setDocument(Document doc) {//{{{
+    //{{{ setDocument()
+    
+    private void setDocument(Document doc) {
         m_document=doc;
         m_adapterNode = new AdapterNode(this, m_document);
         m_adapterNode.addAdapterNodeListener(docAdapterListener);
         m_syncedWithContent = false;
     }//}}}
     
+    //{{{ syncContentWithDOM()
     /**
      * Write the DOM to the content manager given the current serialization and
      * formatting options.
      */
-    private void syncContentWithDOM() {//{{{
+    private void syncContentWithDOM() {
         if (m_parsedMode) {
             if (!m_syncedWithContent) {
                 //create a new content manager to be written to.
@@ -461,7 +520,9 @@ public class XMLDocument {
         m_syncedWithContent = true;
     }//}}}
     
-    private DOMSerializer getSerializer() {//{{{
+    //{{{ getSerializer()
+    
+    private DOMSerializer getSerializer() {
         DOMSerializerConfiguration config = new DOMSerializerConfiguration();
         config.setParameter(FORMAT_XML, getProperty(FORMAT_XML));
         config.setParameter(WS_IN_ELEMENT_CONTENT, getProperty(WS_IN_ELEMENT_CONTENT));
@@ -470,48 +531,60 @@ public class XMLDocument {
         return new DOMSerializer(config);
     }//}}}
     
-    private class XMLDocAdapterListener implements AdapterNodeListener {//{{{
+    //{{{ XMLDocAdapterListener class
+    private class XMLDocAdapterListener implements AdapterNodeListener {
         
+        // {{{ nodeAdded()
         public void nodeAdded(AdapterNode source, AdapterNode added) {
             fireStructureChanged(source);
-        }
+        }//}}}
         
+        //{{{ nodeRemoved()
         public void nodeRemoved(AdapterNode source, AdapterNode removed) {
             fireStructureChanged(source);
-        }
+        }//}}}
         
+        //{{{ localNameChanged()
         public void localNameChanged(AdapterNode source) {
             fireStructureChanged(source);
-        }
+        }//}}}
         
+        //{{{ namespaceChanged()
         public void namespaceChanged(AdapterNode source) {
             fireStructureChanged(source);
-        }
+        }//}}}
         
+        //{{{ nodeValueChanged()
         public void nodeValueChanged(AdapterNode source) {
             fireStructureChanged(source);
-        }
+        }//}}}
         
+        //{{{ attributeChanged()
         public void attributeChanged(AdapterNode source, String attr) {
             fireStructureChanged(source);
-        }
+        }//}}}
         
     }//}}}
     
+    //{{{ ContentManager class
     /**
      * Text content manager based off of jEdit's ContentManager class.
      */
-    private class ContentManager {//{{{
+    private class ContentManager {
         
-        public ContentManager() {//{{{
+        // {{{ ContentManager constructor
+        public ContentManager() {
             text = new char[1024];
         } //}}}
     
-        public final int getLength() {//{{{
+        //{{{ getLength()
+        
+        public final int getLength() {
             return length;
         } //}}}
     
-        public String getText(int start, int len) {//{{{
+        //{{{ getText()
+        public String getText(int start, int len) {
             if(start >= gapStart) {
                 return new String(text,start + gapEnd - gapStart,len);
             } else {
@@ -523,7 +596,8 @@ public class XMLDocument {
             }
         } //}}}
     
-        public void getText(int start, int len, Segment seg) {//{{{
+        //{{{ getText()
+        public void getText(int start, int len, Segment seg) {
             if(start >= gapStart) {
                 seg.array = text;
                 seg.offset = start + gapEnd - gapStart;
@@ -549,7 +623,8 @@ public class XMLDocument {
             }
         } //}}}
         
-        public void insert(int start, String str) {//{{{
+        //{{{ insert()
+        public void insert(int start, String str) {
             int len = str.length();
             moveGapStart(start);
             
@@ -563,7 +638,8 @@ public class XMLDocument {
             length += len;
         } //}}}
     
-        public void insert(int start, Segment seg) {//{{{
+        //{{{ insert()
+        public void insert(int start, Segment seg) {
             moveGapStart(start);
             
             if(gapEnd - gapStart < seg.count) {
@@ -576,13 +652,15 @@ public class XMLDocument {
             length += seg.count;
         } //}}}
     
-        public void _setContent(char[] text, int length) {//{{{
+        //{{{ _setContent()
+        public void _setContent(char[] text, int length) {
             this.text = text;
             this.gapStart = this.gapEnd = 0;
             this.length = length;
         } //}}}
     
-        public void remove(int start, int len) {//{{{
+        //{{{ remove()
+        public void remove(int start, int len) {
             moveGapStart(start);
             gapEnd += len;
             length -= len;
@@ -631,45 +709,57 @@ public class XMLDocument {
         //}}}
     }//}}}
     
+    //{{{ ContentManagerOutputStream class
     /**
      * output stream to write to the content manager when the serialized. Used
      * when syncing the source with the current Document.
      */
-    private class ContentManagerOutputStream extends OutputStream {//{{{
+    private class ContentManagerOutputStream extends OutputStream {
         
-        public ContentManagerOutputStream(ContentManager content) {//{{{
+        //{{{ ContentManagerOutputStream constructor
+        public ContentManagerOutputStream(ContentManager content) {
             m_m_content = content;
         }//}}}
         
-        public void write(int b) throws IOException {//{{{
+        //{{{ write()
+        public void write(int b) throws IOException {
             byte []barray = { (byte)b };
             m_m_content.insert(m_m_content.getLength(), new String(barray));
         }//}}}
         
-        public void write(byte[] b) throws IOException {//{{{
+        //{{{ write()
+        public void write(byte[] b) throws IOException {
             m_m_content.insert(m_m_content.getLength(), new String(b));
         }//}}}
         
-        public void write(byte[] b, int off, int len) {//{{{
+        //{{{ write()
+        public void write(byte[] b, int off, int len) {
             m_m_content.insert(m_m_content.getLength(), new String(b, off, len));
         }//}}}
         
+        //{{{ Private members
         private ContentManager m_m_content;
+        //}}}
     }//}}}
+    
+    //{{{ ContentManagerInputStream class
     /**
      * input stream for parsing reading current text content.
      */
-    private class ContentManagerInputStream extends InputStream {//{{{
+    private class ContentManagerInputStream extends InputStream {
         
-        public ContentManagerInputStream(ContentManager content) {//{{{
+        //{{{ ContentManagerInputStream constructor
+        public ContentManagerInputStream(ContentManager content) {
             m_m_content = content;
         }//}}}
         
-        public int available() {//{{{
+        //{{{ available()
+        public int available() {
             return m_m_content.getLength() - m_m_index;
         }//}}}
         
-        public int read() {//{{{
+        //{{{ read()
+        public int read() {
             if (m_m_index < m_m_content.getLength()) {
                 char[] text = m_m_content.getText(m_m_index++, 1).toCharArray();
                 return (int)text[0];
@@ -678,11 +768,13 @@ public class XMLDocument {
             }
         }//}}}
         
-        public int read(byte[] b) throws IOException {//{{{
+        //{{{ read()
+        public int read(byte[] b) throws IOException {
             return read(b, 0, b.length);
         }//}}}
         
-        public int read(byte[]b, int off, int len) {//{{{
+        //{{{ read()
+        public int read(byte[]b, int off, int len) {
             if (len == 0) {
                 return 0;
             }
@@ -717,14 +809,16 @@ public class XMLDocument {
             
         }//}}}
         
-        public long skip(long n) {//{{{
+        //{{{ skip()
+        public long skip(long n) {
             m_m_index += (int)n;
             return n;
         }//}}}
         
+        //{{{ Private members
         private int m_m_index = 0;
         private ContentManager m_m_content;
-        
+        //}}}
     }//}}}
     
     private Document m_document;
