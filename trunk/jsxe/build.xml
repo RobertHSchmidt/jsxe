@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<!--
+     This is a build.xml file for building jsXe.
+-->
+
+<project name="jsXe" default="dist" basedir=".">
+  
+  <target name="init">
+    <tstamp/>
+  </target>
+  
+	<target name="compile" depends="init">
+    <javac srcdir="." deprecation="on" includeJavaRuntime="yes">
+      <include name="src/**/*.java"/>
+    </javac>
+  </target>
+  
+  <target name="dist" depends="compile">
+    <jar jarfile="jsXe.jar" manifest="jsxe.manifest">
+      <fileset dir="./src/">
+        <include name="**/*.class"/>
+        <include name="icons/*.jpg"/>
+      </fileset>
+    </jar>
+  </target>
+
+  <target name="clean" description="clean up" >
+    <delete>
+      <fileset dir="." includes="**/*.class"/>
+			<fileset dir="." includes="**/*~" defaultexcludes="no"/>
+			<fileset dir="." includes="**/#*#" defaultexcludes="no"/>
+			<fileset dir="." includes="**/*.rej"/>
+			<fileset dir="." includes="**/*.orig"/>
+			<fileset dir="." includes="**/.*.swp"/>
+			<fileset dir="." includes="**/.#*"/>
+			<fileset dir="." includes="**/.new*"/>
+			<fileset dir="." includes="**/.directory"/>
+    </delete>
+  </target>
+
+</project>
