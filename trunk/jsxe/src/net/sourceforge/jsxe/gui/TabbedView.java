@@ -123,7 +123,7 @@ public class TabbedView extends JFrame {
     //{{{ getDocumentBuffer()
     
     public DocumentBuffer getDocumentBuffer() {
-        return jsXe.getBufferForDocument(((DocumentView)tabbedPane.getSelectedComponent()).getXMLDocument());
+        return ((DocumentView)tabbedPane.getSelectedComponent()).getDocumentBuffer();
     }//}}}
     
     //{{{ getDocumentView()
@@ -148,7 +148,7 @@ public class TabbedView extends JFrame {
         factory.setDocumentViewType(documentViewName);
         
         
-        DocumentView newDocView = factory.newDocumentView(buffer.getXMLDocument());
+        DocumentView newDocView = factory.newDocumentView(buffer);
         
        // newDocView.setDocumentBuffer(this, buffer);
         
@@ -599,7 +599,7 @@ public class TabbedView extends JFrame {
             
             try {
                 DocumentViewFactory factory = DocumentViewFactory.newInstance();
-                DocumentView view = factory.newDocumentView(buffer.getXMLDocument());
+                DocumentView view = factory.newDocumentView(buffer);
                 setDocumentView(view);
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
@@ -629,7 +629,7 @@ public class TabbedView extends JFrame {
             try {
                 DocumentViewFactory factory = DocumentViewFactory.newInstance();
                 factory.setDocumentViewType("source");
-                DocumentView view = factory.newDocumentView(buffer.getXMLDocument());
+                DocumentView view = factory.newDocumentView(buffer);
                 setDocumentView(view);
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);

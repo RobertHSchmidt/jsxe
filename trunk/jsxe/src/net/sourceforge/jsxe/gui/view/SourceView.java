@@ -40,6 +40,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
@@ -109,10 +110,11 @@ public class SourceView extends JPanel implements DocumentView {
     //{{{ SourceView constructor
     /**
      * Creates a new SourceView for the XMLDocument specified.
+     * Parent
      * @param document the document to open.
      * @throws IOException if the document cannot be viewed using this view
      */
-    public SourceView(XMLDocument document) throws IOException {
+    public SourceView(DocumentBuffer document) throws IOException {
         
         textarea = new SourceViewTextPane();
         textarea.setTabSize(4);
@@ -125,7 +127,7 @@ public class SourceView extends JPanel implements DocumentView {
         setLayout(new BorderLayout());
         add(scrollPane, BorderLayout.CENTER);
         
-        setXMLDocument(document);
+        setDocumentBuffer(document);
     }//}}}
     
     //{{{ DocumentView methods
@@ -133,7 +135,7 @@ public class SourceView extends JPanel implements DocumentView {
     //{{{ close()
     
     public boolean close() {
-        m_document.removeXMLDocumentListener(docListener);
+        m_document.getXMLDocument().removeXMLDocumentListener(docListener);
         return true;
     }//}}}
     
@@ -195,9 +197,9 @@ public class SourceView extends JPanel implements DocumentView {
         return new SourceViewOptionsPanel();
     }//}}}
     
-    //{{{ getXMLDocument()
+    //{{{ getDocumentBuffer()
     
-    public XMLDocument getXMLDocument() {
+    public DocumentBuffer getDocumentBuffer() {
         return m_document;
     }//}}}
     
@@ -207,20 +209,20 @@ public class SourceView extends JPanel implements DocumentView {
         return _VIEWNAME;
     }//}}}
     
-    //{{{ setXMLDocument()
+    //{{{ setDocumentBuffer()
     
-    public void setXMLDocument(XMLDocument document) throws IOException {
+    public void setDocumentBuffer(DocumentBuffer document) throws IOException {
         
         if (m_document != null) {
-            m_document.removeXMLDocumentListener(docListener);
+            m_document.getXMLDocument().removeXMLDocumentListener(docListener);
         }
         
         ensureDefaultProps(document);
         
         m_document = document;
-        textarea.setDocument(new SourceViewDocument(m_document));
+        textarea.setDocument(new SourceViewDocument(m_document.getXMLDocument()));
         textarea.setTabSize((new Integer(m_document.getProperty(XMLDocument.INDENT, "4"))).intValue());
-        m_document.addXMLDocumentListener(docListener);
+        m_document.getXMLDocument().addXMLDocumentListener(docListener);
         
     }//}}}
     
@@ -472,14 +474,14 @@ public class SourceView extends JPanel implements DocumentView {
     
     //{{{ ensureDefaultProps()
     
-    private void ensureDefaultProps(XMLDocument document) {
+    private void ensureDefaultProps(DocumentBuffer document) {
         //get default properties
         document.setProperty(SOFT_TABS, document.getProperty(SOFT_TABS, m_defaultProperties.getProperty(SOFT_TABS)));
     }//}}}
     
     private SourceViewXMLDocumentListener docListener = new SourceViewXMLDocumentListener();
     
-    private XMLDocument m_document;
+    private DocumentBuffer m_document;
     private SourceViewTextPane textarea;
     
     private String m_searchString;
