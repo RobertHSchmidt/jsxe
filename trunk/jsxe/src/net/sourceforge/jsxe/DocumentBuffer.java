@@ -98,7 +98,7 @@ import org.xml.sax.InputSource;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class DocumentBuffer {
+public class DocumentBuffer extends XMLDocument {
     
     public static final int DIRTY = 1;
     
@@ -110,11 +110,10 @@ public class DocumentBuffer {
      * @throws IOException if there was a problem reading the document
      */
     public DocumentBuffer() throws IOException {
+        super(new StringReader(jsXe.getDefaultDocument()));
+        setEntityResolver(new DocumentBufferResolver());
         m_file = null;
         m_name = getUntitledLabel();
-        StringReader reader = new StringReader(jsXe.getDefaultDocument());
-        readFile(reader);
-        reader.close();
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -125,11 +124,10 @@ public class DocumentBuffer {
      * @throws IOException if there was a problem reading the file
      */
     DocumentBuffer(File file) throws IOException {
+        super(new FileReader(file));
+        setEntityResolver(new DocumentBufferResolver());
         m_file = file;
         m_name = file.getName();
-        FileReader reader = new FileReader(file);
-        readFile(reader);
-        reader.close();
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -141,9 +139,10 @@ public class DocumentBuffer {
      * @throws IOException if there is a problem using the reader
      */
     DocumentBuffer(Reader reader) throws IOException {
+        super(reader);
+        setEntityResolver(new DocumentBufferResolver());
         m_file = null;
         m_name = getUntitledLabel();
-        readFile(reader);
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -162,7 +161,7 @@ public class DocumentBuffer {
         Enumeration propertyNames = properties.propertyNames();
         while (propertyNames.hasMoreElements()) {
             String key = propertyNames.nextElement().toString();
-            m_document.setProperty(key, properties.getProperty(key));
+            setProperty(key, properties.getProperty(key));
         }
     }//}}}
     
@@ -248,60 +247,7 @@ public class DocumentBuffer {
         return m_file;
     }//}}}
     
-    //{{{ setProperty()
-    
-    /**
-     * Sets a property with the DocumentBuffer. This can be anything the
-     * application requires.
-     * @param key the key to the property
-     * @param value the value for the property
-     * @return the value for the property that was set
-     */
-    public String setProperty(String key, String value) {
-        return m_document.setProperty(key, value);
-    }//}}}
-    
-    //{{{ getProperties()
-    
-    public Properties getProperties() {
-        return m_document.getProperties();
-    }//}}}
-    
-    //{{{ getProperty()
-    
-    /**
-     * Gets a property for this DocumentBuffer
-     * @param key the key to the property requested
-     * @return the value for the property requested
-     */
-    public String getProperty(String key) {
-        return m_document.getProperty(key);
-    }//}}}
-    
-    //{{{ getProperty()
-    
-    /**
-     * Gets a property for this DocumentBuffer given a default value.
-     * @param key the key to the property requested
-     * @return the value for the property requested or defaultValue if the
-     *         property is not set
-     */
-    public String getProperty(String key, String defaultValue) {
-        return m_document.getProperty(key, defaultValue);
-    }//}}}
-    
-    //{{{ getXMLDocument()
-    
-    /**
-     * Gets the XMLDocument object for this DocumentBuffer. This object is
-     * used by the DocumentBuffer to interact with the XML document in memory.
-     * @return the XMLDocument for this DocumentBuffer
-     */
-    public XMLDocument getXMLDocument() {
-        return m_document;
-    }//}}}
-    
-    //{{{ isDirty()
+    //{{{ getStatus()
     
     /**
      * Gets a status for the DocumentBuffer, such as if it is dirty.
@@ -468,7 +414,7 @@ public class DocumentBuffer {
         if (file != null) {
             try {
                 FileOutputStream out = new FileOutputStream(file);
-                m_document.serialize(out);
+                serialize(out);
                 
                 if (!getName().equals(file.getName())) {
                     setName(file.getName());
@@ -612,7 +558,7 @@ public class DocumentBuffer {
             Enumeration encodings = supportedEncodings.elements();
             while (encodings.hasMoreElements()) {
                 String nextEncoding = (String)encodings.nextElement();
-                if (m_document.getProperty(XMLDocument.ENCODING).equals(nextEncoding)) {
+                if (getProperty(ENCODING).equals(nextEncoding)) {
                     encodingComboBox.setSelectedItem(nextEncoding);
                 }
             }
@@ -625,11 +571,11 @@ public class DocumentBuffer {
             sizes.add("8");
             indentComboBox = new JComboBox(sizes);
             indentComboBox.setEditable(true);
-            indentComboBox.setSelectedItem(m_document.getProperty(XMLDocument.INDENT));
+            indentComboBox.setSelectedItem(getProperty(INDENT));
             
             //set up the whitespace and format output check-boxes.
            // boolean whitespace    = Boolean.valueOf(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, "true")).booleanValue();
-            boolean formatOutput = Boolean.valueOf(m_document.getProperty(XMLDocument.FORMAT_XML, "false")).booleanValue();
+            boolean formatOutput = Boolean.valueOf(getProperty(XMLDocument.FORMAT_XML, "false")).booleanValue();
             
            // whitespaceCheckBox = new JCheckBox("Whitespace in element content", whitespace);
             formatCheckBox     = new JCheckBox("Format XML output", formatOutput);
@@ -709,21 +655,21 @@ public class DocumentBuffer {
         //{{{ saveOptions()
         
         public void saveOptions() {
-            if (!String.valueOf(formatCheckBox.isSelected()).equals(m_document.getProperty(XMLDocument.FORMAT_XML))) {
+            if (!String.valueOf(formatCheckBox.isSelected()).equals(getProperty(XMLDocument.FORMAT_XML))) {
                 setDirty(true);
-                m_document.setProperty(XMLDocument.FORMAT_XML, String.valueOf(formatCheckBox.isSelected()));
+                setProperty(XMLDocument.FORMAT_XML, String.valueOf(formatCheckBox.isSelected()));
             }
            // if (!String.valueOf(whitespaceCheckBox.isSelected()).equals(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT))) {
            //     setDirty(true);
            //     m_document.setProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, String.valueOf(whitespaceCheckBox.isSelected()));
            // }
-            if (!encodingComboBox.getSelectedItem().toString().equals(m_document.getProperty(XMLDocument.ENCODING))) {
+            if (!encodingComboBox.getSelectedItem().toString().equals(getProperty(XMLDocument.ENCODING))) {
                 setDirty(true);
-                m_document.setProperty(XMLDocument.ENCODING, encodingComboBox.getSelectedItem().toString());
+                setProperty(XMLDocument.ENCODING, encodingComboBox.getSelectedItem().toString());
             }
             try {
                 //don't need to set dirty, no change to text
-                m_document.setProperty(XMLDocument.INDENT, (new Integer(indentComboBox.getSelectedItem().toString())).toString());
+                setProperty(XMLDocument.INDENT, (new Integer(indentComboBox.getSelectedItem().toString())).toString());
             } catch (NumberFormatException nfe) {
                 //Bad input, don't save.
             }
@@ -773,16 +719,6 @@ public class DocumentBuffer {
         }
     }//}}}
     
-    //{{{ firePropertiesChanged()
-    
-    private void firePropertiesChanged(String key) {
-        ListIterator iterator = m_listeners.listIterator();
-        while (iterator.hasNext()) {
-            DocumentBufferListener listener = (DocumentBufferListener)iterator.next();
-            listener.propertiesChanged(this, key);
-        }
-    }//}}}
-    
     //{{{ fireBufferSaved()
     
     private void fireBufferSaved() {
@@ -806,12 +742,19 @@ public class DocumentBuffer {
     //{{{ readFile()
     
     public void readFile(Reader reader) throws IOException {
-        try {
-            XMLDocumentFactory factory = XMLDocumentFactory.newInstance();
-            factory.setEntityResolver(new DocumentBufferResolver());
-            m_document = factory.newXMLDocument(reader);
-        } catch (UnrecognizedDocTypeException e) {}
-        m_document.addXMLDocumentListener(m_bufferDocListener);
+        int READ_SIZE=5120;
+        StringBuffer buf = new StringBuffer();
+        char[] buffer = new char[READ_SIZE];
+        int bytesRead = 0;
+        do {
+            bytesRead = reader.read(buffer, 0, READ_SIZE);
+            if (bytesRead != -1) {
+                buf.append(new String(buffer, 0, bytesRead));
+            }
+        }
+        while (bytesRead != -1);
+        removeText(0, getLength());
+        insertText(0, buf.toString());
     }//}}}
     
     //{{{ DocumentBufferResolver class
@@ -855,7 +798,7 @@ public class DocumentBuffer {
         //{{{ propertiesChanged()
         
         public void propertiesChanged(XMLDocument source, String propertyKey) {
-            firePropertiesChanged(propertyKey);
+            
         }//}}}
         
         //{{{ structureChanged()
@@ -866,7 +809,6 @@ public class DocumentBuffer {
         
     };//}}}
     
-    private XMLDocument m_document;
     private String m_name;
     private File m_file;
     private ArrayList m_listeners = new ArrayList();

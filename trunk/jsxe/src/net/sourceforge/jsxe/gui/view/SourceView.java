@@ -248,7 +248,7 @@ public class SourceView extends JPanel implements DocumentView {
         ensureDefaultProps(document);
         
         m_document = document;
-        textarea.setDocument(new SourceViewDocument(m_document.getXMLDocument()));
+        textarea.setDocument(new SourceViewDocument(m_document));
         textarea.setTabSize((new Integer(m_document.getProperty(XMLDocument.INDENT, "4"))).intValue());
         m_document.addDocumentBufferListener(docListener);
         

@@ -53,15 +53,6 @@ public interface DocumentBufferListener {
      */
     public void nameChanged(DocumentBuffer source, String newName);//}}}
     
-    //{{{ propertiesChanged()
-    
-    /**
-     * Called whenever a property of the DocumentBuffer has changed.
-     * @param source the source buffer whose property has changed
-     * @param the key to the property value that has changed
-     */
-    public void propertiesChanged(DocumentBuffer source, String key);//}}}
-    
     //{{{ bufferSaved()
     
     /**

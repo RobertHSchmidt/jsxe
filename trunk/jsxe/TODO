@@ -32,12 +32,12 @@ TODO:
       This doesn't allow other editors to open the document until jsXe is
       closed or the objects are garbage collected.
     
-    * Fix the whitespace in element content option to work like it should.
-      It should not affect text nodes that are not in element content (node
-      content where the only nodes are whitespace only text nodes and elements).
-      If the option is unchecked then the whitespace only nodes should be
-      removed. It should have to be true for you to format the document since
-      formatting requires whitespace in element content.
+    * Fix the reload fuctionality so it doesn't put the whole document into
+      a string. see readFile() in the DocumentBuffer class
+    
+    * Have views remove listeners that they added to the DocumentBuffer when
+      close() is called. Not doing this causes a memory leak since view objects
+      are not garbage collected.
     
     * Do something with formatting. Should there be a formatting button that
       formats the document for you? Other options may apply here, like

@@ -291,8 +291,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
             }
             
             DocumentBuffer buffer = m_view.getDocumentBuffer();
-            XMLDocument doc = buffer.getXMLDocument();
-            Segment seg = doc.getSegment(0, doc.getLength());
+            Segment seg = buffer.getSegment(0, buffer.getLength());
             int caretPosition = m_textArea.getCaretPosition();
             CharIndexedSegment charSeg = new CharIndexedSegment(seg, caretPosition);
             
