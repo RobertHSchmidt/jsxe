@@ -591,7 +591,8 @@ public class DefaultViewTree extends JTree {
                     if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
                         //insert in the node
                         parentNode.addAdapterNode(node);
-                        setExpandedState(path, true);
+                        
+                        makeVisible(path.pathByAddingChild(node));
                     } else {
                         if (parentNode != null) {
                             //insert after the node dropped on
