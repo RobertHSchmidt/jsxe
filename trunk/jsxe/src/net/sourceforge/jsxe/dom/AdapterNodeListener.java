@@ -67,6 +67,6 @@ public interface AdapterNodeListener {
     
     public void nodeValueChanged(AdapterNode source);
     
-    public void attributeChanged(AdapterNode source);
+    public void attributeChanged(AdapterNode source, String attr);
     
 }
