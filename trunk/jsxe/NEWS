@@ -1,3 +1,11 @@
+08/31/2003  version 0.1.13
+
+    * Fixed another nasty bug with createElement() creating elements with a
+      null local name when element nodes are renamed. Used createElementNS()
+      instead.
+    * Fixed performance issues with opening files (that weren't even that
+      large.)
+
 08/30/2003  version 0.1.12
 
     * Fixed a very nasty bug that caused jsXe to save blank files.

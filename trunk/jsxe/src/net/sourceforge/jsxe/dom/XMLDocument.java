@@ -67,7 +67,7 @@ import java.util.Vector;
 
 public abstract class XMLDocument {
     
-    public abstract void validate() throws SAXParseException, SAXException, ParserConfigurationException, IOException;
+    public abstract void checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException;
     
     public boolean isUntitled() {//{{{
         return (getFile() == null);
@@ -109,7 +109,7 @@ public abstract class XMLDocument {
     
     public abstract void setModel(String string) throws IOException;
     
-    public abstract boolean isValidated();
+    public abstract boolean isWellFormed();
     
     public abstract boolean equals(Object o) throws ClassCastException;
     

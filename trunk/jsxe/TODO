@@ -2,9 +2,6 @@ TODO:
 
     * Document methods with javadoc.
     
-    * Change the XMLDocument interface to use something else but validate().
-      i.e. rename it. This is confusing and dumb.
-    
     * Allow GUI models to register change listeners with XMLDocuments and
       AdapterNodes. This will allow GUI models to be updated automatically when
       the DOM is changed. Also add property change listeners so that views can
@@ -12,7 +9,7 @@ TODO:
     
     * Currently AdapterNodes only wrap the Node interface and create new
       instances of itself when queried. Have AdapterNode implement the TreeNode
-      interface and create a tree around the DOM so that new AdapterNodes are
+      interface and create a tree mirroring the DOM so that new AdapterNodes are
       not created on the fly. This will allow the TreeModel to have a static
       model i.e. The instances of AdapterNode won't change everytime the
       TreeModel is queried by the JTree. e.g. Currently when I create a TreePath
@@ -22,10 +19,6 @@ TODO:
     
     * Research the EntityResolver class and see if it can be used to resolve
       DTD files.
-    
-    * Build an adapter for DocumentBuilder so that it implements the DOM3
-      standard DOMBuilder interface? Maybe use it with DOMSerializer to created
-      filtered documents? Or use a TreeWalker to serialize?
     
     * Add funtionality for dirty files.
     
@@ -40,6 +33,10 @@ TODO:
       way users can fix wellformedness errors in the editor.
     
     * Release new version (0.2.1).
+    
+    * Build an adapter for DocumentBuilder so that it implements the DOM3
+      standard DOMBuilder interface? Maybe use it with DOMSerializer to created
+      filtered documents? Or use a TreeWalker to serialize?
     
     * Use the Nodefilter interface with the DefaultView to determine which types
       of nodes to show.

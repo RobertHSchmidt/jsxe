@@ -1,3 +1,10 @@
+9/01/2003   version 0.1.14  Ian Lewis  <IanLewis@member.fsf.org>
+
+    * Changed the XMLDocument validate() method to be checkWellFormedness().
+      Changed the implementation of isValidated() to be named isWellFormed() and
+      isWellFormed() now calls checkWellFormedNess to find out out whether it is
+      well-formed or not.
+
 8/31/2003   version 0.1.13  Ian Lewis  <IanLewis@member.fsf.org>
 
     * Fixed bug with createElement() creating elements with a null local name

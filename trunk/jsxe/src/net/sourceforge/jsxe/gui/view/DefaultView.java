@@ -140,10 +140,9 @@ public class DefaultView extends DocumentView {
     
     public void setDocument(TabbedView view, XMLDocument document) throws IOException {//{{{
         try {
-            document.validate();
+            document.checkWellFormedness();
         } catch (Exception e) {
-            String errormsg = "Could not validate XML Document.\n"+
-            "Default View requires XML documents to be well-formed.\n\n"+
+            String errormsg = "The tree view requires XML documents to be well-formed.\n\n"+
             e.toString();
             throw new IOException(errormsg);
         }
