@@ -12,7 +12,7 @@ This file contains the code for the DOMSerializer class that will write an XML
 document to an output using serialization.
 
 This file written by ian Lewis (iml001@bridgewater.edu)
-Copied extensively from Java & XML by Brett McLaughlin
+Copied extensively and modified from Java & XML by Brett McLaughlin
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

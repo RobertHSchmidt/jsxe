@@ -14,7 +14,7 @@ is a singleton. It may not be forever as jsXe may one day may be multi-threaded
 and have multiple views.
 
 This file written by ian Lewis (iml001@bridgewater.edu)
-Copyright ? 2002 by ian Lewis
+Copyright (C) 2002 by ian Lewis
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -110,16 +110,6 @@ public class DocumentPanel extends JPanel {
         
         //Create html editor pane
         htmlPane.setEditable(true);
-        EditorKit blah = htmlPane.getEditorKit();
-        htmlPane.addInputMethodListener(
-            new InputMethodListener() {
-                public void inputMethodTextChanged(InputMethodEvent event) {
-                    System.out.println("Event Triggered");
-                }
-                public void caretPositionChanged(InputMethodEvent event) {
-                    System.out.println("Caret position changed");
-                }
-            });
         JScrollPane htmlView = new JScrollPane(htmlPane);
         
         //create a table model
