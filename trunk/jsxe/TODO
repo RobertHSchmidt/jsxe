@@ -12,6 +12,13 @@ TODO:
       be thrown out? Then other classes would extend XMLDocument and have
       methods specific to their application of XML?
     
+    * DOMSerializer needs to support the following parameters:
+        well-formed
+        discard-default-content
+        normalize-characters
+        soft-tabs
+        xml-declaration
+    
     * Make sure jsXe can deal with all types of XML nodes.
         * Add support for creating every type of XML node.
         * Need to implement character normalization during serialization.
