@@ -75,34 +75,63 @@ import java.util.Iterator;
  */
 public class DOMSerializerConfiguration implements DOMConfiguration {
     
+    //DOMConfiguration defined parameters
+    public static String CANONICAL_FORM         = "canonical-form";
+    public static String CDATA_SECTIONS         = "cdata-sections";
+    public static String CHAR_NORMALIZATION     = "check-character-normalization";
+    public static String COMMENTS               = "comments";
+    public static String DATATYPE_NORMALIZATION = "datatype-normalization";
+    public static String ENTITIES               = "entities";
+    public static String ERROR_HANDLER          = "error-handler";
+    public static String INFOSET                = "infoset";
+    public static String NAMESPACES             = "namespaces";
+    public static String NAMESPACE_DECLARATIONS = "namespace-declarations";
+    public static String NORMALIZE_CHARS        = "normalize-characters";
+    public static String SPLIT_CDATA            = "split-cdata-sections";
+    public static String VALIDATE_XML           = "validate";
+    public static String VALIDATE_IF_SCHEMA     = "validate-if-schema";
+    public static String WELL_FORMED            = "well-formed";
+    public static String WS_IN_ELEMENT_CONTENT  = "element-content-whitespace";
+    
+    //LSSerializer defined parameters
+    public static String DISCARD_DEFAULT_CONTENT    = "discard-default-content";
+    public static String FORMAT_XML                 = "format-pretty-print";
+    public static String IGNORE_UNKNOWN_CHAR_DENORM = "ignore-unknown-character-denormalizations";
+    public static String XML_DECLARATION            = "xml-declaration";
+    
+    //Additional parameters supported by DOMSerializerConfiguration
+    public static String SOFT_TABS = "soft-tabs";
+    public static String INDENT    = "indent";
+    
     public DOMSerializerConfiguration() {//{{{
         
         //set the default boolean parameters for a DOMConfiguration
-        setFeature("canonical-form",                false);
-        setFeature("cdata-sections",                true);
-        setFeature("comments",                      true);
-        setFeature("datatype-normalization",        false);
-        setFeature("entities",                      false);
+        setFeature(CANONICAL_FORM,              false);
+        setFeature(CDATA_SECTIONS,              true);
+        setFeature(CHAR_NORMALIZATION,          false);
+        setFeature(COMMENTS,                    true);
+        setFeature(DATATYPE_NORMALIZATION,      false);
+        setFeature(ENTITIES,                    false);
         //infoset is not present because it is determined
         //by checking the values of other features.
-        setFeature("namespaces",                    true);
-        setFeature("namespace-declarations",        true);
-        setFeature("normalize-characters",          true);
-        setFeature("split-cdata-sections",          true);
-        setFeature("validate",                      false);
-        setFeature("validate-if-schema",            false);
-        setFeature("well-formed",                   true);
-        setFeature("element-content-whitespace",    true);
+        setFeature(NAMESPACES,                  true);
+        setFeature(NAMESPACE_DECLARATIONS,      true);
+        setFeature(NORMALIZE_CHARS,             true);
+        setFeature(SPLIT_CDATA,                 true);
+        setFeature(VALIDATE_XML,                false);
+        setFeature(VALIDATE_IF_SCHEMA,          false);
+        setFeature(WELL_FORMED,                 true);
+        setFeature(WS_IN_ELEMENT_CONTENT,       true);
         
         //LSSeraializer features
-        setFeature("discard-default-content",       true);
-        setFeature("format-pretty-print",           false);
-        setFeature("ignore-unknown-character-denormalizations", true);
-        setFeature("xml-declaration",               true);
+        setFeature(DISCARD_DEFAULT_CONTENT,     true);
+        setFeature(FORMAT_XML,                  false);
+        setFeature(IGNORE_UNKNOWN_CHAR_DENORM,  true);
+        setFeature(XML_DECLARATION,             true);
         
         //DOMSerializer parameters
-        setFeature("soft-tabs",                     false);
-        setParameter("indent",                      new Integer(4));
+        setFeature(SOFT_TABS,                   false);
+        setParameter(INDENT,                    new Integer(4));
     }//}}}
     
     public DOMSerializerConfiguration(DOMConfiguration config) throws DOMException {//{{{
@@ -125,73 +154,76 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
             //couldn't think of a slicker way to do this
             //that was worth the time to implement
             //and extra processing.
-            if (name.equals("canonical-form")) {
+            if (name.equals(CANONICAL_FORM)) {
                 return !booleanValue;
             }
-            if (name.equals("cdata-sections")) {
+            if (name.equals(CDATA_SECTIONS)) {
                 return true;
             }
-            if (name.equals("comments")) {
-                return true;
-            }
-            if (name.equals("datatype-normalization")) {
-                return true;
-            }
-            if (name.equals("entities")) {
-                return true;
-            }
-            if (name.equals("well-formed")) {
-                return true;
-            }
-            if (name.equals("infoset")) {
-                return true;
-            }
-            if (name.equals("namespaces")) {
-                return true;
-            }
-            if (name.equals("namespace-declarations")) {
-                return true;
-            }
-            if (name.equals("normalize-characters")) {
-                return true;
-            }
-            if (name.equals("split-cdata-sections")) {
-                return true;
-            }
-            if (name.equals("validate")) {
+            if (name.equals(CHAR_NORMALIZATION)) {
                 return !booleanValue;
             }
-            if (name.equals("validate-if-schema")) {
+            if (name.equals(COMMENTS)) {
+                return true;
+            }
+            if (name.equals(DATATYPE_NORMALIZATION)) {
+                return true;
+            }
+            if (name.equals(ENTITIES)) {
+                return true;
+            }
+            if (name.equals(WELL_FORMED)) {
+                return true;
+            }
+            if (name.equals(INFOSET)) {
+                return true;
+            }
+            if (name.equals(NAMESPACES)) {
+                return true;
+            }
+            if (name.equals(NAMESPACE_DECLARATIONS)) {
+                return true;
+            }
+            if (name.equals(NORMALIZE_CHARS)) {
+                return true;
+            }
+            if (name.equals(SPLIT_CDATA)) {
+                return true;
+            }
+            if (name.equals(VALIDATE_XML)) {
                 return !booleanValue;
             }
-            if (name.equals("element-content-whitespace")) {
+            if (name.equals(VALIDATE_IF_SCHEMA)) {
+                return !booleanValue;
+            }
+            if (name.equals(WS_IN_ELEMENT_CONTENT)) {
                 return true;
             }
             
-            if (name.equals("discard-default-content")) {
+            if (name.equals(DISCARD_DEFAULT_CONTENT)) {
                 return true;
             }
-            if (name.equals("format-pretty-print")) {
+            if (name.equals(FORMAT_XML)) {
                 return true;
             }
-            if (name.equals("ignore-unknown-character-denormalizations")) {
+            if (name.equals(IGNORE_UNKNOWN_CHAR_DENORM)) {
                 return booleanValue;
             }
-            if (name.equals("xml-declaration")) {
+            if (name.equals(XML_DECLARATION)) {
                 return true;
             }
-            if (name.equals("soft-tabs")) {
+            if (name.equals(SOFT_TABS)) {
                 return true;
             }
             
             return false;
         } else {
-            if (name.equals("error-handler")) {
+            if (name.equals(ERROR_HANDLER)) {
                 if (value instanceof DOMErrorHandler || value == null) {
                     return true;
                 }
             }
-            if (name.equals("indent")) {
+            if (name.equals(INDENT)) {
                 if (value instanceof Integer || value == null) {
                     return true;
                 }
@@ -205,15 +237,15 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         if (m_supportedParameters.indexOf(name) != -1) {
             
             if (name == "infoset") {
-                boolean namespaceDeclarations = getFeature("namespace-declarations");
-                boolean validateIfSchema      = getFeature("validate-if-schema");
-                boolean entities              = getFeature("entities");
-                boolean datatypeNormalization = getFeature("datatype-normalization");
-                boolean cdataSections         = getFeature("cdata-sections");
+                boolean namespaceDeclarations = getFeature(NAMESPACE_DECLARATIONS);
+                boolean validateIfSchema      = getFeature(VALIDATE_IF_SCHEMA);
+                boolean entities              = getFeature(ENTITIES);
+                boolean datatypeNormalization = getFeature(DATATYPE_NORMALIZATION);
+                boolean cdataSections         = getFeature(CDATA_SECTIONS);
                 
-                boolean whitespace = getFeature("whitespace-in-element-content");
-                boolean comments   = getFeature("comments");
-                boolean namespaces = getFeature("namespaces");
+                boolean whitespace = getFeature(WS_IN_ELEMENT_CONTENT);
+                boolean comments   = getFeature(COMMENTS);
+                boolean namespaces = getFeature(NAMESPACES);
                 
                 return (new Boolean(!namespaceDeclarations &&
                         !validateIfSchema &&
@@ -254,30 +286,30 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
                     values that the infoset option
                     requires.
                     */
-                    if (name.equals("infoset")) {
-                        setFeature("namespace-declarations",false);
-                        setFeature("validate-if-schema",    false);
-                        setFeature("entities",              false);
-                        setFeature("datatype-normalization",false);
-                        setFeature("cdata-sections",        false);
+                    if (name.equals(INFOSET)) {
+                        setFeature(NAMESPACE_DECLARATIONS,false);
+                        setFeature(VALIDATE_IF_SCHEMA,    false);
+                        setFeature(ENTITIES,              false);
+                        setFeature(DATATYPE_NORMALIZATION,false);
+                        setFeature(CDATA_SECTIONS,        false);
                         
-                        setFeature("element-content-whitespace",    true);
-                        setFeature("comments",                      true);
-                        setFeature("namespaces",                    true);
+                        setFeature(WS_IN_ELEMENT_CONTENT, true);
+                        setFeature(COMMENTS,              true);
+                        setFeature(NAMESPACES,            true);
                         return;
                     }
-                    if (name.equals("format-pretty-print") && ((Boolean)value).booleanValue()) {
+                    if (name.equals(FORMAT_XML) && ((Boolean)value).booleanValue()) {
                         /*
                         setting element-content-whitespaces to false
                         because I'm not sure how to pretty print the document
                         and preserve whitespace in element content at the same
                         time.
                         */
-                        setFeature("element-content-whitespace", false);
-                        setFeature("canonical-form", false);
+                        setFeature(WS_IN_ELEMENT_CONTENT, false);
+                        setFeature(CANONICAL_FORM, false);
                     }
-                    if (name.equals("element-content-whitespace") && ((Boolean)value).booleanValue()) {
-                        setFeature("format-pretty-print", false);
+                    if (name.equals(WS_IN_ELEMENT_CONTENT) && ((Boolean)value).booleanValue()) {
+                        setFeature(FORMAT_XML, false);
                     }
                     
                     m_parameters.put(name, value);
@@ -357,31 +389,31 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         m_supportedParameters = new ArrayList(22);
         
         //DOMConfiguration defined parameters
-        m_supportedParameters.add("canonical-form");
-        m_supportedParameters.add("cdata-sections");
-        m_supportedParameters.add("check-character-normalization");
-        m_supportedParameters.add("comments");
-        m_supportedParameters.add("datatype-normalization");
-        m_supportedParameters.add("entities");
-        m_supportedParameters.add("error-handler");
-        m_supportedParameters.add("infoset");
-        m_supportedParameters.add("namespaces");
-        m_supportedParameters.add("namespace-declarations");
-        m_supportedParameters.add("normalize-characters");
-        m_supportedParameters.add("split-cdata-sections");
-        m_supportedParameters.add("validate");
-        m_supportedParameters.add("validate-if-schema");
-        m_supportedParameters.add("well-formed");
-        m_supportedParameters.add("element-content-whitespace");
+        m_supportedParameters.add(CANONICAL_FORM);
+        m_supportedParameters.add(CDATA_SECTIONS);
+        m_supportedParameters.add(CHAR_NORMALIZATION);
+        m_supportedParameters.add(COMMENTS);
+        m_supportedParameters.add(DATATYPE_NORMALIZATION);
+        m_supportedParameters.add(ENTITIES);
+        m_supportedParameters.add(ERROR_HANDLER);
+        m_supportedParameters.add(INFOSET);
+        m_supportedParameters.add(NAMESPACES);
+        m_supportedParameters.add(NAMESPACE_DECLARATIONS);
+        m_supportedParameters.add(NORMALIZE_CHARS);
+        m_supportedParameters.add(SPLIT_CDATA);
+        m_supportedParameters.add(VALIDATE_XML);
+        m_supportedParameters.add(VALIDATE_IF_SCHEMA);
+        m_supportedParameters.add(WELL_FORMED);
+        m_supportedParameters.add(WS_IN_ELEMENT_CONTENT);
         
         //LSSerializer defined parameters
-        m_supportedParameters.add("discard-default-content");
-        m_supportedParameters.add("format-pretty-print");
-        m_supportedParameters.add("ignore-unknown-character-denormalizations");
-        m_supportedParameters.add("xml-declaration");
+        m_supportedParameters.add(DISCARD_DEFAULT_CONTENT);
+        m_supportedParameters.add(FORMAT_XML);
+        m_supportedParameters.add(IGNORE_UNKNOWN_CHAR_DENORM);
+        m_supportedParameters.add(XML_DECLARATION);
         
         //Additional parameters supported by DOMSerializerConfiguration
-        m_supportedParameters.add("soft-tabs");
-        m_supportedParameters.add("indent");
+        m_supportedParameters.add(SOFT_TABS);
+        m_supportedParameters.add(INDENT);
     }//}}}
 }

@@ -12,10 +12,11 @@ This file contains the code for the DOMSerializer class that will write an XML
 document to an output using serialization. Probobly the most complex and
 nasty class in jsXe.
 
-This attempts to conform to the DOM3 implementation in Xerces. It conforms
-to DOM3 as of Xerces 2.6.0. I'm not one to stay on the bleeding edge but
-it is as close to a standard interface for load & save as you can get and I
-didn't want to work around the fact that current serializers aren't very good.
+This attempts to conform to the DOM3 implementation in Xerces. It tries to
+conform to DOM3 as of Xerces 2.6.0. I'm not one to stay on the bleeding edge
+but it is as close to a standard interface for load & save as you can get
+and I didn't want to work around the fact that current serializers aren't
+very good.
 
 This file written by Ian Lewis (IanLewis@member.fsf.org)
 
@@ -202,7 +203,7 @@ public class DOMSerializer implements LSSerializer {
                 serializeNode(writer, nodeArg, encoding);
                 return true;
             } catch (DOMSerializerException dse) {
-                Object rawHandler = config.getParameter("error-handler");
+                Object rawHandler = config.getParameter(DOMSerializerConfiguration.ERROR_HANDLER);
                 if (rawHandler != null) {
                     DOMErrorHandler handler = (DOMErrorHandler)rawHandler;
                     DOMError error = dse.getError();
@@ -218,12 +219,15 @@ public class DOMSerializer implements LSSerializer {
         StringWriter writer = new StringWriter();
         try {
             serializeNode(writer, nodeArg);
+            //flush the output-stream. Without this
+            //files are sometimes not written at all.
+            writer.flush();
         } catch (DOMSerializerException dse) {}
         return writer.toString();
     }//}}}
 
     public boolean writeToURI(Node nodeArg, java.lang.String uri) {//{{{
-        return false;
+        return write(nodeArg, new DOMOutput(uri, "UTF-8"));
     }//}}}
     
     //}}}
@@ -293,8 +297,8 @@ public class DOMSerializer implements LSSerializer {
      */
     private void rSerializeNode(Writer writer, Node node, String encoding, String currentIndent, int line, int column, int offset) throws DOMSerializerException {//{{{
         
-        boolean formatting = config.getFeature("format-pretty-print");
-        boolean whitespace = config.getFeature("element-content-whitespace");
+        boolean formatting = config.getFeature(DOMSerializerConfiguration.FORMAT_XML);
+        boolean whitespace = config.getFeature(DOMSerializerConfiguration.WS_IN_ELEMENT_CONTENT);
         
         //This is used many times below as a temporary variable.
         String str = "";
@@ -339,7 +343,7 @@ public class DOMSerializer implements LSSerializer {
                         offset += str.length();
                     }
                     
-                    if (config.getFeature("namespaces") && nodePrefix != null) {
+                    if (config.getFeature(DOMSerializerConfiguration.NAMESPACES) && nodePrefix != null) {
                         str = "<" + nodePrefix + ":" + nodeName;
                     } else {
                         str = "<" + nodeName;
@@ -358,7 +362,7 @@ public class DOMSerializer implements LSSerializer {
                         if we discard default content check if the attribute
                         was specified in the original document.
                         */
-                        if (config.getFeature("discard-default-content")) {
+                        if (config.getFeature(DOMSerializerConfiguration.DISCARD_DEFAULT_CONTENT)) {
                             if (currentAttr.getSpecified()) {
                                 writeAttr = true;
                             }
@@ -383,7 +387,7 @@ public class DOMSerializer implements LSSerializer {
                         if (children.getLength() <= 0) {
                             elementEmpty = true;
                         } else {
-                            if (!config.getFeature("element-content-whitespace")) {
+                            if (!config.getFeature(DOMSerializerConfiguration.WS_IN_ELEMENT_CONTENT)) {
                                 boolean hasWSOnlyElements = true;
                                 for(int i=0; i<children.getLength();i++) {
                                     hasWSOnlyElements = hasWSOnlyElements &&
@@ -403,7 +407,7 @@ public class DOMSerializer implements LSSerializer {
                             String indentUnit = "";
                             
                             if (formatting) {
-                                if (config.getFeature("soft-tabs")) {
+                                if (config.getFeature(DOMSerializerConfiguration.SOFT_TABS)) {
                                     //get the indent size and use it when serializing the children nodes.
                                     Integer indentSize = (Integer)config.getParameter("indent");
                                     if (indentSize != null) {
@@ -431,7 +435,7 @@ public class DOMSerializer implements LSSerializer {
                                 column += currentIndent.length();
                                 offset += str.length();
                             }
-                            if (config.getFeature("namespaces") && nodePrefix != null) {
+                            if (config.getFeature(DOMSerializerConfiguration.NAMESPACES) && nodePrefix != null) {
                                 str = "</" + nodePrefix + ":" +nodeName + ">";
                             } else {
                                 str = "</" + nodeName + ">";
@@ -499,7 +503,7 @@ public class DOMSerializer implements LSSerializer {
                     }
                     break;//}}}
                 case Node.CDATA_SECTION_NODE://{{{
-                    if (config.getFeature("cdata-sections")) {
+                    if (config.getFeature(DOMSerializerConfiguration.CDATA_SECTIONS)) {
                         if (formatting) {
                             //set to zero here for error handling (if doWrite throws exception)
                             column = 0;
@@ -603,7 +607,7 @@ public class DOMSerializer implements LSSerializer {
             DefaultDOMLocator loc = new DefaultDOMLocator(wnode, line, column, offset, "");
             
             DOMSerializerError error = new DOMSerializerError(loc, ioe, DOMError.SEVERITY_FATAL_ERROR, "io-error");
-            Object rawHandler = config.getParameter("error-handler");
+            Object rawHandler = config.getParameter(DOMSerializerConfiguration.ERROR_HANDLER);
             if (rawHandler != null) {
                 
                 DOMErrorHandler handler = (DOMErrorHandler)rawHandler;
@@ -621,7 +625,7 @@ public class DOMSerializer implements LSSerializer {
      * Throws an error, notifying the ErrorHandler object if necessary.
      */
     private void throwError(DOMLocator loc, String type, Exception e) {//{{{
-        Object rawHandler = config.getParameter("error-handler");
+        Object rawHandler = config.getParameter(DOMSerializerConfiguration.ERROR_HANDLER);
         if (rawHandler != null) {
             
             DOMErrorHandler handler = (DOMErrorHandler)rawHandler;
@@ -631,9 +635,9 @@ public class DOMSerializer implements LSSerializer {
         
     }//}}}
     
-   // private String normalizeCharacters(String text) {//{{{
-   //     return null;
-   // }//}}}
+    private String normalizeCharacters(String text) {//{{{
+        return text;
+    }//}}}
     
     private DOMSerializerConfiguration config;
     private LSSerializerFilter m_filter;
