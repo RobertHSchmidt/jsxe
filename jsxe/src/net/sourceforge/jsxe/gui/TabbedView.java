@@ -41,6 +41,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.BufferHistory;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.DocumentBufferListener;
 import net.sourceforge.jsxe.gui.view.DocumentView;
@@ -77,7 +78,8 @@ import java.awt.event.WindowEvent;
 //{{{ Java base classes
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.ArrayList;
 //}}}
 
 //}}}
@@ -318,6 +320,73 @@ public class TabbedView extends JFrame {
         return true;
     }//}}}
     
+     //{{{ updateTitle()
+    /**
+     * Updates the frame title. Useful when the tab has changed to a
+     * different open document..
+     */
+    public void updateTitle() {
+        DocumentView currentDocView = getDocumentView();
+        if (currentDocView != null) {
+            DocumentBuffer buffer = getDocumentBuffer();
+            String name = "";
+            if (buffer != null) {
+                name = buffer.getName();
+            }
+            setTitle(jsXe.getAppTitle() + " - " + name);
+        } else {
+            setTitle(jsXe.getAppTitle());
+        }
+    }//}}}
+    
+    //{{{ updateMenuBar()
+    /**
+     * Updates the menubar. Useful when the DocumentView has changed.
+     */
+    public void updateMenuBar() {
+        
+        JMenuBar menubar = new JMenuBar();
+        DocumentView currentDocView = getDocumentView();
+        
+        if (currentDocView != null) {
+            
+            updateRecentFilesMenu();
+            
+            menubar.add(m_fileMenu);
+
+            //Add View Specific Menus
+            JMenu[] menus = currentDocView.getMenus();
+            if (menus != null) {
+                for (int i=0;i<menus.length;i++) {
+                    menubar.add(menus[i]);
+                }
+            }
+
+            menubar.add(m_viewMenu);
+            
+            menubar.add(m_toolsMenu);
+            
+            menubar.add(m_helpMenu);
+            
+            setJMenuBar(menubar);
+            
+            //Need to cause a repaint after menubar is changed.
+            getRootPane().revalidate();
+        }
+    }//}}}
+    
+    //{{{ updateRecentFilesMenu()
+    
+    public void updateRecentFilesMenu() {
+        m_recentFilesMenu.removeAll();
+        ArrayList historyEntries = jsXe.getBufferHistory().getEntries();
+        Iterator historyItr = historyEntries.iterator();
+        while (historyItr.hasNext()) {
+            BufferHistory.BufferHistoryEntry entry = (BufferHistory.BufferHistoryEntry)historyItr.next();
+            m_recentFilesMenu.add(new JMenuItem(new OpenRecentFileAction(this, entry)));
+        }
+    }//}}}
+    
     //{{{ Private static members
     
     private static final String _WIDTH = "tabbedview.width";
@@ -384,6 +453,7 @@ public class TabbedView extends JFrame {
         setIconImage(jsXe.getIcon().getImage());
         
         setBounds(new Rectangle(x, y, width, height));
+        
     }//}}}
     
     //{{{ createDefaultMenuItems()
@@ -397,6 +467,11 @@ public class TabbedView extends JFrame {
             m_fileMenu.add( menuItem );
             menuItem = new JMenuItem(new FileOpenAction(this));
             m_fileMenu.add( menuItem );
+            
+            //Add recent files menu
+            m_recentFilesMenu = new JMenu("Recent Files");
+            m_fileMenu.add(m_recentFilesMenu);
+            
             m_fileMenu.addSeparator();
             menuItem = new JMenuItem(new FileSaveAction(this));
             m_fileMenu.add( menuItem );
@@ -437,59 +512,6 @@ public class TabbedView extends JFrame {
             m_helpMenu.add(menuItem);
         //}}}
 
-    }//}}}
-    
-    //{{{ updateTitle()
-    /**
-     * Updates the frame title. Useful when the tab has changed to a
-     * different open document..
-     */
-    private void updateTitle() {
-        DocumentView currentDocView = getDocumentView();
-        if (currentDocView != null) {
-            DocumentBuffer buffer = getDocumentBuffer();
-            String name = "";
-            if (buffer != null) {
-                name = buffer.getName();
-            }
-            setTitle(jsXe.getAppTitle() + " - " + name);
-        } else {
-            setTitle(jsXe.getAppTitle());
-        }
-    }//}}}
-    
-    //{{{ updateMenuBar()
-    /**
-     * Updates the menubar. Useful when the DocumentView has changed.
-     */
-    private void updateMenuBar() {
-        
-        JMenuBar menubar = new JMenuBar();
-        DocumentView currentDocView = getDocumentView();
-        
-        if (currentDocView != null) {
-            
-            menubar.add(m_fileMenu);
-
-            //Add View Specific Menus
-            JMenu[] menus = currentDocView.getMenus();
-            if (menus != null) {
-                for (int i=0;i<menus.length;i++) {
-                    menubar.add(menus[i]);
-                }
-            }
-
-            menubar.add(m_viewMenu);
-            
-            menubar.add(m_toolsMenu);
-            
-            menubar.add(m_helpMenu);
-            
-            setJMenuBar(menubar);
-            
-            //Need to cause a repaint after menubar is changed.
-            getRootPane().revalidate();
-        }
     }//}}}
     
     //{{{ setDocumentView()
@@ -606,6 +628,7 @@ public class TabbedView extends JFrame {
     private JMenu m_viewMenu;
     private JMenu m_toolsMenu;
     private JMenu m_helpMenu;
+    private JMenu m_recentFilesMenu;
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     //The current document

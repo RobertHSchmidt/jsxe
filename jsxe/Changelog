@@ -1,3 +1,8 @@
+07/23/2004  version 0.2 pre11   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added support for a recent files list that can allow users to open
+      files they have recently used.
+
 06/23/2004  version 0.2 pre10   Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed problem where the node did not appear to be selected after drag and
