@@ -85,8 +85,11 @@ public class SourceViewDocument extends DefaultStyledDocument {
             //formatting disabled because it doesn't work right
             DOMSerializer serializer = new DOMSerializer(false);
             try {
-                serializer.serialize(document.getDocument(), writer);
-                super.insertString(0, writer.toString(), new SimpleAttributeSet());
+                
+                //We can just get the reader for the document and
+                //set the model using that.
+                //serializer.serialize(document.getDocument(), writer);
+                super.insertString(0, document.getSource(), new SimpleAttributeSet());
                 
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);

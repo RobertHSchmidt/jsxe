@@ -141,6 +141,32 @@ public class AdapterNode {
         return domNode.getAttributes();
     }//}}}
     
+   // public void addNode(String name, String value, short type) throws DOMException {//{{{
+   //     switch(type) {
+   //         case Node.ELEMENT_NODE:
+   //             
+   //             break;
+   //         case Node.TEXT_NODE:
+   //             
+   //             break;
+   //         case Node.CDATA_SECTION_NODE:
+   //             
+   //             break;
+   //         case Node.COMMENT_NODE:
+   //             
+   //             break;
+   //         case Node.PROCESSING_INSTRUCTION_NODE:
+   //             
+   //             break;
+   //         case Node.ENTITY_REFERENCE_NODE:
+   //             
+   //             break;
+   //         case Node.DOCUMENT_TYPE_NODE:
+   //             
+   //             break;
+   //     }
+   // }//}}}
+    
     public void addAttribute(String name, String value) throws DOMException {//{{{
         if (typeName[domNode.getNodeType()].equals("Element")) {
             Element element = (Element)domNode;

@@ -80,17 +80,19 @@ import java.util.Vector;
 public abstract class XMLDocument {
     
     public XMLDocument(File file) {//{{{
+        props.setProperty("format.output", "true");
         setModel(file);
-        
     }//}}}
     
     public XMLDocument(Reader reader) {//{{{
         name=getUntitledLabel();
+        props.setProperty("format.output", "true");
         setModel(reader);
     }//}}}
     
     public XMLDocument(String string) {//{{{
         name=getUntitledLabel();
+        props.setProperty("format.output", "true");
         setModel(string);
     }//}}}
     
@@ -109,7 +111,11 @@ public abstract class XMLDocument {
     }//}}}
     
     public Reader getReader() {//{{{
-        return XMLReader;
+        return new StringReader(source);
+    }//}}}
+    
+    public String getSource() throws IOException {//{{{
+        return source;
     }//}}}
     
     public abstract Document getDocument();
@@ -222,14 +228,22 @@ public abstract class XMLDocument {
     }//}}}
     
     public void setModel(File file) {//{{{
-        props.setProperty("format.output", "true");
         XMLFile = file;
+        source="";
+        int nextchar=0;
         if (file!=null) {
             name = file.getName();
             try {
-                XMLReader=new FileReader(file);
+                FileReader reader=new FileReader(file);
+                while (nextchar != -1) {
+                   nextchar = reader.read();
+                   if (nextchar != -1)
+                       source+=(char)nextchar;
+                }
             } catch (FileNotFoundException fnfe) {
                 System.out.println("File Not Found");
+            } catch (IOException fnfe) {
+                System.out.println("Can't read input source.");
             }
         } else {
             name = getUntitledLabel();
@@ -237,13 +251,21 @@ public abstract class XMLDocument {
     }//}}}
     
     public void setModel(Reader reader) {//{{{
-        props.setProperty("format.output", "true");
-        XMLReader=reader;
+        source="";
+        int nextchar=0;
+        try {
+            while (nextchar != -1) {
+               nextchar = reader.read();
+               if (nextchar != -1)
+                   source+=(char)nextchar;
+            }
+        } catch (IOException fnfe) {
+            System.out.println("Can't read input source.");
+        }
     }//}}}
     
     public void setModel(String string) {//{{{
-        props.setProperty("format.output", "true");
-        XMLReader=new StringReader(string);
+        source=string;
     }//}}}
     
     //{{{ Private members
@@ -265,7 +287,7 @@ public abstract class XMLDocument {
     
     private Properties props = new Properties();
     private File XMLFile;
-    private Reader XMLReader;
+    private String source=new String();
     private String name;
     //}}}
     
