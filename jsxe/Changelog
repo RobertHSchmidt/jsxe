@@ -1,3 +1,8 @@
+10/22004    version 0.2 pre24   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added support for properties to remember the size and layout of the
+      new options panel
+
 9/24/2004   version 0.2 pre23   Ian Lewis <IanLewis@member.fsf.org>
 
     * Changed the layout of the options dialog by taking some jEdit code.
