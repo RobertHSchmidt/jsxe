@@ -145,3 +145,5 @@ TODO:
       has to be since jie bao used my GPL code his has to be open source too.)
     
     * Release new version (0.7.0)
+    
+    * Implement some form of internationalization support.
