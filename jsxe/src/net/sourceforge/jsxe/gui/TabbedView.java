@@ -85,8 +85,18 @@ import java.util.Vector;
 
 //}}}
 
+/**
+ * The view container that holds the JTabbedPane that holds
+ * all open DocumentViews.
+ *
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class TabbedView extends JFrame {
     
+    /**
+     * Constructs a new TabbedView
+     */
     public TabbedView() {//{{{
         
         int width = Integer.valueOf(jsXe.getProperty("tabbedview.width")).intValue();
@@ -122,10 +132,20 @@ public class TabbedView extends JFrame {
         setBounds(new Rectangle(x, y, width, height));
     }//}}}
     
+    /**
+     * Gets the current DocumentView that is being displayed
+     * by the JTabbedPane
+     * @return the current DocumentView
+     */
     public DocumentView getDocumentView() {//{{{
         return (DocumentView)tabbedPane.getSelectedComponent();
     }//}}}
     
+    /**
+     * Adds a document to the main view. This is essentially opening
+     * the document in jsXe.
+     * @param doc The XMLDocument to add to the view
+     */
     public void addDocument(XMLDocument doc) throws IOException {//{{{
         if (doc != null) {
             DocumentViewFactory factory = DocumentViewFactory.newInstance();
@@ -138,6 +158,11 @@ public class TabbedView extends JFrame {
         }
     }//}}}
     
+    /**
+     * Sets the current document and makes sure it is displayed. If
+     * the document is not already open then this method does nothing.
+     * @param doc The document to set
+     */
     public void setDocument(XMLDocument doc) throws IOException {//{{{
         if (doc != null) {
             XMLDocument[] docs = jsXe.getXMLDocuments();
@@ -151,6 +176,11 @@ public class TabbedView extends JFrame {
         }
     }//}}}
     
+    /**
+     * Removes a document from the view. If the doc passed is not
+     * already open this method does nothing.
+     * @param doc The document to remove
+     */
     public void removeDocument(XMLDocument doc) {//{{{
         if (doc != null) {
             XMLDocument[] docs = jsXe.getXMLDocuments();
@@ -166,10 +196,17 @@ public class TabbedView extends JFrame {
         }
     }//}}}
     
+    /**
+     * Gets the number of open documents.
+     * @return The number of documents open in this view.
+     */
     public int getDocumentCount() {//{{{
         return tabbedPane.getTabCount();
     }//}}}
     
+    /**
+     * Updates the title of the view.
+     */
     public void updateTitle() {//{{{
         DocumentView currentDocView = getDocumentView();
         if (currentDocView != null) {
@@ -184,6 +221,9 @@ public class TabbedView extends JFrame {
         }
     }//}}}
     
+    /**
+     * Closes the view.
+     */
     public void close() {//{{{
         
         XMLDocument[] docs = jsXe.getXMLDocuments();
@@ -207,6 +247,9 @@ public class TabbedView extends JFrame {
     
     //{{{ Private members
     
+    /**
+     * Updates the menubar. Useful when the DocumentView has changed.
+     */
     private void updateMenuBar() {//{{{
         JMenuBar menubar = new JMenuBar();
         DocumentView currentDocView = getDocumentView();
@@ -268,12 +311,14 @@ public class TabbedView extends JFrame {
         }
     }//}}}
     
+    /**
+     * Sets the DocumentView.
+     */
     private void setDocumentView(DocumentView newView) {//{{{
         
         XMLDocument[] docs = jsXe.getXMLDocuments();
         DocumentView oldView = getDocumentView();
         int index = tabbedPane.getSelectedIndex();
-        
         
         XMLDocument currentDoc = docs[index];
         
@@ -300,7 +345,9 @@ public class TabbedView extends JFrame {
         }
     }//}}}
     
-    //temporary classes to change views.
+    /**
+     * Temporary class to change views.
+     */
     private class SetDefaultViewAction extends AbstractAction {//{{{
         
         public SetDefaultViewAction() {
@@ -314,7 +361,9 @@ public class TabbedView extends JFrame {
         }
         
     }//}}}
-    
+    /**
+     * Temporary class to change views.
+     */
     private class SetSourceViewAction extends AbstractAction {//{{{
         
         public SetSourceViewAction() {

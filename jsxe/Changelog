@@ -1,4 +1,9 @@
 
+7/16/2003   version 0.1.2   Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added javadoc to jsXe.java and TabbedView.java. Added a context menu to
+      the attributes table so that attributes can be removed.
+
 07/09/2003  version 0.1.1   Ian Lewis   <IanLewis@member.fsf.org>
 
     * Initial Release. Simple functions are implemented for tree view, add

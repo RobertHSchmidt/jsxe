@@ -133,7 +133,8 @@ public class DefaultView extends DocumentView {
         
         //}}}
         
-        tree.addMouseListener(new PopupListener());
+        tree.addMouseListener(new TreePopupListener());
+        attributesTable.addMouseListener(new TablePopupListener());
 
     } //}}}
     
@@ -325,7 +326,7 @@ public class DefaultView extends DocumentView {
         
     }//}}}
     
-    private class PopupListener extends MouseAdapter {//{{{
+    private class TreePopupListener extends MouseAdapter {//{{{
         public void mousePressed(MouseEvent e) {
             maybeShowPopup(e);
         }
@@ -421,6 +422,62 @@ public class DefaultView extends DocumentView {
         
     }//}}}
     
+    private class RemoveAttributeAction implements ActionListener {//{{{
+        
+        public RemoveAttributeAction(int r) {
+            row = r;
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+            DefaultViewTableModel model = (DefaultViewTableModel)attributesTable.getModel();
+            AdapterNode node = model.getAdapterNode();
+            node.removeAttributeAt(row);
+            updateComponents();
+        }
+        
+        private int row;
+    }//}}}
+    
+    private class AddAttributeAction implements ActionListener {//{{{
+        
+        public void actionPerformed(ActionEvent e) {
+            attributesTable.editCellAt(attributesTable.getRowCount()-1,0);
+        }
+        
+    }//}}}
+    
+    private class TablePopupListener extends MouseAdapter {//{{{
+        public void mousePressed(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        public void mouseReleased(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        private void maybeShowPopup(MouseEvent e) {
+            int row = attributesTable.getSelectedRow();
+            if (e.isPopupTrigger() && row != -1) {
+                
+                DefaultViewTableModel model = (DefaultViewTableModel)attributesTable.getModel();
+                AdapterNode node = model.getAdapterNode();
+                JPopupMenu popup = new JPopupMenu();
+                JMenuItem popupMenuItem;
+                
+                popupMenuItem = new JMenuItem("Add Attribute");
+                popupMenuItem.addActionListener(new AddAttributeAction());
+                popup.add(popupMenuItem);
+                
+                if (row != attributesTable.getRowCount()-1) {
+                    popupMenuItem = new JMenuItem("Remove Attribute");
+                    popupMenuItem.addActionListener(new RemoveAttributeAction(row));
+                    popup.add(popupMenuItem);
+                }
+                popup.show(e.getComponent(), e.getX(), e.getY());
+            }
+        }
+    }//}}}
+    
     private void updateTree() {//{{{
         //We must settle for this but this doesn't
         //update the tree properly. When the text node
@@ -432,7 +489,12 @@ public class DefaultView extends DocumentView {
         tree.treeDidChange();
     }//}}}
     
+    /**
+     * This is temporary. It causes GUI components to be updated but does
+     * not retain their state.
+     */
     private void updateComponents() {//{{{
+        
         tree.updateUI();
         //Clear the right hand pane of previous values.
         htmlPane.setText("");

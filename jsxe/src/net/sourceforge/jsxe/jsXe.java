@@ -82,7 +82,8 @@ import java.util.Vector;
 
 /**
  * The main class of the java simple XML editor (jsXe)
- * @author Ian Lewis
+ *
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
 public class jsXe {

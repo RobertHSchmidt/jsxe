@@ -1,12 +1,24 @@
 TODO:
 
--Document methods with javadoc.
--Create a history class for the DefaultView that keeps track of the current state of the view and can be used to restore it later.
--Change the DOMSerializer class to conform to the DOM3 standard DOMWriter class.
--allow for selecting multiple files when opening
--allow for opening files with wellformedness errors in source view. This way users can fix wellformedness errors in the editor.
--Add a context menu so you can add and delete nodes etc.
--fix updating of the tree when users are changing a text node.
--Add a way for jsXe to try to open a document in any of the installed views before it shows errors saying it cannot open the document. i.e. If a document is not validated try to open it in the requested view and if that fails then open it in one of the remaining installed views until it works or you run out of views.
--Fix the DOMSerializer class so that it writes entities when given nodes with text that has < or > or something like that.
+- Allow GUI models to register change listeners with XMLDocuments and
+  AdapterNodes. This will allow GUI models to be updated automatically when the
+  DOM is changed.
+- Create an interface for the main view in jsXe where the TabbedView implements
+  it. Other views can then be created to allow a more customizable look.
+- Document methods with javadoc.
+- Create a history class for the DefaultView that keeps track of the current
+  state of the view and can be used to restore it later.
+- Change the DOMSerializer class to conform to the DOM3 standard DOMWriter
+  class.
+- Allow for selecting multiple files when opening
+- Allow for opening files with wellformedness errors in source view. This way
+  users can fix wellformedness errors in the editor.
+- Fix updating of the tree when users are changing a text node.
+- Add a way for jsXe to try to open a document in any of the installed views
+  before it shows errors saying it cannot open the document. i.e. If a document
+  is not validated try to open it in the requested view and if that fails then
+  open it in one of the remaining installed views until it works or you run out
+  of views.
+- Fix the DOMSerializer class so that it writes entities when given nodes with
+  text that has < or > or something like that.
 
