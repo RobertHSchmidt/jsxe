@@ -67,6 +67,8 @@ public abstract class DocumentView extends JPanel {
     public abstract OptionsPanel getOptionsPanel();
     
     public abstract DocumentBuffer getDocumentBuffer();
+    
+    public abstract String getName();
 
     public abstract boolean close(TabbedView view);
 

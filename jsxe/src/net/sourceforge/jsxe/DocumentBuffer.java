@@ -92,20 +92,22 @@ public class DocumentBuffer {
         m_file = file;
         m_name = file.getName();
         try {
-            m_document = XMLDocumentFactory.newInstance().newXMLDocument(new FileReader(file));
+            XMLDocumentFactory factory = XMLDocumentFactory.newInstance();
+            factory.setEntityResolver(new DocumentBufferResolver());
+            m_document = factory.newXMLDocument(new FileReader(file));
         } catch (UnrecognizedDocTypeException e) {}
         m_document.addXMLDocumentListener(m_bufferDocListener);
-        setResolver();
     }//}}}
     
     DocumentBuffer(Reader reader) throws IOException {//{{{
         m_file = null;
         m_name = getUntitledLabel();
         try {
-            m_document = XMLDocumentFactory.newInstance().newXMLDocument(reader);
+            XMLDocumentFactory factory = XMLDocumentFactory.newInstance();
+            factory.setEntityResolver(new DocumentBufferResolver());
+            m_document = factory.newXMLDocument(reader);
         } catch (UnrecognizedDocTypeException e) {}
         m_document.addXMLDocumentListener(m_bufferDocListener);
-        setResolver();
     }//}}}
     
     public void addDocumentBufferListener(DocumentBufferListener listener) {//{{{
@@ -217,37 +219,6 @@ public class DocumentBuffer {
     private void setName(String name) {//{{{
         m_name = name;
         fireNameChanged();
-    }//}}}
-    
-    private void setResolver() {//{{{
-        //Enable the parser to find external entities by searching
-        //for it relative to the file's path and not the path
-        //where you started jsXe
-        m_document.setEntityResolver(new EntityResolver() {
-                public InputSource resolveEntity(String publicId, String systemId) {
-                    
-                    String entity = systemId;
-                    InputSource source = null;
-                    
-                    if (m_file != null) {
-                        try {
-                            entity = entity.substring(entity.lastIndexOf("/")+1);
-                            
-                            String filePathURI = m_file.toURL().toExternalForm();
-                            filePathURI = filePathURI.substring(0, filePathURI.lastIndexOf("/")+1);
-                            
-                            entity = filePathURI + entity;
-                            
-                            source = new InputSource(entity);
-                            
-                        } catch (MalformedURLException e) {
-                            //Do nothing and try to open this entity normally
-                        }
-                    }
-                    return source;
-                }
-                
-            });
     }//}}}
     
     private String getUntitledLabel() {//{{{
@@ -446,6 +417,33 @@ public class DocumentBuffer {
         }
     }//}}}
     
+    private class DocumentBufferResolver implements EntityResolver {//{{{
+        
+        public InputSource resolveEntity(String publicId, String systemId) {//{{{
+            
+            String entity = systemId;
+            InputSource source = null;
+            
+            if (m_file != null) {
+                try {
+                    entity = entity.substring(entity.lastIndexOf("/")+1);
+                    
+                    String filePathURI = m_file.toURL().toExternalForm();
+                    filePathURI = filePathURI.substring(0, filePathURI.lastIndexOf("/")+1);
+                    
+                    entity = filePathURI + entity;
+                    
+                    source = new InputSource(entity);
+                    
+                } catch (MalformedURLException e) {
+                    //Do nothing and try to open this entity normally
+                }
+            }
+            return source;
+        }//}}}
+        
+    }//}}}
+
     private XMLDocumentListener m_bufferDocListener = new XMLDocumentListener() {//{{{
                 
         public void propertiesChanged(XMLDocument source, String propertyKey) {//{{{

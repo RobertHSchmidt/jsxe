@@ -144,6 +144,10 @@ public class SourceView extends DocumentView {
         return m_buffer;
     }//}}}
     
+    public String getName() {//{{{
+        return "Source View";
+    }//}}}
+    
     public boolean close(TabbedView view) {//{{{
         m_buffer.removeDocumentBufferListener(docListener);
         return true;

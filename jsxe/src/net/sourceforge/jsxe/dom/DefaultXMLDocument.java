@@ -86,6 +86,12 @@ public class DefaultXMLDocument extends XMLDocument {
         setModel(reader);
     }//}}}
     
+    DefaultXMLDocument(Reader reader, EntityResolver resolver) throws IOException {//{{{
+        m_entityResolver = resolver;
+        setDefaultProperties();
+        setModel(reader);
+    }//}}}
+    
     public boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {//{{{
         
         if (!m_parsedMode) {
