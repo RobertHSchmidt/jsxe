@@ -118,7 +118,8 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         setCellRenderer(new DefaultViewTreeCellRenderer());
         
         //Since elements are the only editable nodes...
-        setCellEditor(new DefaultTreeCellEditor(this, new ElementTreeCellRenderer()));
+        ElementTreeCellRenderer renderer = new ElementTreeCellRenderer();
+        setCellEditor(new DefaultTreeCellEditor(this, renderer, new ElementCellEditor(this, renderer)));
         
         
         ToolTipManager.sharedInstance().registerComponent(this);
@@ -248,6 +249,34 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 collapsePath(path);
             }
         }
+    }//}}}
+    
+    //{{{ toString()
+    /**
+     * Creates the string that will be displayed in the tree node
+     */
+    private static String toString(AdapterNode node) {
+        String s = new String();
+        if (node.getNodeType() == Node.DOCUMENT_NODE)
+            return "Document Root";
+        String nodeName = node.getNodeName();
+        if (! nodeName.startsWith("#")) {   
+            s += nodeName;
+        }
+        if (s.equals("")) {
+            if (node.getNodeValue() != null) {
+                String t = node.getNodeValue().trim();
+                int x = t.indexOf("\n");
+                if (x >= 0) {
+                    t = t.substring(0, x);
+                }
+                if (t.length() > 50) {
+                    t = t.substring(0, 50) + "...";
+                }
+                s += t;
+            }
+        }
+        return s;
     }//}}}
     
     //{{{ TreePopupListener class
@@ -467,7 +496,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             try {
                 AdapterNode node = (AdapterNode)value;
                 type = node.getNodeType();
-                setText(node.toString());
+                setText(DefaultViewTree.toString(node));
             } catch (ClassCastException e) {}
             
             this.selected = selected;
@@ -582,10 +611,40 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             Object value, boolean selected, boolean expanded,
             boolean leaf, int row, boolean hasFocus) {
             
+            setText(DefaultViewTree.toString((AdapterNode)value));
             return this;
             
         }//}}}
         
+    }//}}}
+
+    //{{{ ElementCellEditor class
+    
+    public class ElementCellEditor extends DefaultTreeCellEditor {
+        
+        //{{{ ElementCellEditor constructor
+        
+        public ElementCellEditor(JTree tree, DefaultTreeCellRenderer renderer) {
+            super(tree, renderer);
+        }//}}}
+        
+        //{{{ getTreeCellEditorComponent
+        
+        public Component getTreeCellEditorComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row) {
+            /*
+            This code depends on the implementation of DefaultTreeCellEditor 
+            a little. I don't like it but I don't want AdapterNode's methods to
+            be specific to the tree view's implementation. The tree view might
+            like how AdapterNode implements toString() but another view might
+            not.
+            */
+            
+            //DefaultTreeCellEditor.EditorContainer
+            Container container = (Container)super.getTreeCellEditorComponent(tree, value, isSelected, expanded, leaf, row);
+            JTextField field = (JTextField)container.getComponent(0);
+            field.setText(DefaultViewTree.toString((AdapterNode)value));
+            return field;
+        }//}}}
     }//}}}
 
     //{{{ Drag n Drop classes

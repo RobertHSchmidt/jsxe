@@ -623,13 +623,6 @@ public class AdapterNode {
         if (s.equals("")) {
             if (getNodeValue() != null) {
                 String t = getNodeValue().trim();
-                int x = t.indexOf("\n");
-                if (x >= 0) {
-                    t = t.substring(0, x);
-                }
-                if (t.length() > 50) {
-                    t = t.substring(0, 50) + "...";
-                }
                 s += t;
             }
         }
