@@ -1,3 +1,10 @@
+12/15/2003  version 0.1.44  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updataed the DOMSerializer and related classes to be complient with the
+      latest version of the DOM3. So now jsXe requires Xerces 2.6.0.
+    * Fixed a bug where the html pane was editable after opening a new document
+      though no node was selected.
+
 11/19/2003  version 0.1.43  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug in the CustomFileFilter class that caused it to go into
