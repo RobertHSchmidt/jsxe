@@ -77,13 +77,13 @@ public class SchemaViewModel extends DefaultGraphModel {
         
         String uri = element.getNamespaceURI();
         if (uri != null && uri.equals("http://www.w3.org/2001/XMLSchema")) {
-            String schemaPrefix = element.getPrefix();
+            m_schemaPrefix = element.getPrefix();
            // m_rootNames.add(schemaPrefix+":"+"simpleType");
-            m_rootNames.add(schemaPrefix+":"+"complexType");
-            m_rootNames.add(schemaPrefix+":"+"element");
-            m_rootNames.add(schemaPrefix+":"+"group");
-            m_rootNames.add(schemaPrefix+":"+"sequence");
-            m_rootNames.add(schemaPrefix+":"+"choice");
+            m_rootNames.add(m_schemaPrefix+":"+"complexType");
+            m_rootNames.add(m_schemaPrefix+":"+"element");
+            m_rootNames.add(m_schemaPrefix+":"+"group");
+            m_rootNames.add(m_schemaPrefix+":"+"sequence");
+            m_rootNames.add(m_schemaPrefix+":"+"choice");
             
             parse();
             layout();
@@ -168,7 +168,9 @@ public class SchemaViewModel extends DefaultGraphModel {
         
             SchemaGraphCell newParent = parent;
             int newLevel = level;
-            if (m_rootNames.contains(node.getNodeName())) {
+            
+            //hack: don't include local complexType nodes
+            if (m_rootNames.contains(node.getNodeName()) && !isLocalComplexType(node)) {
                 //add the cell
                 SchemaGraphCell newCell = new SchemaGraphCell(node);
                 DefaultPort      newPort = new DefaultPort();
@@ -311,6 +313,14 @@ public class SchemaViewModel extends DefaultGraphModel {
         return map;
     }//}}}
     
+    //{{{ isLocalComplexType()
+    
+    private boolean isLocalComplexType(AdapterNode node) {
+        /* For local complexTypes the name attribute is forbidden but
+           for non-local complexTypes it's required */
+        return node.getNodeName().equals(m_schemaPrefix+":"+"complexType") && node.getAttribute("name").equals("");
+    }//}}}
+    
     private XMLDocument m_document;
     
     private ArrayList m_schemaRoots = new ArrayList();
@@ -330,6 +340,6 @@ public class SchemaViewModel extends DefaultGraphModel {
     
     //node names to check for.
     private final ArrayList m_rootNames = new ArrayList();
-    
+    private String m_schemaPrefix;
     //}}}
 }
