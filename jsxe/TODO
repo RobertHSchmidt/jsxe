@@ -12,12 +12,11 @@ TODO:
       be thrown out? Then other classes would extend XMLDocument and have
       methods specific to their application of XML?
     
-    * Tree cell rendrerer looks kinda wierd sometimes. The lines connecting
-      nodes are now sometimes drawn on top of the swivel open/close icons in
-      the tree. Not sure why this is but it should probably be fixed.
-    
     * Make sure jsXe can deal with all types of XML nodes.
         * Add support for creating every type of XML node.
+        * Need to implement character normalization during serialization.
+          Certain characters and character sequences will need to be normalized
+          to entities.
     
     * Make the XML document declaration header non-editable in source-view mode.
       Update it when the user changes it in the options panel. (how?)
