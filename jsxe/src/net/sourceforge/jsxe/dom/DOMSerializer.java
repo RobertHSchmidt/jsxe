@@ -216,7 +216,8 @@ public class DOMSerializer implements DOMWriter {
             setFeature("datatype-normalization",        false);
             setFeature("discard-default-content",       true);
             setFeature("entities",                      false);
-            setFeature("infoset",                       false);
+            //infoset is not present because it is determined
+            //by checking the values of other features.
             setFeature("namespaces",                    true);
             setFeature("namespace-declarations",        true);
             setFeature("normalize-characters",          false);
@@ -231,7 +232,7 @@ public class DOMSerializer implements DOMWriter {
         
         public DOMSerializerConfiguration(DOMConfiguration config) throws DOMException {//{{{
             //set the default parameters for DOMConfiguration
-            setParameter("error-handler", config.getParameter("error-handler"));
+            setParameter("error-handler",                 config.getParameter("error-handler"));
             
             //set the default boolean parameters for a DOMConfiguration
             setParameter("canonical-form",                config.getParameter("canonical-form"));
@@ -323,7 +324,28 @@ public class DOMSerializer implements DOMWriter {
             
             if (supportedParameters.indexOf(name) != -1) {
                 
-                return parameters.get(name);
+                if (name == "infoset") {
+                    boolean namespaceDeclarations = getFeature("namespace-declarations");
+                    boolean validateIfSchema      = getFeature("validate-if-schema");
+                    boolean entities              = getFeature("entities");
+                    boolean datatypeNormalization = getFeature("datatype-normalization");
+                    boolean cdataSections         = getFeature("cdata-sections");
+                    
+                    boolean whitespace = getFeature("whitespace-in-element-content");
+                    boolean comments   = getFeature("comments");
+                    boolean namespaces = getFeature("namespaces");
+                    
+                    return (new Boolean(!namespaceDeclarations &&
+                            !validateIfSchema &&
+                            !entities &&
+                            !datatypeNormalization &&
+                            !cdataSections &&
+                            whitespace &&
+                            comments &&
+                            namespaces));
+                } else {
+                    return parameters.get(name);
+                }
                 
             } else {
                 
@@ -335,13 +357,32 @@ public class DOMSerializer implements DOMWriter {
         public void setParameter(String name, Object value) throws DOMException {//{{{
             
             if (supportedParameters.indexOf(name) != -1) {
-            
-                if (canSetParameter(name, value)) {
-                    parameters.put(name, value);
+                if ( value != null ) {
+                    if (canSetParameter(name, value)) {
+                        //if the parameter is infoset
+                        //then force the other parameters to
+                        //values that the infoset option
+                        //requires.
+                        if (name == "infoset") {
+                            setFeature("namespace-declarations",false);
+                            setFeature("validate-if-schema",    false);
+                            setFeature("entities",              false);
+                            setFeature("datatype-normalization",false);
+                            setFeature("cdata-sections",        false);
+                            
+                            setFeature("whitespace-in-element-content", true);
+                            setFeature("comments",                     true);
+                            setFeature("namespaces",                   true);
+                            
+                        } else {
+                            parameters.put(name, value);
+                        }
+                    } else {
+                        throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Parameter "+name+" and value "+value.toString()+" not supported.");
+                    }
                 } else {
-                    throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Parameter "+name+" not supported.");
+                    parameters.remove(name);
                 }
-                
             } else {
                 throw new DOMException(DOMException.NOT_FOUND_ERR, "Parameter "+name+" is not recognized.");
             }
@@ -440,7 +481,8 @@ public class DOMSerializer implements DOMWriter {
                     
                     break;//}}}
                 case Node.ELEMENT_NODE://{{{
-                    String nodeName = node.getNodeName();
+                    String nodeName   = node.getLocalName();
+                    String nodePrefix = node.getPrefix();
                     
                     if (formatting) {
                         //set to zero here for error handling (if doWrite throws exception).
@@ -451,7 +493,11 @@ public class DOMSerializer implements DOMWriter {
                         offset += str.length();
                     }
                     
-                    str = "<" + nodeName;
+                    if (config.getFeature("namespaces") && nodePrefix != null) {
+                        str = "<" + nodePrefix + ":" + nodeName;
+                    } else {
+                        str = "<" + nodeName;
+                    }
                     doWrite(writer, str, node, line, column, offset);
                     column += str.length();
                     offset += str.length();
@@ -515,7 +561,11 @@ public class DOMSerializer implements DOMWriter {
                                 column += currentIndent.length();
                                 offset += str.length();
                             }
-                            str = "</" + nodeName + ">";
+                            if (config.getFeature("namespaces") && nodePrefix != null) {
+                                str = "</" + nodePrefix + ":" +nodeName + ">";
+                            } else {
+                                str = "</" + nodeName + ">";
+                            }
                             doWrite(writer, str, node, line, column, offset);
                             column += str.length();
                             offset += str.length();
@@ -577,33 +627,36 @@ public class DOMSerializer implements DOMWriter {
                     }
                     break;//}}}
                 case Node.CDATA_SECTION_NODE://{{{
-                    if (formatting) {
-                        //set to zero here for error handling (if doWrite throws exception)
-                        column = 0;
-                        str = newLine + currentIndent;
+                    if (config.getFeature("cdata-sections")) {
+                        if (formatting) {
+                            //set to zero here for error handling (if doWrite throws exception)
+                            column = 0;
+                            str = newLine + currentIndent;
+                            doWrite(writer, str, node, line, column, offset);
+                            column += currentIndent.length();
+                            offset += str.length();
+                        }
+                        str = "<![CDATA[" + node.getNodeValue() + "]]>";
                         doWrite(writer, str, node, line, column, offset);
-                        column += currentIndent.length();
+                        column += str.length();
                         offset += str.length();
                     }
-                    str = "<![CDATA[" + node.getNodeValue() + "]]>";
-                    doWrite(writer, str, node, line, column, offset);
-                    column += str.length();
-                    offset += str.length();
                     break;//}}}
                 case Node.COMMENT_NODE://{{{
-                    if (formatting) {
-                        //set to zero here for error handling (if doWrite throws exception)
-                        column = 0;
-                        str = newLine + currentIndent;
+                    if (config.getFeature("comments")) {
+                        if (formatting) {
+                            //set to zero here for error handling (if doWrite throws exception)
+                            column = 0;
+                            str = newLine + currentIndent;
+                            doWrite(writer, str, node, line, column, offset);
+                            column += currentIndent.length();
+                            offset += str.length();
+                        }
+                        str = currentIndent+"<!--"+node.getNodeValue()+"-->";
                         doWrite(writer, str, node, line, column, offset);
-                        column += currentIndent.length();
+                        column += str.length();
                         offset += str.length();
                     }
-                    str = currentIndent+"<!--"+node.getNodeValue()+"-->";
-                    doWrite(writer, str, node, line, column, offset);
-                    column += str.length();
-                    offset += str.length();
-                    
                     break;//}}}
                 case Node.PROCESSING_INSTRUCTION_NODE://{{{
                     
