@@ -1,3 +1,7 @@
+05/15/2004  version 0.1.74  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added xsd files to the file filters when opening a document.
+
 05/14/2004  version 0.1.73  Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated the DOMSerializer to implement the newest version
