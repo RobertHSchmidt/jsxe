@@ -130,14 +130,32 @@ public abstract class XMLDocument {
         if (file == null) {
             return saveAs(view);
         } else {
-            XMLFile = file;
-            //formatting the document is disabled because it doesn't work right
-            DOMSerializer serializer = new DOMSerializer(false);
             try {
-                serializer.serialize(getDocument(), XMLFile);
-                return true;
-            } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(view, ioe, "Write Error", JOptionPane.WARNING_MESSAGE);
+                validate();
+                XMLFile = file;
+                //formatting the document is disabled because it doesn't work right
+                DOMSerializer serializer = new DOMSerializer(false);
+                try {
+                    serializer.serialize(getDocument(), XMLFile);
+                    return true;
+                } catch (IOException ioe) {
+                    JOptionPane.showMessageDialog(view, ioe, "Write Error", JOptionPane.WARNING_MESSAGE);
+                    return false;
+                }
+            } catch(SAXParseException spe) {
+                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            catch (SAXException sxe) {
+                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            catch (ParserConfigurationException pce) {
+                JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            catch (IOException ioe) {
+                JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
                 return false;
             }
         }
