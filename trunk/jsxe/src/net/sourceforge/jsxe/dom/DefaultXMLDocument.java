@@ -102,12 +102,14 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
     
     public void validate() throws SAXParseException, SAXException, ParserConfigurationException, IOException {//{{{
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document doc = builder.parse(new InputSource(new StringReader(source)));
-        doc.getDocumentElement().normalize();
-        document=doc;
-        validated=true;
+        if (!isValidated()) {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(new InputSource(new StringReader(source)));
+            doc.getDocumentElement().normalize();
+            document=doc;
+            validated=true;
+        }
     }//}}}
     
     public Document getDocument() {//{{{
