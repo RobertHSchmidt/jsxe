@@ -126,6 +126,7 @@ public class DefaultView extends DocumentView {
         tableModel.addTableModelListener(tableListener);
         
         htmlPane.setDocument(styledDoc);
+        styledDoc.addDocumentListener(docListener);
         //Clear the right hand pane of previous values.
         htmlPane.setText("");
         
@@ -186,14 +187,24 @@ public class DefaultView extends DocumentView {
             TreePath selPath = e.getPath();
             AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
             if ( selectedNode != null ) {
-                htmlPane.setDocument(new DefaultViewDocument(selectedNode));
-                //if the selected node can be edited in the tree
+                
+                //if the selected node can be edited in either the tree
+                //or the text pane
                 tree.setEditable(canEditInJTree(selectedNode));
                 htmlPane.setEditable(canEditInJEditorPane(selectedNode));
+                
+                //update the attributes table with the current info.
                 DefaultViewTableModel tableModel = new DefaultViewTableModel(parent, selectedNode);
                 attributesTable.setModel(tableModel);
                 tableModel.addTableModelListener(tableListener);
                 attributesTable.updateUI();
+                
+                //update the text pane with the current info
+                DefaultViewDocument styledDoc = new DefaultViewDocument(selectedNode);
+                htmlPane.setDocument(styledDoc);
+                styledDoc.addDocumentListener(docListener);
+                htmlPane.updateUI();
+                
             } else {
                 htmlPane.setDocument(null);
             }
@@ -217,19 +228,35 @@ public class DefaultView extends DocumentView {
            attributesTable.updateUI();
         }
     };//}}}
+    
+    //These listeners that update the tree cause it to collapse fully.
+    //This is not desirable and should be changed.
     private TreeModelListener treeListener = new TreeModelListener() {//{{{
-            public void treeNodesChanged(TreeModelEvent e) {
-                tree.updateUI();
-            }
-            public void treeNodesInserted(TreeModelEvent e) {
-                tree.updateUI();
-            }
-            public void treeNodesRemoved(TreeModelEvent e) {
-                tree.updateUI();
-            }
-            public void treeStructureChanged(TreeModelEvent e) {
-                tree.updateUI();
-            }
-        };//}}}
+        public void treeNodesChanged(TreeModelEvent e) {
+            tree.updateUI();
+        }
+        public void treeNodesInserted(TreeModelEvent e) {
+            tree.updateUI();
+        }
+        public void treeNodesRemoved(TreeModelEvent e) {
+            tree.updateUI();
+        }
+        public void treeStructureChanged(TreeModelEvent e) {
+            tree.updateUI();
+        }
+    };//}}}
+    private DocumentListener docListener = new DocumentListener() {//{{{
+        //The tree should be updated but it collapses.
+        //We dont want to do this yet.
+        public void changedUpdate(DocumentEvent e) {
+           // tree.updateUI();
+        }
+        public void insertUpdate(DocumentEvent e) {
+           // tree.updateUI();
+        }
+        public void removeUpdate(DocumentEvent e) {
+           // tree.updateUI();
+        };
+    };//}}}
     //}}}
 }
