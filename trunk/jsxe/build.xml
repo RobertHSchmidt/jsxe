@@ -30,7 +30,7 @@
     
     <property name="major.version" value="0"/>
     <property name="minor.version" value="1"/>
-    <property name="build.version" value="45"/>
+    <property name="build.version" value="46"/>
     <property name="app.version" value="${major.version}.${minor.version}.${build.version}"/>
     <property name="app_version" value="${major.version}_${minor.version}_${build.version}"/>
     
