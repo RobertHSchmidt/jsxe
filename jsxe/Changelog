@@ -3,7 +3,11 @@
     * Added some more code for the SchemaView. jsXe will require JGraph for a
       bit, until views become plugins and are moved into their own jars.
     * Added some code for loading plugins
-
+    * Added new interfaces for the plugin API. The plugin API will have
+      ViewPlugins and ActionPlugins. ActionPlugins are plugins that add actions
+      to jsXe, ViewPlugins are plugins consisting of a view in the editor and
+      are themselves ActionPlugins.
+      
 11/24/2004  version 0.3 pre2    Ian Lewis <IanLewis@member.fsf.org>
 
     * Changed how the tree editor and renderers work so that the AdapterNode

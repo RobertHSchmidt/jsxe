@@ -50,10 +50,6 @@ import net.sourceforge.jsxe.util.ArrayListEnumeration;
  */
 public class JARClassLoader extends ClassLoader {
     
-    //{{{ JARClassLoader constructor
-    
-    public JARClassLoader() {}//}}}
-    
     //{{{ ClassLoader methods
     
     //{{{ findClass()
@@ -150,7 +146,10 @@ public class JARClassLoader extends ClassLoader {
     }//}}}
     
     //{{{ addJarFile()
-    
+    /**
+     * Adds a jar file to the search path for the class loader
+     * @param file the file to add
+     */
     public void addJarFile(File file) throws FileNotFoundException, IOException {
         if (file.exists()) {
             JarFile jarFile = new JarFile(file);
