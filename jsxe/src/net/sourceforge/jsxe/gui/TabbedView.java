@@ -69,6 +69,7 @@ import javax.swing.event.ChangeEvent;
 //{{{ AWT components
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
 //}}}
 
 //{{{ Java base classes
@@ -80,7 +81,12 @@ import java.util.Vector;
 
 public class TabbedView extends JFrame {
     
-    public TabbedView(int width, int height) {//{{{
+    public TabbedView() {//{{{
+        
+        int width = Integer.valueOf(jsXe.getProperty("tabbedview.width")).intValue();
+        int height = Integer.valueOf(jsXe.getProperty("tabbedview.height")).intValue();
+        int x = Integer.valueOf(jsXe.getProperty("tabbedview.x")).intValue();
+        int y = Integer.valueOf(jsXe.getProperty("tabbedview.y")).intValue();
         
         DocumentViewFactory factory = DocumentViewFactory.newInstance();
         docview = factory.newDocumentView();
@@ -112,6 +118,8 @@ public class TabbedView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         setIconImage(jsXe.getIcon().getImage());
+        
+        setLocation(x,y);
     }//}}}
     
     public DocumentView getDocumentView() {//{{{
@@ -173,6 +181,16 @@ public class TabbedView extends JFrame {
             name = document.getName();
         }
         setTitle(jsXe.getAppTitle() + " - " + name);;
+    }//}}}
+    
+    public void close() {//{{{
+        //save properties
+        Point loc = getLocation();
+        Dimension size = getSize();
+        jsXe.setProperty("tabbedview.width",Integer.toString((int)size.getWidth()));
+        jsXe.setProperty("tabbedview.height",Integer.toString((int)size.getHeight()));
+        jsXe.setProperty("tabbedview.x",Integer.toString((int)loc.getX()));
+        jsXe.setProperty("tabbedview.y",Integer.toString((int)loc.getY()));
     }//}}}
     
     //{{{ Private members

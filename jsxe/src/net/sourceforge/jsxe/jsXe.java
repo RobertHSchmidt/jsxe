@@ -109,15 +109,7 @@ public class jsXe {
         }
         //}}}
         
-        //{{{ Create the main TabbedView
-        int windowWidth = Integer.valueOf(getProperty("view.width")).intValue();
-        int windowHeight = Integer.valueOf(getProperty("view.height")).intValue();
-        int x = Integer.valueOf(getProperty("view.x")).intValue();
-        int y = Integer.valueOf(getProperty("view.y")).intValue();
-        
-        TabbedView tabbedview = new TabbedView(windowWidth, windowHeight);
-        tabbedview.setLocation(x,y);
-        //}}}
+        TabbedView tabbedview = new TabbedView();
         
         //{{{ Parse command line arguments
         if (args.length >= 1) {
@@ -321,6 +313,10 @@ public class jsXe {
     public static void exit(TabbedView view) {//{{{
         //nothing much here yet. Open documents should
         //be checked for dirty documents.
+        
+        //saves properties
+        view.close();
+        
         try {
             File properties = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".jsxe","properties");
             FileOutputStream filestream = new FileOutputStream(properties);
@@ -364,11 +360,11 @@ public class jsXe {
         int x = (int)(screenSize.getWidth() / 4);
         int y = (int)(screenSize.getHeight() / 8);
         
-        defaultProps.setProperty("view.height",Integer.toString(windowHeight));
-        defaultProps.setProperty("view.width",Integer.toString(windowWidth));
+        defaultProps.setProperty("tabbedview.height",Integer.toString(windowHeight));
+        defaultProps.setProperty("tabbedview.width",Integer.toString(windowWidth));
         
-        defaultProps.setProperty("view.x",Integer.toString(x));
-        defaultProps.setProperty("view.y",Integer.toString(y));
+        defaultProps.setProperty("tabbedview.x",Integer.toString(x));
+        defaultProps.setProperty("tabbedview.y",Integer.toString(y));
         //}}}
         
         //{{{ Load default properties of installed views
