@@ -20,7 +20,7 @@ TODO:
     * Add relevent command-line option parsing to jsXe. At least things like
       '--version' and '--help' should be present.
     
-    * Release new version (0.2).
+    * Release new version (0.2.0).
     
     * Build an adapter for DocumentBuilder so that it implements the DOM3
       standard DOMBuilder interface? Maybe use it with DOMSerializer to created
@@ -48,13 +48,18 @@ TODO:
     
     * Add drag & drop functionality to the default view.
     
-    * Release new version (0.3).
+    * Release new version (0.3.0).
     
     * Implement undo for the DefaultView and SourceView.
     
     * Rewrite how source text is stored in the XMLDocument and
       DefaultXMLDocument classes. Should use char arrays instead of String
       objects. Implement a much more efficient way of storing the text source.
+    
+    * Release new minor version (0.4.0)
+    
+    * Implement BeanShell support. This is required for dynamic actions like
+      those in jEdit.
     
     * Create a way for actions to be created dynamically and then registered
       with jsXe. Much the same way that jEdit does.
@@ -64,7 +69,7 @@ TODO:
     
     * Create a toolbar that is customizable much the same way jEdit's is.
     
-    * Release new version (0.4)
+    * Release new version (0.5.0)
     
     * Create a feature to edit source for 1 node only. (Not sure how to do this
       given current design. How would I allow the source view to do that?)
@@ -84,7 +89,7 @@ TODO:
       can be validated by the DTD and what needs to be done to the document
       before it will comply with the DTD.
     
-    * Release new version (0.5).
+    * Release new version (0.6.0).
     
     * Add a way for jsXe to try to open a document in any of the installed views
       before it shows errors saying it cannot open the document. i.e. If a
@@ -95,11 +100,9 @@ TODO:
     * Implement some version of the DOM Document interfaces and add features
       such as the registering of listeners that can tell when the structure
       has changed and a builder that can give the location of a parser error
-      etc.
+      etc. Is this reasonable/possible?
     
     * Create an install program for jsXe.
-    
-    * Release new version (0.6)
     
     * Create a view that uses the view from pollo and implements the
       DocumentView interface.
@@ -107,13 +110,15 @@ TODO:
     * Create a view that is similar to the xeditor view if it's ok (it kind of
       has to be since jie bao used my GPL code his has to be open source too.)
     
+    * Release new version (0.7.0)
+    
     * Implement the xsl transformation feature.
     
     * Implement validation against DTDs and different forms of Schema.
     
     * Create a help system for jsXe.
     
-    * Release new version (0.7)
+    * Release new version (0.8.0)
     
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
@@ -122,4 +127,4 @@ TODO:
       that are loaded at runtime. DefaultView and SourceView will be distributed
       with jsXe as the default views.
     
-    * Release new version (0.8)
+    * Release new version (0.9.0)
