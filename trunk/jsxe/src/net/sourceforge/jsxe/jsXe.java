@@ -228,31 +228,10 @@ public class jsXe {
         if (file == null)
             return false;
         
-        boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
-			|| File.separatorChar == ':' /* Windows or MacOS */);
-        
-        //Check if the file is already open, if so
-        //change focus to that file
-        for(int i=0; i < XMLDocuments.size();i++) {
-            
-            XMLDocument doc = (XMLDocument)XMLDocuments.get(i);
-            File docfile = doc.getFile();
-            if (docfile != null) {
-                if (caseInsensitiveFilesystem) {
-                    
-                    if (file.getCanonicalPath().equalsIgnoreCase(docfile.getCanonicalPath())) {
-                        view.setDocument(doc);
-                        return true;
-                    }
-                    
-                } else {
-                    
-                    if (file.getCanonicalPath().equals(docfile.getCanonicalPath())) {
-                        view.setDocument(doc);
-                        return true;
-                    }
-                }
-            }
+        XMLDocument doc = getOpenXMLDocument(file);
+        if (doc != null) {
+            view.setDocument(doc);
+            return true;
         }
         
         //At this point we know the file is not open
@@ -328,6 +307,47 @@ public class jsXe {
         
         return false;
         
+    }//}}}
+    
+    /**
+     * Gets the XMLDocument for this file if the file is open already. Returns
+     * null if the file is not open.
+     * @param file The file that is open in jsXe
+     * @return the XMLDocument for the given file or null if the file not open.
+     */
+    public static XMLDocument getOpenXMLDocument(File file) {//{{{
+        
+        boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
+			|| File.separatorChar == ':' /* Windows or MacOS */);
+        
+        //Check if the file is already open, if so
+        //change focus to that file
+        for(int i=0; i < XMLDocuments.size();i++) {
+            
+            XMLDocument doc = (XMLDocument)XMLDocuments.get(i);
+            File docfile = doc.getFile();
+            if (docfile != null) {
+                try {
+                    if (caseInsensitiveFilesystem) {
+                        
+                        if (file.getCanonicalPath().equalsIgnoreCase(docfile.getCanonicalPath())) {
+                            return doc;
+                        }
+                        
+                    } else {
+                        
+                        if (file.getCanonicalPath().equals(docfile.getCanonicalPath())) {
+                            return doc;
+                        }
+                    }
+                } catch (IOException ioe) {
+                    exiterror(null, ioe.getMessage(), 1);
+                }
+                
+            }
+        }
+        
+        return null;
     }//}}}
     
     /**
