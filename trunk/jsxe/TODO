@@ -3,8 +3,7 @@ TODO:
     * Document methods with javadoc.
     
     * Add funtionality for dirty files.
-        * Create a robust change-event system.
-        * 
+        * Create a robust change-event system?
     
     * Allow for selecting multiple files when opening.
     
