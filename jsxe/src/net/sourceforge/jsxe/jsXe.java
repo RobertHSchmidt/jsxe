@@ -57,6 +57,12 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 //}}}
 
+//{{{ DOM Classes
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import javax.xml.parsers.ParserConfigurationException;
+//}}}
+
 //{{{ Java Base classes
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -225,12 +231,31 @@ public class jsXe {
             
             if (document != null) {
                 //for now do not open the file unless it validates.
-                if (!document.validate(view)) {
+                try {
+                    
+                    document.validate();
+                    
+                    XMLDocuments.add(document);
+                    view.addDocument(document);
+                    
+                    return true;
+                    
+                }  catch(SAXParseException spe) {
+                    JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
                     return false;
                 }
-                XMLDocuments.add(document);
-                view.addDocument(document);
-                return true;
+                catch (SAXException sxe) {
+                    JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+                    return false;
+                }
+                catch (ParserConfigurationException pce) {
+                    JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
+                    return false;
+                }
+                catch (IOException ioe) {
+                    JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                    return false;
+                }
             } else {
                 return false;
             }
@@ -250,19 +275,39 @@ public class jsXe {
         //right now unrecognized doc exceptions should not be thrown.
         XMLDocumentFactory factory = XMLDocumentFactory.newInstance();
         try {
+            
             XMLDocument document = factory.newXMLDocument(reader);
             if (document != null) {
                 //for now do not open the file unless it validates.
-                if (!document.validate(view)) {
+                try {
+                    
+                    document.validate();
+                    
+                    XMLDocuments.add(document);
+                    view.addDocument(document);
+                    
+                    return true;
+                    
+                }  catch(SAXParseException spe) {
+                    JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
                     return false;
                 }
-                
-                XMLDocuments.add(document);
-                view.addDocument(document);
-                return true;
+                catch (SAXException sxe) {
+                    JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+                    return false;
+                }
+                catch (ParserConfigurationException pce) {
+                    JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
+                    return false;
+                }
+                catch (IOException ioe) {
+                    JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                    return false;
+                }
             } else {
                 return false;
             }
+            
         } catch (UnrecognizedDocTypeException udte) {}
         
         return false;

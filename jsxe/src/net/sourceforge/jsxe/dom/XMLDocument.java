@@ -59,6 +59,9 @@ import java.awt.Component;
 
 //{{{ DOM classes
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import javax.xml.parsers.ParserConfigurationException;
 //}}}
 
 //{{{ Java base classes
@@ -91,7 +94,7 @@ public abstract class XMLDocument {
         setModel(string);
     }//}}}
     
-    public abstract boolean validate(Component parent);
+    public abstract void validate() throws SAXParseException, SAXException, ParserConfigurationException, IOException;
     
     public boolean isUntitled() {//{{{
         return (XMLFile == null);
@@ -141,9 +144,9 @@ public abstract class XMLDocument {
     }//}}}
     
     public boolean saveAs(TabbedView view) {//{{{
-        
-        if (validate(view)) {
-        
+        try {
+            validate();
+            
             //  if XMLFile is null, defaults to home directory
             JFileChooser saveDialog = new JFileChooser();
             saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
@@ -182,8 +185,22 @@ public abstract class XMLDocument {
                 return save(view);
             }
             return true;
+        } catch(SAXParseException spe) {
+            JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+            return false;
         }
-        return false;
+        catch (SAXException sxe) {
+            JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        catch (ParserConfigurationException pce) {
+            JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        catch (IOException ioe) {
+            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
     }//}}}
     
     public void setModel(File file) {//{{{
