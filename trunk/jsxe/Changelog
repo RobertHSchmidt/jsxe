@@ -1,3 +1,12 @@
+03/30/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Released 0.3 beta
+
+03/29/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated AdapterNode to make some methods private that were accidentally
+      marked public
+
 03/23/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Users can no longer remove namespace declarations when there are
@@ -29,12 +38,12 @@
     * Added dependency checking for plugins.
     * Added plugin error dialog
 
-03/04/2005  version 0.4 pre15   Ian Lewis <IanLewis@member.fsf.org>
+03/04/2005  version 0.3 pre15   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added better error checking when loading plugins.
     * Updated the plugin manager to look nicer. Needs a bit more work though.
 
-03/03/2005  version 0.4 pre14   Ian Lewis <IanLewis@member.fsf.org>
+03/03/2005  version 0.3 pre14   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added some changes for dependency tracking of plugins.
 

@@ -831,7 +831,7 @@ public class AdapterNode {
     
     //{{{ getNSPrefixFromQualifiedName()
     
-    public String getNSPrefixFromQualifiedName(String qualifiedName) {
+    private String getNSPrefixFromQualifiedName(String qualifiedName) {
         int index = qualifiedName.indexOf(":");
         String prefix = null;
         if (index != -1) {
