@@ -312,7 +312,7 @@ public class TabbedView extends JFrame {
             jsXe.closeXMLDocument(view, view.getDocumentPanel().getDOMAdapter());
         }
         private TabbedView view;
-    } //}}}
+    }//}}}
     
     private class FileExitAction extends AbstractAction {//{{{
         public FileExitAction(TabbedView parent) {

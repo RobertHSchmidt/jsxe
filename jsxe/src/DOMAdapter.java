@@ -488,6 +488,9 @@ public class DOMAdapter implements TreeModel, TableModel {
             try {
                 File newFile = saveDialog.getSelectedFile();
                 serializer.serialize(document, newFile);
+                //We must call openXMLDocument before closeXMLDocument here
+                //because closeXMLDocument will open a new untitled document
+                //if this document is the only one open.
                 jsXe.openXMLDocument(view, newFile);
                 jsXe.closeXMLDocument(view, this);
             } catch (IOException ioe) {
