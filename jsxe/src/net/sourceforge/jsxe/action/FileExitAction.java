@@ -39,6 +39,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
