@@ -24,11 +24,11 @@ TODO:
 * Version 0.2 beta
     
     * Add the ability for XMLDocuments to have a structure for non-well parsed
-      documents.
+      documents. Should I bother?
     
     * Add a command line option so that a user can specify the view to open
       the document with. This will allow you to open large document in the
-      source view without parsing it using DOM.
+      source view without parsing it into the tree view using DOM.
     
     * Look for ways to improve efficiency with large XML documents
     

@@ -551,7 +551,7 @@ public class TabbedView extends JFrame {
             
             try {
                 DocumentViewFactory factory = DocumentViewFactory.newInstance();
-                factory.setDocumentViewType("documentview.sourceview");
+                factory.setDocumentViewType("source");
                 DocumentView view = factory.newDocumentView(TabbedView.this, buffer.getXMLDocument());
                 setDocumentView(view);
             } catch (IOException ioe) {

@@ -35,7 +35,6 @@ package net.sourceforge.jsxe.gui.view;
 //{{{ imports
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.gui.*;
 //}}}
@@ -59,7 +58,9 @@ import org.w3c.dom.Node;
 
 //{{{ Java base classes
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.Properties;
 //}}}
 
 //}}}
@@ -74,6 +75,27 @@ import java.util.Enumeration;
  * @version $Id$
  */
 public class DefaultView extends JPanel implements DocumentView {
+    
+    //{{{ Private static members
+    private static final String _VIEWNAME="tree";
+    
+    private static final Properties m_defaultProperties;
+    
+    static {
+       // InputStream viewinputstream = DefaultView.class.getResourceAsStream("/net/sourceforge/jsxe/gui/view/"+_VIEWNAME+".props");
+        InputStream viewinputstream = DefaultView.class.getResourceAsStream("/net/sourceforge/jsxe/gui/view/documentview.default.props");
+        m_defaultProperties = new Properties();
+        try {
+            m_defaultProperties.load(viewinputstream);
+        } catch (IOException ioe) {}
+    }
+    //}}}
+    
+    public static final String CONTINUOUS_LAYOUT = _VIEWNAME+".continuous.layout";
+    public static final String VERT_SPLIT_LOCATION = _VIEWNAME+".splitpane.vert.loc";
+    public static final String HORIZ_SPLIT_LOCATION = _VIEWNAME+".splitpane.horiz.loc";
+    public static final String SHOW_COMMENTS = _VIEWNAME+".show.comment.nodes";
+    public static final String SHOW_EMPTY_NODES = _VIEWNAME+".show.empty.nodes";
     
     //{{{ DefaultView constructor
     /**
@@ -129,8 +151,8 @@ public class DefaultView extends JPanel implements DocumentView {
             Container parent = getParent();
             if (parent != null) {
                 Dimension size = parent.getSize();
-                float vertPercent = Integer.valueOf(m_document.getProperty(_VERT_SPLIT_LOCATION)).floatValue();
-                float horizPercent = Integer.valueOf(m_document.getProperty(_HORIZ_SPLIT_LOCATION)).floatValue();
+                float vertPercent = Integer.valueOf(m_document.getProperty(VERT_SPLIT_LOCATION)).floatValue();
+                float horizPercent = Integer.valueOf(m_document.getProperty(HORIZ_SPLIT_LOCATION)).floatValue();
                 
                 int vertLoc = (int)((vertPercent/100.0)*size.getHeight());
                 int horizLoc = (int)((horizPercent/100.0)*size.getWidth());
@@ -155,19 +177,31 @@ public class DefaultView extends JPanel implements DocumentView {
             String vert = Integer.toString((int)(vertSplitPane.getDividerLocation()/size.getHeight()*100));
             String horiz = Integer.toString((int)(horizSplitPane.getDividerLocation()/size.getWidth()*100));
             
-            m_document.setProperty(_VERT_SPLIT_LOCATION,vert);
-            m_document.setProperty(_HORIZ_SPLIT_LOCATION,horiz);
+            m_document.setProperty(VERT_SPLIT_LOCATION,vert);
+            m_document.setProperty(HORIZ_SPLIT_LOCATION,horiz);
         }
         
         return true;
     }//}}}
 
+    //{{{ getDescription()
+    
+    public String getDescription() {
+        return "View a document in as a tree";
+    }//}}}
+    
     //{{{ getDocumentViewComponent
     
     public Component getDocumentViewComponent() {
         return this;
     }//}}}
 
+    //{{{ getHumanReadableName()
+    
+    public String getHumanReadableName() {
+        return "Tree View";
+    }//}}}
+    
     //{{{ getMenus()
     
     public JMenu[] getMenus() {
@@ -197,16 +231,16 @@ public class DefaultView extends JPanel implements DocumentView {
         return new JMenu[] {};
     }//}}}
     
-    //{{{ getName()
-    
-    public String getName() {
-        return "Tree View";
-    }//}}}
-    
     //{{{ getOptionsPanel()
     
     public OptionsPanel getOptionsPanel() {
         return new DefaultViewOptionsPanel();
+    }//}}}
+    
+    //{{{ getViewName()
+    
+    public String getViewName() {
+        return _VIEWNAME;
     }//}}}
     
     //{{{ getXMLDocument()
@@ -247,7 +281,7 @@ public class DefaultView extends JPanel implements DocumentView {
         styledDoc.addDocumentListener(docListener);
         
         //get the splitpane layout options
-        boolean layout = Boolean.valueOf(document.getProperty(_CONTINUOUS_LAYOUT)).booleanValue();
+        boolean layout = Boolean.valueOf(document.getProperty(CONTINUOUS_LAYOUT)).booleanValue();
         vertSplitPane.setContinuousLayout(layout);
         horizSplitPane.setContinuousLayout(layout);
         
@@ -270,15 +304,6 @@ public class DefaultView extends JPanel implements DocumentView {
     
     //}}}
     
-    //{{{ Private static members
-    private static final String _VIEWNAME="documentview.default";
-    private static final String _CONTINUOUS_LAYOUT = _VIEWNAME+".continuous.layout";
-    private static final String _VERT_SPLIT_LOCATION = _VIEWNAME+".splitpane.vert.loc";
-    private static final String _HORIZ_SPLIT_LOCATION = _VIEWNAME+".splitpane.horiz.loc";
-    private static final String _SHOW_COMMENTS = _VIEWNAME+".show.comment.nodes";
-    private static final String _SHOW_EMPTY_NODES = _VIEWNAME+".show.empty.nodes";
-    //}}}
-    
     //{{{ Private Members
     
     //{{{ canEditInJEditorPane()
@@ -291,11 +316,11 @@ public class DefaultView extends JPanel implements DocumentView {
     
     private void ensureDefaultProps(XMLDocument document) {
         //get default properties from jsXe
-        document.setProperty(_CONTINUOUS_LAYOUT, document.getProperty(_CONTINUOUS_LAYOUT, jsXe.getProperty(_CONTINUOUS_LAYOUT)));
-        document.setProperty(_HORIZ_SPLIT_LOCATION, document.getProperty(_HORIZ_SPLIT_LOCATION, jsXe.getProperty(_HORIZ_SPLIT_LOCATION)));
-        document.setProperty(_VERT_SPLIT_LOCATION, document.getProperty(_VERT_SPLIT_LOCATION, jsXe.getProperty(_VERT_SPLIT_LOCATION)));
-        document.setProperty(_SHOW_COMMENTS, document.getProperty(_SHOW_COMMENTS, jsXe.getProperty(_SHOW_COMMENTS)));
-        document.setProperty(_SHOW_EMPTY_NODES, document.getProperty(_SHOW_EMPTY_NODES, jsXe.getProperty(_SHOW_EMPTY_NODES)));
+        document.setProperty(CONTINUOUS_LAYOUT, document.getProperty(CONTINUOUS_LAYOUT, m_defaultProperties.getProperty(CONTINUOUS_LAYOUT)));
+        document.setProperty(HORIZ_SPLIT_LOCATION, document.getProperty(HORIZ_SPLIT_LOCATION, m_defaultProperties.getProperty(HORIZ_SPLIT_LOCATION)));
+        document.setProperty(VERT_SPLIT_LOCATION, document.getProperty(VERT_SPLIT_LOCATION, m_defaultProperties.getProperty(VERT_SPLIT_LOCATION)));
+        document.setProperty(SHOW_COMMENTS, document.getProperty(SHOW_COMMENTS, m_defaultProperties.getProperty(SHOW_COMMENTS)));
+        document.setProperty(SHOW_EMPTY_NODES, document.getProperty(SHOW_EMPTY_NODES, m_defaultProperties.getProperty(SHOW_EMPTY_NODES)));
     }//}}}
     
     //{{{ DefaultViewOptionsPanel class
@@ -313,9 +338,9 @@ public class DefaultView extends JPanel implements DocumentView {
             
             int gridY = 0;
             
-            boolean showCommentNodes = Boolean.valueOf(m_document.getProperty(_SHOW_COMMENTS, "false")).booleanValue();
-            boolean showEmptyNodes = Boolean.valueOf(m_document.getProperty(_SHOW_EMPTY_NODES, "false")).booleanValue();
-            boolean continuousLayout = Boolean.valueOf(m_document.getProperty(_CONTINUOUS_LAYOUT, "false")).booleanValue();
+            boolean showCommentNodes = Boolean.valueOf(m_document.getProperty(SHOW_COMMENTS, "false")).booleanValue();
+            boolean showEmptyNodes = Boolean.valueOf(m_document.getProperty(SHOW_EMPTY_NODES, "false")).booleanValue();
+            boolean continuousLayout = Boolean.valueOf(m_document.getProperty(CONTINUOUS_LAYOUT, "false")).booleanValue();
             
             showCommentsCheckBox = new JCheckBox("Show comment nodes",showCommentNodes);
             showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
@@ -358,11 +383,11 @@ public class DefaultView extends JPanel implements DocumentView {
         //{{{ saveOptions()
         
         public void saveOptions() {
-            m_document.setProperty(_SHOW_COMMENTS,(new Boolean(showCommentsCheckBox.isSelected())).toString());
-            m_document.setProperty(_SHOW_EMPTY_NODES,(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
+            m_document.setProperty(SHOW_COMMENTS,(new Boolean(showCommentsCheckBox.isSelected())).toString());
+            m_document.setProperty(SHOW_EMPTY_NODES,(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
             
             boolean layout = ContinuousLayoutCheckBox.isSelected();
-            m_document.setProperty(_CONTINUOUS_LAYOUT,(new Boolean(layout)).toString());
+            m_document.setProperty(CONTINUOUS_LAYOUT,(new Boolean(layout)).toString());
             vertSplitPane.setContinuousLayout(layout);
             horizSplitPane.setContinuousLayout(layout);
             tree.updateUI();
@@ -580,6 +605,7 @@ public class DefaultView extends JPanel implements DocumentView {
         }//}}}
         
     };//}}}
+
     //}}}
 
 }

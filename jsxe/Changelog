@@ -1,3 +1,7 @@
+06/18/2004  version 0.2 pre7    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Made some changes to make the DefaultView less dependent on jsXe classes
+
 06/08/2004  version 0.2 pre6    Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug that caused a null pointer exception when reloading an
