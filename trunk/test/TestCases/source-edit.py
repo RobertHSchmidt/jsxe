@@ -1,6 +1,7 @@
 useFixture(default)
 
 def test():
+	# Tests editing a file from source
 	window('jsXe - Untitled-1')
 	click('View')
 	click('Source View')

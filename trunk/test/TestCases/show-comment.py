@@ -1,6 +1,7 @@
 useFixture(default)
 
 def test():
+	# Tests showing/hiding comment nodes
 	window('jsXe - Untitled-1')
 	doubleclick('DefaultViewTree', '/Document Root/default_element')
 	rightclick('DefaultViewTree', '/Document Root/default_element/default_node')
@@ -95,13 +96,21 @@ def test():
 	#doubleclick('JScrollPane$ScrollBar.')
 	click('Tools')
 	click('Options...')
-
 	window('Global Options')
 	click('JTree', '//jsxe/Tree View Options')
 	select('Show comment nodes', 'false')
 	click('OK')
 	close()
 	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New CDATA Node', 'element3', 'element4', 'New CDATA Node', 'Instruction' ] ])
+
+	click('Tools')
+	click('Options...')
+	window('Global Options')
+	click('JTree', '//jsxe/Tree View Options')
+	select('Show comment nodes', 'true')
+	click('OK')
+	close()
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node', 'Comment Node', 'element3', 'element4', 'New CDATA Node', 'New Comment Node', 'Instruction' ] ])
 
 	close()
 

@@ -1,6 +1,7 @@
 useFixture(default)
 
 def test():
+	# Tests renaming an element.
 	window('jsXe - Untitled-1')
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Rename Node')
