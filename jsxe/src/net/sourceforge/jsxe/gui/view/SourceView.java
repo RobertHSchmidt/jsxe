@@ -129,6 +129,23 @@ public class SourceView extends JPanel implements DocumentView {
         add(scrollPane, BorderLayout.CENTER);
         
         setDocumentBuffer(document);
+        
+        //focus on the text area the first time the view is shown
+        addComponentListener(new ComponentListener() {//{{{
+            
+            public void componentHidden(ComponentEvent e) {}
+            
+            public void componentMoved(ComponentEvent e) {}
+            
+            public void componentResized(ComponentEvent e) {}
+            
+            public void componentShown(ComponentEvent e) {
+                textarea.requestFocus();
+                removeComponentListener(this);
+            }
+            
+        });//}}}
+        
     }//}}}
     
     //{{{ DocumentView methods
@@ -184,8 +201,8 @@ public class SourceView extends JPanel implements DocumentView {
             menu.addSeparator();
             menuItem = new JMenuItem(new EditFindAction());
             menu.add(menuItem);
-            menuItem = new JMenuItem(new EditFindNextAction());
-            menu.add(menuItem);
+           // menuItem = new JMenuItem(new EditFindNextAction());
+           // menu.add(menuItem);
         //}}}
         
         menus[0] = menu;
@@ -228,44 +245,6 @@ public class SourceView extends JPanel implements DocumentView {
     }//}}}
     
     //}}}
-    
-    //{{{ getCaretPosition()
-    
-    public int getCaretPosition() {
-        return textarea.getCaretPosition();
-    }//}}}
-    
-    //{{{ getSelectedText()
-    
-    public String getSelectedText() {
-        return textarea.getSelectedText();
-    }//}}}
-    
-    //{{{ getSelectionStart()
-    
-    public int getSelectionStart() {
-        return textarea.getSelectionStart();
-    }//}}}
-    
-    //{{{ getSelectionEnd()
-    
-    public int getSelectionEnd() {
-        return textarea.getSelectionEnd();
-    }//}}}
-    
-    //{{{ replace()
-    
-    public void replace(String str, int start, int end) {
-        textarea.replaceRange(str, start, end);
-    }//}}}
-    
-    //{{{ selectText()
-    
-    public void selectText(int start, int end) {
-        textarea.requestFocus();
-        textarea.setCaretPosition(start);
-        textarea.moveCaretPosition(end);
-    }//}}}
     
     //{{{ Private members
     

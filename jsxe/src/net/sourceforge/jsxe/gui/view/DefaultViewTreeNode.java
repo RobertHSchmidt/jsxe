@@ -261,8 +261,8 @@ public class DefaultViewTreeNode implements MutableTreeNode {
                 if (x >= 0) {
                     t = t.substring(0, x);
                 }
-                if (t.length() > 20) {
-                    t = t.substring(0, 20) + "...";
+                if (t.length() > 50) {
+                    t = t.substring(0, 50) + "...";
                 }
                 s += t;
             }
