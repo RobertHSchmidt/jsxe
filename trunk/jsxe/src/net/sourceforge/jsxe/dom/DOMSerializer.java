@@ -146,7 +146,7 @@ public class DOMSerializer {
                 writer.write("<![CDATA[" + node.getNodeValue() + "]]>");
                 break;
             case Node.COMMENT_NODE:
-                writer.write(indentLevel+"<!-- "+node.getNodeValue()+"-->");
+                writer.write(indentLevel+"<!--"+node.getNodeValue()+"-->");
                 writer.write(lineSeparator);
                 break;
             case Node.PROCESSING_INSTRUCTION_NODE:

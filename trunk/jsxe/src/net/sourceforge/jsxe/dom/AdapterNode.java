@@ -107,7 +107,6 @@ public class AdapterNode {
             Document document = domNode.getOwnerDocument();
             //replace the changed node
             Element newNode = document.createElement(newValue);
-            parent.replaceChild(newNode, domNode);
             NamedNodeMap attrs = domNode.getAttributes();
             int attrlength = attrs.getLength();
             
@@ -116,11 +115,14 @@ public class AdapterNode {
                 newNode.setAttribute(attr.getNodeName(), attr.getNodeValue());
             }
             
-            for (int i = 0; i < children.getLength(); i++ ) {
-                Node child = children.item(i);
+            int length = children.getLength();
+            for (int i = 0; i < length; i++ ) {
+                Node child = children.item(0);
+                System.out.println("replacing child: "+child.getNodeName());
                 domNode.removeChild(child);
                 newNode.appendChild(child);
             }
+            parent.replaceChild(newNode, domNode);
             domNode = newNode;
         }
     }//}}}

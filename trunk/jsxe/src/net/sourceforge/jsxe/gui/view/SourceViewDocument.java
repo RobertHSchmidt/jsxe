@@ -83,13 +83,11 @@ public class SourceViewDocument extends DefaultStyledDocument {
         view = parent;
         
         if (doc != null) {
-            StringWriter writer = new StringWriter();
             
             //formatting disabled because it doesn't work right
             DOMSerializer serializer = new DOMSerializer(false);
             try {
                 
-                //serializer.serialize(document.getDocument(), writer);
                 super.insertString(0, document.getSource(), new SimpleAttributeSet());
                 
             } catch (BadLocationException ble) {

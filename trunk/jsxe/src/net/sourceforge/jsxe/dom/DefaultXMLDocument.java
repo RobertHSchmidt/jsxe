@@ -73,6 +73,7 @@ import java.io.Reader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Vector;
 //}}}
 
@@ -259,6 +260,17 @@ public class DefaultXMLDocument extends XMLDocument {
         catch (IOException ioe) {
             JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
             return false;
+        }
+    }//}}}
+    
+    public void DocumentHasChanged() {//{{{
+        try {
+            StringWriter writer = new StringWriter();
+            DOMSerializer serializer = new DOMSerializer(false);
+            serializer.serialize(document, writer);
+            source = writer.toString();
+        } catch (IOException ioe) {
+            System.err.println("Could not serialize document.");
         }
     }//}}}
     
