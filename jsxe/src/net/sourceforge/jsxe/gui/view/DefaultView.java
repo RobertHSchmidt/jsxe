@@ -64,6 +64,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.ToolTipManager;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
@@ -76,6 +77,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import javax.swing.tree.DefaultTreeCellEditor;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 //}}}
@@ -150,6 +152,7 @@ public class DefaultView extends DocumentView {
 
         setDocumentBuffer(buffer);
         tree.setCellRenderer(new DefaultViewTreeCellRenderer());
+        tree.setCellEditor(new DefaultTreeCellEditor(tree, new ElementTreeCellRenderer()));
         ToolTipManager.sharedInstance().registerComponent(tree);
     } //}}}
     
@@ -548,13 +551,16 @@ public class DefaultView extends DocumentView {
     
     public class DefaultViewTreeCellRenderer extends DefaultTreeCellRenderer {//{{{
         
+        DefaultViewTreeCellRenderer() {//{{{
+            m_defaultLeafIcon = getLeafIcon();
+            m_defaultOpenIcon = getOpenIcon();
+            m_defaultClosedIcon = getClosedIcon();
+        }//}}}
+        
         public Component getTreeCellRendererComponent(JTree tree, 
             Object value, boolean selected, boolean expanded,
             boolean leaf, int row, boolean hasFocus) {//{{{
             
-           // Object obj = ((DefaultMutableTreeNode)value).getUserObject();
-           // System.out.println(obj.getClass().getName());
-           // System.out.println(obj.toString());
             AdapterNode node = (AdapterNode)value;
             setText(node.toString());
             this.selected = selected;
@@ -562,30 +568,92 @@ public class DefaultView extends DocumentView {
             switch (node.getNodeType()) {
                 case Node.ELEMENT_NODE:
                     setIcon(m_elementIcon);
+                    setLeafIcon(m_elementIcon);
+                    setOpenIcon(m_elementIcon);
+                    setClosedIcon(m_elementIcon);
                     setToolTipText("Element Node");
                     break;
                 case Node.TEXT_NODE:
                     setIcon(m_textIcon);
+                    setLeafIcon(m_textIcon);
+                    setOpenIcon(m_textIcon);
+                    setClosedIcon(m_textIcon);
                     setToolTipText("Text Node");
                     break;
                 case Node.CDATA_SECTION_NODE:
                     setIcon(m_CDATAIcon);
+                    setLeafIcon(m_CDATAIcon);
+                    setOpenIcon(m_CDATAIcon);
+                    setClosedIcon(m_CDATAIcon);
                     setToolTipText("CDATA Section");
                     break;
                 case Node.COMMENT_NODE:
                     setIcon(m_commentIcon);
+                    setLeafIcon(m_commentIcon);
+                    setOpenIcon(m_commentIcon);
+                    setClosedIcon(m_commentIcon);
                     setToolTipText("Comment Node");
                     break;
                 case Node.ENTITY_REFERENCE_NODE:
                     setIcon(m_externalEntityIcon);
+                    setLeafIcon(m_externalEntityIcon);
+                    setOpenIcon(m_externalEntityIcon);
+                    setClosedIcon(m_externalEntityIcon);
                     setToolTipText("Entity Reference");
                     break;
+                case Node.DOCUMENT_NODE:
+                    setIcon(m_defaultClosedIcon);
+                    setLeafIcon(m_defaultLeafIcon);
+                    setOpenIcon(m_defaultOpenIcon);
+                    setClosedIcon(m_defaultClosedIcon);
+                    setToolTipText("XML Document");
+                    break;
                 default:
-                    setIcon(leafIcon);
-                    setToolTipText("");
+                    if (leaf) {
+                        setIcon(m_defaultLeafIcon);
+                    } else {
+                        if (expanded) {
+                            setIcon(m_defaultOpenIcon);
+                        } else {
+                            setIcon(m_defaultClosedIcon);
+                        }
+                    }
+                    
+                    setLeafIcon(m_defaultLeafIcon);
+                    setOpenIcon(m_defaultOpenIcon);
+                    setClosedIcon(m_defaultClosedIcon);
+                    
+                    setToolTipText("Unknown Node Type");
+                    
+                    break;
             }
             
             return this;
+        }//}}}
+        
+        private Icon m_defaultLeafIcon;
+        private Icon m_defaultOpenIcon;
+        private Icon m_defaultClosedIcon;
+        
+    }//}}}
+    
+    public class ElementTreeCellRenderer extends DefaultTreeCellRenderer {//{{{
+        
+        public ElementTreeCellRenderer() {//{{{
+            //only element nodes can be edited in the tree
+            setIcon(m_elementIcon);
+            setLeafIcon(m_elementIcon);
+            setOpenIcon(m_elementIcon);
+            setClosedIcon(m_elementIcon);
+            setToolTipText("Element Node");
+        }//}}}o
+        
+        public Component getTreeCellRendererComponent(JTree tree, 
+            Object value, boolean selected, boolean expanded,
+            boolean leaf, int row, boolean hasFocus) {//{{{
+            
+            return this;
+            
         }//}}}
         
     }//}}}
