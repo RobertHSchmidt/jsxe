@@ -215,7 +215,7 @@
   <!-- }}} -->
   
   <!-- {{{ ============ Generates the source distribution ================ -->
-  <target name="src" depends="prepare-src, prepare-build, doc">
+  <target name="src" depends="prepare-build, prepare-src, doc">
     
     <!-- doc -->
     <mkdir dir="${distsrc.dir}/doc"/>
