@@ -468,6 +468,7 @@ public class DOMSerializer implements DOMWriter {
     private void rSerializeNode(Writer writer, Node node, String currentIndent, int line, int column, int offset) throws DOMSerializerException {//{{{
         
         boolean formatting = config.getFeature("format-output");
+        boolean whitespace = config.getFeature("whitespace-in-element-content");
         
         //This is used many times below as a temporary variable.
         String str = "";
@@ -535,13 +536,15 @@ public class DOMSerializer implements DOMWriter {
                         if (children.getLength() <= 0) {
                             elementEmpty = true;
                         } else {
-                            boolean hasWSOnlyElements = true;
-                            for(int i=0; i<children.getLength();i++) {
-                                hasWSOnlyElements = hasWSOnlyElements &&
-                                    children.item(i).getNodeType()==Node.TEXT_NODE &&
-                                    children.item(i).getNodeValue().trim().equals("");
+                            if (!config.getFeature("whitespace-in-element-content")) {
+                                boolean hasWSOnlyElements = true;
+                                for(int i=0; i<children.getLength();i++) {
+                                    hasWSOnlyElements = hasWSOnlyElements &&
+                                        children.item(i).getNodeType()==Node.TEXT_NODE &&
+                                        children.item(i).getNodeValue().trim().equals("");
+                                }
+                                elementEmpty = formatting && hasWSOnlyElements;
                             }
-                            elementEmpty = formatting && hasWSOnlyElements;
                         }
                         if (!elementEmpty) {
                             
@@ -596,7 +599,9 @@ public class DOMSerializer implements DOMWriter {
                     break;//}}}
                 case Node.TEXT_NODE://{{{
                     String text = node.getNodeValue();
-                    if (formatting) {
+                    //formatting implies no whitespace
+                    //but to be explicit...
+                    if (!whitespace || formatting) {
                         text = text.trim();
                     }
                     if (!text.equals("")) {

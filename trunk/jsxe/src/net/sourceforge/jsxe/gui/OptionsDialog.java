@@ -98,6 +98,8 @@ public class OptionsDialog extends JDialog {
         GridBagConstraints constraints = new GridBagConstraints();
         frame.setLayout(layout);
         
+        // Create the North Panel
+        
         OptionsPanel OptionsNorthPanel = jsXe.getOptionsPanel();
         
         constraints.fill = GridBagConstraints.BOTH;
@@ -118,12 +120,14 @@ public class OptionsDialog extends JDialog {
             frame.add(sep);
             
             OptionsNorthPanel.setBorder(border2);
-            constraints.fill = GridBagConstraints.NONE;
+            constraints.fill = GridBagConstraints.HORIZONTAL;
             constraints.weighty = 1.0f;
             layout.setConstraints(OptionsNorthPanel, constraints);
             frame.add(OptionsNorthPanel);
             constraints.weighty = 0;
         }
+        
+        // Create the South Panel
         
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
@@ -142,14 +146,15 @@ public class OptionsDialog extends JDialog {
             frame.add(sep);
             
             OptionsSouthPanel.setBorder(border2);
-            constraints.fill = GridBagConstraints.NONE;
+            constraints.fill = GridBagConstraints.HORIZONTAL;
             constraints.weighty = 1.0f;
             layout.setConstraints(OptionsSouthPanel, constraints);
             frame.add(OptionsSouthPanel);
             constraints.weighty = 0;
         }
         
-        //Configure the document panel
+        // Create the Document specific panel
+        
         DocumentOptionsPanel = new XMLDocumentOptionsPanel(document);
         
         constraints.fill = GridBagConstraints.BOTH;
@@ -166,7 +171,7 @@ public class OptionsDialog extends JDialog {
         frame.add(sep);
         
         DocumentOptionsPanel.setBorder(border2);
-        constraints.fill = GridBagConstraints.NONE;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weighty = 1.0f;
         layout.setConstraints(DocumentOptionsPanel, constraints);
         frame.add(DocumentOptionsPanel);

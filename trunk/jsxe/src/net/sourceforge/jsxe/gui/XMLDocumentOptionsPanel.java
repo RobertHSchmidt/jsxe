@@ -55,6 +55,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 //}}}
 
 //{{{ Java base classes
@@ -71,22 +72,10 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints constraints = new GridBagConstraints();
         
+        //the grid y coordinate.
+        int gridY = 0;
+        
         setLayout(layout);
-        
-        constraints.fill = GridBagConstraints.NORTHWEST;
-        constraints.gridwidth = GridBagConstraints.REMAINDER;
-        constraints.anchor = GridBagConstraints.NORTHWEST;
-        
-       // boolean serializeNamespaces = Boolean.valueOf(currentDoc.getProperty("serialize-namespaces", "false")).booleanValue();
-        boolean whitespace    = Boolean.valueOf(document.getProperty("whitespace-in-element-content", "true")).booleanValue();
-        boolean formatOutput = Boolean.valueOf(document.getProperty("format-output", "false")).booleanValue();
-        
-        whitespaceCheckBox = new JCheckBox("Whitespace in element content", whitespace);
-        formatCheckBox     = new JCheckBox("Format XML output", formatOutput);
-        
-        whitespaceCheckBox.addChangeListener(new WhiteSpaceChangeListener());
-        
-        formatCheckBox.setEnabled(!whitespace);
         
         supportedEncodings.add("US-ASCII");
         supportedEncodings.add("ISO-8859-1");
@@ -95,6 +84,7 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
         supportedEncodings.add("UTF-16LE");
         supportedEncodings.add("UTF-16");
         
+        JLabel label = new JLabel("Encoding:");
         encodingComboBox = new JComboBox(supportedEncodings);
         encodingComboBox.setEditable(false);
         
@@ -106,12 +96,59 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
             }
         }
         
-        layout.setConstraints(whitespaceCheckBox, constraints);
-        add(whitespaceCheckBox);
-        layout.setConstraints(formatCheckBox, constraints);
-        add(formatCheckBox);
+        boolean whitespace    = Boolean.valueOf(document.getProperty("whitespace-in-element-content", "true")).booleanValue();
+        boolean formatOutput = Boolean.valueOf(document.getProperty("format-output", "false")).booleanValue();
+        
+        whitespaceCheckBox = new JCheckBox("Whitespace in element content", whitespace);
+        formatCheckBox     = new JCheckBox("Format XML output", formatOutput);
+        
+        whitespaceCheckBox.addChangeListener(new WhiteSpaceChangeListener());
+        
+        formatCheckBox.setEnabled(!whitespace);
+        
+        constraints.gridy      = gridY;
+        constraints.gridx      = 0;
+        constraints.gridheight = 1;
+        constraints.gridwidth  = 1;
+        constraints.weightx    = 1.0f;
+        constraints.fill       = GridBagConstraints.BOTH;
+		constraints.insets     = new Insets(1,0,1,0);
+        
+        layout.setConstraints(label, constraints);
+        add(label);
+        
+        constraints.gridy      = gridY++;
+        constraints.gridx      = 1;
+        constraints.gridheight = 1;
+        constraints.gridwidth  = 1;
+        constraints.weightx    = 1.0f;
+        constraints.fill       = GridBagConstraints.BOTH;
+		constraints.insets     = new Insets(1,0,1,0);
+        
         layout.setConstraints(encodingComboBox, constraints);
         add(encodingComboBox);
+        
+        constraints.gridy      = gridY++;
+        constraints.gridx      = 0;
+        constraints.gridheight = 1;
+        constraints.gridwidth  = GridBagConstraints.REMAINDER;
+        constraints.weightx    = 0.0f;
+        constraints.fill       = GridBagConstraints.BOTH;
+		constraints.insets     = new Insets(1,0,1,0);
+        
+        layout.setConstraints(whitespaceCheckBox, constraints);
+        add(whitespaceCheckBox);
+        
+        constraints.gridy      = gridY++;
+        constraints.gridx      = 0;
+        constraints.gridheight = 1;
+        constraints.gridwidth  = GridBagConstraints.REMAINDER;
+        constraints.weightx    = 0.0f;
+        constraints.fill       = GridBagConstraints.BOTH;
+		constraints.insets     = new Insets(1,0,1,0);
+        
+        layout.setConstraints(formatCheckBox, constraints);
+        add(formatCheckBox);
         
     }//}}}
     
