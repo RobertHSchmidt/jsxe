@@ -164,7 +164,7 @@ public class SourceView extends JPanel implements DocumentView {
         if (dialog != null) {
             dialog.dispose();
         }
-        m_document.removeDocumentBufferListener(docListener);
+        m_document.removeXMLDocumentListener(docListener);
         return true;
     }//}}}
     
@@ -243,7 +243,7 @@ public class SourceView extends JPanel implements DocumentView {
     public void setDocumentBuffer(DocumentBuffer document) throws IOException {
         
         if (m_document != null) {
-            m_document.removeDocumentBufferListener(docListener);
+            m_document.removeXMLDocumentListener(docListener);
         }
         
         ensureDefaultProps(document);
@@ -251,8 +251,7 @@ public class SourceView extends JPanel implements DocumentView {
         m_document = document;
         textarea.setDocument(new SourceViewDocument(m_document));
         textarea.setTabSize((new Integer(m_document.getProperty(XMLDocument.INDENT, "4"))).intValue());
-        m_document.addDocumentBufferListener(docListener);
-        
+        m_document.addXMLDocumentListener(docListener);
     }//}}}
     
     //}}}
@@ -386,29 +385,20 @@ public class SourceView extends JPanel implements DocumentView {
     
     //{{{ SourceViewXMLDocumentListener class
     
-    private class SourceViewXMLDocumentListener implements DocumentBufferListener {
-        
-        //{{{ nameChanged()
-        public void nameChanged(DocumentBuffer source, String newName) {}//}}}
+    private class SourceViewXMLDocumentListener implements XMLDocumentListener {
         
         //{{{ propertiesChanged()
         
-        public void propertiesChanged(DocumentBuffer source, String key) {
-            if (key.equals(XMLDocument.INDENT)) {
-                textarea.setTabSize((new Integer(source.getProperty(XMLDocument.INDENT, "4"))).intValue());
+        public void propertiesChanged(XMLDocument source, String propertyKey) {
+            if (propertyKey.equals(XMLDocument.INDENT)) {
+                textarea.setTabSize(Integer.parseInt(source.getProperty(XMLDocument.INDENT, "4")));
                 textarea.updateUI();
             }
         }//}}}
         
-        //{{{ bufferSaved()
+        //{{{ structureChanged
         
-        public void bufferSaved(DocumentBuffer source) {}//}}}
-        
-        //{{{ statusChanged
-        
-        public void statusChanged(DocumentBuffer source, int statusType, boolean newStatus) {
-            
-        }//}}}
+        public void structureChanged(XMLDocument source, AdapterNode location) {}//}}}
         
     }//}}}
     

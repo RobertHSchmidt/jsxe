@@ -212,7 +212,6 @@ public class XMLDocument {
         String returnValue = oldValue;
         
         if (oldValue == null || !oldValue.equals(value)) {
-            
             // do this first so NullPointerExceptions are thrown
             returnValue = (String)props.setProperty(key, value);
             
@@ -235,6 +234,7 @@ public class XMLDocument {
             return returnValue;
             
         }
+        
         return returnValue;
     }//}}}
     
