@@ -179,6 +179,9 @@
     <ant inheritAll="false" dir="../treeview/" target="compile"/>
     <copy file="../treeview/treeview.jar" tofile="${distbin.dir}/plugins/treeview.jar"/>
     
+    <ant inheritAll="false" dir="../sourceview/" target="compile"/>
+    <copy file="../sourceview/sourceview.jar" tofile="${distbin.dir}/plugins/sourceview.jar"/>
+    
     <!-- doc -->
 		<mkdir dir="${distbin.dir}/doc"/>
 		<copy todir="${distbin.dir}/doc">
