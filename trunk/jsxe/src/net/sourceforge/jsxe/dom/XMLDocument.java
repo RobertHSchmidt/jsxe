@@ -172,6 +172,9 @@ public class XMLDocument {
             factory.setAttribute("http://xml.org/sax/features/external-parameter-entities", new Boolean(false));
             factory.setAttribute("http://xml.org/sax/features/namespaces",new Boolean(true));
            // factory.setAttribute("http://apache.org/xml/features/validation/dynamic",new Boolean(true));
+            factory.setAttribute("http://xml.org/sax/features/validation",new Boolean(getProperty(IS_VALIDATING)));
+            factory.setAttribute("http://apache.org/xml/features/validation/schema",new Boolean(getProperty(IS_VALIDATING)));
+            
             DocumentBuilder builder = factory.newDocumentBuilder();
             
             builder.setErrorHandler(new org.xml.sax.ErrorHandler() {
@@ -664,6 +667,7 @@ public class XMLDocument {
         setProperty(WS_IN_ELEMENT_CONTENT, "true");
         setProperty(ENCODING, "UTF-8");
         setProperty(INDENT, "4");
+        setProperty(IS_VALIDATING, "false");
     }//}}}
     
     //{{{ firePropertyChanged()

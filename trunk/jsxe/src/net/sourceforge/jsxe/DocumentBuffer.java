@@ -49,25 +49,17 @@ import net.sourceforge.jsxe.options.OptionPane;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.jsxeFileDialog;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Java base classes
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.ListIterator;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 import javax.swing.JOptionPane;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+import java.net.URL;
 //}}}
 
 //{{{ AWT components
@@ -581,7 +573,7 @@ public class DocumentBuffer extends XMLDocument {
             indentComboBox.setEditable(true);
             indentComboBox.setSelectedItem(getProperty(INDENT));
             
-            //set up the whitespace and format output check-boxes.
+            
            // boolean whitespace    = Boolean.valueOf(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, "true")).booleanValue();
             boolean formatOutput = Boolean.valueOf(getProperty(XMLDocument.FORMAT_XML, "false")).booleanValue();
             
@@ -589,6 +581,9 @@ public class DocumentBuffer extends XMLDocument {
             formatCheckBox     = new JCheckBox("Format XML output", formatOutput);
             
            // whitespaceCheckBox.addChangeListener(new WhiteSpaceChangeListener());
+            
+            boolean validating = Boolean.valueOf(getProperty(XMLDocument.IS_VALIDATING, "false")).booleanValue();
+            m_m_validatingCheckBox = new JCheckBox("Validate if DTD or Schema Available", validating);
             
            // formatCheckBox.setEnabled(!whitespace);
             
@@ -657,6 +652,17 @@ public class DocumentBuffer extends XMLDocument {
             
             layout.setConstraints(formatCheckBox, constraints);
             add(formatCheckBox);
+            
+            constraints.gridy      = gridY++;
+            constraints.gridx      = 0;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = GridBagConstraints.REMAINDER;
+            constraints.weightx    = 0.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
+            layout.setConstraints(m_m_validatingCheckBox, constraints);
+            add(m_m_validatingCheckBox);
             
             boolean softTabs = Boolean.valueOf(getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
         
@@ -737,6 +743,7 @@ public class DocumentBuffer extends XMLDocument {
         private JComboBox encodingComboBox;
         private JComboBox indentComboBox;
         private JCheckBox whitespaceCheckBox;
+        private JCheckBox m_m_validatingCheckBox;
         private final Vector supportedEncodings = new Vector(6);
         private JCheckBox formatCheckBox;
         //}}}
@@ -788,14 +795,21 @@ public class DocumentBuffer extends XMLDocument {
                 
                 try {
                     String filePathURI = m_file.toURL().toExternalForm();
-                    filePathURI = filePathURI.substring(0, filePathURI.lastIndexOf("/")+1);
+                    int index = filePathURI.lastIndexOf("/")+1;
+                    if (index != -1) {
+                        filePathURI = filePathURI.substring(0, index);
+                    }
+                    
+                    index = entity.lastIndexOf("/")+1;
+                    if (index != -1) {
+                        entity = entity.substring(index);
+                    }
                     
                     //create the path to the entity relative to the document
                     filePathURI += entity;
+                    Log.log(Log.DEBUG, this, filePathURI);
                     
-                    FileReader reader = new FileReader(filePathURI);
-                    
-                    source = new InputSource(reader);
+                    source = new InputSource((new URL(filePathURI)).openStream());
                     
                 } catch (MalformedURLException e) {
                     //Do nothing and try to open this entity normally
