@@ -118,7 +118,7 @@
       </fileset>
     </copy>
     
-    <propertyfile file="${build.dest}/net/sourceforge//build.properties" comment="${app.name}'s build properties">
+    <propertyfile file="${build.dest}/net/sourceforge/jsxe/build.properties" comment="${app.name}'s build properties">
       <entry key="application.name" value="${app.name}"/>
       <entry key="build.time" type="date" value="now" pattern="dd/MM/yyyy HH:mm"/>
       <entry key="major.version" value="${major.version}"/>
