@@ -45,6 +45,12 @@ belongs to.
 import net.sourceforge.jsxe.dom.XMLDocument;
 //}}}
 
+//{{{ Java base classes
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
+import java.util.Vector;
+//}}}
+
 //}}}
 
 public class DocumentViewFactory {
@@ -68,7 +74,33 @@ public class DocumentViewFactory {
         }
     }//}}}
 
+    public static Enumeration getAvailableViewNames() {//{{{
+        return new DocumentViews();
+    }//}}}
+
     //{{{ Private members
-    String viewType = "documentview.default";
+    
+    private static class DocumentViews implements Enumeration {//{{{
+        
+        DocumentViews() {
+            elements.add("documentview.default");
+        }
+        
+        public boolean hasMoreElements() {
+            return (elements.size() != 0);
+        }
+        
+        public Object nextElement() throws NoSuchElementException {
+            if (elements.size() != 0)
+                return elements.remove(0);
+            else
+                throw new NoSuchElementException();
+        }
+        
+        private Vector elements = new Vector(1);
+    }//}}}
+    
+    private String viewType = "documentview.default";
+    
     //}}}
 }

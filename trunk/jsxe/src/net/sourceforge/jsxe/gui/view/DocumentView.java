@@ -60,4 +60,5 @@ public abstract class DocumentView extends JPanel {
     public abstract JMenu[] getMenus();
     
     public abstract XMLDocument getXMLDocument();
+
 }

@@ -39,6 +39,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.view.DocumentView;
+import net.sourceforge.jsxe.gui.view.DocumentViewFactory;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentFactory;
 import net.sourceforge.jsxe.dom.UnrecognizedDocTypeException;
@@ -61,9 +62,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 //}}}
@@ -74,17 +77,20 @@ public class jsXe {
     
     public static void main(String args[]) {//{{{
         
-        //check the java version
+        //{{{ Check the java version
         String javaVersion = System.getProperty("java.version");
 		if(javaVersion.compareTo("1.3") < 0)
 		{
-			System.err.println("jsXe " + getVersion());
-            System.err.println("ERROR: You are running Java version " + javaVersion + ".");
-			System.err.println("jsXe requires Java 1.3 or later.");
+			System.err.println(getAppTitle() + ": ERROR: " + getAppTitle() + getVersion());
+            System.err.println(getAppTitle() + ": ERROR: You are running Java version " + javaVersion + ".");
+			System.err.println(getAppTitle() + ": ERROR:" + getAppTitle()+" requires Java 1.3 or later.");
 			System.exit(1);
-		}
+		}//}}}
         
-        //get and load the configuration files {{{
+        //{{{ get and load the configuration files
+        initDefaultProps();
+        props = new Properties(defaultProps);
+        
         String settingsDirectory = System.getProperty("user.home")+System.getProperty("file.separator")+".jsxe";
         File _settingsDirectory = new File(settingsDirectory);
         if(!_settingsDirectory.exists())
@@ -98,31 +104,38 @@ public class jsXe {
             //Don't do anything right now
             
         } catch (IOException ioe) {
-            System.err.println("jsXe: I/O Error: Could not open settings file");
-            System.err.println("jsXe: "+ioe.toString());
+            System.err.println(getAppTitle() + ": I/O ERROR: Could not open settings file");
+            System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
         }
         //}}}
         
-        //temporary method to set size of jsXe relative to screen
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int windowWidth = (int)(screenSize.getWidth() / 2);
-        int windowHeight = (int)(3 * screenSize.getHeight() / 4);
+        //{{{ Create the main TabbedView
+        int windowWidth = Integer.valueOf(getProperty("view.width")).intValue();
+        int windowHeight = Integer.valueOf(getProperty("view.height")).intValue();
+        int x = Integer.valueOf(getProperty("view.x")).intValue();
+        int y = Integer.valueOf(getProperty("view.y")).intValue();
         
         TabbedView tabbedview = new TabbedView(windowWidth, windowHeight);
+        tabbedview.setLocation(x,y);
+        //}}}
         
+        //{{{ Parse command line arguments
         if (args.length >= 1) {
             if (!openXMLDocuments(tabbedview, args)) {
                 if (!openXMLDocument(tabbedview, DefaultDocument)) {
-                    System.err.println("ERROR opening default document");
+                    System.err.println(getAppTitle() + ": Internal ERROR: opening default document");
+                    System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
                     System.exit(1);
                 }
             }
         } else {
             if (!openXMLDocument(tabbedview, DefaultDocument)) {
-                System.err.println("ERROR opening default document");
+                System.err.println(getAppTitle() + ": Internal ERROR: opening default document");
+                System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
                 System.exit(1);
             }
-        }
+        }//}}}
+        
         tabbedview.show();
     }//}}}
     
@@ -333,6 +346,54 @@ public class jsXe {
 	} //}}}
     
     // Private static members {{{
+    
+    private static void initDefaultProps() {//{{{
+        
+        //{{{ Load jsXe default properties
+        InputStream inputstream = jsXe.class.getResourceAsStream("/net/sourceforge/jsxe/properties");
+        try {
+            defaultProps.load(inputstream);
+        } catch (IOException ioe) {
+            System.err.println(getAppTitle() + ": Internal ERROR: Could not open default settings file");
+            System.err.println(getAppTitle() + ": Internal ERROR: "+ioe.toString());
+            System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
+        }
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int windowWidth = (int)(screenSize.getWidth() / 2);
+        int windowHeight = (int)(3 * screenSize.getHeight() / 4);        
+        int x = (int)(screenSize.getWidth() / 4);
+        int y = (int)(screenSize.getHeight() / 8);
+        
+        defaultProps.setProperty("view.height",Integer.toString(windowHeight));
+        defaultProps.setProperty("view.width",Integer.toString(windowWidth));
+        
+        defaultProps.setProperty("view.x",Integer.toString(x));
+        defaultProps.setProperty("view.y",Integer.toString(y));
+        //}}}
+        
+        //{{{ Load default properties of installed views
+        Enumeration installedViews = DocumentViewFactory.getAvailableViewNames();
+        while (installedViews.hasMoreElements()) {
+            String viewname = (String)installedViews.nextElement();
+            InputStream viewinputstream = jsXe.class.getResourceAsStream("/net/sourceforge/jsxe/gui/view/"+viewname+".props");
+            try {
+                Properties defViewProps = new Properties();
+                defViewProps.load(viewinputstream);
+                Enumeration propsList = defViewProps.propertyNames();
+                while (propsList.hasMoreElements()) {
+                    String key = (String)propsList.nextElement();
+                    defaultProps.setProperty(key, defViewProps.getProperty(key));
+                }
+            } catch (IOException ioe) {
+                System.err.println(getAppTitle() + ": Internal ERROR: Could not open default settings file");
+                System.err.println(getAppTitle() + ": Internal ERROR: "+ioe.toString());
+                System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
+            }
+        }
+        //}}}
+        
+    }//}}}
+    
     private static final String MajorVersion = "00";
     private static final String MinorVersion = "01";
     private static final String BuildVersion = "01";
@@ -341,7 +402,8 @@ public class jsXe {
     private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?><default_element>default_node</default_element>";
     private static final ImageIcon jsXeIcon = new ImageIcon("net/sourceforge/jsxe/icons/jsxe.jpg", "jsXe");
     private static final String AppTitle = "jsXe";
-    private static Properties props = new Properties();
+    private static final Properties defaultProps = new Properties();
+    private static Properties props;
     //}}}
     
 }
