@@ -8,6 +8,8 @@
     * Added logic to start editing in the tree if the user starts typing while
       one of the nodes is selected. It moves focus to the right hand pane
       if necessary. It does, however, lose the first key when you start typing.
+    * The Move No Drop cursor is now displayed when dragging a node over a
+      drop target that rejects it.
 
 8/11/2004   version 0.2 pre17   Ian Lewis <IanLewis@member.fsf.org>
 

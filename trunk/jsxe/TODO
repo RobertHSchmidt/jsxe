@@ -36,8 +36,6 @@ TODO:
       whole cursor can be replaced with the image since the default drag
       cursor is dumb in linux.
     
-    * Create a way to show a no-drop cursor when the drop is rejected.
-    
     * Create a dialog that displays all dirty DocumentBuffers and allows you to
       save the selected ones, like jEdit.
     
@@ -54,7 +52,8 @@ TODO:
       only show the part after the header?
     
     * Add a feature that allows the cursor to be set to the location of a
-      parse error in the source view.
+      parse error in the source view. Maybe add this later when a side-kick
+      like feature is implemented.
     
     * Fix the options dialog and make it look better. Maybe split into two
       dialogs, global options and view/document specific? Maybe even three
@@ -72,7 +71,8 @@ TODO:
     
     * Build an adapter for DocumentBuilder so that it implements the DOM3
       standard DOMBuilder interface? Maybe use it with DOMSerializer to created
-      filtered documents? Or use a TreeWalker to serialize (how)?
+      filtered documents? Or use a TreeWalker to serialize (how)? Create a
+      stack that retains element info.
     
     * Use the Nodefilter interface with the DefaultView to determine which types
       of nodes to show.
