@@ -23,6 +23,8 @@ TODO:
     
 * Version 0.2 beta
     
+    * Add option for the maximum number of recently used files to remember.
+    
     * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother? Maybe not since some views will require
       documents to be well formed.
@@ -46,9 +48,6 @@ TODO:
     * Change the way the TabbedView keeps track of the DocumentViews and
       DocumentBuffers so that it's easier to get the DocumentBuffer for a
       particular XMLDocument
-    
-    * Store some options such as recent files and file specific options in
-      an XML file with jsxe's options in the .jsxe folder in the home dir.
     
     * Add a ghosted image of the node to drag and drop cursor. Hopefully the
       whole cursor can be replaced with the image since the default drag
