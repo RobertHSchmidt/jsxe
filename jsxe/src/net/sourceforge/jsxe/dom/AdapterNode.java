@@ -42,6 +42,7 @@ belongs to.
 
 //{{{ Java Base Classes
 import java.util.ArrayList;
+import java.util.ListIterator;
 //}}}
 
 //{{{ DOM classes
@@ -57,14 +58,15 @@ import org.w3c.dom.NodeList;
 
 public class AdapterNode {
     
-    public AdapterNode(Document document) {//{{{
+    AdapterNode(XMLDocument xmlDocument, Document document) {//{{{
         domNode = document;
-        parentNode = null;
+        rootDocument = xmlDocument;
     }//}}}
     
-    private AdapterNode(AdapterNode parent, Node node) {//{{{
+    AdapterNode(XMLDocument xmlDocument, AdapterNode parent, Node node) {//{{{
         domNode = node;
-        parentNode = parent;
+        setParent(parent);
+        rootDocument = xmlDocument;
     }//}}}
     
     public String toString() {//{{{
@@ -114,7 +116,8 @@ public class AdapterNode {
                     child = (AdapterNode)children.get(index);
                     if (child == null) {
                         //the size was ok but no AdapterNode was at this index
-                        child = new AdapterNode(this, domNode.getChildNodes().item(index));
+                        child = rootDocument.newAdapterNode(this, domNode.getChildNodes().item(index));
+                        addAdapterNode(child);
                         children.set(index, child);
                     }
                 } catch (IndexOutOfBoundsException ioobe) {}
@@ -126,7 +129,7 @@ public class AdapterNode {
                 while (children.size() < index) {
                     children.add(null);
                 }
-                child = new AdapterNode(this, domNode.getChildNodes().item(index));
+                child = rootDocument.newAdapterNode(this, domNode.getChildNodes().item(index));
                 children.add(child);
             }
         }
@@ -166,6 +169,7 @@ public class AdapterNode {
             }
             parent.replaceChild(newNode, domNode);
             domNode = newNode;
+            fireLocalNameChanged(this);
         } else {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element can be renamed at this time.");
         }
@@ -177,6 +181,7 @@ public class AdapterNode {
     
     public void setNodeValue(String str) throws DOMException {//{{{
         domNode.setNodeValue(str);
+        fireNodeValueChanged(this);
     }//}}}
     
     public short getNodeType() {//{{{
@@ -191,7 +196,7 @@ public class AdapterNode {
         return domNode.getAttributes();
     }//}}}
     
-    public AdapterNode addNode(String name, String value, short type) throws DOMException {//{{{
+    public AdapterNode addAdapterNode(String name, String value, short type) throws DOMException {//{{{
         
         Node newNode = null;
         Document document = domNode.getOwnerDocument();
@@ -223,27 +228,45 @@ public class AdapterNode {
                 throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element and Text Nodes can be added at this time.");
         }
         
-        AdapterNode newAdapterNode = new AdapterNode(this, newNode);
+        AdapterNode newAdapterNode = rootDocument.newAdapterNode(this, newNode);
         //add to this AdapterNode and the DOM.
         domNode.appendChild(newNode);
         children.add(newAdapterNode);
+        
+        fireNodeAdded(this, newAdapterNode);
+        
         return newAdapterNode;
     }//}}}
     
-    public void remove() throws DOMException {//{{{
-        Node parent = domNode.getParentNode();
-        parent.removeChild(domNode);
-        parentNode.remove(this);
+    public AdapterNode addAdapterNode(AdapterNode node) {//{{{
+        //add to this AdapterNode and the DOM.
+        domNode.appendChild(node.getNode());
+        children.add(node);
+        node.setParent(this);
+        
+        fireNodeAdded(this, node);
+        
+        return node;
     }//}}}
+    
+   // public void remove() throws DOMException {//{{{
+   //     Node parent = domNode.getParentNode();
+   //     parent.removeChild(domNode);
+   //     parentNode.remove(this);
+   //     fireNodeRemoved(this, this);
+   // }//}}}
     
     public void remove(AdapterNode child) throws DOMException {//{{{
         domNode.removeChild(child.getNode());
+        children.remove(child);
+        fireNodeRemoved(this, child);
     }//}}}
     
     public void setAttribute(String name, String value) throws DOMException {//{{{
         if (domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)domNode;
             element.setAttribute(name,value);
+            fireAttributeChanged(this, name);
         }
     }//}}}
     
@@ -253,6 +276,7 @@ public class AdapterNode {
             NamedNodeMap attrs = element.getAttributes();
             Node attr = attrs.item(index);
             element.removeAttribute(attr.getNodeName());
+            fireAttributeChanged(this, attr.getNodeName());
         }
     }//}}}
     
@@ -264,68 +288,77 @@ public class AdapterNode {
         listeners.add(listener);
     }//}}}
     
+    public void removeAdapterNodeListener(AdapterNodeListener listener) {//{{{
+        listeners.remove(listeners.indexOf(listener));
+    }//}}}
+    
     //{{{ Protected members
     
     protected Node getNode() {//{{{
         return domNode;
     }//}}}
     
+    protected void setParent(AdapterNode parent) {//{{{
+        parentNode = parent;
+    }//}}}
+    
     //}}}
     
     //{{{ Private members
     
-   // private void fireNodeAdded(AdapterNode source, AdapterNode child) {//{{{
-   //     ListIterator iterator = listeners.listIterator();
-   //     while (iterator.hasNext()) {
-   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
-   //         listener.nodeAdded(source, child);
-   //     }
-   // }//}}}
-   // 
-   // private void fireNodeRemoved(AdapterNode source, AdapterNode child) {//{{{
-   //     ListIterator iterator = listeners.listIterator();
-   //     while (iterator.hasNext()) {
-   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
-   //         listener.nodeRemoved(source, child);
-   //     }
-   // }//}}}
-   // 
-   // private void fireLocalNameChanged(AdapterNode source) {//{{{
-   //     ListIterator iterator = listeners.listIterator();
-   //     while (iterator.hasNext()) {
-   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
-   //         listener.localNameChanged(source);
-   //     }
-   // }//}}}
-   // 
-   // private void fireNamespaceChanged(AdapterNode source) {//{{{
-   //     ListIterator iterator = listeners.listIterator();
-   //     while (iterator.hasNext()) {
-   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
-   //         listener.namespaceChanged(source);
-   //     }
-   // }//}}}
-   // 
-   // private void fireNodeValueChanged(AdapterNode source) {//{{{
-   //     ListIterator iterator = listeners.listIterator();
-   //     while (iterator.hasNext()) {
-   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
-   //         listener.nodeValueChanged(source);
-   //     }
-   // }//}}}
-   // 
-   // private void fireAttributeChanged(AdapterNode source) {//{{{
-   //     ListIterator iterator = listeners.listIterator();
-   //     while (iterator.hasNext()) {
-   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
-   //         listener.attributeChanged(source);
-   //     }
-   // }//}}}
+    private void fireNodeAdded(AdapterNode source, AdapterNode child) {//{{{
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+            listener.nodeAdded(source, child);
+        }
+    }//}}}
+    
+    private void fireNodeRemoved(AdapterNode source, AdapterNode child) {//{{{
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+            listener.nodeRemoved(source, child);
+        }
+    }//}}}
+    
+    private void fireLocalNameChanged(AdapterNode source) {//{{{
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+            listener.localNameChanged(source);
+        }
+    }//}}}
+    
+    private void fireNamespaceChanged(AdapterNode source) {//{{{
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+            listener.namespaceChanged(source);
+        }
+    }//}}}
+    
+    private void fireNodeValueChanged(AdapterNode source) {//{{{
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+            listener.nodeValueChanged(source);
+        }
+    }//}}}
+    
+    private void fireAttributeChanged(AdapterNode source, String attr) {//{{{
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+            listener.attributeChanged(source, attr);
+        }
+    }//}}}
     
     private AdapterNode parentNode;
+    private XMLDocument rootDocument;
     private ArrayList children = new ArrayList();
     
     private Node domNode;
-    private ArrayList listeners;
+    private ArrayList listeners = new ArrayList();
     //}}}
 }

@@ -3,6 +3,8 @@ TODO:
     * Document methods with javadoc.
     
     * Add funtionality for dirty files.
+        * Create a robust change-event system.
+        * 
     
     * Allow for selecting multiple files when opening.
     
@@ -17,10 +19,10 @@ TODO:
     * Allow for opening files with wellformedness errors in source view. This
       way users can fix wellformedness errors in the editor.
     
-    * Release new version (0.2).
-    
     * Add relevent command-line option parsing to jsXe. At least things like
       '--version' and '--help' should be present.
+    
+    * Release new version (0.2).
     
     * Build an adapter for DocumentBuilder so that it implements the DOM3
       standard DOMBuilder interface? Maybe use it with DOMSerializer to created
@@ -41,9 +43,12 @@ TODO:
       methods? Can I eventually make my own DOM implementation?
     
     * Make sure jsXe can deal with all types of XML nodes.
+        * Add support for creating every type of XML node.
     
     * Change icons in tree in DocumentView to be different for different types
       of XML nodes.
+    
+    * Add drag & drop functionality to the default view.
     
     * Release new version (0.3).
     
@@ -53,9 +58,6 @@ TODO:
       DefaultXMLDocument classes. Should use char arrays instead of String
       objects. Implement a much more efficient way of storing the text source.
     
-    * Create a feature to edit source for 1 node only. (Not sure how to do this
-      given current design. How would I allow the source view to do that?)
-    
     * Create a way for actions to be created dynamically and then registered
       with jsXe. Much the same way that jEdit does.
     
@@ -64,32 +66,38 @@ TODO:
     
     * Create a toolbar that is customizable much the same way jEdit's is.
     
+    * Release new version (0.4)
+    
+    * Create a feature to edit source for 1 node only. (Not sure how to do this
+      given current design. How would I allow the source view to do that?)
+    
     * Create an interface for the main view in jsXe where the TabbedView
       implements it. Other views can then be created to allow a more
       customizable look.
     
-    * Release new version (0.4)
-    
     * Implement syntax highlighting for the SourceView.
-    
-    * Add drag & drop functionality to the default view.
     
     * Create a history class for the DefaultView that keeps track of the current
       state of the view and can be used to restore it later.
     
     * Fix updating of the tree when users are changing a text node.
     
-    * Release new version (0.5).
+    * Add support for DTDs and add feedback about whether the current document
+      can be validated by the DTD and what needs to be done to the document
+      before it will comply with the DTD.
     
-    * Implement plugin support with BeanShell. Make DocumentViews into plugins
-      that are loaded at runtime. DefaultView and SourceView will be distributed
-      with jsXe as the default views.
+    * Release new version (0.5).
     
     * Add a way for jsXe to try to open a document in any of the installed views
       before it shows errors saying it cannot open the document. i.e. If a
       document is not validated try to open it in the requested view and if that
       fails then open it in one of the remaining installed views until it works
       or you run out of views.
+    
+    * Implement some version of the DOM Document interfaces and add features
+      such as the registering of listeners that can tell when the structure
+      has changed and a builder that can give the location of a parser error
+      etc.
     
     * Create an install program for jsXe.
     
@@ -98,6 +106,9 @@ TODO:
     * Create a view that uses the view from pollo and implements the
       DocumentView interface.
     
+    * Create a view that is similar to the xeditor view if it's ok (it kind of
+      has to be since jie bao used my GPL code his has to be open source too.)
+    
     * Implement the xsl transformation feature.
     
     * Implement validation against DTDs and different forms of Schema.
@@ -105,3 +116,12 @@ TODO:
     * Create a help system for jsXe.
     
     * Release new version (0.7)
+    
+    * Finalize the class structure and public plugin interface as it will be
+      harder to remove/deprecate methods after the introduction of plugins.
+    
+    * Implement plugin support with BeanShell. Make DocumentViews into plugins
+      that are loaded at runtime. DefaultView and SourceView will be distributed
+      with jsXe as the default views.
+    
+    * Release new version (0.8)

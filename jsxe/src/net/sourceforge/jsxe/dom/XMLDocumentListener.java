@@ -55,7 +55,7 @@ public interface XMLDocumentListener {
      *                 If a node was removed then this is the parent of the
      *                 node that was removed.
      */
-   // public void structureChanged(XMLDocument source, AdapterNode location);
+    public void structureChanged(XMLDocument source, AdapterNode location);
     
     /**
      * Called when the file on disk that the XMLDocument represents is changed.

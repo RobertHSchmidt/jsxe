@@ -47,6 +47,7 @@ import net.sourceforge.jsxe.jsXe;
 
 //{{{ DOM classes
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -71,13 +72,15 @@ public abstract class XMLDocument {
         return (getFile() == null);
     }//}}}
     
+    public abstract AdapterNode getAdapterNode();
+    
+    public abstract AdapterNode newAdapterNode(AdapterNode parent, Node node);
+    
     public abstract String getName();
     
     public abstract File getFile();
     
     public abstract String getSource() throws IOException;
-    
-    public abstract Document getDocument();
     
     public abstract String setProperty(String key, String value);
     
@@ -96,7 +99,7 @@ public abstract class XMLDocument {
     public abstract void setModel(String string) throws IOException;
     
     public abstract boolean isWellFormed() throws IOException;
-    
+
     public boolean equalsOnDisk(Object o) throws ClassCastException, IOException {//{{{
         if (getFile() != null && o != null) {
             boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
@@ -137,4 +140,5 @@ public abstract class XMLDocument {
     public abstract void addXMLDocumentListener(XMLDocumentListener listener);
     
     public abstract void removeXMLDocumentListener(XMLDocumentListener listener);
+
 }

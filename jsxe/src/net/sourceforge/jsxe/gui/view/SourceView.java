@@ -41,6 +41,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.dom.DOMSerializer;
@@ -133,6 +134,7 @@ public class SourceView extends DocumentView {
         if (currentdoc != null) {
             currentdoc.removeXMLDocumentListener(docListener);
         }
+        
         currentdoc = document;
         textarea.setDocument(new SourceViewDocument(view, document));
         textarea.setTabSize((new Integer(document.getProperty("indent", "4"))).intValue());
@@ -147,6 +149,7 @@ public class SourceView extends DocumentView {
     public void close(TabbedView view) {//{{{
         try {
             currentdoc.setModel(textarea.getText());
+            currentdoc.removeXMLDocumentListener(docListener);
         } catch (IOException ioe) {
             jsXe.exiterror(view, ioe.getMessage(), 1);
         }
@@ -204,6 +207,8 @@ public class SourceView extends DocumentView {
                 textarea.updateUI();
             }
         }
+        
+        public void structureChanged(XMLDocument source, AdapterNode location) {}
         
         public void fileChanged(XMLDocument source) {}
     }//}}}

@@ -92,9 +92,9 @@ import java.util.Enumeration;
 public class DefaultViewTreeModel implements TreeModel {
     
     protected DefaultViewTreeModel(Component parent, XMLDocument doc) {//{{{
-        document     = doc;
+        document = doc;
         view = parent;
-        documentNode = new AdapterNode(document.getDocument());
+        documentNode = document.getAdapterNode();
     }//}}}
 
     // {{{ Implemented TreeModel methods

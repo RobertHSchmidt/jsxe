@@ -149,7 +149,7 @@ public class DefaultView extends DocumentView {
         
         close(view);
         
-        AdapterNode adapter = new AdapterNode(document.getDocument());
+        AdapterNode adapter = document.getAdapterNode();
         
         DefaultViewTreeModel treeModel = new DefaultViewTreeModel(this, document);
         DefaultViewTableModel tableModel = new DefaultViewTableModel(this, adapter);
@@ -397,7 +397,7 @@ public class DefaultView extends DocumentView {
                 TreePath selPath = tree.getLeadSelectionPath();
                 if (selPath != null) {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    AdapterNode newNode = selectedNode.addNode("New_Element", "", Node.ELEMENT_NODE);
+                    AdapterNode newNode = selectedNode.addAdapterNode("New_Element", "", Node.ELEMENT_NODE);
                     //The TreeModel doesn't automatically treeNodesInserted() yet
                     updateComponents();
                 }
@@ -415,7 +415,7 @@ public class DefaultView extends DocumentView {
                 TreePath selPath = tree.getLeadSelectionPath();
                 if (selPath != null) {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    selectedNode.addNode("", "New Text Node", Node.TEXT_NODE);
+                    selectedNode.addAdapterNode("", "New Text Node", Node.TEXT_NODE);
                     //The TreeModel doesn't automatically treeNodesInserted() yet
                     updateComponents();
                 }
@@ -433,7 +433,7 @@ public class DefaultView extends DocumentView {
                 TreePath selPath = tree.getLeadSelectionPath();
                 if (selPath != null) {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    selectedNode.remove();
+                    selectedNode.getParentNode().remove(selectedNode);
                     //The TreeModel doesn't automatically treeNodesRemoved() yet
                     updateComponents();
                 }
@@ -522,7 +522,7 @@ public class DefaultView extends DocumentView {
         htmlPane.setText("");
         
         //set the attributes table to the document itself
-        AdapterNode adapter = new AdapterNode(currentDoc.getDocument());
+        AdapterNode adapter = currentDoc.getAdapterNode();
         DefaultViewTableModel tableModel = new DefaultViewTableModel(this, adapter);
         attributesTable.setModel(tableModel);
         attributesTable.updateUI();

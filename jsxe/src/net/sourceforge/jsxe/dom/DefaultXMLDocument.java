@@ -80,68 +80,72 @@ public class DefaultXMLDocument extends XMLDocument {
     DefaultXMLDocument(File file) throws FileNotFoundException, IOException {//{{{
         setDefaultProperties();
         setModel(file);
+        adapterNode = new AdapterNode(this, m_document);
+        adapterNode.addAdapterNodeListener(docAdapterListener);
     }//}}}
     
     DefaultXMLDocument(Reader reader, String name) throws IOException {//{{{
         setDefaultProperties();
         setModel(reader);
         this.name = name;
+        adapterNode = new AdapterNode(this, m_document);
+        adapterNode.addAdapterNodeListener(docAdapterListener);
     }//}}}
     
     DefaultXMLDocument(String string, String name) throws IOException {//{{{
         setDefaultProperties();
         setModel(string);
         this.name = name;
+        adapterNode = new AdapterNode(this, m_document);
+        adapterNode.addAdapterNodeListener(docAdapterListener);
     }//}}}
 
     public boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {//{{{
-        wellFormed = false;
         
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(true);
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        
-        //Enable the parser to find external entities by searching
-        //for it relative to the file's path and not the path
-        //where you started jsXe
-        builder.setEntityResolver(new EntityResolver() {
-            public InputSource resolveEntity(String publicId, String systemId) {
-                
-                String entity = systemId;
-                InputSource source = null;
-                
-                if (XMLFile != null) {
-                    try {
-                        entity = entity.substring(entity.lastIndexOf("/")+1);
-                        
-                        String filePathURI = XMLFile.toURL().toExternalForm();
-                        filePathURI = filePathURI.substring(0, filePathURI.lastIndexOf("/")+1);
-                        
-                        entity = filePathURI + entity;
-                        
-                        source = new InputSource(entity);
-                        
-                    } catch (MalformedURLException e) {
-                        //Do nothing and open this entity normally
-                        //source = null
-                    }
-                }
-                return source;
-            }
+        if (!wellFormed) {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            DocumentBuilder builder = factory.newDocumentBuilder();
             
-        });
-        Document doc = builder.parse(new InputSource(new StringReader(source)));
-        doc.getDocumentElement().normalize();
-        document=doc;
-        
-        wellFormed=true;
+            //Enable the parser to find external entities by searching
+            //for it relative to the file's path and not the path
+            //where you started jsXe
+            builder.setEntityResolver(new EntityResolver() {
+                public InputSource resolveEntity(String publicId, String systemId) {
+                    
+                    String entity = systemId;
+                    InputSource source = null;
+                    
+                    if (XMLFile != null) {
+                        try {
+                            entity = entity.substring(entity.lastIndexOf("/")+1);
+                            
+                            String filePathURI = XMLFile.toURL().toExternalForm();
+                            filePathURI = filePathURI.substring(0, filePathURI.lastIndexOf("/")+1);
+                            
+                            entity = filePathURI + entity;
+                            
+                            source = new InputSource(entity);
+                            
+                        } catch (MalformedURLException e) {
+                            //Do nothing and open this entity normally
+                            //source = null
+                        }
+                    }
+                    return source;
+                }
+                
+            });
+            Document doc = builder.parse(new InputSource(new StringReader(source)));
+            doc.getDocumentElement().normalize();
+            m_document=doc;
+            
+            wellFormed=true;
+            sync = true;
+        }
         return wellFormed;
     }//}}}
     
-    public Document getDocument() {//{{{
-        return document;
-    }//}}}
-
     public String setProperty(String key, String value) {//{{{
         if (key == "format-output" && Boolean.valueOf(value).booleanValue()) {
             setProperty("whitespace-in-element-content", "false");
@@ -162,6 +166,19 @@ public class DefaultXMLDocument extends XMLDocument {
         return props.getProperty(key, defaultValue);
     }//}}}
     
+    public AdapterNode getAdapterNode() {//{{{
+        return adapterNode;
+    }//}}}
+    
+    public AdapterNode newAdapterNode(AdapterNode parent, Node node) {//{{{
+        AdapterNode newNode = null;
+        if (node != null && parent != null) {
+            newNode = new AdapterNode(this, parent, node);
+            newNode.addAdapterNodeListener(docAdapterListener);
+        }
+        return newNode;
+    }//}}}
+    
     public String getName() {//{{{
         return name;
     }//}}}
@@ -169,15 +186,14 @@ public class DefaultXMLDocument extends XMLDocument {
     public String getSource() throws IOException {//{{{
         //if the document is well formed we go by the DOM
         //if it's not we go by the source.
-        
-        if (isWellFormed()) {
+        if (!sync) {
             DOMSerializer.DOMSerializerConfiguration config = new DOMSerializer.DOMSerializerConfiguration();
             config.setParameter("format-output", getProperty("format-output"));
             config.setParameter("whitespace-in-element-content", getProperty("whitespace-in-element-content"));
             config.setParameter("indent", new Integer(getProperty("indent")));
             DOMSerializer serializer = new DOMSerializer(config);
             serializer.setEncoding(getProperty("encoding"));
-            return serializer.writeToString(getDocument());
+            return serializer.writeToString(m_document);
         } else {
             return source;
         }
@@ -192,12 +208,13 @@ public class DefaultXMLDocument extends XMLDocument {
         if (file!=null) {
             int nextchar=0;
             name = file.getName();
-            wellFormed=false;
             FileReader reader=new FileReader(file);
+            
             
             StringBuffer text = new StringBuffer();
             char[] buffer = new char[READ_SIZE];
-
+            
+            //Save the document to a string
             int bytesRead;
             do {
                 bytesRead = reader.read(buffer, 0, READ_SIZE);
@@ -209,6 +226,8 @@ public class DefaultXMLDocument extends XMLDocument {
             
             File oldFile = XMLFile;
             XMLFile = file;
+            
+            wellFormed = false;
             
             try {
                 checkWellFormedness();
@@ -222,19 +241,20 @@ public class DefaultXMLDocument extends XMLDocument {
                 throw ioe;
             }
             
-            //set here so file is not set if there is an I/O Error.
-            fireFileChanged();
+            if (!file.equals(oldFile)) {
+                fireFileChanged();
+            }
         } else {
             throw new FileNotFoundException("File Not Found: null");
         }
     }//}}}
     
     public void setModel(Reader reader) throws IOException {//{{{
-        wellFormed=false;
         
         StringBuffer text = new StringBuffer();
         char[] buffer = new char[READ_SIZE];
-
+        
+        //Read the document into a string buffer
         int bytesRead;
         do {
             bytesRead = reader.read(buffer, 0, READ_SIZE);
@@ -242,12 +262,12 @@ public class DefaultXMLDocument extends XMLDocument {
                 text.append(buffer, 0, bytesRead);
         }
         while (bytesRead != -1);
-        source = text.toString();
-    }//}}}
-    
-    public void setModel(String string) throws IOException {//{{{
+        
+        //check the wellformedness
         String backupSource = source;
-        source=string;
+        source = text.toString();
+        wellFormed = false;
+        
         try {
             checkWellFormedness();
         } catch (SAXException saxe) {
@@ -260,12 +280,38 @@ public class DefaultXMLDocument extends XMLDocument {
             source = backupSource;
             throw ioe;
         }
+        
+        if (XMLFile != null) {
+            fireFileChanged();
+        }
+    }//}}}
+    
+    public void setModel(String string) throws IOException {//{{{
+        String backupSource = source;
+        source=string;
+        wellFormed = false;
+        
+        try {
+            checkWellFormedness();
+        } catch (SAXException saxe) {
+        } catch (ParserConfigurationException pce) {
+            //resore the source variable.
+            source = backupSource;
+            throw new IOException(pce.getMessage());
+        } catch (IOException ioe) {
+            //restore the source variable.
+            source = backupSource;
+            throw ioe;
+        }
+        if (XMLFile != null) {
+            fireFileChanged();
+        }
     }//}}}
     
     public boolean isWellFormed() throws IOException {//{{{
         return wellFormed;
     }//}}}
-
+    
     public void save() throws IOException, SAXParseException, SAXException, ParserConfigurationException {//{{{
        if (getFile() != null) {
            saveAs(getFile());
@@ -290,7 +336,7 @@ public class DefaultXMLDocument extends XMLDocument {
         
         FileOutputStream out = new FileOutputStream(file);
         
-        serializer.writeNode(out, getDocument());
+        serializer.writeNode(out, m_document);
         setModel(file);
     }//}}}
     
@@ -319,13 +365,13 @@ public class DefaultXMLDocument extends XMLDocument {
         }
     }//}}}
     
-   // private void fireStructureChanged(AdapterNode location) {//{{{
-   //     ListIterator iterator = listeners.listIterator();
-   //     while (iterator.hasNext()) {
-   //         XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
-   //         listener.structureChanged(this, location);
-   //     }
-   // }//}}}
+    protected void fireStructureChanged(AdapterNode location) {//{{{
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
+            listener.structureChanged(this, location);
+        }
+    }//}}}
     
     private void fireFileChanged() {//{{{
         ListIterator iterator = listeners.listIterator();
@@ -335,13 +381,49 @@ public class DefaultXMLDocument extends XMLDocument {
         }
     }//}}}
     
-    private Document document;
+    private class XMLDocAdapterListener implements AdapterNodeListener {//{{{
+        
+        public void nodeAdded(AdapterNode source, AdapterNode added) {
+            sync = false;
+            fireStructureChanged(source);
+        }
+        
+        public void nodeRemoved(AdapterNode source, AdapterNode removed) {
+            sync = false;
+            fireStructureChanged(source);
+        }
+        
+        public void localNameChanged(AdapterNode source) {
+            sync = false;
+        }
+        
+        public void namespaceChanged(AdapterNode source) {
+            sync = false;
+        }
+        
+        public void nodeValueChanged(AdapterNode source) {
+            sync = false;
+        }
+        
+        public void attributeChanged(AdapterNode source, String attr) {
+            sync = false;
+        }
+        
+    }//}}}
+    
+    private Document m_document;
+    private AdapterNode adapterNode;
     private File XMLFile;
     private String name;
-    private String source=new String();
-    private boolean wellFormed;
+    private String source = new String();
+    private boolean wellFormed = false;
     private ArrayList listeners = new ArrayList();
     private Properties props = new Properties();
     private static final int READ_SIZE = 5120;
+    
+    private XMLDocAdapterListener docAdapterListener = new XMLDocAdapterListener();
+    
+    // true if the DOM and source are synchronized
+    private boolean sync = false;
     //}}}
 }
