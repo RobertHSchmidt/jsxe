@@ -137,7 +137,8 @@ public class DefaultViewTree extends JTree implements Autoscroll {
      */
     public boolean isEditable(DefaultViewTreeNode node) {
         if (node != null) {
-            return (node.getAdapterNode().getNodeType() == Node.ELEMENT_NODE);
+            int nodeType = node.getAdapterNode().getNodeType();
+            return (nodeType == Node.ELEMENT_NODE || nodeType == Node.PROCESSING_INSTRUCTION_NODE);
         } else {
             return false;
         }
@@ -286,14 +287,14 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     addNodeItem.add(popupMenuItem);
                     popupMenuItem = new JMenuItem(new AddNodeAction("", "New CDATA Node", Node.CDATA_SECTION_NODE));
                     addNodeItem.add(popupMenuItem);
-                   // popupMenuItem = new JMenuItem(new AddNodeAction("BLAH", "New Processing Instruction", Node.PROCESSING_INSTRUCTION_NODE));
-                   // addNodeItem.add(popupMenuItem);
                    // popupMenuItem = new JMenuItem(new AddNodeAction("New_Entity", "", Node.ENTITY_REFERENCE_NODE));
                    // addNodeItem.add(popupMenuItem);
                     addNodeShown = true;
                     showpopup = true;
                 }
                 if (selectedNode.getNodeType() == Node.DOCUMENT_NODE || selectedNode.getNodeType() == Node.ELEMENT_NODE) {
+                    popupMenuItem = new JMenuItem(new AddNodeAction("Instruction", "New Processing Instruction", Node.PROCESSING_INSTRUCTION_NODE));
+                    addNodeItem.add(popupMenuItem);
                     popupMenuItem = new JMenuItem(new AddNodeAction("", "New Comment Node", Node.COMMENT_NODE));
                     addNodeItem.add(popupMenuItem);
                     addNodeShown = true;
@@ -302,8 +303,8 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 if (addNodeShown) {
                     popup.add(addNodeItem);
                 }
-                if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                    popupMenuItem = new JMenuItem(new RenameElementAction());
+                if (selectedNode.getNodeType() == Node.ELEMENT_NODE || selectedNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
+                    popupMenuItem = new JMenuItem(new RenameNodeAction());
                     popup.add(popupMenuItem);
                 }
                 //if the node is not the document or the document root.
@@ -390,13 +391,13 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         //}}}
     }//}}}
     
-    //{{{ RenameElementAction class
+    //{{{ RenameNodeAction class
     
-    private class RenameElementAction extends AbstractAction {
+    private class RenameNodeAction extends AbstractAction {
         
-        //{{{ RenameElementAction constructor
+        //{{{ RenameNodeAction constructor
         
-        public RenameElementAction() {
+        public RenameNodeAction() {
             putValue(Action.NAME, "Rename Node");
         }//}}}
         

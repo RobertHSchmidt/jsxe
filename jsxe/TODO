@@ -23,11 +23,6 @@ TODO:
     
 * Version 0.2 beta
     
-    * Add support for adding processing instructions outside the root element.
-    
-    * Fix bug where jsXe saves the dirty property. Make this a boolean instance
-      variable instead of a property.
-    
     * Need to set up default document properties for each view and default
       app properties for each view. Default document properties get set
       to the document each time one is loaded. Default app properties get set
@@ -40,10 +35,6 @@ TODO:
     * Add a ghosted image of the node to drag and drop cursor. Hopefully the
       whole cursor can be replaced with the image since the default drag
       cursor is dumb in linux.
-    
-    * Add support for creating and editing Processing instructions. New
-      tree cell renderer/editor for the different parts of the processing
-      instruction?
     
     * Make the XML document declaration header non-editable in source-view
       mode. (how?) Update it when the user changes options in the options panel.
