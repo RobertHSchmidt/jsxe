@@ -118,7 +118,6 @@ public class AdapterNode {
             int length = children.getLength();
             for (int i = 0; i < length; i++ ) {
                 Node child = children.item(0);
-                System.out.println("replacing child: "+child.getNodeName());
                 domNode.removeChild(child);
                 newNode.appendChild(child);
             }
