@@ -1,3 +1,9 @@
+8/19/2004   version 0.2 pre20   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed bug where the file is kept open by a reader or something too long.
+      This didn't allow other editors to open the document until jsXe is
+      closed or the objects are garbage collected.
+
 8/18/2004   version 0.2 pre19   Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug with reloading a document in the source view.
