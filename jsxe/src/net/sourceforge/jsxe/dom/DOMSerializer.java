@@ -84,56 +84,70 @@ import java.util.Vector;
 //}}}
 
 /**
- * <p>An implementation of the DOM3 LSSerializer interface. This class supports
+ * An implementation of the DOM3 LSSerializer interface. This class supports
  * everything that is supported by the DOMSerializerConfiguration class. Clients
  *  can check if a feature is supported by calling canSetParameter() on the
- * appropriate DOMSerializerConfiguration object.</p>
+ * appropriate DOMSerializerConfiguration object.
  *
  * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
  * @version $Id$
  */
 public class DOMSerializer implements LSSerializer {
     
+    //{{{ DOMSerializer constructor
     /**
-     * <p>Creates a default DOMSerializer using the default options.</p>
+     * Creates a default DOMSerializer using the default options.
      */
-    public DOMSerializer() {//{{{
+    public DOMSerializer() {
         config = new DOMSerializerConfiguration();
         m_newLine = System.getProperty("line.separator");
     }//}}}
     
+    //{{{ DOMSerializer constructor
     /**
-     * <p>Creates a DOMSerializer that uses the configuration specified.</p>
+     * Creates a DOMSerializer that uses the configuration specified.
      * @param config The configuration to be used by this DOMSerializer object
      */
-    public DOMSerializer(DOMSerializerConfiguration config) {//{{{
+    public DOMSerializer(DOMSerializerConfiguration config) {
         this.config = config;
         m_newLine = System.getProperty("line.separator");
     }//}}}
     
     //{{{ Implemented LSSerializer methods
     
-    public DOMConfiguration getConfig() {//{{{
+    //{{{ getConfig()
+    
+    public DOMConfiguration getConfig() {
         return config;
     }//}}}
     
-    public LSSerializerFilter getFilter() {//{{{
+    //{{{ getFilter()
+    
+    public LSSerializerFilter getFilter() {
         return m_filter;
     }//}}}
     
-    public String getNewLine() {//{{{
+    //{{{ getNewLine()
+    
+    public String getNewLine() {
         return m_newLine;
     }//}}}
     
-    public void setFilter(LSSerializerFilter filter) {//{{{
+    //{{{ setFilter()
+    
+    public void setFilter(LSSerializerFilter filter) {
         m_filter=filter;
     }//}}}
     
-    public void setNewLine(String newLine) {//{{{
+    //{{{ setNewLine()
+    
+    public void setNewLine(String newLine) {
         m_newLine=newLine;
     }//}}}
     
-    public boolean write(Node nodeArg, LSOutput destination) {//{{{
+    //{{{ write()
+    
+    public boolean write(Node nodeArg, LSOutput destination) {
         if (m_filter == null || m_filter.acceptNode(nodeArg) == 1) {
             
             //{{{ try to get the Writer object for our destination
@@ -216,7 +230,9 @@ public class DOMSerializer implements LSSerializer {
         return false;
     }//}}}
     
-    public String writeToString(Node nodeArg) throws DOMException {//{{{
+    //{{{ writeToString()
+    
+    public String writeToString(Node nodeArg) throws DOMException {
         StringWriter writer = new StringWriter();
         try {
             serializeNode(writer, nodeArg);
@@ -227,76 +243,95 @@ public class DOMSerializer implements LSSerializer {
         return writer.toString();
     }//}}}
 
-    public boolean writeToURI(Node nodeArg, java.lang.String uri) {//{{{
+    //{{{ writeToURI()
+    
+    public boolean writeToURI(Node nodeArg, java.lang.String uri) {
         return write(nodeArg, new DOMOutput(uri, "UTF-8"));
     }//}}}
     
     //}}}
     
-    /**
-     * A temprorary main method to test the serialization class
-     */
-    public static void main(String[] args) {//{{{
-        
-    }//}}}
-    
     //{{{ Private members
     
-    private class DOMSerializerError implements DOMError {//{{{
+    //{{{ DOMSerializerError class
+    
+    private class DOMSerializerError implements DOMError {
         
-        public DOMSerializerError(DOMLocator locator, Exception e, short s, String type) {//{{{
+        //{{{ DOMSerializerError constructor
+        
+        public DOMSerializerError(DOMLocator locator, Exception e, short s, String type) {
             m_exception = e;
             m_location = locator;
             m_severity = s;
             m_type = type;
         }//}}}
         
-        public DOMLocator getLocation() {//{{{
+        //{{{ getLocation()
+        
+        public DOMLocator getLocation() {
             return m_location;
         }//}}}
         
-        public String getMessage() {//{{{
+        //{{{ getMessage()
+        
+        public String getMessage() {
             return m_exception.getMessage();
         }//}}}
         
-        public Object getRelatedData() {//{{{
+        //{{{ getRelatedData()
+        
+        public Object getRelatedData() {
             return m_location.getRelatedNode();
         }//}}}
         
-        public Object getRelatedException() {//{{{
+        //{{{ getRelatedException()
+        
+        public Object getRelatedException() {
             return m_exception;
         }//}}}
         
-        public short getSeverity() {//{{{
+        //{{{ getSeverity()
+        
+        public short getSeverity() {
             return m_severity;
         }//}}}
         
-        public String getType() {//{{{
+        //{{{ getType()
+        
+        public String getType() {
             return m_type;
         }//}}}
         
+        //{{{ Private members
+                
         private Exception m_exception;
         private DOMLocator m_location;
         private short m_severity;
         private String m_type;
+        //}}}
+
     }//}}}
     
-    private void serializeNode(Writer writer, Node node) throws DOMSerializerException {//{{{
+    //{{{ serializeNode()
+    
+    private void serializeNode(Writer writer, Node node) throws DOMSerializerException {
         serializeNode(writer, node, null);
     }//}}}
     
+    //{{{ serializeNode()
     /**
      * Serializes the node to the writer specified
      */
-    private void serializeNode(Writer writer, Node node, String encoding) throws DOMSerializerException {//{{{
+    private void serializeNode(Writer writer, Node node, String encoding) throws DOMSerializerException {
         rSerializeNode(writer, node, encoding, "", 1, 1, 0);
     }//}}}
     
+    //{{{ rSerializeNode()
     /**
      * Designed to be called recursively and maintain the state of the
      * serialization.
      */
-    private void rSerializeNode(Writer writer, Node node, String encoding, String currentIndent, int line, int column, int offset) throws DOMSerializerException {//{{{
+    private void rSerializeNode(Writer writer, Node node, String encoding, String currentIndent, int line, int column, int offset) throws DOMSerializerException {
         
         boolean formatting = config.getFeature(DOMSerializerConfiguration.FORMAT_XML);
         boolean whitespace = config.getFeature(DOMSerializerConfiguration.WS_IN_ELEMENT_CONTENT);
@@ -606,10 +641,11 @@ public class DOMSerializer implements LSSerializer {
         }
     }//}}}
     
+    //{{{ doWrite()
     /**
      * Performs an actual write and implements error handling.
      */
-    private void doWrite(Writer writer, String str, Node wnode, int line, int column, int offset) throws DOMSerializerException {//{{{
+    private void doWrite(Writer writer, String str, Node wnode, int line, int column, int offset) throws DOMSerializerException {
         try {
             writer.write(str, 0, str.length());
             //flush the output-stream. Without this
@@ -634,10 +670,11 @@ public class DOMSerializer implements LSSerializer {
         }
     }//}}}
     
+    //{{{ throwError()
     /**
      * Throws an error, notifying the ErrorHandler object if necessary.
      */
-    private void throwError(DOMLocator loc, String type, Exception e) {//{{{
+    private void throwError(DOMLocator loc, String type, Exception e) {
         Object rawHandler = config.getParameter(DOMSerializerConfiguration.ERROR_HANDLER);
         if (rawHandler != null) {
             
@@ -645,10 +682,13 @@ public class DOMSerializer implements LSSerializer {
             DOMSerializerError error = new DOMSerializerError(loc, e, DOMError.SEVERITY_FATAL_ERROR, type);
             handler.handleError(error);
         }
-        
     }//}}}
     
-    private String normalizeCharacters(String text) {//{{{
+    //{{{ normalizeCharacters()
+    /**
+     * Does nothing right now. Should be used to normalize text when writing.
+     */
+    private String normalizeCharacters(String text) {
         return text;
     }//}}}
     
