@@ -74,6 +74,10 @@ import java.util.*;
  */
 public class DefaultViewTree extends JTree implements Autoscroll {
     
+    //{{{ Properties
+    private final String NODE_EXPANDED = "tree.expandedstate";
+    //}}}
+    
     //{{{ DefaultViewTree constructor
     /**
      * Creates a new DefaultViewTree with the default TreeModel
@@ -87,23 +91,14 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         
         addMouseListener(new TreePopupListener());
         setEditable(false);
-       // addTreeSelectionListener(new TreeSelectionListener() {//{{{
-       //     public void valueChanged(TreeSelectionEvent e) {
-       //         TreePath selPath = e.getPath();
-       //         AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-       //         if ( selectedNode != null ) {
-       //             setEditable(isEditable(selectedNode));
-       //         }
-       //     }
-       // });//}}}
         addTreeExpansionListener(new TreeExpansionListener() {//{{{
             
             //{{{ treeExpanded()
             
             public void treeExpanded(TreeExpansionEvent event) {
                 try {
-                    DefaultViewTreeNode node = (DefaultViewTreeNode)event.getPath().getLastPathComponent();
-                    node.setExpanded(true);
+                    AdapterNode node = (AdapterNode)event.getPath().getLastPathComponent();
+                    node.setProperty(NODE_EXPANDED, "true");
                 } catch (ClassCastException e) {}
             }//}}}
             
@@ -111,8 +106,8 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             
             public void treeCollapsed(TreeExpansionEvent event) {
                 try {
-                    DefaultViewTreeNode node = (DefaultViewTreeNode)event.getPath().getLastPathComponent();
-                    node.setExpanded(false);
+                    AdapterNode node = (AdapterNode)event.getPath().getLastPathComponent();
+                    node.setProperty(NODE_EXPANDED, "false");
                 } catch (ClassCastException e) {}
             }//}}}
             
@@ -124,6 +119,8 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         
         //Since elements are the only editable nodes...
         setCellEditor(new DefaultTreeCellEditor(this, new ElementTreeCellRenderer()));
+        
+        
         ToolTipManager.sharedInstance().registerComponent(this);
         
     }//}}}
@@ -135,19 +132,25 @@ public class DefaultViewTree extends JTree implements Autoscroll {
      * @param node the node to check
      * @return true if the node can be edited in this tree
      */
-    public boolean isEditable(DefaultViewTreeNode node) {
+    public boolean isEditable(AdapterNode node) {
         if (node != null) {
-            int nodeType = node.getAdapterNode().getNodeType();
+            int nodeType = node.getNodeType();
             return (nodeType == Node.ELEMENT_NODE || nodeType == Node.PROCESSING_INSTRUCTION_NODE);
         } else {
             return false;
         }
     }//}}}
     
+    //{{{ isExpanded()
+    
+    public boolean isExpanded(AdapterNode node) {
+        return Boolean.valueOf(node.getProperty(NODE_EXPANDED)).booleanValue();
+    }//}}}
+    
     //{{{ startEditingAtPath()
     
     public void startEditingAtPath(TreePath path) {
-        if (path != null && isEditable((DefaultViewTreeNode)path.getLastPathComponent())) {
+        if (path != null && isEditable((AdapterNode)path.getLastPathComponent())) {
             //When editing is finished go back to uneditable
             getCellEditor().addCellEditorListener(new CellEditorListener() {//{{{
                 public void editingCanceled(ChangeEvent e) {
@@ -229,14 +232,14 @@ public class DefaultViewTree extends JTree implements Autoscroll {
      * path is broken and the expanded states are lost.
      */
     private void refreshExpandedStates(TreePath path) {
-        DefaultViewTreeNode node = (DefaultViewTreeNode)path.getLastPathComponent();
-        boolean expandedState = node.isExpanded();
-        if (!node.isLeaf()) {
+        AdapterNode node = (AdapterNode)path.getLastPathComponent();
+        boolean expandedState = isExpanded(node);
+        if (node.childCount() > 0) {
             expandPath(path); //expand all nodes out
             //still have to set expanded states
-            Enumeration children = node.children();
-            while (children.hasMoreElements()) {
-                TreePath newPath = path.pathByAddingChild(children.nextElement());
+            int children = node.childCount();
+            for (int i=0;i < children; i++) {
+                TreePath newPath = path.pathByAddingChild(node.child(i));
                 refreshExpandedStates(newPath);
             }
             if (expandedState) { //close non-expanded nodes
@@ -272,7 +275,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 setSelectionPath(selPath);
                 
                 //Don't want to interact with AdapterNodes too much. Maybe change this.
-                AdapterNode selectedNode = ((DefaultViewTreeNode)selPath.getLastPathComponent()).getAdapterNode();
+                AdapterNode selectedNode = ((AdapterNode)selPath.getLastPathComponent());
                 
                 JMenuItem popupMenuItem;
                 JMenu addNodeItem = new JMenu("Add");
@@ -370,10 +373,10 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             try {
                 TreePath selPath = getLeadSelectionPath();
                 if (selPath != null) {
-                    DefaultViewTreeNode selectedNode = (DefaultViewTreeNode)selPath.getLastPathComponent();
+                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                     
                     //add the node of the correct type to the end of the children of this node
-                    selectedNode.insert(m_name, m_value, m_nodeType, selectedNode.getChildCount());
+                    selectedNode.addAdapterNode(m_name, m_value, m_nodeType, selectedNode.childCount());
                     expandPath(selPath);
                     //The TreeModel doesn't automatically treeNodesInserted() yet
                    // updateComponents();
@@ -428,8 +431,8 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             try {
                 TreePath selPath = getLeadSelectionPath();
                 if (selPath != null) {
-                    DefaultViewTreeNode selectedNode = (DefaultViewTreeNode)selPath.getLastPathComponent();
-                    selectedNode.removeFromParent();
+                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+                    selectedNode.getParentNode().remove(selectedNode);
                     //The TreeModel doesn't automatically treeNodesRemoved() yet
                    // updateComponents();
                     updateUI();
@@ -461,13 +464,12 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             boolean leaf, int row, boolean hasFocus) {
             
             int type = -1;
-            
             try {
-                AdapterNode node = ((DefaultViewTreeNode)value).getAdapterNode();
+                AdapterNode node = (AdapterNode)value;
                 type = node.getNodeType();
+                setText(node.toString());
             } catch (ClassCastException e) {}
             
-            setText(value.toString());
             this.selected = selected;
             if (value != null && m_dragOverTarget == value) {
                 this.selected = true;
@@ -550,6 +552,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         }//}}}
         
         //{{{ Private members
+        
         private Icon m_defaultLeafIcon;
         private Icon m_defaultOpenIcon;
         private Icon m_defaultClosedIcon;
@@ -599,7 +602,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 TreePath path = getPathForLocation(origin.x, origin.y);
                 //ignore dragging the Document root.
                 if (path != null && !(isRootVisible() && getRowForPath(path) == 0)) {
-                    DefaultViewTreeNode node = (DefaultViewTreeNode)path.getLastPathComponent();
+                    AdapterNode node = (AdapterNode)path.getLastPathComponent();
                     Transferable transferable = new TransferableNode(node);
                     m_dragSource.startDrag(dge, DragSource.DefaultCopyNoDrop, transferable, m_treeDSListener);
                 }
@@ -726,7 +729,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             if (data == null)
                 throw new NullPointerException();
             
-            DefaultViewTreeNode node = (DefaultViewTreeNode)data;
+            AdapterNode node = (AdapterNode)data;
             Point loc = dtde.getLocation();
             
             TreePath path = getClosestPathForLocation(loc.x, loc.y);
@@ -735,7 +738,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 return;
             }
             
-            DefaultViewTreeNode parentNode = (DefaultViewTreeNode)path.getLastPathComponent();
+            AdapterNode parentNode = (AdapterNode)path.getLastPathComponent();
             TreePath droppedPath;
             try {
                 //Find out the relative location where I dropped.
@@ -743,9 +746,9 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 if (loc.y < bounds.y + (int)(bounds.height * 0.25)) {
                     //Insert before the node dropped on
                     if (parentNode != null) {
-                        DefaultViewTreeNode trueParent = (DefaultViewTreeNode)parentNode.getParent();
+                        AdapterNode trueParent = (AdapterNode)parentNode.getParentNode();
                         if (trueParent != null) {
-                            trueParent.insert(node, trueParent.getIndex(parentNode));
+                            trueParent.addAdapterNodeAt(node, trueParent.index(parentNode));
                             makeVisible(path);
                             droppedPath = path.getParentPath();
                         } else {
@@ -758,7 +761,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
                         
                         //insert in the node inside the parent at the end of its children
-                        parentNode.insert(node, parentNode.getChildCount());
+                        parentNode.addAdapterNode(node);
                         droppedPath = path;
                         //Make sure the node we just dropped is viewable
                         if (isCollapsed(path)) {
@@ -768,9 +771,9 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     } else {
                         if (parentNode != null) {
                             //insert after the node dropped on
-                            DefaultViewTreeNode trueParent = (DefaultViewTreeNode)parentNode.getParent();
+                            AdapterNode trueParent = (AdapterNode)parentNode.getParentNode();
                             if (trueParent != null) {
-                                trueParent.insert(node, trueParent.getIndex(parentNode)+1);
+                                trueParent.addAdapterNodeAt(node, trueParent.index(parentNode)+1);
                                 droppedPath = path.getParentPath();
                                 makeVisible(path);
                             } else {

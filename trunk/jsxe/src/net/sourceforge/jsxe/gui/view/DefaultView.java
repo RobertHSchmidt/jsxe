@@ -136,7 +136,7 @@ public class DefaultView extends JPanel implements DocumentView {
             
             public void keyTyped(KeyEvent e) {
                 if (!e.isActionKey()) {
-                    DefaultViewTreeNode node = (DefaultViewTreeNode)tree.getLastSelectedPathComponent();
+                    AdapterNode node = (AdapterNode)tree.getLastSelectedPathComponent();
                     if (tree.isEditable(node)) {
                         tree.startEditingAtPath(tree.getLeadSelectionPath());
                     } else {
@@ -355,8 +355,8 @@ public class DefaultView extends JPanel implements DocumentView {
     
     //{{{ canEditInJEditorPane()
     
-    private boolean canEditInJEditorPane(DefaultViewTreeNode node) {
-        return (node.getAdapterNode().getNodeValue() != null);
+    private boolean canEditInJEditorPane(AdapterNode node) {
+        return (node.getNodeValue() != null);
     }//}}}
     
     //{{{ ensureDefaultProps()
@@ -523,17 +523,17 @@ public class DefaultView extends JPanel implements DocumentView {
         
         public void valueChanged(TreeSelectionEvent e) {
             TreePath selPath = e.getPath();
-            DefaultViewTreeNode selectedNode = (DefaultViewTreeNode)selPath.getLastPathComponent();
+            AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
             if ( selectedNode != null ) {
                 
                 //if the selected node can be edited in the text pane
                 htmlPane.setEditable(canEditInJEditorPane(selectedNode));
                 
                 //update the attributes table with the current info.
-               ((DefaultViewTableModel)attributesTable.getModel()).setAdapterNode(selectedNode.getAdapterNode());
+               ((DefaultViewTableModel)attributesTable.getModel()).setAdapterNode(selectedNode);
                 
                 //update the text pane with the current info
-                DefaultViewDocument styledDoc = new DefaultViewDocument(selectedNode.getAdapterNode());
+                DefaultViewDocument styledDoc = new DefaultViewDocument(selectedNode);
                 htmlPane.setDocument(styledDoc);
                 styledDoc.addDocumentListener(docListener);
                 htmlPane.updateUI();

@@ -60,7 +60,6 @@ import java.util.*;
  * @see DefaultView
  * @see DefaultViewTree
  * @see DefaultViewTreeModel
- * @see DefaultViewTreeNode
  */
 public class TransferableNode implements Transferable {
     
@@ -75,7 +74,7 @@ public class TransferableNode implements Transferable {
      * Creates a new TransferableNode to handle the AdapterNode given.
      * @param node The node that is being transferred.
      */
-    public TransferableNode(DefaultViewTreeNode node) {
+    public TransferableNode(AdapterNode node) {
         m_node = node;
     }//}}}
     
@@ -96,7 +95,7 @@ public class TransferableNode implements Transferable {
     
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
         if (stringFlavor.equals(flavor)) {
-            return m_node.getAdapterNode().serializeToString();
+            return m_node.serializeToString();
         } else {
             if (nodeFlavor.equals(flavor)) {
                 return m_node;
@@ -112,7 +111,7 @@ public class TransferableNode implements Transferable {
     static {
         DataFlavor flav = null;
         try {
-            flav = new DataFlavor(Class.forName("net.sourceforge.jsxe.gui.view.DefaultViewTreeNode"), "XML Node");
+            flav = new DataFlavor(Class.forName("net.sourceforge.jsxe.dom.AdapterNode"), "XML Node");
         } catch (ClassNotFoundException e) {}
         nodeFlavor = flav;
     }
@@ -127,6 +126,6 @@ public class TransferableNode implements Transferable {
     //}}}
     
     //{{{ Private members
-    private DefaultViewTreeNode m_node;
+    private AdapterNode m_node;
     //}}}    
 }

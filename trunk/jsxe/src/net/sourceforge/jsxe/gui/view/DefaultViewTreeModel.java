@@ -108,7 +108,7 @@ public class DefaultViewTreeModel implements TreeModel {
      */
     protected DefaultViewTreeModel(Component parent, XMLDocument doc) {
         m_document = doc;
-        m_rootTreeNode = new DefaultViewTreeNode(m_document);
+        m_rootTreeNode = m_document.getAdapterNode();
         view = parent;
     }//}}}
 
@@ -125,24 +125,24 @@ public class DefaultViewTreeModel implements TreeModel {
     //{{{ getChild()
     
     public Object getChild(Object parent, int index) {
-        DefaultViewTreeNode node = (DefaultViewTreeNode)parent;
+        AdapterNode node = (AdapterNode)parent;
         int trueIndex = calculateIndex(node, index);
-        javax.swing.tree.TreeNode child = node.getChildAt(trueIndex);
+        AdapterNode child = node.child(trueIndex);
         return child;
     }//}}}
     
     //{{{ getChildCount()
     
     public int getChildCount(Object parent) {
-        DefaultViewTreeNode node = (DefaultViewTreeNode)parent;
-        int totalcount = node.getChildCount();
+        AdapterNode node = (AdapterNode)parent;
+        int totalcount = node.childCount();
         int count = 0;
         
         /*
         We need to find out how many we actually want to display.
         */
         for (int i=0; i<totalcount; i++) {
-            DefaultViewTreeNode child = (DefaultViewTreeNode)node.getChildAt(i);
+            AdapterNode child = node.child(i);
             
             if (child != null) {
                 if (displayNode(child)) {
@@ -156,8 +156,8 @@ public class DefaultViewTreeModel implements TreeModel {
     //{{{ getIndexOfChild()
     
     public int getIndexOfChild(Object parent, Object child) {
-        DefaultViewTreeNode node = (DefaultViewTreeNode)parent;
-        DefaultViewTreeNode node2 = (DefaultViewTreeNode)child;
+        AdapterNode node = (AdapterNode)parent;
+        AdapterNode node2 = (AdapterNode)child;
         int index = calculateIndex(node, node2);
         return index;
     }//}}}
@@ -172,7 +172,7 @@ public class DefaultViewTreeModel implements TreeModel {
     
     public boolean isLeaf(Object aNode) {
         // Return true for any node with no children
-        return ((DefaultViewTreeNode)aNode).isLeaf();
+        return ((AdapterNode)aNode).childCount() <= 0;
     }//}}}
     
     //{{{ removeTreeModelListener()
@@ -188,7 +188,7 @@ public class DefaultViewTreeModel implements TreeModel {
     public void valueForPathChanged(TreePath path, Object newValue) {
         try {
             //get the nodes needed
-            AdapterNode node = ((DefaultViewTreeNode)path.getLastPathComponent()).getAdapterNode();
+            AdapterNode node = ((AdapterNode)path.getLastPathComponent());
             node.setNodeName(newValue.toString());
             //notify the listeners that tree nodes have changed
             fireTreeNodesChanged(new TreeModelEvent(this, path));
@@ -203,7 +203,7 @@ public class DefaultViewTreeModel implements TreeModel {
     
     //{{{ calculateIndex()
     
-    private int calculateIndex(DefaultViewTreeNode parent, int index) {
+    private int calculateIndex(AdapterNode parent, int index) {
         boolean found = false;
         
         //massage the index so that it points returns
@@ -214,9 +214,9 @@ public class DefaultViewTreeModel implements TreeModel {
         //or something similar.
         int newIndex = -1;
         int nodesFound = 0;
-        int size = parent.getChildCount();
+        int size = parent.childCount();
         for (int i=0; i<size && nodesFound<=index; i++) {
-            DefaultViewTreeNode child = (DefaultViewTreeNode)parent.getChildAt(i);
+            AdapterNode child = parent.child(i);
             
             if (child != null) {
                 if (displayNode(child)) {
@@ -231,15 +231,15 @@ public class DefaultViewTreeModel implements TreeModel {
     
     //{{{ calculateIndex()
     
-    private int calculateIndex(DefaultViewTreeNode parent, DefaultViewTreeNode child) {
-        int trueIndex = parent.getIndex(child);
+    private int calculateIndex(AdapterNode parent, AdapterNode child) {
+        int trueIndex = parent.index(child);
         if (!displayNode(child)) {
             trueIndex = -1;
         }
         if (trueIndex != -1) {
             int index = -1;
             for (int i=0; i<=trueIndex; i++) {
-                DefaultViewTreeNode otherChild = (DefaultViewTreeNode)parent.getChildAt(i);
+                AdapterNode otherChild = parent.child(i);
                 if (displayNode(otherChild)) {
                     index++;
                 }
@@ -251,14 +251,14 @@ public class DefaultViewTreeModel implements TreeModel {
     
     //{{{ displayNode()
     
-    private boolean displayNode(DefaultViewTreeNode node) {
+    private boolean displayNode(AdapterNode adapter) {
         boolean showComments = Boolean.valueOf(m_document.getProperty(DefaultView.SHOW_COMMENTS, "false")).booleanValue();
         boolean showEmpty    = Boolean.valueOf(m_document.getProperty(DefaultView.SHOW_EMPTY_NODES, "false")).booleanValue();
         
         boolean displayNode = false;
-        if (node != null) {
+        if (adapter != null) {
             displayNode = true;
-            AdapterNode adapter = node.getAdapterNode();
+            
             if (!showComments && adapter.getNodeType()==Node.COMMENT_NODE) {
                 displayNode = false;
             }
@@ -315,7 +315,7 @@ public class DefaultViewTreeModel implements TreeModel {
     Component view;
     
     private XMLDocument m_document;
-    private DefaultViewTreeNode m_rootTreeNode;
+    private AdapterNode m_rootTreeNode;
     private ArrayList treeListenerList = new ArrayList();
     //}}}
 }
