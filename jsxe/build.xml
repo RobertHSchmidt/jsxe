@@ -1,298 +1,229 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
      This is a build.xml file for building jsXe.
 -->
-
-<project name="jsXe" default="usage" basedir=".">
-  
-  <!-- {{{ ============ Initializes properties and variables ============= -->
-  <target name="init">
-    <tstamp/>
-    <property name="app.name" value="jsXe"/>
-    <property name="build.dir" value="./build"/>
-    <property name="src.dir" value="./src"/>
-    <property name="lib.dir" value="./lib"/>
-    <property name="bin.dir" value="./bin"/>
-    
-    <property name="docs.dir" value="${src.dir}/doc"/>
-    <property name="build.src" value="${build.dir}/src"/>
-    <property name="build.dest" value="${build.dir}/classes"/>
-    <property name="build.docs" value="${build.dir}/doc"/>
-    <property name="build.lib" value="${build.dir}/lib"/>
-    <property name="build.bin" value="${build.dir}/bin"/>
-    <property name="build.bin" value="${build.dir}/bin"/>
-    <property name="build.javadocs" value="${build.docs}/api"/>
-    <property name="build.help" value="${build.docs}/help"/>
-    
-    <property name="debug" value="on"/>
-    <property name="optimize" value="off"/>
-    <property name="deprecation" value="on"/>
-    <property name="javadoc.link" value="http://java.sun.com/j2se/1.3/docs/api/"/>
-    
-    <property name="major.version" value="0"/>
-    <property name="minor.version" value="1"/>
-    <property name="build.version" value="68"/>
-    <property name="app.version" value="${major.version}.${minor.version}.${build.version}"/>
-    <property name="app_version" value="${major.version}_${minor.version}_${build.version}"/>
-    
-    <property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
-    <property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>
-    
-    <path id="classpath">
-      <pathelement location="."/>
-      <pathelement location="${build.dest}"/>
-      <pathelement location="${build.src}"/>
-      <pathelement location="${src.dir}"/>
-      <fileset dir="${lib.dir}">
-        <include name="**/*.jar"/>
-      </fileset>
-    </path>
-    
-    <echo message="${app.name} ${app.version}"/>
-    <echo message="----------------------------------------------------------"/>
-  </target>
-  <!-- }}} -->
-  
-  <!-- {{{ ============ Prints the available targets ===================== -->
-  <target name="usage" depends="init">
-    <echo message=" available targets are:"/>
-    <echo message=""/>
-    
-    <echo message=" compile   --> generates the ${app.name}.jar file"/>
-    <echo message=" bin       --> generates a binary distribution"/>
-    <echo message=" src       --> generates a source distribution"/>
-    <echo message=" doc       --> generates all documentation"/>
-    <echo message=" clean     --> cleans everything up"/>
-  </target>
-  <!-- }}} -->
-  
-  <!-- {{{ ============ Prepares for any type of build =================== -->
-  <target name="prepare" depends="init">
-    <mkdir dir="${build.dir}"/>
-  </target>
-  <!-- }}} -->
-  
-  <!-- {{{ ============ Prepares the documentation ======================= -->
-  <target name="prepare-doc" depends="prepare">
-    <mkdir dir="${build.docs}"/>
-  </target>
-  <!-- }}} -->
-
-  <!-- {{{ ============ Prepares the source distribution ================= -->
-  <target name="prepare-src" depends="prepare">
-    <mkdir dir="${build.src}"/>
-    <copy todir="${build.src}">
-      <fileset dir="${src.dir}">
-        <include name="**/*.java"/>
-        <include name="**/*.props"/>
-        <include name="**/*.properties"/>
-        <include name="**/properties"/>
-        <include name="**/*.jpg"/>
-        <include name="**/*.png"/>
-      </fileset>
-    </copy>
-  </target>
-  <!-- }}} -->
-  
-  <!-- {{{ ============ Compiles the program ============================= -->
-  <target name="compile" depends="prepare-src">
-    <mkdir dir="${build.dest}"/>
-    <javac srcdir="${build.src}"
-           destdir="${build.dest}"
-           deprecation="${deprecation}"
-           debug="${debug}"
-           optimize="${optimize}"
-           includeJavaRuntime="yes">
-      <classpath refid="classpath"/>
-      <include name="**/*.java"/>
-    </javac>
-    
-    <copy todir="${build.dest}">
-      <fileset dir="${build.src}">
-        <include name="**/*.props"/>
-        <include name="**/*.properties"/>
-        <include name="**/properties"/>
-        <include name="**/*.jpg"/>
-        <include name="**/*.png"/>
-      </fileset>
-    </copy>
-    
-    <propertyfile file="${build.dest}/net/sourceforge/jsxe/build.properties" comment="${app.name}'s build properties">
-      <entry key="application.name" value="${app.name}"/>
-      <entry key="build.time" type="date" value="now" pattern="dd/MM/yyyy HH:mm"/>
-      <entry key="major.version" value="${major.version}"/>
-      <entry key="minor.version" value="${minor.version}"/>
-      <entry key="build.version" value="${build.version}"/>
-    </propertyfile>
-    
-    <jar jarfile="${app.name}.jar" manifest="${app.name}.manifest">
-      <fileset dir="${build.dest}">
-        <include name="**/*.class"/>
-        <include name="**/properties"/>
-        <include name="**/*.props"/>
-        <include name="**/*.properties"/>
-        <include name="**/*.jpg"/>
-        <include name="**/*.png"/>
-      </fileset>
-    </jar>
-    
-  </target>
-  <!-- }}} -->
-
-  <!-- {{{ ============ Prepares for a build ============================= -->
-  <target name="prepare-build" depends="init">
-    
-    <!-- lib -->
-    <mkdir dir="${build.dir}/lib"/>
-    <copy todir="${build.dir}/lib">
-      <fileset dir="${lib.dir}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    
-    <!-- bin -->
-    <mkdir dir="${build.dir}/bin"/>
-    <copy todir="${build.dir}/bin">
-      <fileset dir="${bin.dir}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    
-  </target>
-  <!-- }}} -->
-
-  <!-- {{{ ============ Generates the documentation ====================== -->
-  <target name="doc" depends="prepare-doc, prepare-src">
-    
-    <copy file="COPYING" tofile="${distbin.dir}/doc/COPYING"/>
-    <copy file="README" tofile="${distbin.dir}/doc/README"/>
-    <copy file="TODO" tofile="${distbin.dir}/doc/TODO"/>
-    <copy file="ISSUES" tofile="${distbin.dir}/doc/ISSUES"/>
-    <copy file="Changelog" tofile="${distbin.dir}/doc/Changelog"/>
-    <copy file="INSTALL" tofile="${distbin.dir}/doc/INSTALL"/>
-    <copy file="THANKS" tofile="${distbin.dir}/doc/THANKS"/>
-    <copy file="NEWS" tofile="${distbin.dir}/doc/NEWS"/>
-    
-    <javadoc packagenames="*"
-      locale="en_US"
-      sourcepath="${build.src}"
-      destdir="${build.javadocs}"
-      author="true"
-      version="true"
-      windowtitle="${app.name} ${app.version} API"
-      doctitle="${app.name} ${app.version} API"
-      link="${javadoc.link}"
-    />
-  </target>
-  <!-- }}} -->
-
-  <!-- {{{ ============ Generates the binary distribution ================ -->
-  <target name="bin" depends="compile, prepare-build, doc">
-    
-    <!-- doc -->
-    <mkdir dir="${distbin.dir}/doc"/>
-    <copy todir="${distbin.dir}/doc">
-      <fileset dir="${build.docs}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    
-    <!-- bin -->
-    <mkdir dir="${distbin.dir}/bin"/>
-    <copy todir="${distbin.dir}/bin">
-      <fileset dir="${build.bin}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    
-    <copy file="${app.name}.jar" tofile="${distbin.dir}/${app.name}.jar"/>
-    
-    <zip zipfile="${build.dir}/${app.name}-${app_version}-bin-noLibs.zip"
-         basedir="${build.dir}"
-         includes="${app.name}-${app_version}-bin/**"
-         excludes="*.class"/>
-    
-    <!-- lib -->
-    <mkdir dir="${distbin.dir}/lib"/>
-    <copy todir="${distbin.dir}/lib">
-      <fileset dir="${build.lib}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    
-    <zip zipfile="${build.dir}/${app.name}-${app_version}-bin.zip"
-         basedir="${build.dir}"
-         includes="${app.name}-${app_version}-bin/**"
-         excludes="*.class"/>
-  </target>
-  <!-- }}} -->
-  
-  <!-- {{{ ============ Generates the source distribution ================ -->
-  <target name="src" depends="prepare-build, prepare-src, doc">
-    
-    <!-- doc -->
-    <mkdir dir="${distsrc.dir}/doc"/>
-    <copy todir="${distsrc.dir}/doc">
-      <fileset dir="${build.docs}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    
-    <!-- bin -->
-    <mkdir dir="${distsrc.dir}/bin"/>
-    <copy todir="${distsrc.dir}/bin">
-      <fileset dir="${build.bin}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    
-    <!-- src -->
-    <mkdir dir="${distsrc.dir}/src"/>
-    <copy todir="${distsrc.dir}/src">
-      <fileset dir="${build.src}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    
-    <zip zipfile="${build.dir}/${app.name}-${app_version}-src-noLibs.zip"
-         basedir="${build.dir}"
-         includes="${app.name}-${app_version}-src/**"
-         excludes="*.class"/>
-    
-    <!-- lib -->
-    <mkdir dir="${distsrc.dir}/lib"/>
-    <copy todir="${distsrc.dir}/lib">
-      <fileset dir="${build.lib}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    
-    <zip zipfile="${build.dir}/${app.name}-${app_version}-src.zip"
-         basedir="${build.dir}"
-         includes="${app.name}-${app_version}-src/**"
-         excludes="*.class"/>
-  </target>
-  
-  <!-- }}} -->
-
-  <!-- {{{ ============ Cleans everything up ============================= -->
-  <target name="clean" depends="init" description="clean up">
-    <delete dir="${build.dir}"/>
-    <delete>
-      <fileset dir="." includes="${app.name}.jar"/>
-      <fileset dir="." includes="**/*.class"/>
-      <fileset dir="." includes="**/*~" defaultexcludes="no"/>
-      <fileset dir="." includes="**/#*#" defaultexcludes="no"/>
-      <fileset dir="." includes="**/*.rej"/>
-      <fileset dir="." includes="**/*.orig"/>
-      <fileset dir="." includes="**/.*.swp"/>
-      <fileset dir="." includes="**/.#*"/>
-      <fileset dir="." includes="**/.new*"/>
-      <fileset dir="." includes="**/.directory"/>
-      <fileset dir="." includes="**/.xvpics"/>
-    </delete>
-  </target>
-  <!-- }}} -->
-
+<project basedir="." default="usage" name="jsXe">
+	<!-- {{{ ============ Initializes properties and variables ============= -->
+	<target name="init">
+		<tstamp/>
+		<property name="app.name" value="jsXe"/>
+		<property name="build.dir" value="./build"/>
+		<property name="src.dir" value="./src"/>
+		<property name="lib.dir" value="./lib"/>
+		<property name="bin.dir" value="./bin"/>
+		<property name="docs.dir" value="${src.dir}/doc"/>
+		<property name="build.src" value="${build.dir}/src"/>
+		<property name="build.dest" value="${build.dir}/classes"/>
+		<property name="build.docs" value="${build.dir}/doc"/>
+		<property name="build.lib" value="${build.dir}/lib"/>
+		<property name="build.bin" value="${build.dir}/bin"/>
+		<property name="build.bin" value="${build.dir}/bin"/>
+		<property name="build.javadocs" value="${build.docs}/api"/>
+		<property name="build.help" value="${build.docs}/help"/>
+		<property name="debug" value="on"/>
+		<property name="optimize" value="off"/>
+		<property name="deprecation" value="on"/>
+		<property name="javadoc.link" value="http://java.sun.com/j2se/1.3/docs/api/"/>
+		<property name="major.version" value="0"/>
+		<property name="minor.version" value="1"/>
+		<property name="build.version" value="69"/>
+		<property name="app.version" value="${major.version}.${minor.version}.${build.version}"/>
+		<property name="app_version" value="${major.version}_${minor.version}_${build.version}"/>
+		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
+		<property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>
+		<path id="classpath">
+			<pathelement location="."/>
+			<pathelement location="${build.dest}"/>
+			<pathelement location="${build.src}"/>
+			<pathelement location="${src.dir}"/>
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</path>
+		<echo message="${app.name} ${app.version}"/>
+		<echo message="----------------------------------------------------------"/>
+	</target>
+	<!-- }}} -->
+	<!-- {{{ ============ Prints the available targets ===================== -->
+	<target depends="init" name="usage">
+		<echo message=" available targets are:"/>
+		<echo message=""/>
+		<echo message=" compile   --&gt; generates the ${app.name}.jar file"/>
+		<echo message=" bin       --&gt; generates a binary distribution"/>
+		<echo message=" src       --&gt; generates a source distribution"/>
+		<echo message=" doc       --&gt; generates all documentation"/>
+		<echo message=" clean     --&gt; cleans everything up"/>
+	</target>
+	<!-- }}} -->
+	<!-- {{{ ============ Prepares for any type of build =================== -->
+	<target depends="init" name="prepare">
+		<mkdir dir="${build.dir}"/>
+	</target>
+	<!-- }}} -->
+	<!-- {{{ ============ Prepares the documentation ======================= -->
+	<target depends="prepare" name="prepare-doc">
+		<mkdir dir="${build.docs}"/>
+	</target>
+	<!-- }}} -->
+	<!-- {{{ ============ Prepares the source distribution ================= -->
+	<target depends="prepare" name="prepare-src">
+		<mkdir dir="${build.src}"/>
+		<copy todir="${build.src}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.java"/>
+				<include name="**/*.props"/>
+				<include name="**/*.properties"/>
+				<include name="**/properties"/>
+				<include name="**/*.jpg"/>
+				<include name="**/*.png"/>
+			</fileset>
+		</copy>
+	</target>
+	<!-- }}} -->
+	<!-- {{{ ============ Compiles the program ============================= -->
+	<target depends="prepare-src" name="compile">
+		<mkdir dir="${build.dest}"/>
+		<javac debug="${debug}" deprecation="${deprecation}" destdir="${build.dest}" includeJavaRuntime="yes" optimize="${optimize}" srcdir="${build.src}">
+			<classpath refid="classpath"/>
+			<include name="**/*.java"/>
+		</javac>
+		<copy todir="${build.dest}">
+			<fileset dir="${build.src}">
+				<include name="**/*.props"/>
+				<include name="**/*.properties"/>
+				<include name="**/properties"/>
+				<include name="**/*.jpg"/>
+				<include name="**/*.png"/>
+			</fileset>
+		</copy>
+		<propertyfile comment="${app.name}&apos;s build properties" file="${build.dest}/net/sourceforge/jsxe/build.properties">
+			<entry key="application.name" value="${app.name}"/>
+			<entry key="build.time" pattern="dd/MM/yyyy HH:mm" type="date" value="now"/>
+			<entry key="major.version" value="${major.version}"/>
+			<entry key="minor.version" value="${minor.version}"/>
+			<entry key="build.version" value="${build.version}"/>
+		</propertyfile>
+		<jar jarfile="${app.name}.jar" manifest="${app.name}.manifest">
+			<fileset dir="${build.dest}">
+				<include name="**/*.class"/>
+				<include name="**/properties"/>
+				<include name="**/*.props"/>
+				<include name="**/*.properties"/>
+				<include name="**/*.jpg"/>
+				<include name="**/*.png"/>
+			</fileset>
+		</jar>
+	</target>
+	<!-- }}} -->
+	<!-- {{{ ============ Prepares for a build ============================= -->
+	<target depends="init" name="prepare-build">
+		<!-- lib -->
+		<mkdir dir="${build.dir}/lib"/>
+		<copy todir="${build.dir}/lib">
+			<fileset dir="${lib.dir}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<!-- bin -->
+		<mkdir dir="${build.dir}/bin"/>
+		<copy todir="${build.dir}/bin">
+			<fileset dir="${bin.dir}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+	</target>
+	<!-- }}} -->
+	<!-- {{{ ============ Generates the documentation ====================== -->
+	<target depends="prepare-doc, prepare-src" name="doc">
+		<copy file="COPYING" tofile="${distbin.dir}/doc/COPYING"/>
+		<copy file="README" tofile="${distbin.dir}/doc/README"/>
+		<copy file="TODO" tofile="${distbin.dir}/doc/TODO"/>
+		<copy file="ISSUES" tofile="${distbin.dir}/doc/ISSUES"/>
+		<copy file="Changelog" tofile="${distbin.dir}/doc/Changelog"/>
+		<copy file="INSTALL" tofile="${distbin.dir}/doc/INSTALL"/>
+		<copy file="THANKS" tofile="${distbin.dir}/doc/THANKS"/>
+		<copy file="NEWS" tofile="${distbin.dir}/doc/NEWS"/>
+		<javadoc author="true" destdir="${build.javadocs}" doctitle="${app.name} ${app.version} API" link="${javadoc.link}" locale="en_US" packagenames="*" sourcepath="${build.src}" version="true" windowtitle="${app.name} ${app.version} API"/>
+	</target>
+	<!-- }}} -->
+	<!-- {{{ ============ Generates the binary distribution ================ -->
+	<target depends="compile, prepare-build, doc" name="bin">
+		<!-- doc -->
+		<mkdir dir="${distbin.dir}/doc"/>
+		<copy todir="${distbin.dir}/doc">
+			<fileset dir="${build.docs}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<!-- bin -->
+		<mkdir dir="${distbin.dir}/bin"/>
+		<copy todir="${distbin.dir}/bin">
+			<fileset dir="${build.bin}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy file="${app.name}.jar" tofile="${distbin.dir}/${app.name}.jar"/>
+		<zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-bin/**" zipfile="${build.dir}/${app.name}-${app_version}-bin-noLibs.zip"/>
+		<!-- lib -->
+		<mkdir dir="${distbin.dir}/lib"/>
+		<copy todir="${distbin.dir}/lib">
+			<fileset dir="${build.lib}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-bin/**" zipfile="${build.dir}/${app.name}-${app_version}-bin.zip"/>
+	</target>
+	<!-- }}} -->
+	<!-- {{{ ============ Generates the source distribution ================ -->
+	<target depends="prepare-build, prepare-src, doc" name="src">
+		<!-- doc -->
+		<mkdir dir="${distsrc.dir}/doc"/>
+		<copy todir="${distsrc.dir}/doc">
+			<fileset dir="${build.docs}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<!-- bin -->
+		<mkdir dir="${distsrc.dir}/bin"/>
+		<copy todir="${distsrc.dir}/bin">
+			<fileset dir="${build.bin}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<!-- src -->
+		<mkdir dir="${distsrc.dir}/src"/>
+		<copy todir="${distsrc.dir}/src">
+			<fileset dir="${build.src}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-src/**" zipfile="${build.dir}/${app.name}-${app_version}-src-noLibs.zip"/>
+		<!-- lib -->
+		<mkdir dir="${distsrc.dir}/lib"/>
+		<copy todir="${distsrc.dir}/lib">
+			<fileset dir="${build.lib}">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-src/**" zipfile="${build.dir}/${app.name}-${app_version}-src.zip"/>
+	</target>
+	<!-- }}} -->
+	<!-- {{{ ============ Cleans everything up ============================= -->
+	<target depends="init" description="clean up" name="clean">
+		<delete dir="${build.dir}"/>
+		<delete>
+			<fileset dir="." includes="${app.name}.jar"/>
+			<fileset dir="." includes="**/*.class"/>
+			<fileset defaultexcludes="no" dir="." includes="**/*~"/>
+			<fileset defaultexcludes="no" dir="." includes="**/#*#"/>
+			<fileset dir="." includes="**/*.rej"/>
+			<fileset dir="." includes="**/*.orig"/>
+			<fileset dir="." includes="**/.*.swp"/>
+			<fileset dir="." includes="**/.#*"/>
+			<fileset dir="." includes="**/.new*"/>
+			<fileset dir="." includes="**/.directory"/>
+			<fileset dir="." includes="**/.xvpics"/>
+		</delete>
+	</target>
+	<!-- }}} -->
 </project>
