@@ -1,3 +1,14 @@
+10/23/2003  version 0.1.24  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Changed to new versioning system so that build versions and
+      major and minor version builds update jsXe's version automatically in
+      the build.properties.
+    * Changed SourceViewDocument to not update the XMLDocument's model each
+      time you insert text but set the text only after all editing is complete.
+      This improves performance but does not update the encoding when you change
+      it in the properties. Since I am going to change it so that you can't edit
+      the header in source view anyway, this isn't as much of an issue.
+
 10/20/2003  version 0.1.17  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added the ability to register listeners with the AdapterNode and

@@ -145,7 +145,11 @@ public class SourceView extends DocumentView {
     }//}}}
     
     public void close(TabbedView view) {//{{{
-        
+        try {
+            currentdoc.setModel(textarea.getText());
+        } catch (IOException ioe) {
+            jsXe.exiterror(view, ioe.getMessage(), 1);
+        }
     }//}}}
     
     //{{{ Private members
