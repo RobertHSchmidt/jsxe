@@ -8,6 +8,8 @@
       elements around within an element.
     * Added support for checking the version and getting command-line help
       for jsXe via command-line options
+    * Fixed a bug that didn't allow users to open a document if the DTD couldn't
+      be found. Still won't think it's well formed though.
 
 03/31/2004  version 0.1.58  Ian Lewis <IanLewis@member.fsf.org>
 
