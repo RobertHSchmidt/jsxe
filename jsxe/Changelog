@@ -1,3 +1,9 @@
+11/10/2003  version 0.1.40  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed bug where the * dirty file indicator was going away when switching
+      views.
+    * Fixed a bug where a document was marked dirty when switching views.
+
 10/30/2003  version 0.1.39  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added support for dirty files. When you make changes to a document

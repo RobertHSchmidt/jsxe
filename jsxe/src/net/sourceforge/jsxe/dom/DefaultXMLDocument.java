@@ -122,8 +122,7 @@ public class DefaultXMLDocument extends XMLDocument {
                             source = new InputSource(entity);
                             
                         } catch (MalformedURLException e) {
-                            //Do nothing and open this entity normally
-                            //source = null
+                            //Do nothing and try to open this entity normally
                         }
                     }
                     return source;
@@ -364,7 +363,7 @@ public class DefaultXMLDocument extends XMLDocument {
     
     //{{{ Private members
     
-    private void setDefaultProperties() {///{{{
+    private void setDefaultProperties() {//{{{
         setProperty("format-output", "false");
         setProperty("whitespace-in-element-content", "true");
         setProperty("encoding", "UTF-8");
