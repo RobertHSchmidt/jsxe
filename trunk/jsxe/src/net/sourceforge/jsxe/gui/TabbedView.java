@@ -102,6 +102,9 @@ public class TabbedView extends JFrame {
         tabbedPane.addChangeListener(//{{{
             new ChangeListener() {
                 public void stateChanged(ChangeEvent e) {
+                    //it's possible to change to another file
+                    //that is using another view.
+                    updateMenuBar();
                     updateTitle();
                 }
            });//}}}
