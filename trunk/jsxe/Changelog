@@ -1,3 +1,7 @@
+03/03/2005  version 0.4 pre14   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added some changes for dependency tracking of plugins.
+
 03/02/2005  version 0.3 pre13   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added logging functionality.
