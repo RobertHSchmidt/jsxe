@@ -66,6 +66,13 @@ import org.jgraph.graph.GraphConstants;
 
 //}}}
 
+/**
+ * The implementation of the DocumentView that is used to display the
+ * Schema View. This class uses <a href="http://www.jgraph.org">JGraph</a>
+ * to show schema nodes in a hierarchical fashion.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class SchemaView extends JPanel implements DocumentView {
     
     //{{{ Instance variables

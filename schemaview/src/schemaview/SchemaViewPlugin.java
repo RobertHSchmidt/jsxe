@@ -49,6 +49,11 @@ import java.io.InputStream;
 
 //}}}
 
+/**
+ * The plugin class for the Schema View that interacts with jsXe.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class SchemaViewPlugin extends ViewPlugin {
     
     //{{{ newDocumentView()
