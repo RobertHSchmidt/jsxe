@@ -450,31 +450,22 @@ public class TabbedView extends JFrame {
         
         DocumentView oldView = getDocumentView();
         
-        DocumentBuffer currentBuffer = newView.getDocumentBuffer();
         int index = tabbedPane.getSelectedIndex();
         
         if (oldView != null) {
-            try {
-                //try to open the buffer in the new view
-                newView.setDocumentBuffer(currentBuffer);
-                
-                //close the previous view
-                oldView.close(this);
-                
-                //no exceptions? cool. register the new view
-                tabbedPane.remove(oldView);
-                tabbedPane.add(newView, index);
-                tabbedPane.setIconAt(index, getTabIcon(currentBuffer));
-                tabbedPane.setTitleAt(index, currentBuffer.getName());
-                tabbedPane.setSelectedIndex(index);
-                updateMenuBar();
-                
-            } catch (IOException ioe) {
-                //Some sort of error occured
-                //We didn't register the new view yet.
-                //So do nothing but display an error.
-                JOptionPane.showMessageDialog(this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-            }
+            
+            //close the previous view
+            oldView.close(this);
+            
+            DocumentBuffer currentBuffer = newView.getDocumentBuffer();
+            
+            //no exceptions? cool. register the new view
+            tabbedPane.remove(oldView);
+            tabbedPane.add(newView, index);
+            tabbedPane.setIconAt(index, getTabIcon(currentBuffer));
+            tabbedPane.setTitleAt(index, currentBuffer.getName());
+            tabbedPane.setSelectedIndex(index);
+            updateMenuBar();
         }
     }//}}}
     

@@ -1,3 +1,9 @@
+05/13/2004  version 0.1.72  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug in the displaying of nodes in the tree. The algorithm
+      That desides if a node is to be displayed caused null pointer exceptions
+      to be thrown.
+
 05/07/2004  version 0.1.71  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added a layer between the AdapterNode and the GUI. The DefaultViewTreeNode
