@@ -42,13 +42,15 @@ package net.sourceforge.jsxe.dom;
  */
 public interface XMLDocumentListener {
     
-    //{{{ propertiesChanged()
+    //{{{ propertyChanged()
     
     /**
-     * Called when the properties associated with the XMLDocument have changed.
+     * Called when a property associated with the XMLDocument has changed.
      * @param source The source XMLDocument
+     * @param key the key to the property that changed
+     * @param oldValue the previous value of this key, null if there was none
      */
-    public void propertiesChanged(XMLDocument source);//}}}
+    public void propertyChanged(XMLDocument source, String key, String oldValue);//}}}
     
     //{{{ structureChanged()
     
