@@ -1,7 +1,11 @@
-10/22004    version 0.2 pre24   Ian Lewis <IanLewis@member.fsf.org>
+10/2/2004    version 0.2 pre24   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added support for properties to remember the size and layout of the
       new options panel
+    * Fixed the reload fuctionality so that it truely reloads the file and
+      doesn't write the whole thing to a string object.
+    * Fixed a bug that kept files open too long by not closing the Reader
+      object used to read them.
 
 9/24/2004   version 0.2 pre23   Ian Lewis <IanLewis@member.fsf.org>
 

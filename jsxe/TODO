@@ -23,14 +23,9 @@ TODO:
     
 * Version 0.2 beta
     
-    * Fix the dimensions of the options dialog when it's opened up.
-    
     * Fix bug where the file is kept open by a reader or something too long.
       This doesn't allow other editors to open the document until jsXe is
       closed or the objects are garbage collected.
-    
-    * Fix the reload fuctionality so it doesn't put the whole document into
-      a string. see readFile() in the DocumentBuffer class
     
     * Need to set up default document properties for each view and default
       app properties for each view. Default document properties get set

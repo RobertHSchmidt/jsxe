@@ -110,7 +110,7 @@ public class DocumentBuffer extends XMLDocument {
      * where X is the highest untitled document number plus 1.
      * @throws IOException if there was a problem reading the document
      */
-    public DocumentBuffer() throws IOException {
+    DocumentBuffer() throws IOException {
         super(new StringReader(jsXe.getDefaultDocument()));
         setEntityResolver(new DocumentBufferResolver());
         m_file = null;
@@ -310,11 +310,11 @@ public class DocumentBuffer extends XMLDocument {
         if (stillReload) {
             if (isUntitled()) {
                 StringReader reader = new StringReader(jsXe.getDefaultDocument());
-                readFile(reader);
+                setModel(reader);
                 reader.close();
             } else {
                 FileReader reader = new FileReader(m_file);
-                readFile(reader);
+                setModel(reader);
                 reader.close();
             }
             setDirty(false);
@@ -742,30 +742,12 @@ public class DocumentBuffer extends XMLDocument {
     
     //{{{ fireStatusChanged()
     
-    public void fireStatusChanged(int status, boolean oldStatus) {
+    private void fireStatusChanged(int status, boolean oldStatus) {
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
             DocumentBufferListener listener = (DocumentBufferListener)iterator.next();
             listener.statusChanged(this, status, oldStatus);
         }
-    }//}}}
-    
-    //{{{ readFile()
-    
-    public void readFile(Reader reader) throws IOException {
-        int READ_SIZE=5120;
-        StringBuffer buf = new StringBuffer();
-        char[] buffer = new char[READ_SIZE];
-        int bytesRead = 0;
-        do {
-            bytesRead = reader.read(buffer, 0, READ_SIZE);
-            if (bytesRead != -1) {
-                buf.append(new String(buffer, 0, bytesRead));
-            }
-        }
-        while (bytesRead != -1);
-        removeText(0, getLength());
-        insertText(0, buf.toString());
     }//}}}
     
     //{{{ DocumentBufferResolver class
