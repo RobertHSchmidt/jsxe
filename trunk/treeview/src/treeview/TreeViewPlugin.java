@@ -38,6 +38,7 @@ package treeview;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.gui.DocumentView;
+import net.sourceforge.jsxe.gui.OptionsPanel;
 //}}}
 
 //{{{ Java classes
@@ -48,6 +49,8 @@ import java.io.IOException;
 
 public class TreeViewPlugin extends ViewPlugin {
     
+    public static final String PLUGIN_NAME = "tree";
+    
     //{{{ TreeViewPlugin
     
     public TreeViewPlugin() {
@@ -57,7 +60,13 @@ public class TreeViewPlugin extends ViewPlugin {
     //{{{ newDocumentView()
     
     public DocumentView newDocumentView(DocumentBuffer document) throws IOException {
-        return new DefaultView(document);
+        return new DefaultView(document, this);
+    }//}}}
+    
+    //{{{ getOptionsPanel()
+    
+    public OptionsPanel getOptionsPanel(DocumentBuffer buffer) {
+        return new DefaultViewOptionsPanel(buffer);
     }//}}}
     
     //{{{ Private members

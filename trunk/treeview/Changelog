@@ -1,6 +1,8 @@
 12/10/2004  version 0.3 pre2    Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated to support slightly modified version of XMLDocumentListener
+    * Updated XMLDocumentListener again
+    * Odded support for displaying the Options Panel in the general options
 
 12/07/2004  version 0.3 pre1    Ian Lewis <IanLewis@member.fsf.org>
 
