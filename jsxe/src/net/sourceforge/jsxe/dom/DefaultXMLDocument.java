@@ -76,32 +76,32 @@ public class DefaultXMLDocument extends XMLDocument {
     protected DefaultXMLDocument(File file) throws FileNotFoundException, IOException {//{{{
         setDefaultProperties();
         setModel(file);
-        validated=false;
+        wellFormed=false;
     }//}}}
     
     protected DefaultXMLDocument(Reader reader) throws IOException {//{{{
         setDefaultProperties();
         setModel(reader);
         name = getUntitledLabel();
-        validated=false;
+        wellFormed=false;
     }//}}}
     
     protected DefaultXMLDocument(String string) throws IOException {//{{{
         setDefaultProperties();
         setModel(string);
         name = getUntitledLabel();
-        validated=false;
+        wellFormed=false;
     }//}}}
     
-    public void validate() throws SAXParseException, SAXException, ParserConfigurationException, IOException {//{{{
-        if (!isValidated()) {
+    public void checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {//{{{
+        if (!wellFormed) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(source)));
             doc.getDocumentElement().normalize();
             document=doc;
-            validated=true;
+            wellFormed=true;
         }
     }//}}}
     
@@ -114,10 +114,10 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
 
     public String getSource() throws IOException {//{{{
-        //if the document is validated we go by the DOM
+        //if the document is well formed we go by the DOM
         //if it's not we go by the source.
         
-        if (isValidated()) {
+        if (isWellFormed()) {
             DOMSerializer.DOMSerializerConfiguration config = new DOMSerializer.DOMSerializerConfiguration();
             config.setParameter("format-output", getProperty("format-output"));
             config.setParameter("whitespace-in-element-content", getProperty("whitespace-in-element-content"));
@@ -139,7 +139,7 @@ public class DefaultXMLDocument extends XMLDocument {
         if (file!=null) {
             int nextchar=0;
             name = file.getName();
-            validated=false;
+            wellFormed=false;
             FileReader reader=new FileReader(file);
             
             StringBuffer text = new StringBuffer();
@@ -160,7 +160,7 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
     
     public void setModel(Reader reader) throws IOException {//{{{
-        validated=false;
+        wellFormed=false;
         
         StringBuffer text = new StringBuffer();
         char[] buffer = new char[READ_SIZE];
@@ -176,17 +176,24 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
     
     public void setModel(String string) {//{{{
-        validated = false;
+        wellFormed = false;
         source=string;
     }//}}}
     
-    public boolean isValidated() {//{{{
-        return validated;
+    public boolean isWellFormed() {//{{{
+        try {
+            checkWellFormedness();
+            wellFormed = true;
+        } catch (Exception e) {
+            wellFormed=false;
+        }
+        
+        return wellFormed;
     }//}}}
 
     public void save() throws IOException, SAXParseException, SAXException, ParserConfigurationException {//{{{
-       if (XMLFile != null) {
-           saveAs(XMLFile);
+       if (getFile() != null) {
+           saveAs(getFile());
        } else {
            //You shouldn't call this when the document is untitled but
            //if you do default to saving to the home directory.
@@ -196,7 +203,7 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
     
     public void saveAs(File file) throws IOException, SAXParseException, SAXException, ParserConfigurationException {//{{{
-        validate();
+        checkWellFormedness();
         
         DOMSerializer.DOMSerializerConfiguration config = new DOMSerializer.DOMSerializerConfiguration();
         config.setParameter("format-output", getProperty("format-output"));
@@ -213,7 +220,7 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
     
     public boolean equals(Object o) throws ClassCastException {//{{{
-        if (XMLFile != null) {
+        if (getFile() != null && o != null) {
             boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
                 || File.separatorChar == ':' /* Windows or MacOS */);
     
@@ -229,22 +236,23 @@ public class DefaultXMLDocument extends XMLDocument {
                     throw new ClassCastException("Could not cast to XMLDocument or File.");
                 }
             }
-            
-            try {
-                if (caseInsensitiveFilesystem) {
-                    
-                    if (file.getCanonicalPath().equalsIgnoreCase(getFile().getCanonicalPath())) {
-                        return true;
+            if (file != null) {
+                try {
+                    if (caseInsensitiveFilesystem) {
+                        
+                        if (file.getCanonicalPath().equalsIgnoreCase(getFile().getCanonicalPath())) {
+                            return true;
+                        }
+                        
+                    } else {
+                        
+                        if (file.getCanonicalPath().equals(getFile().getCanonicalPath())) {
+                            return true;
+                        }
                     }
-                    
-                } else {
-                    
-                    if (file.getCanonicalPath().equals(getFile().getCanonicalPath())) {
-                        return true;
-                    }
+                } catch (IOException ioe) {
+                    jsXe.exiterror(null, ioe.getMessage(), 1);
                 }
-            } catch (IOException ioe) {
-                jsXe.exiterror(null, ioe.getMessage(), 1);
             }
         }
         
@@ -279,7 +287,7 @@ public class DefaultXMLDocument extends XMLDocument {
     private File XMLFile;
     private String name;
     private String source=new String();
-    private boolean validated;
+    private boolean wellFormed;
     private static final int READ_SIZE = 5120;
     //}}}
 }
