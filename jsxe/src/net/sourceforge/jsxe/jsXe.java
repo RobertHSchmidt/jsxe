@@ -370,8 +370,8 @@ public class jsXe {
                                     messageType);
                 
                 if (returnVal == JOptionPane.YES_OPTION) {
-                    //the args to the ActionEvent are arbitrary.
-                    (new FileSaveAction(view)).actionPerformed(new ActionEvent(view, 101, "Save"));
+                    //the args to the ActionEvent are pretty arbitrary.
+                    (new FileSaveAction(view)).actionPerformed(new ActionEvent(view, ActionEvent.ACTION_PERFORMED, "Save"));
                     //verify we just saved the document
                     //If it's still dirty then we didn't
                     if (buffer.isDirty()) {

@@ -24,11 +24,8 @@ TODO:
 
 * Version 0.2.0
 
-	* Need to allow users to rearrange elements within another element.
-      Currently when you drag a node on an element it adds the node as a child
-      of the element. Maybe I can add smarter logic to get a location between
-      nodes in the tree so that it can determine if you want to move the node
-      or add the node as a child.
+	* Make it look like the node is selected when you are going to add the the
+      dragged node on the drop target node.
 
     * Fix the tree node editing compatibility with drag n drop. If you select a
       node then click again to drag it drags and begins editing at the same time
@@ -56,6 +53,10 @@ TODO:
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
     
 * Version 0.3.0
+    
+    * Add a ghosted image of the node to drag and drop cursor. Hopefully the
+      whole cursor can be replaced with the image since the default drag
+      cursor is dumb in linux.
     
     * Store some options such as recent files and file specific options in
       an XML file with jsxe's options in the .jsxe folder in the home dir.
