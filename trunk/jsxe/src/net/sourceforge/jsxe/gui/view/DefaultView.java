@@ -394,9 +394,7 @@ public class DefaultView extends DocumentView {
             AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
             if ( selectedNode != null ) {
                 
-                //if the selected node can be edited in either the tree
-                //or the text pane
-                tree.setEditable(DefaultViewTree.isEditable(selectedNode));
+                //if the selected node can be edited in the text pane
                 htmlPane.setEditable(canEditInJEditorPane(selectedNode));
                 
                 //update the attributes table with the current info.
