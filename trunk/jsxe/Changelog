@@ -1,13 +1,12 @@
-8/27/2003   version 0.1.9   Ian Lewis  <IanLewis@member.fsf.org>
+8/28/2003   version 0.1.9  Ian Lewis  <IanLewis@member.fsf.org>
 
     * Changed the DOMSerializer class to conform to the DOM3 standard
       DOMWriter (old) interface. Used the java.io.OutputStreamWriter class for
       encoding. Added an encoding option to the option dialog.
-
-8/27/2003   version 0.1.8   Ian Lewis  <IanLewis@member.fsf.org>
-
     * Fixed bug in DefaultXMLDocument that messed up which model the object was
       using.
+    * Fixed bug with createElement() creating elements with a null local name.
+      Used createElementNS() instead.
 
 8/24/2003   version 0.1.7   Ian Lewis  <IanLewis@member.fsf.org>
 

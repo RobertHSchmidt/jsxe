@@ -2,9 +2,6 @@ TODO:
 
     * Document methods with javadoc.
     
-    * Fix bug that has to do with the DOM1 method createElement() making nodes
-      so that localName returns null. Use createElementNS() instead.
-    
     * Work on performance problems when loading an XML document. (Hint: setModel
       in DefaultXMLDocument.java)
     

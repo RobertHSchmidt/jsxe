@@ -305,7 +305,7 @@ public class DOMSerializer implements DOMWriter {
                     return !booleanValue;
                 }
                 if (name == "whitespace-in-element-content") {
-                    return booleanValue;
+                    return true;
                 }
                 if (name == "format-output") {
                     return true;
