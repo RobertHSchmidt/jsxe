@@ -168,7 +168,7 @@
   <!-- }}} -->
 
   <!-- {{{ ============ Generates the binary distribution ================ -->
-  <target name="dist" depends="compile, prepare-build, doc">
+  <target name="bin" depends="compile, prepare-build, doc">
     
     <!-- doc -->
     <mkdir dir="${distbin.dir}/doc"/>
@@ -280,6 +280,10 @@
       windowtitle="jsXe API" doctitle="jsXe API"
       />
   </target>
+  <!-- }}} -->
+
+  <!-- {{{ ============ Builds a full distribution ======================= -->
+  <target name="dist" depends="bin, src"/>
   <!-- }}} -->
 
   <!-- {{{ ============ Cleans everything up ============================= -->
