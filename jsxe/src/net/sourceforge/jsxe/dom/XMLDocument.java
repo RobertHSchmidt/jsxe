@@ -153,6 +153,7 @@ public class XMLDocument {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             factory.setExpandEntityReferences(false);
+            factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", new Boolean(false));
             DocumentBuilder builder = factory.newDocumentBuilder();
             
             if (m_entityResolver != null) {

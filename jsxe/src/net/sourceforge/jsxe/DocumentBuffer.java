@@ -521,17 +521,22 @@ public class DocumentBuffer {
             InputSource source = null;
             
             if (m_file != null) {
+                
                 try {
-                    entity = entity.substring(entity.lastIndexOf("/")+1);
-                    
                     String filePathURI = m_file.toURL().toExternalForm();
                     filePathURI = filePathURI.substring(0, filePathURI.lastIndexOf("/")+1);
                     
-                    entity = filePathURI + entity;
+                    //create the path to the entity relative to the document
+                    filePathURI += entity;
                     
-                    source = new InputSource(entity);
+                    FileReader reader = new FileReader(filePathURI);
+                    
+                    source = new InputSource(reader);
                     
                 } catch (MalformedURLException e) {
+                    //Do nothing and try to open this entity normally
+                } catch (IOException e) {
+                    //Probobly file not found.
                     //Do nothing and try to open this entity normally
                 }
             }
