@@ -392,6 +392,9 @@ public class DefaultView extends DocumentView {
                     popupMenuItem = new JMenuItem("Add Text Node");
                     popupMenuItem.addActionListener(new AddTextNodeAction());
                     popup.add(popupMenuItem);
+                    popupMenuItem = new JMenuItem("Rename Node");
+                    popupMenuItem.addActionListener(new RenameElementAction());
+                    popup.add(popupMenuItem);
                     showpopup = true;
                 }
                 //if the node is not the document or the document root.
@@ -421,6 +424,17 @@ public class DefaultView extends DocumentView {
                 }
             } catch (DOMException dome) {
                 JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        
+    }//}}}
+    
+    private class RenameElementAction implements ActionListener {//{{{
+        
+        public void actionPerformed(ActionEvent e) {
+            TreePath selPath = tree.getLeadSelectionPath();
+            if (selPath != null) {
+                tree.startEditingAtPath(selPath);
             }
         }
         
