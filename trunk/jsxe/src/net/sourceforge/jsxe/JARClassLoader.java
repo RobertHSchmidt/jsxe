@@ -39,12 +39,14 @@ import java.net.URL;
 import java.util.*;
 import java.util.jar.*;
 import java.util.zip.*;
+import java.lang.reflect.Modifier;
 import net.sourceforge.jsxe.util.ArrayListEnumeration;
 
 //}}}
 
 /**
- * A class loader implementation that loads classes from JAR files.
+ * A class loader implementation that loads classes from JAR files. Also manages
+ * getting files from plugin JARs.
  * @author Ian Lewis
  * @version $Id$
  */
@@ -57,12 +59,12 @@ public class JARClassLoader extends ClassLoader {
     protected Class findClass(String name) throws ClassNotFoundException {
         
         String classFileName = name.replace('.','/').concat(".class");
-        Iterator jarItr = m_jarFiles.iterator();
+        Iterator jarItr = m_jarFiles.values().iterator();
         
         while (jarItr.hasNext()) {
             try {
                 
-                JarFile zipFile = new JarFile((File)jarItr.next());
+                JarFile zipFile = (JarFile)jarItr.next();
                 ZipEntry entry = zipFile.getEntry(classFileName);
                 
                 if (entry != null) {
@@ -84,8 +86,8 @@ public class JARClassLoader extends ClassLoader {
                             fail = true;
                         }
                     }
-                    
-                    return defineClass(name,data,0,data.length);
+                    Class c = defineClass(name,data,0,data.length);
+                    return c;
                 }
                 
             } catch(IOException io) {
@@ -99,15 +101,16 @@ public class JARClassLoader extends ClassLoader {
     //{{{ findResources()
     
     protected Enumeration findResources(String name) throws IOException {
-        Iterator jarItr = m_jarFiles.iterator();
+        Iterator fileItr = m_files.values().iterator();
+        Iterator jarItr  = m_jarFiles.values().iterator();
         ArrayList urls = new ArrayList();
         
-        while (jarItr.hasNext()) {
-            File file = (File)jarItr.next();
-            JarFile jarfile = new JarFile(file);
+        while (fileItr.hasNext()) {
+            File file = (File)fileItr.next();
+            JarFile jarfile = (JarFile)jarItr.next();
             JarEntry entry = jarfile.getJarEntry(name);
             if (entry != null) {
-                urls.add(new URL("jar:"+file.toURL().toString()+"!"+name));
+                urls.add(new URL("jar:"+file.toURL().toString()+"!/"+name));
             }
         }
         
@@ -117,18 +120,21 @@ public class JARClassLoader extends ClassLoader {
     //{{{ findResource
     
     protected URL findResource(String name) {
-        Iterator jarItr = m_jarFiles.iterator();
+        Iterator filesItr = m_files.values().iterator();
+        Iterator jarItr = m_jarFiles.values().iterator();
         ArrayList urls = new ArrayList();
         
         while (jarItr.hasNext()) {
             try {
-                File file = (File)jarItr.next();
-                JarFile jarfile = new JarFile(file);
+                File file = (File)filesItr.next();
+                JarFile jarfile = (JarFile)jarItr.next();
                 JarEntry entry = jarfile.getJarEntry(name);
                 if (entry != null) {
-                    return new URL("jar:"+file.toURL().toString()+"!"+name);
+                    return new URL("jar:"+file.toURL().toString()+"!/"+name);
                 }
-            } catch (IOException ioe) {}
+            } catch (IOException ioe) {
+                jsXe.exiterror(null, "findResource:IOException: "+ioe.getMessage(), 1);
+            }
         }
         
         return null;
@@ -138,7 +144,8 @@ public class JARClassLoader extends ClassLoader {
     
     //{{{ addJarFile()
     /**
-     * Adds a jar file to the search path for the class loader
+     * Adds a jar file to the search path for the class loader and
+     * loads the jar as a plugin.
      * @param path the path to the jar file
      */
     public void addJarFile(String path) throws FileNotFoundException, IOException {
@@ -147,13 +154,29 @@ public class JARClassLoader extends ClassLoader {
     
     //{{{ addJarFile()
     /**
-     * Adds a jar file to the search path for the class loader
+     * Adds a jar file to the search path for the class loader and loads
+     * the jar as a plugin
      * @param file the file to add
      */
     public void addJarFile(File file) throws FileNotFoundException, IOException {
         if (file.exists()) {
             JarFile jarFile = new JarFile(file);
-            m_jarFiles.add(file);
+            definePackages(jarFile);
+            m_files.put(file.getName(), file);
+            m_jarFiles.put(file.getName(), jarFile);
+            
+           // Enumeration entries = jarFile.entries();
+           // while (entries.hasMoreElements()) {
+           //     ZipEntry entry = (ZipEntry)entries.nextElement();
+           //     String name = entry.getName();
+           //     if(name.endsWith(".class")) {
+           //         
+           //         
+           //         if (name.endsWith("Plugin.class"))
+           //             pluginClasses.add(name);
+           //     }
+           // }
+            
         } else {
             throw new FileNotFoundException("The jar file was not found");
         }
@@ -163,7 +186,8 @@ public class JARClassLoader extends ClassLoader {
     
     /**
      * Adds all jar files in a directory to the seach path for the class
-     * loader
+     * loader and attempts to load the jars as plugins.
+     *
      * @param path the path for the directory containing jar files
      * @return an ArrayList of pathnames of jar files that could not be loaded.
      */
@@ -188,9 +212,273 @@ public class JARClassLoader extends ClassLoader {
         return errors;
     }//}}}
     
+    //{{{ getEntry()
+    
+    public JarEntry getEntry(String plugin, String name) {
+        JarFile jar = (JarFile)m_jarFiles.get(plugin);
+        return jar.getJarEntry(name);
+    }//}}}
+    
+    //{{{ getViewPluginNames()
+    
+    public Iterator getViewPluginNames() {
+        return m_viewPlugins.keySet().iterator();
+    }//}}}
+    
+    //{{{ getViewPlugins()
+    /**
+     * Gets all view plugins. You should run startPlugins() before calling this function.
+     * @return an ArrayList of ViewPlugin objects
+     */
+    public ArrayList getViewPlugins() {
+        Iterator pluginItr = getViewPluginNames();
+        ArrayList plugins = new ArrayList();
+        while (pluginItr.hasNext()) {
+            String pluginName = pluginItr.next().toString();
+            ViewPlugin plugin = (ViewPlugin)m_viewPlugins.get(pluginName);
+            plugins.add(plugin);
+        }
+        return plugins;
+    }//}}}
+    
+    //{{{ getViewPlugin()
+    
+    public ViewPlugin getViewPlugin(String name) {
+        return (ViewPlugin)m_viewPlugins.get(name);
+    }//}}}
+    
+    //{{{ getActionPluginNames()
+    /**
+     * Returns an Iterator object containing the names of the all installed 
+     * action plugins that are not view plugins.
+     */
+    public Iterator getActionPluginNames() {
+        return m_actionPlugins.keySet().iterator();
+    }//}}}
+    
+    //{{{ getActionPlugins()
+    /**
+     * Gets all action plugins that are not view plugins. You should run startPlugins()
+     * before calling this function.
+     * @return an ArrayList of ActionPlugin objects
+     */
+    public ArrayList getActionPlugins() {
+        Iterator pluginItr = getActionPluginNames();
+        ArrayList plugins = new ArrayList();
+        while (pluginItr.hasNext()) {
+            String pluginName = pluginItr.next().toString();
+            ActionPlugin plugin = (ActionPlugin)m_actionPlugins.get(pluginName);
+            plugins.add(plugin);
+        }
+        return plugins;
+    }//}}}
+    
+    //{{{ getActionPlugin()
+    /**
+     * Gets an action plugin by name. Not for use in retrieving ViewPlugins.
+     * @param name the name of the ActionPlugin you want to retrieve.
+     * @return the ActionPlugin or null if a plugin with the name given is not loaded.
+     */
+    public ActionPlugin getActionPlugin(String name) {
+        return (ActionPlugin)m_actionPlugins.get(name);
+    }//}}}
+    
+    //{{{ startPlugins()
+    /**
+     * Starts all the plugins from their respective jar files.
+     * @return an ArrayList of error messages.
+     */
+    public ArrayList startPlugins() {
+        Iterator jarItr = m_jarFiles.keySet().iterator();
+        ArrayList errors = new ArrayList();
+        
+        while (jarItr.hasNext()) {
+            JarFile jarFile = (JarFile)m_jarFiles.get(jarItr.next().toString());
+            
+            try {
+                startPlugin(jarFile);
+            } catch (IOException e) {
+                errors.add(e.getMessage());
+            }
+        }
+        
+        return errors;
+        
+    }//}}}
+    
     //{{{ Private Members
     
-    private ArrayList m_jarFiles = new ArrayList();
+    //{{{ definePackages() 
+    /**
+     * Defines all packages found in the given Java archive file. The
+     * attributes contained in the specified Manifest will be used to obtain
+     * package version and sealing information.
+     */
+    private void definePackages(JarFile zipFile) throws IOException {
+        try {
+            Manifest manifest = zipFile.getManifest();
+
+            if (manifest != null) {
+                Map entries = manifest.getEntries();
+                Iterator i = entries.keySet().iterator();
+
+                while(i.hasNext()) {
+                    String path = (String)i.next();
+
+                    if (!path.endsWith(".class")) {
+                        String name = path.replace('/', '.');
+
+                        if(name.endsWith("."))
+                            name = name.substring(0, name.length() - 1);
+
+                        // code url not implemented
+                        definePackage(path,name,manifest,null);
+                    }
+                }
+            }
+        } catch (IllegalArgumentException ex) {
+            // should never happen, not severe anyway
+        }
+    } //}}}
+
+    //{{{ definePackage()
+    /**
+     * Defines a new package by name in this ClassLoader. The attributes
+     * contained in the specified Manifest will be used to obtain package
+     * version and sealing information. For sealed packages, the additional
+     * URL specifies the code source URL from which the package was loaded.
+     */
+    private Package definePackage(String path, String name, Manifest man, URL url) throws IllegalArgumentException {
+        String specTitle = null;
+        String specVersion = null;
+        String specVendor = null;
+        String implTitle = null;
+        String implVersion = null;
+        String implVendor = null;
+        String sealed = null;
+        URL sealBase = null;
+
+        Attributes attr = man.getAttributes(path);
+
+        if (attr != null) {
+            specTitle = attr.getValue(Attributes.Name.SPECIFICATION_TITLE);
+            specVersion = attr.getValue(Attributes.Name.SPECIFICATION_VERSION);
+            specVendor = attr.getValue(Attributes.Name.SPECIFICATION_VENDOR);
+            implTitle = attr.getValue(Attributes.Name.IMPLEMENTATION_TITLE);
+            implVersion = attr.getValue(Attributes.Name.IMPLEMENTATION_VERSION);
+            implVendor = attr.getValue(Attributes.Name.IMPLEMENTATION_VENDOR);
+            sealed = attr.getValue(Attributes.Name.SEALED);
+        }
+
+        attr = man.getMainAttributes();
+
+        if (attr != null) {
+            if (specTitle == null) {
+                specTitle = attr.getValue(Attributes.Name.SPECIFICATION_TITLE);
+            }
+
+            if (specVersion == null) {
+                specVersion = attr.getValue(Attributes.Name.SPECIFICATION_VERSION);
+            }
+
+            if (specVendor == null) {
+                specVendor = attr.getValue(Attributes.Name.SPECIFICATION_VENDOR);
+            }
+
+            if (implTitle == null) {
+                implTitle = attr.getValue(Attributes.Name.IMPLEMENTATION_TITLE);
+            }
+
+            if (implVersion == null) {
+                implVersion = attr.getValue(Attributes.Name.IMPLEMENTATION_VERSION);
+            }
+
+            if (implVendor == null) {
+                implVendor = attr.getValue(Attributes.Name.IMPLEMENTATION_VENDOR);
+            }
+
+            if (sealed == null) {
+                sealed = attr.getValue(Attributes.Name.SEALED);
+            }
+        }
+
+        return super.definePackage(name, specTitle, specVersion, specVendor,
+            implTitle, implVersion, implVendor,
+            sealBase);
+    } //}}}
+    
+    //{{{ getMainPluginClass() method
+    
+    public String getMainPluginClass(JarFile jarFile) throws IOException {
+        Manifest manifest = jarFile.getManifest();
+        
+        if (manifest != null) {
+                
+            String mainPluginClass = manifest.getMainAttributes().getValue(Attributes.Name.MAIN_CLASS);
+            if (mainPluginClass != null) {
+                
+                return mainPluginClass;
+                
+            } else {
+                throw new IOException("Cannot load plugin "+jarFile.getName()+": No main class defined");
+            }
+        } else {
+            throw new IOException("Cannot load plugin "+jarFile.getName()+": No manifest");
+        }
+        
+    }//}}}
+    
+    //{{{ startPlugin()
+    
+    private void startPlugin(JarFile jarfile) throws IOException {
+        
+        String mainPluginClass = getMainPluginClass(jarfile);
+        
+        try {
+            
+           // for(int i = 0; i < m_pluginClasses.size(); i++) {
+           //     if (className.equals(mainPluginClass) {
+                    Class pluginClass = loadClass(mainPluginClass);
+                
+                    Object plugin = pluginClass.newInstance();
+                    
+                    int modifiers = pluginClass.getModifiers();
+                    if (!Modifier.isInterface(modifiers)
+                        && !Modifier.isAbstract(modifiers)
+                        && ActionPlugin.class.isAssignableFrom(pluginClass)) {
+                        
+                        if (ViewPlugin.class.isAssignableFrom(pluginClass)) {
+                            //It's a view plugin
+                            ViewPlugin viewPlugin = (ViewPlugin)plugin;
+                            m_viewPlugins.put(viewPlugin.getName(), viewPlugin);
+                        } else {
+                            //It's an Action plugin
+                            ActionPlugin actionPlugin = (ActionPlugin)plugin;
+                            m_actionPlugins.put(actionPlugin.getName(), actionPlugin);
+                        }
+                        
+                    } else {
+                        throw new IOException("Could not load plugin main class: "+pluginClass.getName());
+                    }
+           //     } else {
+           //         
+           //     }
+           // }
+            
+        } catch (ClassNotFoundException e) {
+            throw new IOException(e.getMessage());
+        } catch (InstantiationException e) {
+            throw new IOException(e.getMessage());
+        } catch (IllegalAccessException e) {
+            throw new IOException(e.getMessage());
+        }
+    }//}}}
+    
+    private static HashMap m_files = new HashMap();
+    private static HashMap m_jarFiles = new HashMap();
+    private static HashMap m_viewPlugins = new HashMap();
+    private static HashMap m_actionPlugins = new HashMap();
+   // private static ArrayList m_pluginClasses = new ArrayList();
     
     //}}}
 }

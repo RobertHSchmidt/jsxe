@@ -1,3 +1,9 @@
+12/07/2004  version 0.3 pre4    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added view plugin support. Branched off the views into their own
+      source trees.
+    * Updated the Tree view to be a plugin
+
 11/30/2004  version 0.3 pre3    Ian Lewis <IanLewis@member.fsf.org>
 
     * Added some more code for the SchemaView. jsXe will require JGraph for a

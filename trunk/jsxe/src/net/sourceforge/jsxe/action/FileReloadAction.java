@@ -43,7 +43,7 @@ belongs to.
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.gui.TabbedView;
-import net.sourceforge.jsxe.gui.view.DocumentView;
+import net.sourceforge.jsxe.gui.DocumentView;
 //}}}
 
 //{{{ Java classes

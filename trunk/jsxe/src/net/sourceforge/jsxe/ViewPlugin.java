@@ -32,8 +32,9 @@ package net.sourceforge.jsxe;
 
 //{{{ imports
 
-import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.DocumentView;
+
+import java.io.IOException;
 
 //}}}
 
@@ -48,12 +49,31 @@ import net.sourceforge.jsxe.gui.DocumentView;
  */
 public abstract class ViewPlugin extends ActionPlugin {
     
+    //{{{ ViewPlugin constructor
+    
+    public ViewPlugin(String name, String humanReadableName) {
+        this(name, humanReadableName, "1.0");
+    }//}}}
+    
+    //{{{ ViewPlugin constructor
+    
+    public ViewPlugin(String name, String humanReadableName, String version) {
+        super(name, humanReadableName, version);
+    }//}}}
+    
+    //{{{ ViewPlugin constructor
+    
+    public ViewPlugin(String name, String humanReadableName, String version, String description) {
+        super(name, humanReadableName, version, description);
+    }//}}}
+    
     //{{{ newDocumentView()
     /**
      * Creates a new DocumentView for the given document. The DocumentView can
      * is then used to retrieve a component for this view plugin.
      * @param document the document to open the DocumentView with
+     * @throws IOException if the view cannot be used to view this document
      */
-    public abstract DocumentView newDocumentView(XMLDocument document);//}}}
+    public abstract DocumentView newDocumentView(DocumentBuffer document) throws IOException;//}}}
     
 }

@@ -32,9 +32,19 @@ package net.sourceforge.jsxe;
 
 //{{{ imports
 
+//{{{ jsXe classes
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.DocumentView;
-improt net.sourceforge.jsxe.gui.OptionsPanel;
+import net.sourceforge.jsxe.gui.OptionsPanel;
+//}}}
+
+//{{{ Swing classes
+import javax.swing.Action;
+//}}}
+
+//{{{ Java classes
+import java.util.Properties;
+//}}}
 
 //}}}
 
@@ -58,19 +68,35 @@ public abstract class ActionPlugin {
     //}}}
     
     //{{{ ActionPlugin constructor
-    
+    /**
+     * Constructs a new ActionPlugin with the values provided,
+     * a version of "1.0", and an empty description
+     * @param name a short unique name for the plugin. Contains alpha numeric characters, underscores, and dashes
+     * @param humanReadableName a formatted name to be shown to users.
+     */
     public ActionPlugin(String name, String humanReadableName) {
         this(name, humanReadableName, "1.0", "");
     }//}}}
     
     //{{{ ActionPlugin constructor
-    
+    /**
+     * Constructs a new ActionPlugin with the values provided and an empty description.
+     * @param name a short unique name for the plugin. Contains alpha numeric characters, underscores, and dashes
+     * @param humanReadableName a formatted name to be shown to users.
+     * @param version The formatted version for the plugin
+     */
     public ActionPlugin(String name, String humanReadableName, String version) {
         this(name, humanReadableName, version, "");
     }//}}}
     
     //{{{ ActionPlugin constructor
-    
+    /**
+     * Constructs an ActionPlugin with the supplied values.
+     * @param name a short unique name for the plugin. Contains alpha numeric characters, underscores, and dashes
+     * @param humanReadableName a formatted name to be shown to users.
+     * @param version The formatted version for the plugin
+     * @param description a description of the plugin.
+     */
     public ActionPlugin(String name, String humanReadableName, String version, String description) {
         m_name = name;
         m_humanReadableName = humanReadableName;
@@ -80,25 +106,40 @@ public abstract class ActionPlugin {
     }//}}}
     
     //{{{ getName();
-    
+    /**
+     * Gets the name of the plugin. This should be a unique name. It shouldn't have
+     * spaces, only alpha numeric characters, underscores, and dashes. It is used for
+     * properties and other fuctions within jsXe.
+     * @return a unique name for the plugin
+     */
     public String getName() {
         return m_name;
     }//}}}
     
     //{{{ getHumanReadableName()
-    
+    /**
+     * The name that is shown to users by jsXe. This should be short but descriptive and
+     * formatted.
+     */
     public String getHumanReadableName() {
         return m_humanReadableName;
     }//}}}
     
     //{{{ getVersion()
-    
+    /**
+     * Gets the version of this view. Ex. 1.4.2
+     * @return a string containing the formatted version
+     */
     public String getVersion() {
         return m_version;
     }//}}}
     
     //{{{ getDescription()
-    
+    /**
+     * A description of the plugin. This should be a few short sentences. 
+     * This is not used currently, but will be used in future.
+     * @return the description of the plugin
+     */
     public String getDescription() {
         return m_description;
     }//}}}
@@ -111,6 +152,16 @@ public abstract class ActionPlugin {
      */
     public OptionsPanel getOptionsPanel() {
         return null;
+    }//}}}
+    
+    //{{{ getProperties()
+    /**
+     * The properties to add to jsXe when the plugin is loaded. The default
+     * iplementation returns an empty properties set.
+     * @return the plugin's properties
+     */
+    public Properties getProperties() {
+        return new Properties();
     }//}}}
     
     //{{{ addAction()
