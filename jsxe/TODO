@@ -53,6 +53,10 @@ TODO:
         - Need to research and play with gcj to see how to use it in the
           future.
     
+    * Split the package structure for the dom classes and jsxe and also split
+      the gui framework stuff into it's own package structure. They can
+      possibly be supported separately in the future.
+    
     * Add a ghosted image of the node to drag and drop cursor. Hopefully the
       whole cursor can be replaced with the image since the default drag
       cursor is dumb in linux.
