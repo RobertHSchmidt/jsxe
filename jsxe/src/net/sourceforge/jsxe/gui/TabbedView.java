@@ -124,7 +124,8 @@ public class TabbedView extends JFrame {
         DocumentViewFactory factory = DocumentViewFactory.newInstance();
        // docView = factory.newDocumentView();
         
-       // updateMenuBar();
+        createDefaultMenuItems();
+        updateMenuBar();
         
         tabbedPane.addChangeListener(//{{{
             new ChangeListener() {
@@ -338,6 +339,56 @@ public class TabbedView extends JFrame {
     
     //{{{ Private members
     
+    //{{{ createDefaultMenuItems()
+    
+    private void createDefaultMenuItems() {
+        
+        //{{{ Create File Menu
+        m_fileMenu = new JMenu("File");
+        m_fileMenu.setMnemonic('F');
+            JMenuItem menuItem = new JMenuItem(new FileNewAction(this));
+            m_fileMenu.add( menuItem );
+            menuItem = new JMenuItem(new FileOpenAction(this));
+            m_fileMenu.add( menuItem );
+            m_fileMenu.addSeparator();
+            menuItem = new JMenuItem(new FileSaveAction(this));
+            m_fileMenu.add( menuItem );
+            menuItem = new JMenuItem(new FileSaveAsAction(this));
+            m_fileMenu.add( menuItem );
+            m_fileMenu.addSeparator();
+            menuItem = new JMenuItem(new FileCloseAction(this));
+            m_fileMenu.add( menuItem );
+            menuItem = new JMenuItem(new FileCloseAllAction(this));
+            m_fileMenu.add( menuItem );
+            menuItem = new JMenuItem(new FileExitAction(this));
+            m_fileMenu.add( menuItem );
+        //}}}
+        
+        //{{{ Create View Menu
+        m_viewMenu = new JMenu("View");
+        m_viewMenu.setMnemonic('V');
+            menuItem = new JMenuItem(new SetDefaultViewAction());
+            m_viewMenu.add( menuItem );
+            menuItem = new JMenuItem(new SetSourceViewAction());
+            m_viewMenu.add( menuItem );
+        //}}}
+        
+        //{{{ Create Tools Menu
+        m_toolsMenu = new JMenu("Tools");
+        m_toolsMenu.setMnemonic('T');
+            menuItem = new JMenuItem(new ToolsOptionsAction(this));
+            m_toolsMenu.add( menuItem );
+        //}}}
+        
+        //{{{ Create Help Menu
+        m_helpMenu = new JMenu("Help");
+        m_helpMenu.setMnemonic('H');
+            menuItem = new JMenuItem(new jsxeAboutDialog(this));
+            m_helpMenu.add(menuItem);
+        //}}}
+
+    }//}}}
+    
     //{{{ updateTitle()
     /**
      * Updates the frame title. Useful when the tab has changed to a
@@ -362,64 +413,27 @@ public class TabbedView extends JFrame {
      * Updates the menubar. Useful when the DocumentView has changed.
      */
     private void updateMenuBar() {
+        
         JMenuBar menubar = new JMenuBar();
         DocumentView currentDocView = getDocumentView();
         
         if (currentDocView != null) {
             
-            //{{{ Add File Menu
-            JMenu fileMenu = new JMenu("File");
-            fileMenu.setMnemonic('F');
-                JMenuItem menuItem = new JMenuItem(new FileNewAction(this));
-                fileMenu.add( menuItem );
-                menuItem = new JMenuItem(new FileOpenAction(this));
-                fileMenu.add( menuItem );
-                fileMenu.addSeparator();
-                menuItem = new JMenuItem(new FileSaveAction(this));
-                fileMenu.add( menuItem );
-                menuItem = new JMenuItem(new FileSaveAsAction(this));
-                fileMenu.add( menuItem );
-                fileMenu.addSeparator();
-                menuItem = new JMenuItem(new FileCloseAction(this));
-                fileMenu.add( menuItem );
-                menuItem = new JMenuItem(new FileCloseAllAction(this));
-                fileMenu.add( menuItem );
-                menuItem = new JMenuItem(new FileExitAction(this));
-                fileMenu.add( menuItem );
-            menubar.add(fileMenu);//}}}
-            
-            //{{{ Add View Specific Menus
-                JMenu[] menus = currentDocView.getMenus();
-                if (menus != null) {
-                    for (int i=0;i<menus.length;i++) {
-                        menubar.add(menus[i]);
-                    }
+            menubar.add(m_fileMenu);
+
+            //Add View Specific Menus
+            JMenu[] menus = currentDocView.getMenus();
+            if (menus != null) {
+                for (int i=0;i<menus.length;i++) {
+                    menubar.add(menus[i]);
                 }
-            //}}}
+            }
+
+            menubar.add(m_viewMenu);
             
-            //{{{ Add View Menu
-            JMenu viewMenu = new JMenu("View");
-            viewMenu.setMnemonic('V');
-                menuItem = new JMenuItem(new SetDefaultViewAction());
-                viewMenu.add( menuItem );
-                menuItem = new JMenuItem(new SetSourceViewAction());
-                viewMenu.add( menuItem );
-            menubar.add(viewMenu);
-            //}}}
+            menubar.add(m_toolsMenu);
             
-            //{{{ Add Tools Menu
-            JMenu toolsMenu = new JMenu("Tools");
-            toolsMenu.setMnemonic('T');
-                menuItem = new JMenuItem(new ToolsOptionsAction(this));
-                toolsMenu.add( menuItem );
-            menubar.add(toolsMenu);//}}}
-            
-            //{{{ Add Help Menu
-            JMenu helpMenu = new JMenu("Help");
-            helpMenu.setMnemonic('H');
-                menuItem = new JMenuItem(new jsxeAboutDialog(this));
-                helpMenu.add(menuItem);
-            menubar.add(helpMenu);//}}}
+            menubar.add(m_helpMenu);
             
             setJMenuBar(menubar);
             
@@ -557,6 +571,11 @@ public class TabbedView extends JFrame {
     private static final String _HEIGHT = "tabbedview.height";
     private static final String _X = "tabbedview.x";
     private static final String _Y = "tabbedview.y";
+    
+    private JMenu m_fileMenu;
+    private JMenu m_viewMenu;
+    private JMenu m_toolsMenu;
+    private JMenu m_helpMenu;
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     //The current document
