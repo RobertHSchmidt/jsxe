@@ -242,6 +242,9 @@ TODO:
     * Create a view that is similar to the xeditor view if it's ok (it kind of
       has to be since jie bao used my GPL code his has to be open source too.)
     
+    * Create a view for editing doc-book files using the components in the
+      Vex editor. See vex.sourceforge.net
+    
     * Create a view for XHTML documents. This could probobly be an extension
       of the JEditorPane class that uses an adapter to attempt to transform
       XHTML into HTML 3.2 so that the canned JEditorPane can render it properly.
