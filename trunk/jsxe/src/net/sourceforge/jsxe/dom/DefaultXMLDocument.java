@@ -80,29 +80,23 @@ public class DefaultXMLDocument extends XMLDocument {
     DefaultXMLDocument(File file) throws FileNotFoundException, IOException {//{{{
         setDefaultProperties();
         setModel(file);
-        adapterNode = new AdapterNode(this, m_document);
-        adapterNode.addAdapterNodeListener(docAdapterListener);
     }//}}}
     
     DefaultXMLDocument(Reader reader, String name) throws IOException {//{{{
         setDefaultProperties();
         setModel(reader);
         this.name = name;
-        adapterNode = new AdapterNode(this, m_document);
-        adapterNode.addAdapterNodeListener(docAdapterListener);
     }//}}}
     
     DefaultXMLDocument(String string, String name) throws IOException {//{{{
         setDefaultProperties();
         setModel(string);
         this.name = name;
-        adapterNode = new AdapterNode(this, m_document);
-        adapterNode.addAdapterNodeListener(docAdapterListener);
     }//}}}
 
     public boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {//{{{
         
-        if (!wellFormed) {
+        if (!parsedMode) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -138,12 +132,11 @@ public class DefaultXMLDocument extends XMLDocument {
             });
             Document doc = builder.parse(new InputSource(new StringReader(source)));
             doc.getDocumentElement().normalize();
-            m_document=doc;
+            setDocument(doc);
             
-            wellFormed=true;
-            sync = true;
+            parsedMode=true;
         }
-        return wellFormed;
+        return parsedMode;
     }//}}}
     
     public String setProperty(String key, String value) {//{{{
@@ -186,7 +179,7 @@ public class DefaultXMLDocument extends XMLDocument {
     public String getSource() throws IOException {//{{{
         //if the document is well formed we go by the DOM
         //if it's not we go by the source.
-        if (!sync) {
+        if (parsedMode) {
             DOMSerializer.DOMSerializerConfiguration config = new DOMSerializer.DOMSerializerConfiguration();
             config.setParameter("format-output", getProperty("format-output"));
             config.setParameter("whitespace-in-element-content", getProperty("whitespace-in-element-content"));
@@ -227,7 +220,7 @@ public class DefaultXMLDocument extends XMLDocument {
             File oldFile = XMLFile;
             XMLFile = file;
             
-            wellFormed = false;
+            parsedMode = false;
             
             try {
                 checkWellFormedness();
@@ -266,7 +259,7 @@ public class DefaultXMLDocument extends XMLDocument {
         //check the wellformedness
         String backupSource = source;
         source = text.toString();
-        wellFormed = false;
+        parsedMode = false;
         
         try {
             checkWellFormedness();
@@ -289,7 +282,7 @@ public class DefaultXMLDocument extends XMLDocument {
     public void setModel(String string) throws IOException {//{{{
         String backupSource = source;
         source=string;
-        wellFormed = false;
+        parsedMode = false;
         
         try {
             checkWellFormedness();
@@ -309,7 +302,7 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
     
     public boolean isWellFormed() throws IOException {//{{{
-        return wellFormed;
+        return parsedMode;
     }//}}}
     
     public void save() throws IOException, SAXParseException, SAXException, ParserConfigurationException {//{{{
@@ -381,33 +374,29 @@ public class DefaultXMLDocument extends XMLDocument {
         }
     }//}}}
     
+    private void setDocument(Document doc) {
+        m_document=doc;
+        adapterNode = new AdapterNode(this, m_document);
+        adapterNode.addAdapterNodeListener(docAdapterListener);
+    }
+    
     private class XMLDocAdapterListener implements AdapterNodeListener {//{{{
         
         public void nodeAdded(AdapterNode source, AdapterNode added) {
-            sync = false;
             fireStructureChanged(source);
         }
         
         public void nodeRemoved(AdapterNode source, AdapterNode removed) {
-            sync = false;
             fireStructureChanged(source);
         }
         
-        public void localNameChanged(AdapterNode source) {
-            sync = false;
-        }
+        public void localNameChanged(AdapterNode source) {}
         
-        public void namespaceChanged(AdapterNode source) {
-            sync = false;
-        }
+        public void namespaceChanged(AdapterNode source) {}
         
-        public void nodeValueChanged(AdapterNode source) {
-            sync = false;
-        }
+        public void nodeValueChanged(AdapterNode source) {}
         
-        public void attributeChanged(AdapterNode source, String attr) {
-            sync = false;
-        }
+        public void attributeChanged(AdapterNode source, String attr) {}
         
     }//}}}
     
@@ -416,14 +405,12 @@ public class DefaultXMLDocument extends XMLDocument {
     private File XMLFile;
     private String name;
     private String source = new String();
-    private boolean wellFormed = false;
+    private boolean parsedMode = false;
     private ArrayList listeners = new ArrayList();
     private Properties props = new Properties();
     private static final int READ_SIZE = 5120;
     
     private XMLDocAdapterListener docAdapterListener = new XMLDocAdapterListener();
     
-    // true if the DOM and source are synchronized
-    private boolean sync = false;
     //}}}
 }
