@@ -253,19 +253,18 @@ public class DefaultViewTreeNode implements MutableTreeNode {
         if (! nodeName.startsWith("#")) {   
             s += nodeName;
         }
-        if (m_node.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-            s += " ";
-        }
-        if (m_node.getNodeValue() != null) {
-            String t = m_node.getNodeValue().trim();
-            int x = t.indexOf("\n");
-            if (x >= 0) {
-                t = t.substring(0, x);
+        if (s.equals("")) {
+            if (m_node.getNodeValue() != null) {
+                String t = m_node.getNodeValue().trim();
+                int x = t.indexOf("\n");
+                if (x >= 0) {
+                    t = t.substring(0, x);
+                }
+                if (t.length() > 20) {
+                    t = t.substring(0, 20) + "...";
+                }
+                s += t;
             }
-            if (t.length() > 20) {
-                t = t.substring(0, 20) + "...";
-            }
-            s += t;
         }
         return s;
     }//}}}
