@@ -280,8 +280,8 @@ public class DocumentBuffer {
             indentComboBox.setSelectedItem(m_document.getProperty("indent"));
             
             //set up the whitespace and format output check-boxes.
-            boolean whitespace    = Boolean.valueOf(m_document.getProperty("whitespace-in-element-content", "true")).booleanValue();
-            boolean formatOutput = Boolean.valueOf(m_document.getProperty("format-output", "false")).booleanValue();
+            boolean whitespace    = Boolean.valueOf(m_document.getProperty("element-content-whitespace", "true")).booleanValue();
+            boolean formatOutput = Boolean.valueOf(m_document.getProperty("format-pretty-print", "false")).booleanValue();
             
             whitespaceCheckBox = new JCheckBox("Whitespace in element content", whitespace);
             formatCheckBox     = new JCheckBox("Format XML output", formatOutput);
@@ -359,8 +359,8 @@ public class DocumentBuffer {
         }//}}}
         
         public void saveOptions() {//{{{
-            m_document.setProperty("format-output", (new Boolean(formatCheckBox.isSelected())).toString());
-            m_document.setProperty("whitespace-in-element-content", (new Boolean(whitespaceCheckBox.isSelected())).toString());
+            m_document.setProperty("format-pretty-print", (new Boolean(formatCheckBox.isSelected())).toString());
+            m_document.setProperty("element-content-whitespace", (new Boolean(whitespaceCheckBox.isSelected())).toString());
             m_document.setProperty("encoding", encodingComboBox.getSelectedItem().toString());
             try {
                 m_document.setProperty("indent", (new Integer(indentComboBox.getSelectedItem().toString())).toString());

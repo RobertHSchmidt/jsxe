@@ -122,11 +122,11 @@ public class DefaultXMLDocument extends XMLDocument {
             // do this first so NullPointerExceptions are thrown
             returnValue = (String)props.setProperty(key, value);
             
-            if (key == "format-output" && Boolean.valueOf(value).booleanValue()) {
-                setProperty("whitespace-in-element-content", "false");
+            if (key == "format-pretty-print" && Boolean.valueOf(value).booleanValue()) {
+                setProperty("element-content-whitespace", "false");
             }
-            if (key == "whitespace-in-element-content" && Boolean.valueOf(value).booleanValue()) {
-                setProperty("format-output", "false");
+            if (key == "element-content-whitespace" && Boolean.valueOf(value).booleanValue()) {
+                setProperty("format-pretty-print", "false");
             }
             firePropertiesChanged(key);
             return returnValue;
@@ -219,16 +219,18 @@ public class DefaultXMLDocument extends XMLDocument {
         if (m_parsedMode) {
             
             //since we are in parsed mode let's serialize.
+            DOMOutput output = new DOMOutput(out, getProperty("encoding"));
             
-            DOMSerializer.DOMSerializerConfiguration config = new DOMSerializer.DOMSerializerConfiguration();
-            config.setParameter("format-output", getProperty("format-output"));
-            config.setParameter("whitespace-in-element-content", getProperty("whitespace-in-element-content"));
+            DOMSerializerConfiguration config = new DOMSerializerConfiguration();
+            config.setParameter("format-pretty-print", getProperty("format-pretty-print"));
+            config.setParameter("element-content-whitespace", getProperty("element-content-whitespace"));
             config.setParameter("indent", new Integer(getProperty("indent")));
             
             DOMSerializer serializer = new DOMSerializer(config);
-            serializer.setEncoding(getProperty("encoding"));
             
-            serializer.writeNode(out, m_document);
+            if (!serializer.write(m_document, output)) {
+                throw new IOException("Could not serialize XML document.");
+            }
             
         } else {
             
@@ -389,8 +391,8 @@ public class DefaultXMLDocument extends XMLDocument {
    // }//}}}
     
     private void setDefaultProperties() {//{{{
-        setProperty("format-output", "false");
-        setProperty("whitespace-in-element-content", "true");
+        setProperty("format-pretty-print", "false");
+        setProperty("element-content-whitespace", "true");
         setProperty("encoding", "UTF-8");
         setProperty("indent", "4");
     }//}}}
@@ -422,21 +424,15 @@ public class DefaultXMLDocument extends XMLDocument {
      * formatting options.
      */
     private void syncContentWithDOM() {//{{{
-        //Set up the serializer
-        DOMSerializer.DOMSerializerConfiguration config = new DOMSerializer.DOMSerializerConfiguration();
-        config.setParameter("format-output", getProperty("format-output"));
-        config.setParameter("whitespace-in-element-content", getProperty("whitespace-in-element-content"));
-        config.setParameter("indent", new Integer(getProperty("indent")));
-        DOMSerializer serializer = new DOMSerializer(config);
-        serializer.setEncoding(getProperty("encoding"));
-        
         //create a new content manager to be written to.
         ContentManager content = new ContentManager();
         //create the content manager's output stream
         ContentManagerOutputStream out = new ContentManagerOutputStream(content);
-        
-        //write to the content manager
-        serializer.writeNode(out, m_document);
+        try {
+            serialize(out);
+        } catch (IOException ioe) {
+            //Shouldn't happen.
+        }
         
         m_content = content;
     }//}}}

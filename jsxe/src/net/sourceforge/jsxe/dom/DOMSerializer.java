@@ -54,12 +54,13 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.ls.DOMWriter;
-import org.w3c.dom.ls.DOMWriterFilter;
+import org.w3c.dom.ls.LSSerializer;
+import org.w3c.dom.ls.LSSerializerFilter;
+import org.w3c.dom.ls.LSOutput;
 import org.apache.xerces.dom3.DOMConfiguration;
+import org.apache.xerces.dom3.DOMLocator;
 import org.apache.xerces.dom3.DOMError;
 import org.apache.xerces.dom3.DOMErrorHandler;
-import org.apache.xerces.dom3.DOMLocator;
 //}}}
 
 //{{{ Java base classes
@@ -71,96 +72,141 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 //}}}
 
 //}}}
 
-public class DOMSerializer implements DOMWriter {
+/**
+ * <p>An implementation of the DOM3 LSSerializer interface. This class supports
+ * everything that is supported by the DOMSerializerConfiguration class. Clients
+ *  can check if a feature is supported by calling canSetParameter() on the
+ * appropriate DOMSerializerConfiguration object.</p>
+ *
+ * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
+ * @version $Id$
+ */
+public class DOMSerializer implements LSSerializer {
     
+    /**
+     * <p>Creates a default DOMSerializer using the default options.</p>
+     */
     public DOMSerializer() {//{{{
         config = new DOMSerializerConfiguration();
-        setEncoding("UTF-8");
-        newLine = System.getProperty("line.separator");
+        m_newLine = System.getProperty("line.separator");
     }//}}}
     
+    /**
+     * <p>Creates a DOMSerializer that uses the configuration specified.</p>
+     * @param config The configuration to be used by this DOMSerializer object
+     */
     public DOMSerializer(DOMSerializerConfiguration config) {//{{{
         this.config = config;
-        setEncoding("UTF-8");
-        newLine = System.getProperty("line.separator");
+        m_newLine = System.getProperty("line.separator");
     }//}}}
     
-    //{{{ Implemented DOMWriter methods
+    //{{{ Implemented LSSerializer methods
     
     public DOMConfiguration getConfig() {//{{{
         return config;
     }//}}}
     
-    public String getEncoding() {//{{{
-        return encoding;
-    }//}}}
-    
-    public DOMWriterFilter getFilter() {//{{{
-        return filter;
+    public LSSerializerFilter getFilter() {//{{{
+        return m_filter;
     }//}}}
     
     public String getNewLine() {//{{{
-        return newLine;
+        return m_newLine;
     }//}}}
     
-    public void setEncoding(String encoding) {//{{{
-        if (encoding == null)
-            this.encoding = "UTF-8";
-        else
-            this.encoding = encoding;
-    }//}}}
-    
-    public void setFilter(DOMWriterFilter filter) {//{{{
-        this.filter=filter;
+    public void setFilter(LSSerializerFilter filter) {//{{{
+        m_filter=filter;
     }//}}}
     
     public void setNewLine(String newLine) {//{{{
-        //This method is my least favorite part of this class.
-        //How the heck are we supposed to create error locations if
-        //they can put anything in as a newLine?
-        if (newLine == null)
-            this.newLine = System.getProperty("line.separator");
-        else
-            this.newLine=newLine;
+        m_newLine=newLine;
     }//}}}
     
-    public boolean writeNode(OutputStream out, Node wnode) {//{{{
-        if (filter == null || filter.acceptNode(wnode) == 1) {
+    public boolean write(Node nodeArg, LSOutput destination) {//{{{
+        if (m_filter == null || m_filter.acceptNode(nodeArg) == 1) {
             
-            DefaultDOMLocator loc = new DefaultDOMLocator(wnode, 1, 1, 0, "");
+            //{{{ try to get the Writer object for our destination
+            Writer writer = destination.getCharacterStream();
+            String encoding = null;
+            
+            if (writer == null) {
+                //no character stream specified, try the byte stream.
+                OutputStream out = destination.getByteStream();
+                if (out != null) {
+                    
+                    try {
+                        writer = new OutputStreamWriter(out, destination.getEncoding());
+                        encoding = destination.getEncoding();
+                    } catch (UnsupportedEncodingException uee) {
+                        DefaultDOMLocator loc = new DefaultDOMLocator(nodeArg, 1, 1, 0, "");
+                        throwError(loc, "unsupported-encoding", uee);
+                        //This is a fatal error, quit.
+                        return false;
+                    }
+                } else {
+                    //no char stream or byte stream, try the uri
+                    String id = destination.getSystemId();
+                    if (id != null) {
+                        
+                        try {
+                            //We use URL since outputing to any other type of URI
+                            //is not possible.
+                            URL uri = new URL(id);
+                            URLConnection con = uri.openConnection();
+                            
+                            try  {
+                                //We want to try to output to the URI
+                                con.setDoOutput(true);
+                                //I don't see a problem with using caches
+                                //do you?
+                                con.setUseCaches(true);
+                            } catch (IllegalStateException ise) {
+                                //we are guaranteed to not be connected
+                            }
+                            
+                            con.connect();
+                            
+                            writer = new OutputStreamWriter(con.getOutputStream(), destination.getEncoding());
+                            
+                        } catch (MalformedURLException mue) {
+                            DefaultDOMLocator loc = new DefaultDOMLocator(nodeArg, 1, 1, 0, "");
+                            throwError(loc, "bad-uri", mue);
+                            //this is a fatal error
+                            return false;
+                        } catch (IOException ioe) {
+                            DefaultDOMLocator loc = new DefaultDOMLocator(nodeArg, 1, 1, 0, "");
+                            throwError(loc, "io-error", ioe);
+                            //this is a fatal error
+                            return false;
+                        }
+                        
+                    } else {
+                        DefaultDOMLocator loc = new DefaultDOMLocator(nodeArg, 1, 1, 0, "");
+                        throwError(loc, "no-output-specified", null);
+                        //this is a fatal error
+                        return false;
+                    }
+                }
+            }//}}}
             
             try {
-                
-                OutputStreamWriter writer = new OutputStreamWriter(out, encoding);
-                try {
-                    serializeNode(writer, wnode);
-                    return true;
-                } catch (DOMSerializerException dse) {
-                    Object rawHandler = config.getParameter("error-handler");
-                    if (rawHandler != null) {
-                        
-                        DOMErrorHandler handler = (DOMErrorHandler)rawHandler;
-                        
-                        DOMError error = dse.getError();
-                        
-                        handler.handleError(error);
-                    }
-                    //This is a fatal error, quit.
-                }
-            } catch (UnsupportedEncodingException uee) {
+                serializeNode(writer, nodeArg, encoding);
+                return true;
+            } catch (DOMSerializerException dse) {
                 Object rawHandler = config.getParameter("error-handler");
                 if (rawHandler != null) {
-                    
                     DOMErrorHandler handler = (DOMErrorHandler)rawHandler;
-                    
-                    DOMSerializerError error = new DOMSerializerError(loc, uee, DOMError.SEVERITY_FATAL_ERROR);
-                    
+                    DOMError error = dse.getError();
                     handler.handleError(error);
                 }
                 //This is a fatal error, quit.
@@ -169,306 +215,98 @@ public class DOMSerializer implements DOMWriter {
         return false;
     }//}}}
     
-    public String writeToString(Node wnode) throws DOMException {//{{{
+    public String writeToString(Node nodeArg) throws DOMException {//{{{
         StringWriter writer = new StringWriter();
         try {
-            serializeNode(writer, wnode);
+            serializeNode(writer, nodeArg);
         } catch (DOMSerializerException dse) {}
         return writer.toString();
+    }//}}}
+
+    public boolean writeToURI(Node nodeArg, java.lang.String uri) {//{{{
+        return false;
     }//}}}
     
     //}}}
     
-    public static class DOMSerializerConfiguration implements DOMConfiguration {//{{{
+    /**
+     * A temprorary main method to test the serialization class
+     */
+    public static void main(String[] args) {//{{{
         
-        public DOMSerializerConfiguration() {//{{{
-            
-            
-            //create a vector of the supported parameters
-            supportedParameters = new Vector(16);
-            supportedParameters.add("error-handler");
-            supportedParameters.add("canonical-form");
-            supportedParameters.add("cdata-sections");
-            supportedParameters.add("comments");
-            supportedParameters.add("datatype-normalization");
-            supportedParameters.add("discard-default-content");
-            supportedParameters.add("entities");
-            supportedParameters.add("infoset");
-            supportedParameters.add("namespaces");
-            supportedParameters.add("namespace-declarations");
-            supportedParameters.add("normalize-characters");
-            supportedParameters.add("split-cdata-sections");
-            supportedParameters.add("validate");
-            supportedParameters.add("validate-if-schema");
-            supportedParameters.add("whitespace-in-element-content");
-            supportedParameters.add("format-output");
-            supportedParameters.add("indent");
-            
-            //set the default boolean parameters for a DOMConfiguration
-            setFeature("canonical-form",                false);
-            setFeature("cdata-sections",                true);
-            setFeature("comments",                      true);
-            setFeature("datatype-normalization",        false);
-            setFeature("discard-default-content",       true);
-            setFeature("entities",                      false);
-            //infoset is not present because it is determined
-            //by checking the values of other features.
-            setFeature("namespaces",                    true);
-            setFeature("namespace-declarations",        true);
-            setFeature("normalize-characters",          false);
-            setFeature("split-cdata-sections",          true);
-            setFeature("validate",                      false);
-            setFeature("validate-if-schema",            false);
-            setFeature("whitespace-in-element-content", true);
-            
-            //set DOMSerializer specific features
-            setFeature("format-output",                 false);
-        }//}}}
-        
-        public DOMSerializerConfiguration(DOMConfiguration config) throws DOMException {//{{{
-            //set the default parameters for DOMConfiguration
-            setParameter("error-handler",                 config.getParameter("error-handler"));
-            
-            //set the default boolean parameters for a DOMConfiguration
-            setParameter("canonical-form",                config.getParameter("canonical-form"));
-            setParameter("cdata-sections",                config.getParameter("cdata-sections"));
-            setParameter("comments",                      config.getParameter("comments"));
-            setParameter("datatype-normalization",        config.getParameter("datatype-normalization"));
-            setParameter("discard-default-content",       config.getParameter("discard-default-content"));
-            setParameter("entities",                      config.getParameter("entities"));
-            setParameter("infoset",                       config.getParameter("infoset"));
-            setParameter("namespaces",                    config.getParameter("namespaces"));
-            setParameter("namespace-declarations",        config.getParameter("namespace-declarations"));
-            setParameter("normalize-characters",          config.getParameter("normalize-characters"));
-            setParameter("split-cdata-sections",          config.getParameter("split-cdata-sections"));
-            setParameter("validate",                      config.getParameter("validate"));
-            setParameter("validate-if-schema",            config.getParameter("validate-if-schema"));
-            setParameter("whitespace-in-element-content", config.getParameter("whitespace-in-element-content"));
-            
-            //set DOMSerializer specific features
-            setFeature("format-output",                 false);
-        }//}}}
-        
-        public boolean canSetParameter(String name, Object value) {///{{{
-            
-            if (value instanceof Boolean) {
-                boolean booleanValue = ((Boolean)value).booleanValue();
-                
-                //couldn't think of a slicker way to do this
-                //that was worth the time to implement
-                //and extra processing.
-                if (name == "canonical-form") {
-                    return !booleanValue;
-                }
-                if (name == "cdata-sections") {
-                    return true;
-                }
-                if (name == "comments") {
-                    return true;
-                }
-                if (name == "datatype-normalization") {
-                    return true;
-                }
-                if (name == "discard-default-content") {
-                    return true;
-                }
-                if (name == "entities") {
-                    return true;
-                }
-                if (name == "infoset") {
-                    return true;
-                }
-                if (name == "namespaces") {
-                    return true;
-                }
-                if (name == "namespace-declarations") {
-                    return true;
-                }
-                if (name == "normalize-characters") {
-                    return !booleanValue;
-                }
-                if (name == "split-cdata-sections") {
-                    return true;
-                }
-                if (name == "validate") {
-                    return !booleanValue;
-                }
-                if (name == "validate-if-schema") {
-                    return !booleanValue;
-                }
-                if (name == "whitespace-in-element-content") {
-                    return true;
-                }
-                if (name == "format-output") {
-                    return true;
-                }
-                return false;
-            } else {
-                if (name == "error-handler") {
-                    if (value instanceof DOMErrorHandler || value == null)
-                        return true;
-                }
-                if (name == "indent") {
-                    if (value instanceof Integer || value == null)
-                        return true;
-                }
-            }
-            return false;
-        }//}}}
-        
-        public Object getParameter(String name) throws DOMException {//{{{
-            
-            if (supportedParameters.indexOf(name) != -1) {
-                
-                if (name == "infoset") {
-                    boolean namespaceDeclarations = getFeature("namespace-declarations");
-                    boolean validateIfSchema      = getFeature("validate-if-schema");
-                    boolean entities              = getFeature("entities");
-                    boolean datatypeNormalization = getFeature("datatype-normalization");
-                    boolean cdataSections         = getFeature("cdata-sections");
-                    
-                    boolean whitespace = getFeature("whitespace-in-element-content");
-                    boolean comments   = getFeature("comments");
-                    boolean namespaces = getFeature("namespaces");
-                    
-                    return (new Boolean(!namespaceDeclarations &&
-                            !validateIfSchema &&
-                            !entities &&
-                            !datatypeNormalization &&
-                            !cdataSections &&
-                            whitespace &&
-                            comments &&
-                            namespaces));
-                } else {
-                    return parameters.get(name);
-                }
-                
-            } else {
-                
-                throw new DOMException(DOMException.NOT_FOUND_ERR ,"NOT_FOUND_ERR: Parameter "+name+" not recognized");
-                
-            }
-        }//}}}
-        
-        public void setParameter(String name, Object value) throws DOMException {//{{{
-            
-            //if a string, attempt to use it as a boolean value.
-            if (value instanceof String) {
-                value = new Boolean((String)value);
-            }
-            
-            if (supportedParameters.indexOf(name) != -1) {
-                if ( value != null ) {
-                    if (canSetParameter(name, value)) {
-                        //if the parameter is infoset
-                        //then force the other parameters to
-                        //values that the infoset option
-                        //requires.
-                        if (name == "infoset") {
-                            setFeature("namespace-declarations",false);
-                            setFeature("validate-if-schema",    false);
-                            setFeature("entities",              false);
-                            setFeature("datatype-normalization",false);
-                            setFeature("cdata-sections",        false);
-                            
-                            setFeature("whitespace-in-element-content", true);
-                            setFeature("comments",                      true);
-                            setFeature("namespaces",                    true);
-                            return;
-                        }
-                        if (name == "format-output" && ((Boolean)value).booleanValue()) {
-                            setFeature("whitespace-in-element-content", false);
-                        }
-                        if (name == "whitespace-in-element-content" && ((Boolean)value).booleanValue()) {
-                            setFeature("format-output", false);
-                        }
-                        
-                        parameters.put(name, value);
-                        
-                    } else {
-                        throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Parameter "+name+" and value "+value.toString()+" not supported.");
-                    }
-                } else {
-                    parameters.remove(name);
-                }
-            } else {
-                throw new DOMException(DOMException.NOT_FOUND_ERR, "Parameter "+name+" is not recognized.");
-            }
-        }//}}}
-        
-        public boolean getFeature(String name) throws DOMException {//{{{
-            if (name == "error-handler")
-                throw new DOMException(DOMException.NOT_FOUND_ERR, "NOT_FOUND_ERR: "+name+" is not a feature.");
-            return ((Boolean)getParameter(name)).booleanValue();
-            
-        }//}}}
-        
-        public void setFeature(String name, boolean value) throws DOMException {//{{{
-            setParameter(name, new Boolean(value));
-        }//}}}
-        
-        private Vector supportedParameters;
-        private Hashtable parameters = new Hashtable(16);
-        private DOMErrorHandler handler;
     }//}}}
     
     //{{{ Private members
     
     private class DOMSerializerError implements DOMError {//{{{
         
-        public DOMSerializerError(DOMLocator locator, Exception e, short s) {//{{{
-            exception = e;
-            location = locator;
-            severity = s;
+        public DOMSerializerError(DOMLocator locator, Exception e, short s, String type) {//{{{
+            m_exception = e;
+            m_location = locator;
+            m_severity = s;
+            m_type = type;
         }//}}}
         
         public DOMLocator getLocation() {//{{{
-            return location;
+            return m_location;
         }//}}}
         
         public String getMessage() {//{{{
-            return exception.getMessage();
+            return m_exception.getMessage();
         }//}}}
         
         public Object getRelatedData() {//{{{
-            // fix me
-            return null;
+            return m_location.getRelatedNode();
         }//}}}
         
         public Object getRelatedException() {//{{{
-            return exception;
+            return m_exception;
         }//}}}
         
         public short getSeverity() {//{{{
-            return severity;
+            return m_severity;
         }//}}}
         
         public String getType() {//{{{
-            // fix me
-            return "";
+            return m_type;
         }//}}}
         
-        private Exception exception;
-        private DOMLocator location;
-        private short severity;
+        private Exception m_exception;
+        private DOMLocator m_location;
+        private short m_severity;
+        private String m_type;
     }//}}}
     
     private void serializeNode(Writer writer, Node node) throws DOMSerializerException {//{{{
-        rSerializeNode(writer, node, "", 1, 1, 0);
+        serializeNode(writer, node, null);
     }//}}}
     
-    private void rSerializeNode(Writer writer, Node node, String currentIndent, int line, int column, int offset) throws DOMSerializerException {//{{{
+    /**
+     * Serializes the node to the writer specified
+     */
+    private void serializeNode(Writer writer, Node node, String encoding) throws DOMSerializerException {//{{{
+        rSerializeNode(writer, node, encoding, "", 1, 1, 0);
+    }//}}}
+    
+    /**
+     * Designed to be called recursively and maintain the state of the
+     * serialization.
+     */
+    private void rSerializeNode(Writer writer, Node node, String encoding, String currentIndent, int line, int column, int offset) throws DOMSerializerException {//{{{
         
-        boolean formatting = config.getFeature("format-output");
-        boolean whitespace = config.getFeature("whitespace-in-element-content");
+        boolean formatting = config.getFeature("format-pretty-print");
+        boolean whitespace = config.getFeature("element-content-whitespace");
         
         //This is used many times below as a temporary variable.
         String str = "";
         
-        if (filter == null || filter.acceptNode(node) == 1) {
+        if (m_filter == null || m_filter.acceptNode(node) == 1) {
             switch (node.getNodeType()) {
                 case Node.DOCUMENT_NODE://{{{
-                    String header = "<?xml version=\"1.0\" encoding=\""+encoding+"\"?>";
+                    String header = "<?xml version=\"1.0\"";
+                    if (encoding != null)
+                        header += " encoding=\""+encoding+"\"";
+                    header +="?>";
                     doWrite(writer, header, node, line, column, offset);
                     offset += header.length();
                     column += header.length();
@@ -477,14 +315,14 @@ public class DOMSerializer implements DOMWriter {
                     if (!formatting) {
                         column = 0;
                         line += 1;
-                        doWrite(writer, newLine, node, line, column, offset);
-                        offset += newLine.length();
+                        doWrite(writer, m_newLine, node, line, column, offset);
+                        offset += m_newLine.length();
                     }
                     
                     NodeList nodes = node.getChildNodes();
                     if (nodes != null) {
                         for (int i=0; i<nodes.getLength(); i++) {
-                            rSerializeNode(writer, nodes.item(i), currentIndent, line, column, offset);
+                            rSerializeNode(writer, nodes.item(i), encoding, currentIndent, line, column, offset);
                         }
                     }
                     
@@ -496,7 +334,7 @@ public class DOMSerializer implements DOMWriter {
                     if (formatting) {
                         //set to zero here for error handling (if doWrite throws exception).
                         column = 0;
-                        str = newLine + currentIndent;
+                        str = m_newLine + currentIndent;
                         doWrite(writer, str, node, line, column, offset);
                         column += currentIndent.length();
                         offset += str.length();
@@ -528,7 +366,7 @@ public class DOMSerializer implements DOMWriter {
                         if (children.getLength() <= 0) {
                             elementEmpty = true;
                         } else {
-                            if (!config.getFeature("whitespace-in-element-content")) {
+                            if (!config.getFeature("element-content-whitespace")) {
                                 boolean hasWSOnlyElements = true;
                                 for(int i=0; i<children.getLength();i++) {
                                     hasWSOnlyElements = hasWSOnlyElements &&
@@ -560,14 +398,14 @@ public class DOMSerializer implements DOMWriter {
                             
                             
                             for(int i=0; i<children.getLength();i++) {
-                                rSerializeNode(writer, children.item(i), currentIndent + indentUnit, line, column, offset);
+                                rSerializeNode(writer, children.item(i), encoding, currentIndent + indentUnit, line, column, offset);
                             }
                             
                             //don't add a new line if there is only one text node child.
                             if (formatting && !(children.getLength() == 1 && children.item(0).getNodeType() == Node.TEXT_NODE)) {
                                 //set to zero here for error handling (if doWrite throws exception).
                                 column = 0;
-                                str = newLine + currentIndent;
+                                str = m_newLine + currentIndent;
                                 doWrite(writer, str, node, line, column, offset);
                                 column += currentIndent.length();
                                 offset += str.length();
@@ -601,8 +439,8 @@ public class DOMSerializer implements DOMWriter {
                             if (node.getNextSibling()!=null || node.getPreviousSibling()!=null) {
                                 line++;
                                 column=0;
-                                doWrite(writer, newLine, node, line, column, offset);
-                                offset += newLine.length();
+                                doWrite(writer, m_newLine, node, line, column, offset);
+                                offset += m_newLine.length();
                             }
                         }
                         //pass through the text and add entities where we find
@@ -626,11 +464,11 @@ public class DOMSerializer implements DOMWriter {
                             if (str.equals("\"")) {
                                 str = "&quot;";
                             }
-                            if (str.equals(newLine)) {
+                            if (str.equals(m_newLine)) {
                                 line++;
                                 column=0;
-                                doWrite(writer, newLine, node, line, column, offset);
-                                offset += newLine.length();
+                                doWrite(writer, m_newLine, node, line, column, offset);
+                                offset += m_newLine.length();
                             } else {
                                 doWrite(writer, str, node, line, column, offset);
                                 column += str.length();
@@ -644,7 +482,7 @@ public class DOMSerializer implements DOMWriter {
                         if (formatting) {
                             //set to zero here for error handling (if doWrite throws exception)
                             column = 0;
-                            str = newLine + currentIndent;
+                            str = m_newLine + currentIndent;
                             doWrite(writer, str, node, line, column, offset);
                             column += currentIndent.length();
                             offset += str.length();
@@ -660,7 +498,7 @@ public class DOMSerializer implements DOMWriter {
                         if (formatting) {
                             //set to zero here for error handling (if doWrite throws exception)
                             column = 0;
-                            str = newLine + currentIndent;
+                            str = m_newLine + currentIndent;
                             doWrite(writer, str, node, line, column, offset);
                             column += currentIndent.length();
                             offset += str.length();
@@ -676,7 +514,7 @@ public class DOMSerializer implements DOMWriter {
                     if (formatting) {
                         //set to zero here for error handling (if doWrite throws exception)
                         column = 0;
-                        str = newLine + currentIndent;
+                        str = m_newLine + currentIndent;
                         doWrite(writer, currentIndent, node, line, column, offset);
                         column += currentIndent.length();
                         offset += str.length();
@@ -700,7 +538,7 @@ public class DOMSerializer implements DOMWriter {
                     if (formatting) {
                         //set to zero here for error handling (if doWrite throws exception).
                         column = 0;
-                        str = newLine + currentIndent;
+                        str = m_newLine + currentIndent;
                         doWrite(writer, str, node, line, column, offset);
                         column += currentIndent.length();
                         offset += str.length();
@@ -730,6 +568,9 @@ public class DOMSerializer implements DOMWriter {
         }
     }//}}}
     
+    /**
+     * Performs an actual write and implements error handling.
+     */
     private void doWrite(Writer writer, String str, Node wnode, int line, int column, int offset) throws DOMSerializerException {//{{{
         try {
             writer.write(str, 0, str.length());
@@ -740,7 +581,7 @@ public class DOMSerializer implements DOMWriter {
             
             DefaultDOMLocator loc = new DefaultDOMLocator(wnode, line, column, offset, "");
             
-            DOMSerializerError error = new DOMSerializerError(loc, ioe, DOMError.SEVERITY_FATAL_ERROR);
+            DOMSerializerError error = new DOMSerializerError(loc, ioe, DOMError.SEVERITY_FATAL_ERROR, "io-error");
             Object rawHandler = config.getParameter("error-handler");
             if (rawHandler != null) {
                 
@@ -755,9 +596,22 @@ public class DOMSerializer implements DOMWriter {
         }
     }//}}}
     
+    /**
+     * Throws an error, notifying the ErrorHandler object if necessary.
+     */
+    private void throwError(DOMLocator loc, String type, Exception e) {//{{{
+        Object rawHandler = config.getParameter("error-handler");
+        if (rawHandler != null) {
+            
+            DOMErrorHandler handler = (DOMErrorHandler)rawHandler;
+            DOMSerializerError error = new DOMSerializerError(loc, e, DOMError.SEVERITY_FATAL_ERROR, type);
+            handler.handleError(error);
+        }
+        
+    }//}}}
+    
     private DOMSerializerConfiguration config;
-    private DOMWriterFilter filter;
-    private String newLine;
-    private String encoding;
+    private LSSerializerFilter m_filter;
+    private String m_newLine;
     //}}}
 }
