@@ -29,7 +29,7 @@
     
     <property name="major.version" value="0"/>
     <property name="minor.version" value="1"/>
-    <property name="build.version" value="38"/>
+    <property name="build.version" value="39"/>
     <property name="app.version" value="${major.version}.${minor.version}.${build.version}"/>
     <property name="app_version" value="${major.version}_${minor.version}_${build.version}"/>
     
@@ -112,7 +112,9 @@
       <entry key="app.name" value="${app.name}"/>
       <entry key="build.time" type="date" value="now" pattern="dd/MM/yyyy HH:mm"/>
       <entry key="build.type" value="development"/>
-      <entry key="app.version" value="${app.version}"/>
+      <entry key="major.version" value="${major.version}"/>
+      <entry key="minor.version" value="${minor.version}"/>
+      <entry key="build.version" value="${build.version}"/>
     </propertyfile>
     
     <jar jarfile="${app.name}.jar" manifest="${app.name}.manifest">
