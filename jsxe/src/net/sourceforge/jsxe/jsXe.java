@@ -43,6 +43,7 @@ import net.sourceforge.jsxe.dom.DOMAdapter;
 //}}}
 
 //{{{ Swing Classes
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 //}}}
@@ -186,6 +187,10 @@ public class jsXe {
         return new Dimension(windowWidth, windowHeight);
     }//}}}
     
+    public static ImageIcon getIcon() {//{{{
+        return jsXeIcon;
+    }//}}}
+    
     /*
     *************************************************
     Data Fields
@@ -199,5 +204,6 @@ public class jsXe {
     private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?><default_element>default_node</default_element>";
     private static int windowWidth=600;
     private static int windowHeight=600;
+    private static ImageIcon jsXeIcon = new ImageIcon("net/sourceforge/jsxe/icons/jsxe.jpg", "jsXe");
     //}}}
 }

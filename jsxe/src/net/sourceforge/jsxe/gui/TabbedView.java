@@ -40,6 +40,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.action.FileCloseAction;
 import net.sourceforge.jsxe.action.FileExitAction;
 import net.sourceforge.jsxe.action.FileNewAction;
@@ -165,8 +166,7 @@ public class TabbedView extends JFrame {
         //Set window options
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        ImageIcon icon = new ImageIcon("icons"+System.getProperty("file.separator")+"jsxe.jpg", "Jsxe");
-        setIconImage(icon.getImage());
+        setIconImage(jsXe.getIcon().getImage());
     }//}}}
     
     public DocumentPanel getDocumentPanel() {//{{{
