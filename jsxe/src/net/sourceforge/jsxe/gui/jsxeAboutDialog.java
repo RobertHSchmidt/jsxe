@@ -66,9 +66,9 @@ public class jsxeAboutDialog extends AbstractAction {
         String aboutMsg = 
         jsXe.getAppTitle() + " " + jsXe.getVersion()+"\n"+
         "Java Simple XML Editor\n"+
-        "Copyright (C) 2002 ian Lewis\n\n"+
+        "Copyright (C) 2002 Ian Lewis\n\n"+
         jsXe.getAppTitle() + " is an XML editor written using swing and JAXP 1.1\n\n"+
-        "Authors: ian Lewis <iml001@bridgewater.edu>\n\n"+
+        "Authors: Ian Lewis <IanLewis@members.fsf.org>\n\n"+
         "Released under the terms of the GNU General Public License";
         
         Object[] okButton = {"Ok"};
