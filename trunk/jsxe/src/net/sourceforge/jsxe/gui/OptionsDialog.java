@@ -72,7 +72,7 @@ public class OptionsDialog extends JDialog {
         document = panel.getXMLDocument();
         
         //Create components
-        OptionsPanel OptionsNorthPanel = panel.getOptionsPanel();
+        OptionsNorthPanel = panel.getOptionsPanel();
         OptionsSouthPanel = new JPanel();
         JButton OKButton = new JButton("OK");
         JButton CancelButton = new JButton("Cancel");
