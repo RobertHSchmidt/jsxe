@@ -226,7 +226,7 @@ public class DefaultViewTreeNode implements MutableTreeNode {
     //{{{ setParent()
     
     public void setParent(MutableTreeNode newParent) {
-        m_node.setParent(m_node);
+        m_node.setParent(((DefaultViewTreeNode)newParent).getAdapterNode());
         removeFromParent();
         m_parent = (DefaultViewTreeNode)newParent;
     }//}}}
@@ -270,7 +270,7 @@ public class DefaultViewTreeNode implements MutableTreeNode {
     //{{{ isExpanded()
     
     /**
-     * Gets whether this tree node should be expanded or not
+     * Gets whether this tree node should be expanded or not when viewable
      * @return true if this node should be expanded in the JTree
      */
     public boolean isExpanded() {
