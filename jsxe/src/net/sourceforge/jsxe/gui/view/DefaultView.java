@@ -296,26 +296,21 @@ public class DefaultView extends DocumentView {
     private static final String viewname="documentview.default";
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {
-           currentdoc.DocumentHasChanged();
            attributesTable.updateUI();
         }
     };//}}}
     private TreeModelListener treeListener = new TreeModelListener() {//{{{
         
         public void treeNodesChanged(TreeModelEvent e) {
-            currentdoc.DocumentHasChanged();
             updateTree();
         }
         public void treeNodesInserted(TreeModelEvent e) {
-            currentdoc.DocumentHasChanged();
             updateTree();
         }
         public void treeNodesRemoved(TreeModelEvent e) {
-            currentdoc.DocumentHasChanged();
             updateTree();
         }
         public void treeStructureChanged(TreeModelEvent e) {
-            currentdoc.DocumentHasChanged();
             updateTree();
         }
         
@@ -323,15 +318,12 @@ public class DefaultView extends DocumentView {
     private DocumentListener docListener = new DocumentListener() {//{{{
         
         public void changedUpdate(DocumentEvent e) {
-            currentdoc.DocumentHasChanged();
             updateTree();
         }
         public void insertUpdate(DocumentEvent e) {
-            currentdoc.DocumentHasChanged();
             updateTree();
         }
         public void removeUpdate(DocumentEvent e) {
-            currentdoc.DocumentHasChanged();
             updateTree();
         };
         
