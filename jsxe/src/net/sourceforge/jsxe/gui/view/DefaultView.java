@@ -84,6 +84,7 @@ import org.w3c.dom.Node;
 //}}}
 
 //{{{ Java base classes
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 //}}}
@@ -92,7 +93,7 @@ import java.util.Vector;
 
 public class DefaultView extends DocumentView {
     
-    protected DefaultView() {//{{{
+    public DefaultView() {//{{{
         
         setLayout(new BorderLayout());
         
@@ -130,7 +131,18 @@ public class DefaultView extends DocumentView {
         //}}}
     } //}}}
     
-    public void setDocument(TabbedView view, XMLDocument document) {//{{{
+    public void setDocument(TabbedView view, XMLDocument document) throws IOException {//{{{
+        try {
+            document.validate();
+        } catch (Exception e) {
+            String errormsg = "Could not validate XML Document.\n"+
+            "Default View requires XML documents to be well-formed.\n\n"+
+            e.toString();
+            throw new IOException(errormsg);
+        }
+        
+        close(view);
+        
         AdapterNode adapter = new AdapterNode(document.getDocument());
         
         DefaultViewTreeModel treeModel = new DefaultViewTreeModel(this, document);

@@ -27,17 +27,18 @@
     </jar>
   </target>
 
-  <target name="clean" description="clean up" >
+  <target name="clean" description="clean up">
     <delete>
+      <fileset dir="." includes="jsXe.jar"/>
       <fileset dir="." includes="**/*.class"/>
-			<fileset dir="." includes="**/*~" defaultexcludes="no"/>
-			<fileset dir="." includes="**/#*#" defaultexcludes="no"/>
-			<fileset dir="." includes="**/*.rej"/>
-			<fileset dir="." includes="**/*.orig"/>
-			<fileset dir="." includes="**/.*.swp"/>
-			<fileset dir="." includes="**/.#*"/>
-			<fileset dir="." includes="**/.new*"/>
-			<fileset dir="." includes="**/.directory"/>
+      <fileset dir="." includes="**/*~" defaultexcludes="no"/>
+      <fileset dir="." includes="**/#*#" defaultexcludes="no"/>
+      <fileset dir="." includes="**/*.rej"/>
+      <fileset dir="." includes="**/*.orig"/>
+      <fileset dir="." includes="**/.*.swp"/>
+      <fileset dir="." includes="**/.#*"/>
+      <fileset dir="." includes="**/.new*"/>
+      <fileset dir="." includes="**/.directory"/>
     </delete>
   </target>
 

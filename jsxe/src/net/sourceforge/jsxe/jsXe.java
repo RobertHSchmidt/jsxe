@@ -119,21 +119,28 @@ public class jsXe {
         TabbedView tabbedview = new TabbedView();
         
         //{{{ Parse command line arguments
+        
         if (args.length >= 1) {
+            
             if (!openXMLDocuments(tabbedview, args)) {
-                if (!openXMLDocument(tabbedview, DefaultDocument)) {
-                    System.err.println(getAppTitle() + ": Internal ERROR: opening default document");
-                    System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
-                    System.exit(1);
+                try {
+                    if (!openXMLDocument(tabbedview, getDefaultDocument())) {
+                        exiterror(tabbedview, "Could not open default document.",1);
+                    }
+                } catch (IOException ioe) {
+                    exiterror(tabbedview, "Could not open default document: " + ioe.toString(),1);
                 }
             }
         } else {
-            if (!openXMLDocument(tabbedview, DefaultDocument)) {
-                System.err.println(getAppTitle() + ": Internal ERROR: opening default document");
-                System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
-                System.exit(1);
+            try {
+                if (!openXMLDocument(tabbedview, getDefaultDocument())) {
+                    exiterror(tabbedview, "Could not open default document.",1);
+                }
+            } catch (IOException ioe) {
+                exiterror(tabbedview, "Could not open default document: " + ioe.toString(),1);
             }
-        }//}}}
+        }
+        //}}}
         
         tabbedview.show();
     }//}}}
@@ -142,7 +149,7 @@ public class jsXe {
         return MajorVersion + "." + MinorVersion + "." + BuildVersion + " " + BuildType;
     }//}}}
     
-    public static boolean showOpenFileDialog(TabbedView view) {//{{{
+    public static boolean showOpenFileDialog(TabbedView view) throws IOException {//{{{
             // if current file is null, defaults to home directory
             DocumentView blah = view.getDocumentView();
             XMLDocument blah2 = blah.getXMLDocument();
@@ -182,7 +189,7 @@ public class jsXe {
             return true;
     }//}}}
     
-    public static boolean openXMLDocument(TabbedView view, File file) {//{{{
+    public static boolean openXMLDocument(TabbedView view, File file) throws IOException {//{{{
         
         if (file == null)
             return false;
@@ -199,24 +206,16 @@ public class jsXe {
             if (docfile != null) {
                 if (caseInsensitiveFilesystem) {
                     
-                    try {
-                        if (file.getCanonicalPath().equalsIgnoreCase(docfile.getCanonicalPath())) {
-                            view.setDocument(doc);
-                            return true;
-                        }
-                    } catch (IOException ioe) {
-                        return false;
+                    if (file.getCanonicalPath().equalsIgnoreCase(docfile.getCanonicalPath())) {
+                        view.setDocument(doc);
+                        return true;
                     }
                     
                 } else {
                     
-                    try {
-                        if (file.getCanonicalPath().equals(docfile.getCanonicalPath())) {
-                            view.setDocument(doc);
-                            return true;
-                        }
-                    } catch (IOException ioe) {
-                        return false;
+                    if (file.getCanonicalPath().equals(docfile.getCanonicalPath())) {
+                        view.setDocument(doc);
+                        return true;
                     }
                 }
             }
@@ -231,46 +230,29 @@ public class jsXe {
             
             if (document != null) {
                 //for now do not open the file unless it validates.
+                
                 try {
-                    
-                    document.validate();
-                    
                     XMLDocuments.add(document);
                     view.addDocument(document);
-                    
-                    return true;
-                    
-                } catch(SAXParseException spe) {
-                    JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+                } catch (IOException ioe) {
+                    //recover by removing the document
+                    XMLDocuments.remove(document);
+                    throw ioe;
                 }
-                catch (SAXException sxe) {
-                    JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-                }
-                catch (ParserConfigurationException pce) {
-                    JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-                }
-                catch (IOException ioe) {
-                    JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-                }
+                return true;
             }
         }
-        catch (FileNotFoundException fnfe) {
-            JOptionPane.showMessageDialog(view, fnfe, "File Not Found", JOptionPane.WARNING_MESSAGE);
-        }
-        catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-        } 
         catch (UnrecognizedDocTypeException udte) {}
         
         return false;
         
     }//}}}
     
-    public static boolean openXMLDocument(TabbedView view, String doc) {//{{{
+    public static boolean openXMLDocument(TabbedView view, String doc) throws IOException {//{{{
         return openXMLDocument(view, new StringReader(doc));
     }//}}}
     
-    public static boolean openXMLDocument(TabbedView view, Reader reader) {//{{{
+    public static boolean openXMLDocument(TabbedView view, Reader reader) throws IOException {//{{{
         //We are assuming the contents of the reader do not
         //exist on disk and therefore could not be opened already.
         //right now unrecognized doc exceptions should not be thrown.
@@ -280,31 +262,19 @@ public class jsXe {
             XMLDocument document = factory.newXMLDocument(reader);
             if (document != null) {
                 //for now do not open the file unless it validates.
+                
                 try {
-                    
-                    document.validate();
-                    
                     XMLDocuments.add(document);
                     view.addDocument(document);
-                    
-                    return true;
-                    
-                }  catch(SAXParseException spe) {
-                    JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+                } catch (IOException ioe) {
+                    //recover by removing the document
+                    XMLDocuments.remove(document);
+                    throw ioe;
                 }
-                catch (SAXException sxe) {
-                    JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-                }
-                catch (ParserConfigurationException pce) {
-                    JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-                }
-                catch (IOException ioe) {
-                    JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-                }
+                
+                return true;
             }
             
-        } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
         }
         catch (UnrecognizedDocTypeException udte) {}
         
@@ -319,7 +289,11 @@ public class jsXe {
             //success becomes true if at least one document is opened
             //successfully.
             if (args[i] != null) {
-                success = success || openXMLDocument(view, new File(args[i]));
+                try {
+                    success = success || openXMLDocument(view, new File(args[i]));
+                } catch (IOException ioe) {
+                    //I/O error doesn't change value of success
+                }
             }
         }
         return success;
@@ -329,8 +303,13 @@ public class jsXe {
     public static boolean closeXMLDocument(TabbedView view, XMLDocument document) {//{{{
         view.removeDocument(document);
         XMLDocuments.remove(document);
-        if (view.getDocumentCount() == 0)
-            openXMLDocument(view, DefaultDocument);
+        if (view.getDocumentCount() == 0) {
+            try {
+                openXMLDocument(view, getDefaultDocument());
+            } catch (IOException ioe) {
+                exiterror(view, "Could not open default document.", 1);
+            }
+        }
         return true;
     }//}}}
     
@@ -376,12 +355,14 @@ public class jsXe {
     }//}}}
     
     public static void exiterror(TabbedView view, String errormsg, int errorcode) {//{{{
-        String errorhdr = "jsXe has encountered a fatal error and is unable to continue.\n";
-        errorhdr        +="This is most likely a bug and should be reported to the jsXe\n";
-        errorhdr        +="developers. Please fill out a full bug report at\n";
-        errorhdr        +="http://www.sourceforge.net/projects/jsxe/\n\n";
-        
-        JOptionPane.showMessageDialog(view, errorhdr + errormsg, "Fatal Error", JOptionPane.WARNING_MESSAGE);
+        if (view != null) {
+            String errorhdr = "jsXe has encountered a fatal error and is unable to continue.\n";
+            errorhdr        +="This is most likely a bug and should be reported to the jsXe\n";
+            errorhdr        +="developers. Please fill out a full bug report at\n";
+            errorhdr        +="http://www.sourceforge.net/projects/jsxe/\n\n";
+            
+            JOptionPane.showMessageDialog(view, errorhdr + errormsg, "Fatal Error", JOptionPane.WARNING_MESSAGE);
+        }
         
         //print the error to the command line also.
         System.err.println(getAppTitle() + ": jsXe has encountered a fatal error and is unable to continue.");

@@ -54,6 +54,10 @@ import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 //}}}
 
+//{{{ Java Base classes
+import java.io.IOException;
+//}}}
+
 //}}}
 
 public class FileNewAction extends AbstractAction {
@@ -65,7 +69,14 @@ public class FileNewAction extends AbstractAction {
     }//}}}
     
     public void actionPerformed(ActionEvent e) {//{{{
-        jsXe.openXMLDocument(view, jsXe.getDefaultDocument());
+        try {
+            boolean success = jsXe.openXMLDocument(view, jsXe.getDefaultDocument());
+            if (!success) {
+                jsXe.exiterror(view, "Could not open default document.",1);
+            }
+        } catch (IOException ioe) {
+            jsXe.exiterror(view, "Could not open default document: " + ioe.toString(),1);
+        }
     }//}}}
     
     //{{{ Private members

@@ -55,6 +55,10 @@ import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 //}}}
 
+//{{{ Java Base classes
+import java.io.IOException;
+//}}}
+
 //}}}
 
 public class FileOpenAction extends AbstractAction {
@@ -66,9 +70,15 @@ public class FileOpenAction extends AbstractAction {
     }//}}}
     
     public void actionPerformed(ActionEvent e) {//{{{
-        if (!jsXe.showOpenFileDialog(view)) {
-            JOptionPane.showMessageDialog(view, "Could not open file.", "IO Error", JOptionPane.WARNING_MESSAGE);
+        try {
+            boolean success = jsXe.showOpenFileDialog(view);
+            if (!success) {
+                JOptionPane.showMessageDialog(view, "Could not open file.", "I/O Error", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(view, ioe, "IO Error", JOptionPane.WARNING_MESSAGE);
         }
+        
     }//}}}
     
     //{{{ Public members
