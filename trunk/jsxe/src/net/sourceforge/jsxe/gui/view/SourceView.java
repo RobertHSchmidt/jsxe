@@ -134,22 +134,25 @@ public class SourceView extends DocumentView {
     
     public void close(TabbedView view) {//{{{
         
-        currentdoc.setModel(textarea.getText());
+        //do nothing if there are no documents open.
+        if (currentdoc != null) {
+            currentdoc.setModel(textarea.getText());
         
-        if (!jsXe.isExiting()) {
-            try {
-                currentdoc.validate();
-            } catch(SAXParseException spe) {
-                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-            }
-            catch (SAXException sxe) {
-                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-            }
-            catch (ParserConfigurationException pce) {
-                JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-            }
-            catch (IOException ioe) {
-                JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            if (!jsXe.isExiting()) {
+                try {
+                    currentdoc.validate();
+                } catch(SAXParseException spe) {
+                    JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+                }
+                catch (SAXException sxe) {
+                    JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+                }
+                catch (ParserConfigurationException pce) {
+                    JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
+                }
+                catch (IOException ioe) {
+                    JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                }
             }
         }
     }//}}}

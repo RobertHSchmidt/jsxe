@@ -53,6 +53,7 @@ import net.sourceforge.jsxe.gui.TabbedView;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.JEditorPane;
@@ -74,6 +75,8 @@ import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 //}}}
 
 //{{{ DOM classes
@@ -91,25 +94,28 @@ public class DefaultView extends DocumentView {
     
     protected DefaultView() {//{{{
         
+        setLayout(new BorderLayout());
+        
         JScrollPane treeView = new JScrollPane(tree);
         
-        //Create html editor pane
+        //{{{ Create html editor pane
         htmlPane.setEditable(true);
         JScrollPane htmlView = new JScrollPane(htmlPane);
+        //}}}
         
         //create a table model
         JScrollPane attrView = new JScrollPane(attributesTable);
         
-        //layout of the panes is defined by splitpanes
+        tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
+        
+        //{{{ Create and set up the splitpanes
         vertSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treeView, attrView);
         vertSplitPane.setContinuousLayout(true);
         
         horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, vertSplitPane, htmlView ); 
         horizSplitPane.setContinuousLayout(true);
         
-        tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
         
-        setLayout(new BorderLayout());
         add(horizSplitPane, BorderLayout.CENTER);
         
         int vertical = Integer.valueOf(jsXe.getProperty(viewname+".splitpane.vert.loc")).intValue();
@@ -117,6 +123,12 @@ public class DefaultView extends DocumentView {
         
         vertSplitPane.setDividerLocation(vertical);
         horizSplitPane.setDividerLocation(horizontal);
+        //}}}
+        
+        //{{{ Create and set up the Context menu
+            popup = new JPopupMenu();
+            
+        //}}}
     } //}}}
     
     public void setDocument(TabbedView view, XMLDocument document) {//{{{
@@ -178,11 +190,14 @@ public class DefaultView extends DocumentView {
     }//}}}
     
     public void close(TabbedView view) {//{{{
-        String vert = Integer.toString(vertSplitPane.getDividerLocation());
-        String horiz = Integer.toString(horizSplitPane.getDividerLocation());
-        
-        jsXe.setProperty(viewname+".splitpane.vert.loc",vert);
-        jsXe.setProperty(viewname+".splitpane.horiz.loc",horiz);
+        //do nothing if there are no documents open
+        if (currentdoc != null) {
+            String vert = Integer.toString(vertSplitPane.getDividerLocation());
+            String horiz = Integer.toString(horizSplitPane.getDividerLocation());
+            
+            jsXe.setProperty(viewname+".splitpane.vert.loc",vert);
+            jsXe.setProperty(viewname+".splitpane.horiz.loc",horiz);
+        }
     }//}}}
     
     //{{{ Private Members
@@ -243,11 +258,29 @@ public class DefaultView extends DocumentView {
         
     }//}}}
     
+    class PopupListener extends MouseAdapter {//{{{
+        public void mousePressed(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        public void mouseReleased(MouseEvent e) {
+            maybeShowPopup(e);
+        }
+
+        private void maybeShowPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                popup.show(e.getComponent(),
+                           e.getX(), e.getY());
+            }
+        }
+    }//}}}
+    
     private JTree tree = new JTree();
     private JEditorPane htmlPane = new JEditorPane("text/plain","");
     private JTable attributesTable = new JTable();
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
+    private JPopupMenu popup;
     private XMLDocument currentdoc;
     private static final String viewname="documentview.default";
     private TableModelListener tableListener = new TableModelListener() {//{{{

@@ -132,6 +132,7 @@ public class TabbedView extends JFrame {
     public void addDocument(XMLDocument doc) {//{{{
         Rectangle bounds = getBounds();
         if (doc != null) {
+            docview.close(this);
             docview.setDocument(this,doc);
             JPanel dummypanel = new JPanel(new BorderLayout());
             dummypanel.add(docview, BorderLayout.CENTER);
@@ -146,6 +147,7 @@ public class TabbedView extends JFrame {
             XMLDocument[] docs = jsXe.getXMLDocuments();
             for (int i=0; i < docs.length; i++) {
                 if (docs[i] == doc) {
+                    docview.close(this);
                     docview.setDocument(this,doc);
                     tabbedPane.setSelectedIndex(i);
                 }
