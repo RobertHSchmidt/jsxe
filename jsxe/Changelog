@@ -1,3 +1,8 @@
+05/30/2003  version 0.2 pre5    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Removed references to the DocumentBuffer class in the DocumentView 
+      classes.
+
 05/26/2004  version 0.2 pre4    Ian Lewis <IanLewis@member.fsf.org>
 
     * Removed redundant call to fireNameChanged() in DocumentBuffer

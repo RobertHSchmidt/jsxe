@@ -23,10 +23,10 @@ TODO:
     
 * Version 0.2 beta
     
-    * Make DocumentViews use XMLDocuments instead of DocumentBuffers. This
+    * Remove references to the TabbedView class in DocumentViews. This
       will allow DocumentViews and XMLDocuments to be used as a separate
       packages that can be imbedded in other applications. DocumentViews are
-      too specific to jsXe. Need to removed references to the TabbedView also.
+      too specific to jsXe.
     
     * Create new packages for the XMLDocument and DocumentViews. Provide
       javadoc on the jsXe website. Rename AdapterNodes to something more

@@ -28,7 +28,7 @@
 		<property name="javadoc.link" value="http://java.sun.com/j2se/1.3/docs/api/"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="2"/>
-		<property name="build.description" value="pre4"/>
+		<property name="build.description" value="pre5"/>
 		<property name="app.version" value="${major.version}.${minor.version} ${build.description}"/>
 		<property name="app_version" value="${major.version}_${minor.version}${build.description}"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>

@@ -41,7 +41,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.DocumentBuffer;
+import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
@@ -66,15 +66,15 @@ import java.io.IOException;
  */
 public abstract class DocumentView extends JPanel {
     
-    //{{{ setDocumentBuffer()
+    //{{{ setXMLDocument()
     /**
-     * Sets the current document buffer. This method is used when you want to
+     * Sets the current document. This method is used when you want to
      * view another document using this view object.
      * @param view the ownerview that made the request
-     * @param buffer the new buffer to view
-     * @throws IOException if the buffer cannot be viewed using this view
+     * @param document the new document to view
+     * @throws IOException if the document cannot be viewed using this view
      */
-    public abstract void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException;
+    public abstract void setXMLDocument(TabbedView view, XMLDocument document) throws IOException;
     //}}}
     
     //{{{ getMenus()
@@ -95,12 +95,12 @@ public abstract class DocumentView extends JPanel {
     public abstract OptionsPanel getOptionsPanel();
     //}}}
     
-    //{{{ getDocumentBuffer()
+    //{{{ getXMLDocument()
     /**
-     * Gets the DocumentBuffer that this view is currently using.
-     * @return the DocumentBuffer for this view
+     * Gets the XMLDocument that this view is currently using.
+     * @return the XMLDocument for this view
      */
-    public abstract DocumentBuffer getDocumentBuffer();
+    public abstract XMLDocument getXMLDocument();
     //}}}
     
     //{{{ getName()

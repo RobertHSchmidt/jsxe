@@ -88,7 +88,7 @@ public class FileSaveAsAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {
         try {
-            view.getDocumentView().getDocumentBuffer().saveAs(view);
+            view.getDocumentBuffer().saveAs(view);
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
         }
