@@ -138,6 +138,37 @@ public class DOMSerializer {
                 if (formatText)
                     text = text.trim();
                 if (!text.equals("")) {
+                    //pass through the text and add entities where we find
+                    // '>' or '<' characters
+                    for (int i=0; i<text.length();i++) {
+                        //this must be first or it picks up the other
+                        //entities.
+                        if (text.charAt(i)=='&') {
+                            String before = text.substring(0,i);
+                            String after = text.substring(i+1);
+                            text = before + "&amp;";
+                        }
+                        if (text.charAt(i)=='>') {
+                            String before = text.substring(0,i);
+                            String after = text.substring(i+1);
+                            text = before + "&gt;";
+                        }
+                        if (text.charAt(i)=='<') {
+                            String before = text.substring(0,i);
+                            String after = text.substring(i+1);
+                            text = before + "&lt;";
+                        }
+                        if (text.charAt(i)=='\'') {
+                            String before = text.substring(0,i);
+                            String after = text.substring(i+1);
+                            text = before + "&apos;";
+                        }
+                        if (text.charAt(i)=='\"') {
+                            String before = text.substring(0,i);
+                            String after = text.substring(i+1);
+                            text = before + "&quot;";
+                        }
+                    }
                     writer.write(indentLevel + text);
                     writer.write(lineSeparator);
                 }
