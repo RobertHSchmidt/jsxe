@@ -41,6 +41,7 @@ import java.util.jar.*;
 import java.util.zip.*;
 import java.lang.reflect.Modifier;
 import net.sourceforge.jsxe.util.ArrayListEnumeration;
+import net.sourceforge.jsxe.util.Log;
 
 //}}}
 
@@ -551,12 +552,21 @@ public class JARClassLoader extends ClassLoader {
     //{{{ setProperties() method
     
     private void setProperties(JarFile jarFile) throws IOException {
-        String pluginName = getManifestAttribute(jarFile, Attributes.Name.IMPLEMENTATION_TITLE);
+        String pluginName  = getManifestAttribute(jarFile, Attributes.Name.IMPLEMENTATION_TITLE);
+        String mainClass   = getManifestAttribute(jarFile, Attributes.Name.MAIN_CLASS);
+        String implVersion = getManifestAttribute(jarFile, Attributes.Name.IMPLEMENTATION_VERSION);
+        String url         = getManifestAttribute(jarFile, Attributes.Name.IMPLEMENTATION_URL);
         if (pluginName != null) {
             m_pluginProperties.setProperty(pluginName+".name", pluginName);
-            m_pluginProperties.setProperty(pluginName+".main-class", getManifestAttribute(jarFile, Attributes.Name.MAIN_CLASS));
-            m_pluginProperties.setProperty(pluginName+".version", getManifestAttribute(jarFile, Attributes.Name.IMPLEMENTATION_VERSION));
-            m_pluginProperties.setProperty(pluginName+".url", getManifestAttribute(jarFile, Attributes.Name.IMPLEMENTATION_URL));
+            if (mainClass != null) {
+                m_pluginProperties.setProperty(pluginName+".main-class", mainClass);
+            }
+            if (implVersion != null) {
+                m_pluginProperties.setProperty(pluginName+".version", implVersion);
+            }
+            if (url != null) {
+                m_pluginProperties.setProperty(pluginName+".url", url);
+            }
             
             //Set dependency properties
             ZipEntry entry = jarFile.getEntry("dependency.props");
@@ -580,8 +590,10 @@ public class JARClassLoader extends ClassLoader {
     
     private void startPlugin(JarFile jarfile) throws IOException, PluginDependencyException, PluginLoadException {
         
+        Log.log(Log.NOTICE, this, "Attempting to start plugin from jar file "+jarfile.getName());
+        
         String mainPluginClass = getManifestAttribute(jarfile, Attributes.Name.MAIN_CLASS);
-        //TODO String pluginName = getManifestAttribute(jarfile, Attributes.Name.IMPLEMENTATION_TITLE);
+        String pluginName = getManifestAttribute(jarfile, Attributes.Name.IMPLEMENTATION_TITLE);
         
         checkDependencies(jarfile);
         
@@ -598,14 +610,16 @@ public class JARClassLoader extends ClassLoader {
                     
                     if (ViewPlugin.class.isAssignableFrom(pluginClass)) {
                         //It's a view plugin
+                        Log.log(Log.NOTICE, this, "Started View Plugin: "+pluginName);
                         ViewPlugin viewPlugin = (ViewPlugin)plugin;
-                        //TODO m_viewPlugins.put(pluginName, viewPlugin);
-                        m_viewPlugins.put(viewPlugin.getName(), viewPlugin);
+                        m_viewPlugins.put(pluginName, viewPlugin);
+                        //m_viewPlugins.put(viewPlugin.getName(), viewPlugin);
                     } else {
                         //It's an Action plugin
+                        Log.log(Log.NOTICE, this, "Started Action Plugin: "+pluginName);
                         ActionPlugin actionPlugin = (ActionPlugin)plugin;
-                        //TODO m_actionPlugins.put(pluginName, actionPlugin);
-                        m_actionPlugins.put(actionPlugin.getName(), actionPlugin);
+                        m_actionPlugins.put(pluginName, actionPlugin);
+                        //m_actionPlugins.put(actionPlugin.getName(), actionPlugin);
                     }
                 } else {
                     /*
@@ -631,7 +645,18 @@ public class JARClassLoader extends ClassLoader {
     private String getManifestAttribute(JarFile file, Attributes.Name name) throws IOException {
         Manifest manifest = file.getManifest();
         if (manifest != null) {
-            return manifest.getMainAttributes().getValue(name);
+            Attributes attr = manifest.getMainAttributes();
+            String value = null;
+            if (attr != null) {
+                value = attr.getValue(name);
+            } 
+            if (value == null) {
+                attr = manifest.getAttributes("common");
+                if (attr != null) {
+                    value = attr.getValue(name);
+                }
+            }
+            return value;
         } else {
             return null;
         }
