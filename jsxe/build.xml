@@ -137,14 +137,14 @@
 	<!-- }}} -->
 	<!-- {{{ ============ Generates the documentation ====================== -->
 	<target depends="prepare-doc, prepare-src" name="doc">
-		<copy file="COPYING" tofile="${distbin.dir}/doc/COPYING"/>
-		<copy file="README" tofile="${distbin.dir}/doc/README"/>
-		<copy file="TODO" tofile="${distbin.dir}/doc/TODO"/>
-		<copy file="ISSUES" tofile="${distbin.dir}/doc/ISSUES"/>
-		<copy file="Changelog" tofile="${distbin.dir}/doc/Changelog"/>
-		<copy file="INSTALL" tofile="${distbin.dir}/doc/INSTALL"/>
-		<copy file="THANKS" tofile="${distbin.dir}/doc/THANKS"/>
-		<copy file="NEWS" tofile="${distbin.dir}/doc/NEWS"/>
+		<copy file="COPYING" tofile="${build.dir}/doc/COPYING"/>
+		<copy file="README" tofile="${build.dir}/doc/README"/>
+		<copy file="TODO" tofile="${build.dir}/doc/TODO"/>
+		<copy file="ISSUES" tofile="${build.dir}/doc/ISSUES"/>
+		<copy file="Changelog" tofile="${build.dir}/doc/Changelog"/>
+		<copy file="INSTALL" tofile="${build.dir}/doc/INSTALL"/>
+		<copy file="THANKS" tofile="${build.dir}/doc/THANKS"/>
+		<copy file="NEWS" tofile="${build.dir}/doc/NEWS"/>
 		<javadoc author="true" destdir="${build.javadocs}" doctitle="${app.name} ${app.version} API" link="${javadoc.link}" locale="en_US" packagenames="*" sourcepath="${build.src}" version="true" windowtitle="${app.name} ${app.version} API"/>
 	</target>
 	<!-- }}} -->
