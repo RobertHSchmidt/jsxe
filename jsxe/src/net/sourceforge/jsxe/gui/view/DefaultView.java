@@ -73,7 +73,7 @@ import java.util.Enumeration;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class DefaultView extends DocumentView {
+public class DefaultView extends JPanel implements DocumentView {
     
     //{{{ DefaultView constructor
     /**
@@ -143,6 +143,77 @@ public class DefaultView extends DocumentView {
     }//}}}
     
     //{{{ DocumentView methods
+
+    //{{{ close()
+    
+    public boolean close(TabbedView view) {
+        
+        //m_document should only be null if setXMLDocument was never called.
+        if (m_document != null) {
+            Dimension size = getSize();
+            
+            String vert = Integer.toString((int)(vertSplitPane.getDividerLocation()/size.getHeight()*100));
+            String horiz = Integer.toString((int)(horizSplitPane.getDividerLocation()/size.getWidth()*100));
+            
+            m_document.setProperty(_VERT_SPLIT_LOCATION,vert);
+            m_document.setProperty(_HORIZ_SPLIT_LOCATION,horiz);
+        }
+        
+        return true;
+    }//}}}
+
+    //{{{ getDocumentViewComponent
+    
+    public Component getDocumentViewComponent() {
+        return this;
+    }//}}}
+
+    //{{{ getMenus()
+    
+    public JMenu[] getMenus() {
+        //Edit Menu doesn't work yet.
+       // JMenu[] menus = new JMenu[1];
+       // //{{{ Create Edit Menu
+       // JMenu editMenu = new JMenu("Edit");
+       //     JMenuItem menuItem = new JMenuItem("Undo");
+       //    // menuItem.addActionListener( new EditUndoAction() );
+       //     editMenu.add( menuItem );
+       //     menuItem = new JMenuItem("Redo");
+       //    // menuItem.addActionListener( new EditRedoAction() );
+       //     editMenu.add( menuItem );
+       //     editMenu.addSeparator();
+       //     menuItem = new JMenuItem("Cut");
+       //    // menuItem.addActionListener( new EditCutAction() );
+       //     editMenu.add( menuItem );
+       //     menuItem = new JMenuItem("Copy");
+       //    // menuItem.addActionListener( new EditCopyAction() );
+       //     editMenu.add( menuItem );
+       //     menuItem = new JMenuItem("Paste");
+       //    // menuItem.addActionListener( new EditPasteAction() );
+       //     editMenu.add( menuItem );
+       // //}}}
+       // menus[0] = editMenu;
+       // return menus;
+        return new JMenu[] {};
+    }//}}}
+    
+    //{{{ getName()
+    
+    public String getName() {
+        return "Tree View";
+    }//}}}
+    
+    //{{{ getOptionsPanel()
+    
+    public OptionsPanel getOptionsPanel() {
+        return new DefaultViewOptionsPanel();
+    }//}}}
+    
+    //{{{ getXMLDocument()
+    
+    public XMLDocument getXMLDocument() {
+        return m_document;
+    }//}}}
     
     //{{{ setXMLDocument()
     
@@ -196,71 +267,6 @@ public class DefaultView extends DocumentView {
         m_document = document;
         m_document.addXMLDocumentListener(m_documentListener);
     } //}}}
-    
-    //{{{ getMenus()
-    
-    public JMenu[] getMenus() {
-        //Edit Menu doesn't work yet.
-       // JMenu[] menus = new JMenu[1];
-       // //{{{ Create Edit Menu
-       // JMenu editMenu = new JMenu("Edit");
-       //     JMenuItem menuItem = new JMenuItem("Undo");
-       //    // menuItem.addActionListener( new EditUndoAction() );
-       //     editMenu.add( menuItem );
-       //     menuItem = new JMenuItem("Redo");
-       //    // menuItem.addActionListener( new EditRedoAction() );
-       //     editMenu.add( menuItem );
-       //     editMenu.addSeparator();
-       //     menuItem = new JMenuItem("Cut");
-       //    // menuItem.addActionListener( new EditCutAction() );
-       //     editMenu.add( menuItem );
-       //     menuItem = new JMenuItem("Copy");
-       //    // menuItem.addActionListener( new EditCopyAction() );
-       //     editMenu.add( menuItem );
-       //     menuItem = new JMenuItem("Paste");
-       //    // menuItem.addActionListener( new EditPasteAction() );
-       //     editMenu.add( menuItem );
-       // //}}}
-       // menus[0] = editMenu;
-       // return menus;
-        return null;
-    }//}}}
-    
-    //{{{ getOptionsPanel()
-    
-    public OptionsPanel getOptionsPanel() {
-        return new DefaultViewOptionsPanel();
-    }//}}}
-    
-    //{{{ getXMLDocument()
-    
-    public XMLDocument getXMLDocument() {
-        return m_document;
-    }//}}}
-    
-    //{{{ getName()
-    
-    public String getName() {
-        return "Tree View";
-    }//}}}
-    
-    //{{{ close()
-    
-    public boolean close(TabbedView view) {
-        
-        //m_document should only be null if setXMLDocument was never called.
-        if (m_document != null) {
-            Dimension size = getSize();
-            
-            String vert = Integer.toString((int)(vertSplitPane.getDividerLocation()/size.getHeight()*100));
-            String horiz = Integer.toString((int)(horizSplitPane.getDividerLocation()/size.getWidth()*100));
-            
-            m_document.setProperty(_VERT_SPLIT_LOCATION,vert);
-            m_document.setProperty(_HORIZ_SPLIT_LOCATION,horiz);
-        }
-        
-        return true;
-    }//}}}
     
     //}}}
     

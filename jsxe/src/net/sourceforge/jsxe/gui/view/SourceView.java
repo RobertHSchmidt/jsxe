@@ -60,6 +60,7 @@ import javax.swing.KeyStroke;
 //}}}
 
 //{{{ AWT components
+import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.Window;
 import java.awt.event.ActionListener;
@@ -85,7 +86,7 @@ import java.io.IOException;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class SourceView extends DocumentView {
+public class SourceView extends JPanel implements DocumentView {
     
     //{{{ SourceView constructor
     /**
@@ -94,8 +95,6 @@ public class SourceView extends DocumentView {
      * @throws IOException if the document cannot be viewed using this view
      */
     public SourceView(TabbedView view, XMLDocument document) throws IOException {
-        
-        panel = new JPanel();
         
         textarea = new JTextArea("");
         textarea.setTabSize(4);
@@ -112,6 +111,19 @@ public class SourceView extends DocumentView {
     }//}}}
     
     //{{{ DocumentView methods
+    
+    //{{{ close()
+    
+    public boolean close(TabbedView view) {
+        m_document.removeXMLDocumentListener(docListener);
+        return true;
+    }//}}}
+    
+    //{{{ getDocumentViewComponent
+    
+    public Component getDocumentViewComponent() {
+        return this;
+    }
     
     //{{{ getMenus()
     
@@ -141,10 +153,22 @@ public class SourceView extends DocumentView {
         return menus;
     }//}}}
     
+    //{{{ getName()
+    
+    public String getName() {
+        return "Source View";
+    }//}}}
+
     //{{{ getOptionsPanel()
     
     public OptionsPanel getOptionsPanel() {
         return null;
+    }//}}}
+    
+    //{{{ getXMLDocument()
+    
+    public XMLDocument getXMLDocument() {
+        return m_document;
     }//}}}
     
     //{{{ setXMLDocument()
@@ -160,25 +184,6 @@ public class SourceView extends DocumentView {
         textarea.setTabSize((new Integer(m_document.getProperty(XMLDocument.INDENT, "4"))).intValue());
         m_document.addXMLDocumentListener(docListener);
         
-    }//}}}
-    
-    //{{{ getXMLDocument()
-    
-    public XMLDocument getXMLDocument() {
-        return m_document;
-    }//}}}
-    
-    //{{{ getName()
-    
-    public String getName() {
-        return "Source View";
-    }//}}}
-    
-    //{{{ close()
-    
-    public boolean close(TabbedView view) {
-        m_document.removeXMLDocumentListener(docListener);
-        return true;
     }//}}}
     
     //}}}
@@ -289,7 +294,6 @@ public class SourceView extends DocumentView {
     
     private XMLDocument m_document;
     private JTextArea textarea;
-    private JPanel panel;
     //}}}
     
 }
