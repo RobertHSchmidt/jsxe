@@ -23,9 +23,6 @@ TODO:
     
 * Version 0.2 beta
     
-    * Fix bug where the jsXe doesn't load the menus for the view when opening
-      a file.
-    
     * Need to set up default document properties for each view and default
       app properties for each view. Default document properties get set
       to the document each time one is loaded. Default app properties get set

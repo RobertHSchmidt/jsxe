@@ -69,6 +69,7 @@ import javax.swing.event.ChangeEvent;
 
 //{{{ AWT components
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -152,7 +153,6 @@ public class TabbedView extends JFrame {
         DocumentViewFactory factory = DocumentViewFactory.newInstance();
         factory.setDocumentViewType(documentViewName);
         
-        
         DocumentView newDocView = factory.newDocumentView(buffer);
         
        // newDocView.setDocumentBuffer(this, buffer);
@@ -160,11 +160,12 @@ public class TabbedView extends JFrame {
         buffer.addDocumentBufferListener(m_docBufListener);
         
         m_documentViews.add(newDocView);
-        tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), newDocView.getDocumentViewComponent());
-        tabbedPane.setSelectedComponent(newDocView.getDocumentViewComponent());
+        Component comp = newDocView.getDocumentViewComponent();
+        tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), comp);
+        tabbedPane.setSelectedComponent(comp);
         
         updateTitle();
-        updateMenuBar();
+       // updateMenuBar();
         
         return;
     }//}}}
@@ -222,7 +223,7 @@ public class TabbedView extends JFrame {
                 }
             }
             updateTitle();
-            updateMenuBar();
+           // updateMenuBar();
         }
         return success;
     }//}}}
@@ -237,7 +238,8 @@ public class TabbedView extends JFrame {
     public boolean removeDocumentBuffer(DocumentBuffer buffer) {
         if (buffer != null) {
             buffer.removeDocumentBufferListener(m_docBufListener);
-            for (int i=0; i<m_documentViews.size(); i++) {
+            int docViewCount = m_documentViews.size();
+            for (int i=0; i<docViewCount; i++) {
                 DocumentView docView = (DocumentView)m_documentViews.get(i);
                 if (docView.getDocumentBuffer() == buffer) {
                     //only close if we _mean_ it.
@@ -245,9 +247,12 @@ public class TabbedView extends JFrame {
                         tabbedPane.remove(i);
                         m_documentViews.remove(docView);
                         //if the tab removed is not the rightmost tab
-                        //stateChanged is not called for some
-                        //reason so we must update the title.
-                        updateTitle();
+                        //stateChanged is not called for the newly selected
+                        //tab for some reason so we must update manually.
+                        if (i != docViewCount - 1) {
+                            updateTitle();
+                            updateMenuBar();
+                        }
                         return true;
                     }
                 }
@@ -527,6 +532,8 @@ public class TabbedView extends JFrame {
             tabbedPane.setTitleAt(index, currentBuffer.getName());
             tabbedPane.setSelectedIndex(index);
             
+            //not sure why stateChanged doesn't get called above but
+            //update manually
             updateMenuBar();
         }
     }//}}}

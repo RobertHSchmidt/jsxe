@@ -2,6 +2,8 @@
 
     * Fixed bug that didn't update the tab width for the source view when
       you changed it in the options
+    * Fixed bugs where the menu bar wasn't updated properly when closing files
+      and changing views
 
 10/2/2004   version 0.2 pre24   Ian Lewis <IanLewis@member.fsf.org>
 
