@@ -1,3 +1,8 @@
+8/27/2003   version 0.1.8   Ian Lewis  <IanLewis@member.fsf.org>
+
+    * Fixed bug in DefaultXMLDocument that messed up which model the object was
+      using.
+
 8/24/2003   version 0.1.7   Ian Lewis  <IanLewis@member.fsf.org>
 
     * Updated Serialization and options dialog.
