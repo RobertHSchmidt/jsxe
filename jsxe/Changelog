@@ -1,3 +1,8 @@
+07/24/2004  version 0.2 pre12   Ian Lewis <IanLewis@member.fsf.org>
+
+    * The recent files menu now will form multiple consecutive menus if there
+      are a lot of recent files in the list.
+
 07/23/2004  version 0.2 pre11   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added support for a recent files list that can allow users to open
