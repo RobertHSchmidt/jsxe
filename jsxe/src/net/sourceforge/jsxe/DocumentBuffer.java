@@ -322,23 +322,28 @@ public class DocumentBuffer {
         saveDialog.setDialogTitle("Save As");
         
         //Add a filter to display only XML files
-        Vector extentionList = new Vector();
+        ArrayList extentionList = new ArrayList();
         extentionList.add(new String("xml"));
         CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
         saveDialog.addChoosableFileFilter(firstFilter);
         //Add a filter to display only XSL files
-        extentionList = new Vector();
+        extentionList = new ArrayList();
         extentionList.add(new String("xsl"));
         saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
         //Add a filter to display only XSL:FO files
-        extentionList = new Vector();
+        extentionList = new ArrayList();
         extentionList.add(new String("fo"));
         saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
+        //Add a filter to display only Schema files
+        extentionList = new ArrayList();
+        extentionList.add(new String("xsd"));
+        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XML Schema"));
         //Add a filter to display all formats
-        extentionList = new Vector();
+        extentionList = new ArrayList();
         extentionList.add(new String("xml"));
         extentionList.add(new String("xsl"));
         extentionList.add(new String("fo"));
+        extentionList.add(new String("xsd"));
         saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "All XML Documents"));
         
         //The "All Files" file filter is added to the dialog

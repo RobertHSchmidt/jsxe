@@ -35,6 +35,10 @@ TODO:
     
 * Version 0.3.0
     
+    * Create a new file open/save dialog class that handles the file filters
+      and junk so that code isn't duplicated in the jsXe class and
+      DocumentBuffer classes.
+    
     * Modularize UI stuff so that it is easier to plugin in a different GUI API
       down the road. Thinking mostly of using gcj and gnome-java to reduce
       dependency on swing and sun's java runtime.
