@@ -170,6 +170,7 @@ public class XMLDocument {
             factory.setAttribute("http://xml.org/sax/features/external-general-entities", new Boolean(false));
             factory.setAttribute("http://xml.org/sax/features/external-parameter-entities", new Boolean(false));
             factory.setAttribute("http://xml.org/sax/features/namespaces",new Boolean(true));
+           // factory.setAttribute("http://apache.org/xml/features/validation/dynamic",new Boolean(true));
             DocumentBuilder builder = factory.newDocumentBuilder();
             
             builder.setErrorHandler(new org.xml.sax.ErrorHandler() {
@@ -325,7 +326,14 @@ public class XMLDocument {
     }//}}}
     
     //{{{ newAdapterNode()
-    
+    /**
+     * Creates a new AdapterNode in this document. This method is namespace aware.
+     *
+     * @param parent The parent of the node to create.
+     * @param name the qualified name of the new node
+     * @param value the value of the new node to create
+     * @param type the type of node to create. Uses the types defined in the Node class.
+     */
     public AdapterNode newAdapterNode(AdapterNode parent, String name, String value, short type) {
         Node newNode = null;
         

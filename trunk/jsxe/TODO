@@ -24,11 +24,8 @@ TODO:
 * Version 0.3 beta (Plugin + Namespace Support)
 
     * Make any changes necessary for an early version of the Schema View.
-    * Fix setLocalName in AdapterNode as it still takes the qualified name.
-    * Address the ability to change a namespace definition after it has been
-      bound to a parsed document. The DOM classes allow you to change a bound
-      namespace. Should jsXe's tree view prevent it? Give you a warning when
-      saving?
+    * Fix bug where you can remove a namespace declaration when it is used
+      by attributes in the document.
 
 * Version 0.4 beta (DTD support)
     
@@ -84,6 +81,11 @@ TODO:
     
     * Begin internationalization support by storing messages, menu titles, and
       other text in a properties file.
+    
+    * Build in some support for XML document types (XSLT, XSL:FO, Schema etc.)
+        * Build a global defaults options pane and allow the user to set options
+          based on the document type.
+        * Build some way to associate views with document types.
     
 * Version 0.6 beta (GUI focus)
     

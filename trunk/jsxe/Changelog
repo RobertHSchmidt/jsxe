@@ -1,8 +1,7 @@
 03/17/2005  Ian Lewis <IanLewis@member.fsf.org>
 
-    * Altered AdapterNode to support namespaces better. You cannot alter the
-      qualified name of the node anymore. Instead you have to alter the
-      namespace prefix and local name individually.
+    * Altered AdapterNode to support namespaces better. It handles adding and
+      removing namespace declarations much better.
 
 03/16/2005  Ian Lewis <IanLewis@member.fsf.org>
 
