@@ -25,6 +25,12 @@ TODO:
 
 * Version 0.2.0
     
+    * Fix problems with NullPointerExceptions coming from JTree trying to start
+      editing when doing a drag operation.
+    
+    * Fix problems with the JTree not expanding nodes when other nodes are added
+      via drag n drop.
+    
     * DOMSerializer needs to support the following parameters:
         normalize-characters
             This maybe needs to be done after I better understand and have
