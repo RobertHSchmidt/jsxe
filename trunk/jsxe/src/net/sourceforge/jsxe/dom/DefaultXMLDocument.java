@@ -48,20 +48,14 @@ import javax.swing.JOptionPane;
 import java.awt.Component;
 //}}}
 
-//{{{ JAXP classes
+//{{{ DOM classes
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-//}}}
-
-//{{{ DOM classes
 import org.w3c.dom.Document;
-//}}}
-
-//{{{ DOM uses SAX Exceptions
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import javax.xml.parsers.ParserConfigurationException;
 //}}}
 
 //{{{ Java base classes
@@ -86,28 +80,12 @@ public class DefaultXMLDocument extends XMLDocument {
         super(string);
     }//}}}
     
-    public boolean validate(Component parent) {//{{{
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(new InputSource(getReader()));
-            doc.getDocumentElement().normalize();
-            document=doc;
-            return true;
-        }
-        catch(SAXParseException spe) {
-            JOptionPane.showMessageDialog(parent, spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-        }
-        catch (SAXException sxe) {
-            JOptionPane.showMessageDialog(parent, sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-        }
-        catch (ParserConfigurationException pce) {
-            JOptionPane.showMessageDialog(parent, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-        }
-        catch (IOException ioe) {
-            JOptionPane.showMessageDialog(parent, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-        }
-        return false;
+    public void validate() throws SAXParseException, SAXException, ParserConfigurationException, IOException {//{{{
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(new InputSource(getReader()));
+        doc.getDocumentElement().normalize();
+        document=doc;
     }//}}}
     
     public Document getDocument() {//{{{

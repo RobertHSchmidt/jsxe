@@ -75,8 +75,8 @@ public class SourceView extends DocumentView {
         textarea = new JTextArea("");
         textarea.setTabSize(4);
         textarea.setCaretPosition(0);
-        textarea.setLineWrap(true);
-        textarea.setWrapStyleWord(true);
+        textarea.setLineWrap(false);
+        textarea.setWrapStyleWord(false);
         
         JScrollPane scrollPane = new JScrollPane(textarea);
         
@@ -123,7 +123,9 @@ public class SourceView extends DocumentView {
     
     public void close(TabbedView view) {//{{{
         currentdoc.setModel(textarea.getText());
-        currentdoc.validate(view);
+        try {
+            currentdoc.validate();
+        } catch (Exception e) {}
     }//}}}
     
     //{{{ Private members
