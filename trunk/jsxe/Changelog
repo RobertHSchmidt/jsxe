@@ -1,3 +1,7 @@
+05/26/2004  version 0.2 pre4    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Removed redundant call to fireNameChanged() in DocumentBuffer
+
 05/23/2004  version 0.2 pre4    Ian Lewis <IanLewis@member.fsf.org>
 
     * Allowed users to add a comment node to the document root.
