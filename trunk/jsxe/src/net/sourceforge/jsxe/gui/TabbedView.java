@@ -417,6 +417,7 @@ public class TabbedView extends JFrame {
                 tabbedPane.remove(oldView);
                 tabbedPane.add(newView, index);
                 tabbedPane.setIconAt(index, getTabIcon(currentBuffer));
+                tabbedPane.setTitleAt(index, currentBuffer.getName());
                 tabbedPane.setSelectedIndex(index);
                 updateMenuBar();
                 
