@@ -525,7 +525,6 @@ public class DOMAdapter implements TreeModel, TableModel {
     }//}}}
 
     private void updateAttributes() {//{{{
-        System.out.println("updating Attributes");
         Node node = currentNode.getNode();
         Node parent = node.getParentNode();
         NodeList children = node.getChildNodes();
@@ -535,7 +534,6 @@ public class DOMAdapter implements TreeModel, TableModel {
             //add the attributes that were there previously.
             for(int i = 0; i < data[0].size()-1; i++) {
                 //Set the name or value
-                System.out.println("adding new attribute");
                 newNode.setAttribute(data[0].get(i).toString(), data[1].get(i).toString());
             }
 
