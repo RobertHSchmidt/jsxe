@@ -20,6 +20,8 @@
     <jar jarfile="jsXe.jar" manifest="jsxe.manifest">
       <fileset dir=".">
         <include name="**/*.class"/>
+        <include name="**/properties"/>
+        <include name="**/*.props"/>
         <include name="net/sourceforge/jsxe/icons/*.jpg"/>
       </fileset>
     </jar>

@@ -112,8 +112,11 @@ public class DefaultView extends DocumentView {
         setLayout(new BorderLayout());
         add(horizSplitPane, BorderLayout.CENTER);
         
-        vertSplitPane.setDividerLocation(200);
-        horizSplitPane.setDividerLocation(200);
+        int vertical = Integer.valueOf(jsXe.getProperty(viewname+".splitpane.vert.loc")).intValue();
+        int horizontal = Integer.valueOf(jsXe.getProperty(viewname+".splitpane.horiz.loc")).intValue();
+        
+        vertSplitPane.setDividerLocation(vertical);
+        horizSplitPane.setDividerLocation(horizontal);
     } //}}}
     
     public void setDocument(TabbedView view, XMLDocument document) {//{{{
@@ -250,6 +253,7 @@ public class DefaultView extends DocumentView {
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
     private XMLDocument currentdoc;
+    private static final String viewname="documentview.default";
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {
            attributesTable.updateUI();
