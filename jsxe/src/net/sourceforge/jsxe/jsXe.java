@@ -46,7 +46,7 @@ import net.sourceforge.jsxe.dom.XMLDocumentFactory;
 import net.sourceforge.jsxe.dom.UnrecognizedDocTypeException;
 //}}}
 
-//{{{ Swing Classes
+//{{{ Swing classes
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -601,7 +601,7 @@ public class jsXe {
     
     private static final String MajorVersion = "0";
     private static final String MinorVersion = "1";
-    private static final String BuildVersion = "6";
+    private static final String BuildVersion = "7";
     private static final String BuildType    = "development";
    // private static final String BuildType    = "stable";
     private static Vector XMLDocuments = new Vector();

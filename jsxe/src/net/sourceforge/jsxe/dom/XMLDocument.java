@@ -81,8 +81,14 @@ public abstract class XMLDocument {
     
     public abstract Document getDocument();
     
-    public Object setProperty(String key, String value) {//{{{
-        return props.setProperty(key, value);
+    public String setProperty(String key, String value) {//{{{
+        if (key == "format-output" && Boolean.valueOf(value).booleanValue()) {
+            setProperty("whitespace-in-element-content", "false");
+        }
+        if (key == "whitespace-in-element-content" && Boolean.valueOf(value).booleanValue()) {
+            setProperty("format-output", "false");
+        }
+        return (String)props.setProperty(key, value);
     }//}}}
     
     public String getProperty(String key) {//{{{
