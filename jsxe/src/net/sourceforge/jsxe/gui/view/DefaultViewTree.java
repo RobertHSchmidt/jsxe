@@ -146,17 +146,25 @@ public class DefaultViewTree extends JTree {
                 
                 AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                 JMenuItem popupMenuItem;
+                JMenu addNodeItem = new JMenu("Add");
                 JPopupMenu popup = new JPopupMenu();
                 boolean showpopup = false;
+                boolean addNodeShown = false;
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     popupMenuItem = new JMenuItem(new AddElementNodeAction());
-                    popup.add(popupMenuItem);
+                    addNodeItem.add(popupMenuItem);
                     popupMenuItem = new JMenuItem(new AddTextNodeAction());
-                    popup.add(popupMenuItem);
+                    addNodeItem.add(popupMenuItem);
+                    addNodeShown = true;
+                    showpopup = true;
+                }
+                if (addNodeShown) {
+                    popup.add(addNodeItem);
+                }
+                if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     popupMenuItem = new JMenuItem(new RenameElementAction());
                     popup.add(popupMenuItem);
-                    showpopup = true;
                 }
                 //if the node is not the document or the document root.
                 if (selectedNode.getNodeType() != Node.DOCUMENT_NODE && selectedNode.getParentNode().getNodeType() != Node.DOCUMENT_NODE) {
@@ -164,8 +172,9 @@ public class DefaultViewTree extends JTree {
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
-                if (showpopup)
+                if (showpopup) {
                     popup.show(e.getComponent(), e.getX(), e.getY());
+                }
             }
         }//}}}
     }//}}}
@@ -179,7 +188,7 @@ public class DefaultViewTree extends JTree {
         //{{{ AddElementNodeAction constructor
         
         public AddElementNodeAction() {
-            putValue(Action.NAME, "Add Element Node");
+            putValue(Action.NAME, "Element Node");
         }//}}}
         
         //{{{ actionPerformed()
@@ -230,7 +239,7 @@ public class DefaultViewTree extends JTree {
         ///{{{ AddTextNodeAction constructor
         
         public AddTextNodeAction() {
-            putValue(Action.NAME, "Add Text Node");
+            putValue(Action.NAME, "Text Node");
         }
         //}}}
         

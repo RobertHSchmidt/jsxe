@@ -4,6 +4,8 @@
       method.
     * Changed some actions in the DefaultViewTree extend AbstractAction since
       they will probobly have key mnemonics in the future.
+    * Added key mnemonics to the menu bar items so that you can navigate them
+      easier using the keyboard.
 
 04/17/2004  version 0.1.64  Ian Lewis <IanLewis@member.fsf.org>
 
@@ -14,7 +16,7 @@
 
 04/16/2004  version 0.1.63  Ian Lewis <IanLewis@member.fsf.org>
 
-    * Added logic to highlight a node when the user is going to onto a
+    * Added logic to highlight a node when the user is going to drop onto a
       particular node.
 
 04/04/2004  version 0.1.62  Ian Lewis <IanLewis@member.fsf.org>

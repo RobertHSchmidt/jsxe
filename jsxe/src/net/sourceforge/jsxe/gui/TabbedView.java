@@ -346,6 +346,7 @@ public class TabbedView extends JFrame {
             
             //{{{ Add File Menu
             JMenu fileMenu = new JMenu("File");
+            fileMenu.setMnemonic('F');
                 JMenuItem menuItem = new JMenuItem(new FileNewAction(this));
                 fileMenu.add( menuItem );
                 menuItem = new JMenuItem(new FileOpenAction(this));
@@ -373,6 +374,7 @@ public class TabbedView extends JFrame {
             
             //{{{ Add View Menu
             JMenu viewMenu = new JMenu("View");
+            viewMenu.setMnemonic('V');
                 menuItem = new JMenuItem(new SetDefaultViewAction());
                 viewMenu.add( menuItem );
                 menuItem = new JMenuItem(new SetSourceViewAction());
@@ -382,14 +384,16 @@ public class TabbedView extends JFrame {
             
             //{{{ Add Tools Menu
             JMenu toolsMenu = new JMenu("Tools");
+            toolsMenu.setMnemonic('T');
                 menuItem = new JMenuItem(new ToolsOptionsAction(this));
                 toolsMenu.add( menuItem );
             menubar.add(toolsMenu);//}}}
             
             //{{{ Add Help Menu
             JMenu helpMenu = new JMenu("Help");
+            helpMenu.setMnemonic('H');
                 menuItem = new JMenuItem(new jsxeAboutDialog(this));
-                helpMenu.add( menuItem );
+                helpMenu.add(menuItem);
             menubar.add(helpMenu);//}}}
             
             setJMenuBar(menubar);
