@@ -378,8 +378,9 @@ public class AdapterNode {
      *                      inserted is readonly.
      */
     public AdapterNode addAdapterNode(AdapterNode node) throws DOMException {//{{{
-        //add to this AdapterNode and the DOM.
         if (node != null) {
+            
+            //add to this AdapterNode and the DOM.
             if(node.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE) {
                 //Add all children of the document fragment
                 for(int i=0; i<node.childCount(); i++) {

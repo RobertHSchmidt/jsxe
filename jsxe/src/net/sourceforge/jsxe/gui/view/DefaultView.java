@@ -77,20 +77,23 @@ public class DefaultView extends DocumentView {
         
         setLayout(new BorderLayout());
         
-        JScrollPane treeView = new JScrollPane(tree);
-        
-        //{{{ Create html editor pane
+        //{{{ init html editor pane
         htmlPane.setEditable(false);
         JScrollPane htmlView = new JScrollPane(htmlPane);
         //}}}
         
-        //create a table model
+        //{{{ init attributes table
         JScrollPane attrView = new JScrollPane(attributesTable);
         
         attributesTable.setColumnSelectionAllowed(false);
         attributesTable.setRowSelectionAllowed(false);
+        attributesTable.addMouseListener(new TablePopupListener());
+        //}}}
         
+        //{{{ init tree
+        JScrollPane treeView = new JScrollPane(tree);
         tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
+        //}}}
         
         //{{{ Create and set up the splitpanes
         vertSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treeView, attrView);
@@ -107,8 +110,6 @@ public class DefaultView extends DocumentView {
         
         //}}}
         
-        attributesTable.addMouseListener(new TablePopupListener());
-
         setDocumentBuffer(buffer);
     }//}}}
     
