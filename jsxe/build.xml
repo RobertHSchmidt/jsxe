@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
      This is a build.xml file for building jsXe.
+     Version: $Id$
 -->
 <project basedir="." default="usage" name="jsXe">
 	
@@ -256,8 +257,6 @@
 			<fileset dir="." includes="${app.name}.jar"/>
       <fileset dir="." includes="${app.name}.manifest"/>
 			<fileset dir="." includes="**/*.class"/>
-			<fileset defaultexcludes="no" dir="." includes="**/*~"/>
-			<fileset defaultexcludes="no" dir="." includes="**/#*#"/>
 			<fileset dir="." includes="**/*.rej"/>
 			<fileset dir="." includes="**/*.orig"/>
 			<fileset dir="." includes="**/.*.swp"/>
