@@ -128,6 +128,9 @@ public class DefaultViewTreeModel implements TreeModel {
                 if (!showEmpty && child.getNodeType()==Node.TEXT_NODE && child.getNodeValue().trim().equals("")) {
                     index++;
                 }
+                if (child.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
+                    index++;
+                }
             }
             
         }

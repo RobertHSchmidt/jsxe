@@ -1,3 +1,8 @@
+02/21/2004  version 0.1.54  Ian Lewis <IanLewis@member.fsf.org>
+
+    * DOCTYPE nodes are no longer visible in the tree. Some other method for
+      editing doc types will have to be added to jsXe later.
+
 02/16/2004  version 0.1.53  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug introduced in 0.1.51 that caused formatting not to work in
