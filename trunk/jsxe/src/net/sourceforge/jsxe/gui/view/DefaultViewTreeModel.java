@@ -254,8 +254,8 @@ public class DefaultViewTreeModel implements TreeModel {
     //{{{ displayNode()
     
     private boolean displayNode(DefaultViewTreeNode node) {
-        boolean showComments = Boolean.valueOf(m_document.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
-        boolean showEmpty    = Boolean.valueOf(m_document.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
+        boolean showComments = Boolean.valueOf(m_document.getProperty(DefaultView.SHOW_COMMENTS, "false")).booleanValue();
+        boolean showEmpty    = Boolean.valueOf(m_document.getProperty(DefaultView.SHOW_EMPTY_NODES, "false")).booleanValue();
         
         boolean displayNode = false;
         if (node != null) {

@@ -78,10 +78,10 @@ public class DocumentViewFactory {
     
     public DocumentView newDocumentView(TabbedView view, XMLDocument document) throws IOException, UnrecognizedDocViewException {
         //Document type validation is pretty simple right now
-        if (viewType == "documentview.default") {
+        if (viewType == "tree") {
             return new DefaultView(view, document);
         } else {
-            if (viewType == "documentview.sourceview") {
+            if (viewType == "source") {
                 return new SourceView(view, document);
             } else {
                 throw new UnrecognizedDocViewException();
@@ -104,8 +104,8 @@ public class DocumentViewFactory {
         //{{{ DocumentViews constructor
         
         DocumentViews() {
-            elements.add("documentview.default");
-            elements.add("documentview.sourceview");
+            elements.add("tree");
+            elements.add("source");
         }//}}}
         
         //{{{ Enumeration methods
@@ -133,7 +133,7 @@ public class DocumentViewFactory {
         //}}}
     }//}}}
     
-    private String viewType = "documentview.default";
+    private String viewType = "tree";
     
     //}}}
 }

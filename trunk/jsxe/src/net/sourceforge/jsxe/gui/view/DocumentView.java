@@ -78,12 +78,25 @@ public interface DocumentView {
     public boolean close(TabbedView view);
     //}}}
     
+    //{{{ getDescription()
+    /**
+     * Gets a short, one line, description of this view.
+     * @return a short description of the view
+     */
+    public String getDescription();
+    //}}}
+    
     //{{{ getDocumentViewComponent()
     /**
      * Gets the the Component used to render this view.
      * @return the Component used to render this view
      */
     public Component getDocumentViewComponent();//}}}
+    
+    //{{{ getHumanReadableName()
+    
+    public String getHumanReadableName();
+    //}}}
     
     //{{{ getMenus()
     /**
@@ -94,14 +107,6 @@ public interface DocumentView {
     public JMenu[] getMenus();
     //}}}
     
-    //{{{ getName()
-    /**
-     * Gets the name of the view.
-     * @return the name of the view
-     */
-    public abstract String getName();
-    //}}}
-    
     //{{{ getOptionsPanel()
     /**
      * Gets the view's options panel. This is used when displaying options
@@ -109,6 +114,15 @@ public interface DocumentView {
      * @return the OptionsPanel for this view
      */
     public OptionsPanel getOptionsPanel();
+    //}}}
+    
+    //{{{ getViewName()
+    /**
+     * Gets the name of the view used when the DocumentViewFactory selects
+     * a view to create.
+     * @return the name of the view
+     */
+    public abstract String getViewName();
     //}}}
     
     //{{{ getXMLDocument()

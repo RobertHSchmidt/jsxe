@@ -119,11 +119,23 @@ public class SourceView extends JPanel implements DocumentView {
         return true;
     }//}}}
     
+    //{{{ getDescription()
+    
+    public String getDescription() {
+        return "View a document as text";
+    }//}}}
+    
     //{{{ getDocumentViewComponent
     
     public Component getDocumentViewComponent() {
         return this;
-    }
+    }//}}}
+
+    //{{{ getHumanReadableName()
+    
+    public String getHumanReadableName() {
+        return "Source View";
+    }//}}}
     
     //{{{ getMenus()
     
@@ -153,12 +165,6 @@ public class SourceView extends JPanel implements DocumentView {
         return menus;
     }//}}}
     
-    //{{{ getName()
-    
-    public String getName() {
-        return "Source View";
-    }//}}}
-
     //{{{ getOptionsPanel()
     
     public OptionsPanel getOptionsPanel() {
@@ -169,6 +175,12 @@ public class SourceView extends JPanel implements DocumentView {
     
     public XMLDocument getXMLDocument() {
         return m_document;
+    }//}}}
+    
+    //{{{ getViewName()
+    
+    public String getViewName() {
+        return _VIEWNAME;
     }//}}}
     
     //{{{ setXMLDocument()
@@ -291,6 +303,8 @@ public class SourceView extends JPanel implements DocumentView {
     }//}}}
     
     private SourceViewXMLDocumentListener docListener = new SourceViewXMLDocumentListener();
+    
+    private static final String _VIEWNAME = "source";
     
     private XMLDocument m_document;
     private JTextArea textarea;

@@ -137,7 +137,9 @@ public class jsXe {
         }
         //}}}
         
-        //{{{ check if help or version was requested
+        //{{{ parse command line arguments
+       // String viewname = null;
+       // ArrayList files = new ArrayList;
         for (int i=0; i<args.length; i++) {
             if (args[i].equals("--help") || args[i].equals("-h")) {
                 printUsage();
@@ -147,6 +149,13 @@ public class jsXe {
                 System.out.println(getVersion());
                 System.exit(0);
             }
+           // if (args[i].startswith("--view") || args[i].startswith("-v")) {
+           //     if (i+1<args.length) {
+           //         viewname = args[i+1];
+           //     } else {
+           //         System.out.println(getAppTitle()+": No view name specified.")
+           //     }
+           // }
         }
         //}}}
         
@@ -164,7 +173,7 @@ public class jsXe {
         }
         //}}}
         
-        //{{{ Parse command line arguments
+        //{{{ Parse files to open on the command line
         if (args.length >= 1) {
             if (openXMLDocuments(tabbedview, args)) {
                 try {
@@ -607,24 +616,24 @@ public class jsXe {
         //}}}
         
         //{{{ Load default properties of installed views
-        Enumeration installedViews = DocumentViewFactory.getAvailableViewTypes();
-        while (installedViews.hasMoreElements()) {
-            String viewname = (String)installedViews.nextElement();
-            InputStream viewinputstream = jsXe.class.getResourceAsStream("/net/sourceforge/jsxe/gui/view/"+viewname+".props");
-            try {
-                Properties defViewProps = new Properties();
-                defViewProps.load(viewinputstream);
-                Enumeration propsList = defViewProps.propertyNames();
-                while (propsList.hasMoreElements()) {
-                    String key = (String)propsList.nextElement();
-                    defaultProps.setProperty(key, defViewProps.getProperty(key));
-                }
-            } catch (IOException ioe) {
-                System.err.println(getAppTitle() + ": Internal ERROR: Could not open default settings file");
-                System.err.println(getAppTitle() + ": Internal ERROR: "+ioe.toString());
-                System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
-            }
-        }
+       // Enumeration installedViews = DocumentViewFactory.getAvailableViewTypes();
+       // while (installedViews.hasMoreElements()) {
+       //     String viewname = (String)installedViews.nextElement();
+       //     InputStream viewinputstream = jsXe.class.getResourceAsStream("/net/sourceforge/jsxe/gui/view/"+viewname+".props");
+       //     try {
+       //         Properties defViewProps = new Properties();
+       //         defViewProps.load(viewinputstream);
+       //         Enumeration propsList = defViewProps.propertyNames();
+       //         while (propsList.hasMoreElements()) {
+       //             String key = (String)propsList.nextElement();
+       //             defaultProps.setProperty(key, defViewProps.getProperty(key));
+       //         }
+       //     } catch (IOException ioe) {
+       //         System.err.println(getAppTitle() + ": Internal ERROR: Could not open default settings file");
+       //         System.err.println(getAppTitle() + ": Internal ERROR: "+ioe.toString());
+       //         System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
+       //     }
+       // }
         //}}}
         
     }//}}}
