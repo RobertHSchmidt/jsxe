@@ -268,11 +268,11 @@ public class DefaultView extends DocumentView {
         }//}}}
         
         public void saveOptions() {//{{{
-            currentDoc.setProperty(viewname+".show.comment.nodes",Boolean.toString(showCommentsCheckBox.isSelected()));
-            currentDoc.setProperty(viewname+".show.empty.nodes",Boolean.toString(showEmptyNodesCheckBox.isSelected()));
+            currentDoc.setProperty(viewname+".show.comment.nodes",(new Boolean(showCommentsCheckBox.isSelected())).toString());
+            currentDoc.setProperty(viewname+".show.empty.nodes",(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
             
             boolean layout = ContinuousLayoutCheckBox.isSelected();
-            currentDoc.setProperty(viewname+".continuous.layout",Boolean.toString(layout));
+            currentDoc.setProperty(viewname+".continuous.layout",(new Boolean(layout)).toString());
             vertSplitPane.setContinuousLayout(layout);
             horizSplitPane.setContinuousLayout(layout);
             tree.updateUI();
