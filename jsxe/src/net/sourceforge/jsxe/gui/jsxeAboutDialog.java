@@ -60,7 +60,6 @@ public class jsxeAboutDialog extends AbstractAction {
     
     public jsxeAboutDialog(Component parent) {//{{{
         putValue(Action.NAME, "About jsXe...");
-        putValue(Action.SHORT_DESCRIPTION, "About jsXe");
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("A").getKeyCode()));
         view = parent;
     }//}}}

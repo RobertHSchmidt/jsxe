@@ -108,6 +108,9 @@ public class AdapterNode {
         if (! nodeName.startsWith("#")) {   
             s += nodeName;
         }
+        if (domNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
+            s += " ";
+        }
         if (domNode.getNodeValue() != null) {
             String t = domNode.getNodeValue().trim();
             int x = t.indexOf("\n");
@@ -369,7 +372,7 @@ public class AdapterNode {
             case Node.DOCUMENT_TYPE_NODE:
                 throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, "DOM level 2 does not allow modification of the document type node");
             default:
-                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element and Text Nodes can be added at this time.");
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "An attempt was made to add a node that was not supported.");
         }
         
         AdapterNode newAdapterNode = rootDocument.newAdapterNode(this, newNode);

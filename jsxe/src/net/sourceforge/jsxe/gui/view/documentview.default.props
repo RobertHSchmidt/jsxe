@@ -1,2 +1,4 @@
 #DefaultView default properties
-
+documentview.default.show.comment.nodes=true
+documentview.default.show.empty.nodes=false
+documentview.default.continuous.layout=false

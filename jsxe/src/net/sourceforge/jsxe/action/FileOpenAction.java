@@ -65,7 +65,6 @@ public class FileOpenAction extends AbstractAction {
     
     public FileOpenAction(TabbedView parent) {//{{{
         putValue(Action.NAME, "Open...");
-        putValue(Action.SHORT_DESCRIPTION, "Open an XML Document");
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl O"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
         view = parent;

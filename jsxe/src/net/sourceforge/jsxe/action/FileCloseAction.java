@@ -60,7 +60,6 @@ public class FileCloseAction extends AbstractAction {
     
     public FileCloseAction(TabbedView parent) {//{{{
         putValue(Action.NAME, "Close");
-        putValue(Action.SHORT_DESCRIPTION, "Close an XML Document");
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl W"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("C").getKeyCode()));
         view = parent;
