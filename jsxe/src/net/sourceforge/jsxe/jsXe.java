@@ -113,7 +113,7 @@ public class jsXe {
             
             String settingsDirectory = homeDir+fileSep+".jsxe";
     
-            Log.init(true, Log.ERROR);
+            Log.init(true, Log.ERROR, true);
             
             try {
                 BufferedWriter stream = new BufferedWriter(new FileWriter(settingsDirectory+fileSep+"jsXe.log"));
@@ -196,7 +196,7 @@ public class jsXe {
             //{{{ load plugins
             
             m_pluginLoader = new JARClassLoader();
-            ArrayList pluginErrors = m_pluginLoader.addDirectory(pluginsDirectory);
+            ArrayList pluginMessages = m_pluginLoader.addDirectory(pluginsDirectory);
             
             String jsXeHome = System.getProperty("jsxe.home");
             if(jsXeHome == null) {
@@ -216,19 +216,20 @@ public class jsXe {
                 }
             }
             //add the jsXe home to the plugins directory
-            pluginErrors.addAll(m_pluginLoader.addDirectory(jsXeHome+"/jars"));
+            pluginMessages.addAll(m_pluginLoader.addDirectory(jsXeHome+"/jars"));
             //}}}
             
             //{{{ start plugins
             
             Log.log(Log.NOTICE, jsXe.class, "Starting plugins");
-            pluginErrors.addAll(m_pluginLoader.startPlugins());
-            
-            if (pluginErrors.size() != 0) {
-                for (int i=0; i<pluginErrors.size(); i++) {
-                    Object error = pluginErrors.get(i);
+            pluginMessages.addAll(m_pluginLoader.startPlugins());
+            Vector pluginErrors = new Vector();
+            if (pluginMessages.size() != 0) {
+                for (int i=0; i<pluginMessages.size(); i++) {
+                    Object error = pluginMessages.get(i);
                     if ((error instanceof IOException) || (error instanceof PluginDependencyException)) {
                         Log.log(Log.ERROR, jsXe.class, ((Exception)error).getMessage());
+                        pluginErrors.add(((Exception)error).getMessage());
                     } else {
                         if (error instanceof PluginLoadException) {
                             Log.log(Log.WARNING, jsXe.class, ((PluginLoadException)error).getMessage());
@@ -238,7 +239,6 @@ public class jsXe {
                     }
                 }
             }
-            
             
             Iterator pluginItr = m_pluginLoader.getAllPlugins().iterator();
             while (pluginItr.hasNext()) {
@@ -295,13 +295,21 @@ public class jsXe {
             //}}}
             
             tabbedview.setVisible(true);
+            
+            //Show plugin error dialog
+            if (pluginErrors.size() > 0)
+                new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), true);
         } catch (Throwable e) {
             exiterror(null, e, 1);
         }
     }//}}}
     
     //{{{ getBuild()
-    
+    /**
+     * Gets the internal build version for jsXe. An example is 00.03.15.00
+     * @return a string of the form Major.Minor.Beta.Build
+     * @since jsXe 0.3pre15
+     */
     public static String getBuild() {
         // Major.Minor.Beta.Build
         return buildProps.getProperty("major.version")+"."+
@@ -312,7 +320,7 @@ public class jsXe {
     
     //{{{ getVersion()
     /**
-     * Gets the current version of jsXe.
+     * Gets the formatted, human readable version of jsXe.
      * @return The current version of jsXe.
      */
     public static String getVersion() {

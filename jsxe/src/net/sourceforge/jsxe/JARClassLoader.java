@@ -198,15 +198,13 @@ public class JARClassLoader extends ClassLoader {
     }//}}}
     
     //{{{ addDirectory
-    
     /**
-     * Adds all jar files in a directory to the seach path for the class
-     * loader and attempts to load the jars as plugins.
-     *
+     * Adds all jar files in a directory to the search path for the class
+     * loader.
      * @param path the path for the directory containing jar files
      * @return an ArrayList of pathnames of jar files that could not be loaded.
      */
-     public ArrayList addDirectory(String path) {
+    public ArrayList addDirectory(String path) {
         ArrayList errors = new ArrayList();
         
         File directory = new File(path);
@@ -228,15 +226,12 @@ public class JARClassLoader extends ClassLoader {
         return errors;
     }//}}}
     
-   // //{{{ getEntry()
-   // 
-   // public JarEntry getEntry(String plugin, String name) {
-   //     JarFile jar = (JarFile)m_jarFiles.get(plugin);
-   //     return jar.getJarEntry(name);
-   // }//}}}
-    
     //{{{ getAllPluginNames()
-    
+    /**
+     * Gets a list of all the names of the loaded plugins.
+     * @return an ArrayList of strings containing the names of the plugins
+     * @since jsXe 0.3pre15
+     */
     public ArrayList getAllPluginNames() {
         ArrayList names = new ArrayList();
         names.addAll(getViewPluginNames());
@@ -245,7 +240,11 @@ public class JARClassLoader extends ClassLoader {
     }//}}}
     
     //{{{ getAllPlugins()
-    
+    /**
+     * Gets all plugins.
+     * @return an ArrayList of plugins
+     * @since jsXe 0.3pre15
+     */
     public ArrayList getAllPlugins() {
         ArrayList plugins = new ArrayList();
         plugins.addAll(getViewPlugins());
@@ -254,7 +253,10 @@ public class JARClassLoader extends ClassLoader {
     }//}}}
     
     //{{{ getViewPluginNames()
-    
+    /**
+     * Gets the names of all loaded view plugins
+     * @return an ArrayList of ViewPlugins
+     */
     public ArrayList getViewPluginNames() {
         return new ArrayList(m_viewPlugins.keySet());
     }//}}}
@@ -276,15 +278,19 @@ public class JARClassLoader extends ClassLoader {
     }//}}}
     
     //{{{ getViewPlugin()
-    
+    /**
+     * Gets the view plugin with the given name
+     * @return the view plugin
+     */
     public ViewPlugin getViewPlugin(String name) {
         return (ViewPlugin)m_viewPlugins.get(name);
     }//}}}
     
     //{{{ getActionPluginNames()
     /**
-     * Returns an Iterator object containing the names of the all installed 
+     * Returns an ArrayList object containing the names of the all installed 
      * action plugins that are not view plugins.
+     * @return an ArrayList of ActionPlugins
      */
     public ArrayList getActionPluginNames() {
         return new ArrayList(m_actionPlugins.keySet());
@@ -318,7 +324,12 @@ public class JARClassLoader extends ClassLoader {
     }//}}}
     
     //{{{ getPlugin()
-    
+    /**
+     * Gets the plugin with the given name. This may return
+     * either view plugins or ActionPlugins
+     * @return the plugin with the given name
+     * @since jsXe 0.3pre15
+     */
     public ActionPlugin getPlugin(String name) {
         ActionPlugin plugin = getViewPlugin(name);
         if (plugin == null) {
@@ -355,13 +366,21 @@ public class JARClassLoader extends ClassLoader {
     }//}}}
     
     //{{{ getPluginProperty()
-    
+    /**
+     * Gets a property for the plugin with the given name.
+     * @return the value of the property
+     * @since jsXe 0.3pre15
+     */
     public String getPluginProperty(String name, String key) {
         return m_pluginProperties.getProperty(name+"."+key);
     }//}}}
     
     //{{{ getPluginProperty()
-    
+    /**
+     * Gets a property for the given plugin.
+     * @return the value of the property.
+     * @since jsXe 0.3pre15
+     */
     public String getPluginProperty(ActionPlugin plugin, String key) {
         return m_pluginProperties.getProperty(plugin.getClass().getName()+"."+key);
     }//}}}
@@ -388,15 +407,13 @@ public class JARClassLoader extends ClassLoader {
             String what = dep.substring(0,index);
             String arg = dep.substring(index + 1);
             Log.log(Log.DEBUG, this, "dependency is "+what);
-            Log.log(Log.DEBUG, this, "required version is");
+            Log.log(Log.DEBUG, this, "required version is "+arg);
             if(what.equals("jdk")) {
-                Log.log(Log.DEBUG, this, "dependency is jdk");
                 if (MiscUtilities.compareStrings(System.getProperty("java.version"), arg,false) < 0) {
                     throw new PluginDependencyException(name, "Java", arg, System.getProperty("java.version"));
                 }
             } else {
                 if (what.equals("jsxe") || what.equals("jsXe")) {
-                    Log.log(Log.DEBUG, this, "dependency is jsXe");
                     if(arg.length() != 11) {
                         throw new PluginDependencyException(name, "Invalid jsXe version number: " + arg);
                     }
@@ -407,7 +424,6 @@ public class JARClassLoader extends ClassLoader {
                     }
                 } else {
                     if (what.equals("plugin")) {
-                        Log.log(Log.DEBUG, this, "dependency is plugin");
                         int index2 = arg.indexOf(' ');
                         if(index2 == -1) {
                             throw new PluginDependencyException(name, name + " has an invalid dependency: " + dep + " (version is missing)");
@@ -437,7 +453,6 @@ public class JARClassLoader extends ClassLoader {
                         }
                     } else {
                         if (what.equals("class")) {
-                            Log.log(Log.DEBUG, this, "dependency is class");
                             try {
                                 loadClass(arg,false);
                             } catch(Exception e) {

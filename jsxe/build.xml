@@ -35,7 +35,7 @@
 		<property name="major.version" value="00"/>
 		<property name="minor.version" value="03"/>
 		<property name="beta.version" value="15"/>
-    <property name="bugfix.version" value="01"/>
+    <property name="bugfix.version" value="00"/>
 		<property name="app.version" value="${major.version}.${minor.version} pre${beta.version}"/>
 		<property name="app_version" value="${major.version}_${minor.version}pre${beta.version}"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
