@@ -1,0 +1,17 @@
+<!-- {{{ content for the downloads page -->
+<h3>Files</h3>
+The lastest release of <a
+href="http://sourceforge.net/project/showfiles.php?group_id=58584&release_id=181226">jsXe is 0.1.11</a>
+<h3>Versioning System</h3>
+<p>The stable version of jsXe has a two part version. The first part is the
+major version number. This will be incremented most likely when a new release is
+incompatible with older releases or when jsXe recieves coveted 1.0 status, i.e.
+it's status becomes 'Production/Stable'. The second part is the minor version
+number. This will be incremented when jsXe implements new features and a new
+stable version is released.</p>
+<p>The development version of jsXe will have three parts to it's version. The
+third part will specify the build number. So every time a build is done this
+will be incremented.</p>
+<p>As of yet there is no stable version of jsXe but there will be someday, I
+assure you.</p>
+<!-- }}} -->

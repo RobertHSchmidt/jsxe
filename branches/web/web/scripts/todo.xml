@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+  <menu>To Do</menu>
+  <title>To Do</menu>
+  <content>
+    <!-- {{{ content for the to do page -->
+    <h3>Future Features</h3>
+    Here are some features that will, one day, be added to jsXe.
+    <ul>
+      <li>
+        Validation - jsXe will be able to validate against DTDs and Schema.
+      </li>
+      <li>
+        Transformation - jsXe will be able to transform XML documents using
+        a XSLT stylesheet.
+      </li>
+      <li>Unlimited undo</li>
+      <li>Syntax highlighted source view.</li>
+    </ul>
+    <!-- }}} -->
+  </content>
+</page>
