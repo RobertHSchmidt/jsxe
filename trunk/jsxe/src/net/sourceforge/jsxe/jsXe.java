@@ -121,7 +121,10 @@ public class jsXe {
         //{{{ get and load the configuration files
         initDefaultProps();
         
-        String settingsDirectory = System.getProperty("user.home")+System.getProperty("file.separator")+".jsxe";
+        String homeDir = System.getProperty("user.home");
+        String fileSep = System.getProperty("file.separator");
+        
+        String settingsDirectory = homeDir+fileSep+".jsxe";
         File _settingsDirectory = new File(settingsDirectory);
         if(!_settingsDirectory.exists())
 		    _settingsDirectory.mkdirs();
@@ -136,6 +139,22 @@ public class jsXe {
         } catch (IOException ioe) {
             System.err.println(getAppTitle() + ": I/O ERROR: Could not open settings file");
             System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
+        }
+        
+        //Load the recent files list
+        File recentFiles = new File(settingsDirectory, "recent.xml");
+        m_bufferHistory = new BufferHistory();
+        try {
+            m_bufferHistory.load(recentFiles);
+        } catch (IOException ioe) {
+            System.err.println(getAppTitle() + ": I/O ERROR: Could not open recent files list");
+            System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
+        } catch (SAXException saxe) {
+            System.err.println(getAppTitle() + ": I/O ERROR: recent.xml not formatted properly");
+            System.err.println(getAppTitle() + ": I/O ERROR: "+saxe.toString());
+        } catch (ParserConfigurationException pce) {
+            System.err.println(getAppTitle() + ": I/O ERROR: Could not parse recent.xml");
+            System.err.println(getAppTitle() + ": I/O ERROR: "+pce.toString());
         }
         //}}}
         
@@ -256,25 +275,50 @@ public class jsXe {
     
     //{{{ openXMLDocument()
     /**
-     * Attempts to open an XML document in jsXe from a file on disk.
+     * Attempts to open an XML document in jsXe from a file on disk. If the file
+     * is already open then the view's focus is set to that document.
      * @param view The view to open the document in.
      * @param file The file to open.
      * @return true if the file is opened successfully.
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
     public static boolean openXMLDocument(TabbedView view, File file) throws IOException {
+        return openXMLDocument(view, file, new Properties(), null);
+    }//}}}
+    
+    //{{{ openXMLDocument()
+    /**
+     * Attempts to open an XML document in jsXe from a file on disk. If the file
+     * is already open then the view's focus is set to that document. The
+     * properties and view name given are ignored if the document is already
+     * open. If the view name is null then the document is opened in the default
+     * DocumentView.
+     *
+     * @param view The view to open the document in.
+     * @param file The file to open.
+     * @param properties the properties to set to the new document
+     * @param viewName the name of the view to open this document in
+     * @return true if the file is opened successfully.
+     * @throws IOException if the document does not validate or cannot be opened for some reason.
+     */
+    public static boolean openXMLDocument(TabbedView view, File file, Properties properties, String viewName) throws IOException {
         if (file == null)
             return false;
         
         DocumentBuffer buffer = getOpenBuffer(file);
         if (buffer != null) {
+            //ignore properties
             view.setDocumentBuffer(buffer);
             return true;
         } else {
             try {
-                buffer = new DocumentBuffer(file);
+                buffer = new DocumentBuffer(file, properties);
                 m_buffers.add(buffer);
-                view.addDocumentBuffer(buffer);
+                if (viewName != null) {
+                    view.addDocumentBuffer(buffer, viewName);
+                } else {
+                    view.addDocumentBuffer(buffer);
+                }
                 /*
                 if there was only one untitled, clean buffer open then go
                 ahead and close it so it doesn't clutter up the user's
@@ -372,14 +416,17 @@ public class jsXe {
         if (m_buffers.contains(buffer)) {
             
             if (buffer.close(view)) {
-            
+                m_bufferHistory.setEntry(buffer, view.getDocumentView().getViewName());
                 view.removeDocumentBuffer(buffer);
                 m_buffers.remove(buffer);
+                
                 if (view.getBufferCount() == 0) {
-                    try {
-                        openXMLDocument(view, getDefaultDocument());
-                    } catch (IOException ioe) {
-                        exiterror(view, "Could not open default document.", 1);
+                    if (!m_exiting) {
+                        try {
+                            openXMLDocument(view, getDefaultDocument());
+                        } catch (IOException ioe) {
+                            exiterror(view, "Could not open default document.", 1);
+                        }
                     }
                 }
                 return true;
@@ -390,6 +437,12 @@ public class jsXe {
             return false;
         }
     }//}}} 
+    
+    //{{{ getBufferHistory()
+    
+    public static BufferHistory getBufferHistory() {
+        return m_bufferHistory;
+    }//}}}
     
     //{{{ getDefaultDocument()
     /**
@@ -465,15 +518,27 @@ public class jsXe {
             //exit only if the view really wants to.
             if (view.close()) {
                 
+                String homeDir = System.getProperty("user.home");
+                String fileSep = System.getProperty("file.separator");
+                String settingsDirectory = homeDir+fileSep+".jsxe";
+                
                 try {
-                    File properties = new File(System.getProperty("user.home")+System.getProperty("file.separator")+".jsxe","properties");
+                    File properties = new File(settingsDirectory,"properties");
                     FileOutputStream filestream = new FileOutputStream(properties);
                     props.store(filestream, "Autogenerated jsXe properties"+System.getProperty("line.separator")+"#This file is not really meant to be edited.");
                 } catch (IOException ioe) {
-                    exiterror(view, "Could not save jsXe settings.\n"+ioe.toString(), 1);
+                    exiterror(view, "Could not save jsXe properites.\n"+ioe.toString(), 1);
                 } catch (ClassCastException cce) {
-                    exiterror(view, "Could not save jsXe settings.\n"+cce.toString(), 1);
+                    exiterror(view, "Could not save jsXe properties.\n"+cce.toString(), 1);
                 }
+                
+                try {
+                    File recentFiles = new File(settingsDirectory, "recent.xml");
+                    m_bufferHistory.save(recentFiles);
+                } catch (IOException ioe) {
+                    exiterror(view, "Could not save jsXe recent files list.\n"+ioe.toString(), 1);
+                }
+                
                 System.exit(0);
             } else {
                 m_exiting = false;
@@ -719,6 +784,7 @@ public class jsXe {
     private static boolean m_exiting=false;
     private static final Properties defaultProps = new Properties();
     private static Properties props = new Properties();
+    private static BufferHistory m_bufferHistory;
     
     private static OptionsPanel jsXeOptions;
     //}}}
