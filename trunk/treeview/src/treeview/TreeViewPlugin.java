@@ -55,13 +55,13 @@ public class TreeViewPlugin extends ViewPlugin {
     private static final String DESCRIPTION = "";
     
     static {
-        InputStream propsStream = DefaultView.class.getResourceAsStream("/treeview/build.properties");
+        InputStream propsStream = TreeViewPlugin.class.getResourceAsStream("/treeview/build.properties");
         Properties buildProps = new Properties();
         try {
-            buildProps.load(viewinputstream);
+            buildProps.load(propsStream);
         } catch (IOException ioe) {}
         
-        VERSION = buildProps.get("build.version");
+        VERSION = buildProps.getProperty("build.version");
     }
     
     //{{{ TreeViewPlugin
