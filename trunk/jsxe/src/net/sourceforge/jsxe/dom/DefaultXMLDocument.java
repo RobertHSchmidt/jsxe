@@ -119,7 +119,18 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
 
     public String getSource() throws IOException {//{{{
-        return source;
+        //if the document is validated we go by the DOM
+        //if it's not we go by the source.
+        
+        if (isValidated()) {
+            StringWriter writer = new StringWriter();
+            DOMSerializer serializer = new DOMSerializer(false);
+            serializer.serialize(document, writer);
+            return writer.toString();
+        } else {
+            return source;
+        }
+        
     }//}}}
     
     public File getFile() {//{{{
@@ -260,17 +271,6 @@ public class DefaultXMLDocument extends XMLDocument {
         catch (IOException ioe) {
             JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
             return false;
-        }
-    }//}}}
-    
-    public void DocumentHasChanged() {//{{{
-        try {
-            StringWriter writer = new StringWriter();
-            DOMSerializer serializer = new DOMSerializer(false);
-            serializer.serialize(document, writer);
-            source = writer.toString();
-        } catch (IOException ioe) {
-            System.err.println("Could not serialize document.");
         }
     }//}}}
     
