@@ -121,7 +121,10 @@ public class FileSaveAsAction extends AbstractAction {
                 File selectedFile = saveDialog.getSelectedFile();
                 
                 XMLDocument doc = jsXe.getOpenXMLDocument(selectedFile);
-                if (doc != null) {
+                
+                //If the document is already open and
+                //it isn't the current document
+                if (doc != null && doc.equals(view.getDocumentView().getXMLDocument())) {
                     jsXe.closeXMLDocument(view, doc);
                     currentdoc.saveAs(selectedFile);
                 } else {

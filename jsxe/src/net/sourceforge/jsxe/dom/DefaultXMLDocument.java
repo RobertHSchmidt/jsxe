@@ -138,17 +138,21 @@ public class DefaultXMLDocument extends XMLDocument {
     public void setModel(File file) throws FileNotFoundException, IOException {//{{{
         if (file!=null) {
             int nextchar=0;
-            source = "";
             name = file.getName();
-            FileReader reader=new FileReader(file);
             validated=false;
-            //This is _very_ inefficient
-            //Change this very soon.
-            while (nextchar != -1) {
-               nextchar = reader.read();
-               if (nextchar != -1)
-                   source+=(char)nextchar;
+            FileReader reader=new FileReader(file);
+            
+            StringBuffer text = new StringBuffer();
+            char[] buffer = new char[READ_SIZE];
+
+            int bytesRead;
+            do {
+                bytesRead = reader.read(buffer, 0, READ_SIZE);
+                if (bytesRead != -1)
+                    text.append(buffer, 0, bytesRead);
             }
+            while (bytesRead != -1);
+            source = text.toString();
             XMLFile = file;
         } else {
             throw new FileNotFoundException("File Not Found: null");
@@ -157,13 +161,18 @@ public class DefaultXMLDocument extends XMLDocument {
     
     public void setModel(Reader reader) throws IOException {//{{{
         validated=false;
-        source="";
-        int nextchar=0;
-        while (nextchar != -1) {
-           nextchar = reader.read();
-           if (nextchar != -1)
-               source+=(char)nextchar;
+        
+        StringBuffer text = new StringBuffer();
+        char[] buffer = new char[READ_SIZE];
+
+        int bytesRead;
+        do {
+            bytesRead = reader.read(buffer, 0, READ_SIZE);
+            if (bytesRead != -1)
+                text.append(buffer, 0, bytesRead);
         }
+        while (bytesRead != -1);
+        source = text.toString();
     }//}}}
     
     public void setModel(String string) {//{{{
@@ -188,11 +197,58 @@ public class DefaultXMLDocument extends XMLDocument {
     
     public void saveAs(File file) throws IOException, SAXParseException, SAXException, ParserConfigurationException {//{{{
         validate();
-        //formatting the document is disabled because it doesn't work right
-        DOMSerializer serializer = new DOMSerializer();
+        
+        DOMSerializer.DOMSerializerConfiguration config = new DOMSerializer.DOMSerializerConfiguration();
+        config.setParameter("format-output", getProperty("format-output"));
+        config.setParameter("whitespace-in-element-content", getProperty("whitespace-in-element-content"));
+        config.setParameter("indent", new Integer(getProperty("indent")));
+        
+        DOMSerializer serializer = new DOMSerializer(config);
+        serializer.setEncoding(getProperty("encoding"));
+        
         FileOutputStream out = new FileOutputStream(file);
+        
         serializer.writeNode(out, getDocument());
         setModel(file);
+    }//}}}
+    
+    public boolean equals(Object o) throws ClassCastException {//{{{
+        if (XMLFile != null) {
+            boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
+                || File.separatorChar == ':' /* Windows or MacOS */);
+    
+            File file;
+    
+            try {
+                XMLDocument doc = (XMLDocument)o;
+                file = doc.getFile();
+            } catch (ClassCastException cce) {
+                try {
+                    file = (File)o;
+                } catch (ClassCastException cce2) {
+                    throw new ClassCastException("Could not cast to XMLDocument or File.");
+                }
+            }
+            
+            try {
+                if (caseInsensitiveFilesystem) {
+                    
+                    if (file.getCanonicalPath().equalsIgnoreCase(getFile().getCanonicalPath())) {
+                        return true;
+                    }
+                    
+                } else {
+                    
+                    if (file.getCanonicalPath().equals(getFile().getCanonicalPath())) {
+                        return true;
+                    }
+                }
+            } catch (IOException ioe) {
+                jsXe.exiterror(null, ioe.getMessage(), 1);
+            }
+        }
+        
+        return false;
     }//}}}
     
     //{{{ Private members
@@ -224,5 +280,6 @@ public class DefaultXMLDocument extends XMLDocument {
     private String name;
     private String source=new String();
     private boolean validated;
+    private static final int READ_SIZE = 5120;
     //}}}
 }

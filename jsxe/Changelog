@@ -1,3 +1,15 @@
+8/31/2003   version 0.1.13  Ian Lewis  <IanLewis@member.fsf.org>
+
+    * Fixed bug with createElement() creating elements with a null local name
+      when element nodes are renamed. Used createElementNS() instead.
+    * Fixed performance issues with opening files (that weren't even that
+      large.)
+
+8/30/2003   version 0.1.12  Ian Lewis  <IanLewis@member.fsf.org>
+
+    * Fixed a very bad bug where jsXe was not writing anything to files when
+      saving because the OutputStreamWriter was not flushed.
+
 8/30/2003   version 0.1.11  Ian Lewis  <IanLewis@member.fsf.org>
 
     * Added an indent width option to the options dialog. Currently only used
