@@ -258,11 +258,24 @@ public class TabbedView extends JFrame {
         getRootPane().revalidate();
     }//}}}
     
+    private void setDocumentView(DocumentView view) {//{{{
+        //close the previous view
+        docview.close();
+        ((JPanel)tabbedPane.getSelectedComponent()).remove(docview);
+        
+        //register the new view
+        docview = view;
+        XMLDocument[] docs = jsXe.getXMLDocuments();
+        setDocument(docs[tabbedPane.getSelectedIndex()]);
+        ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
+        updateMenuBar();
+    }//}}}
+    
     //temporary classes to change views.
     public class SetDefaultViewAction extends AbstractAction {//{{{
         
         public SetDefaultViewAction() {
-            putValue(Action.NAME, "Default View");
+            putValue(Action.NAME, "Tree View");
         }
         
         public void actionPerformed(ActionEvent e) {
@@ -286,19 +299,6 @@ public class TabbedView extends JFrame {
             setDocumentView(view);
         }
         
-    }//}}}
-    
-    private void setDocumentView(DocumentView view) {//{{{
-        //close the previous view
-        docview.close();
-        ((JPanel)tabbedPane.getSelectedComponent()).remove(docview);
-        
-        //register the new view
-        docview = view;
-        XMLDocument[] docs = jsXe.getXMLDocuments();
-        setDocument(docs[tabbedPane.getSelectedIndex()]);
-        ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
-        updateMenuBar();
     }//}}}
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
