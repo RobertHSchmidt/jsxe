@@ -253,6 +253,9 @@ public class TabbedView extends JFrame {
         menubar.add(helpMenu);//}}}
         
         setJMenuBar(menubar);
+        
+        //Need to cause a repaint after menubar is changed.
+        getRootPane().revalidate();
     }//}}}
     
     //temporary classes to change views.
@@ -295,6 +298,7 @@ public class TabbedView extends JFrame {
         XMLDocument[] docs = jsXe.getXMLDocuments();
         setDocument(docs[tabbedPane.getSelectedIndex()]);
         ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
+        updateMenuBar();
     }//}}}
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
