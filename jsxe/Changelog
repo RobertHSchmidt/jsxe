@@ -1,3 +1,7 @@
+07/30/2004  version 0.2 pre15   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added replace field to the search dialog.
+
 07/27/2004  version 0.2 pre14   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added a very preliminary search and replace dialog to the source view.

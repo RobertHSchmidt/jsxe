@@ -36,6 +36,7 @@ package net.sourceforge.jsxe.gui.view;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.*;
+import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 //}}}
 
@@ -105,7 +106,7 @@ public class DefaultView extends JPanel implements DocumentView {
      * @param document the document that this view shows
      * @throws IOException if the document cannot be viewed using this view.
      */
-    public DefaultView(XMLDocument document) throws IOException {
+    public DefaultView(DocumentBuffer document) throws IOException {
         
         setLayout(new BorderLayout());
         
@@ -140,7 +141,7 @@ public class DefaultView extends JPanel implements DocumentView {
         
         //}}}
         
-        setXMLDocument(document);
+        setDocumentBuffer(document);
     }//}}}
     
     //{{{ setVisible()
@@ -173,7 +174,7 @@ public class DefaultView extends JPanel implements DocumentView {
     
     public boolean close() {
         
-        //m_document should only be null if setXMLDocument was never called.
+        //m_document should only be null if setDocumentBuffer was never called.
         if (m_document != null) {
             Dimension size = getSize();
             
@@ -246,16 +247,16 @@ public class DefaultView extends JPanel implements DocumentView {
         return _VIEWNAME;
     }//}}}
     
-    //{{{ getXMLDocument()
+    //{{{ getDocumentBuffer()
     
-    public XMLDocument getXMLDocument() {
+    public DocumentBuffer getDocumentBuffer() {
         return m_document;
     }//}}}
     
-    //{{{ setXMLDocument()
+    //{{{ setDocumentBuffer()
     
-    public void setXMLDocument(XMLDocument document) throws IOException {
-        
+    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {
+        XMLDocument document = buffer.getXMLDocument();
         try {
             document.checkWellFormedness();
         } catch (Exception e) {
@@ -299,10 +300,10 @@ public class DefaultView extends JPanel implements DocumentView {
        // tree.expandPath(path);
         
         if (m_document != null) {
-            m_document.removeXMLDocumentListener(m_documentListener);
+            m_document.getXMLDocument().removeXMLDocumentListener(m_documentListener);
         }
-        m_document = document;
-        m_document.addXMLDocumentListener(m_documentListener);
+        m_document = buffer;
+        m_document.getXMLDocument().addXMLDocumentListener(m_documentListener);
     } //}}}
     
     //}}}
@@ -541,7 +542,7 @@ public class DefaultView extends JPanel implements DocumentView {
     private JTable attributesTable = new JTable();
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
-    private XMLDocument m_document;
+    private DocumentBuffer m_document;
     private boolean m_firstShow = true;
     
     private TableModelListener tableListener = new TableModelListener() {//{{{

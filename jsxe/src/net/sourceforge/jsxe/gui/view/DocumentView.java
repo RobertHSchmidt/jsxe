@@ -36,7 +36,7 @@ package net.sourceforge.jsxe.gui.view;
 //{{{ imports
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 //}}}
 
@@ -57,7 +57,8 @@ import java.io.IOException;
 
 /**
  * The DocumentView class defines the methods that will be implemented by
- * all views in jsXe that provide features for editing XML documents.
+ * all views in jsXe that provide features for editing XML documents. This is
+ * the precursor to jsXe's view/plugin interface.
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
@@ -125,15 +126,15 @@ public interface DocumentView {
     public abstract String getViewName();
     //}}}
     
-    //{{{ getXMLDocument()
+    //{{{ getDocumentBuffer()
     /**
-     * Gets the XMLDocument that this view is currently using.
-     * @return the XMLDocument for this view
+     * Gets the DocumentBuffer that this view is currently using.
+     * @return the DocumentBuffer for this view
      */
-    public XMLDocument getXMLDocument();
+    public DocumentBuffer getDocumentBuffer();
     //}}}
     
-    //{{{ setXMLDocument()
+    //{{{ setDocumentBuffer()
     /**
      * Sets the current document. This method is used when you want to
      * view another document using this view object.
@@ -141,7 +142,7 @@ public interface DocumentView {
      * @param document the new document to view
      * @throws IOException if the document cannot be viewed using this view
      */
-    public void setXMLDocument(XMLDocument document) throws IOException;
+    public void setDocumentBuffer(DocumentBuffer document) throws IOException;
     //}}}
 
 }
