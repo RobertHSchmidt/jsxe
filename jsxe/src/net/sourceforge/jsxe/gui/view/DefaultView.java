@@ -237,17 +237,6 @@ public class DefaultView extends DocumentView {
         return (node.getNodeValue() != null);
     }//}}}
     
-    private void updateTree() {//{{{
-        //We must settle for this but this doesn't
-        //update the tree properly. When the text node
-        //is changed the tree cell size doesn't change
-        //resulting in ... characters in the tree.
-        //Being able to update the tree the way we want
-        //to is going to be require more complex use of
-        //tree rendering I think.
-        tree.treeDidChange();
-    }//}}}
-    
     private class DefaultViewOptionsPanel extends OptionsPanel {//{{{
         
         public DefaultViewOptionsPanel() {//{{{
@@ -346,12 +335,15 @@ public class DefaultView extends DocumentView {
         }
 
         private void maybeShowPopup(MouseEvent e) {
-            TreePath selPath = tree.getLeadSelectionPath();
+            TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
             if (e.isPopupTrigger() && selPath != null) {
+                
+                tree.setSelectionPath(selPath);
                 
                 AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                 JMenuItem popupMenuItem;
                 JPopupMenu popup = new JPopupMenu();
+                boolean showpopup = false;
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     popupMenuItem = new JMenuItem("Add Element Node");
@@ -360,11 +352,17 @@ public class DefaultView extends DocumentView {
                     popupMenuItem = new JMenuItem("Add Text Node");
                     popupMenuItem.addActionListener(new AddTextNodeAction());
                     popup.add(popupMenuItem);
+                    showpopup = true;
                 }
-                popupMenuItem = new JMenuItem("Remove Node");
-                popupMenuItem.addActionListener(new RemoveNodeAction());
-                popup.add(popupMenuItem);
-                popup.show(e.getComponent(), e.getX(), e.getY());
+                //if the node is not the document or the document root.
+                if (selectedNode.getNodeType() != Node.DOCUMENT_NODE && selectedNode.getParentNode().getNodeType() != Node.DOCUMENT_NODE) {
+                    popupMenuItem = new JMenuItem("Remove Node");
+                    popupMenuItem.addActionListener(new RemoveNodeAction());
+                    popup.add(popupMenuItem);
+                    showpopup = true;
+                }
+                if (showpopup)
+                    popup.show(e.getComponent(), e.getX(), e.getY());
             }
         }
     }//}}}
@@ -377,7 +375,8 @@ public class DefaultView extends DocumentView {
                 if (selPath != null) {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                     AdapterNode newNode = selectedNode.addNode("New_Element", "", Node.ELEMENT_NODE);
-                    tree.updateUI();
+                    //The TreeModel doesn't automatically treeNodesInserted() yet
+                    updateComponents();
                 }
             } catch (DOMException dome) {
                 JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
@@ -394,7 +393,8 @@ public class DefaultView extends DocumentView {
                 if (selPath != null) {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                     selectedNode.addNode("", "New Text Node", Node.TEXT_NODE);
-                    tree.updateUI();
+                    //The TreeModel doesn't automatically treeNodesInserted() yet
+                    updateComponents();
                 }
             } catch (DOMException dome) {
                 JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
@@ -411,13 +411,37 @@ public class DefaultView extends DocumentView {
                 if (selPath != null) {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                     selectedNode.remove();
-                    tree.updateUI();
+                    //The TreeModel doesn't automatically treeNodesRemoved() yet
+                    updateComponents();
                 }
             } catch (DOMException dome) {
                 JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
             }
         }
         
+    }//}}}
+    
+    private void updateTree() {//{{{
+        //We must settle for this but this doesn't
+        //update the tree properly. When the text node
+        //is changed the tree cell size doesn't change
+        //resulting in ... characters in the tree.
+        //Being able to update the tree the way we want
+        //to is going to be require more complex use of
+        //tree rendering I think.
+        tree.treeDidChange();
+    }//}}}
+    
+    private void updateComponents() {//{{{
+        tree.updateUI();
+        //Clear the right hand pane of previous values.
+        htmlPane.setText("");
+        
+        //set the attributes table to the document itself
+        AdapterNode adapter = new AdapterNode(currentDoc.getDocument());
+        DefaultViewTableModel tableModel = new DefaultViewTableModel(this, adapter);
+        attributesTable.setModel(tableModel);
+        attributesTable.updateUI();
     }//}}}
     
     private JTree tree = new JTree();
@@ -438,14 +462,16 @@ public class DefaultView extends DocumentView {
         public void treeNodesChanged(TreeModelEvent e) {
             updateTree();
         }
+        
+        //These aren't called yet.
         public void treeNodesInserted(TreeModelEvent e) {
-            updateTree();
+            updateComponents();
         }
         public void treeNodesRemoved(TreeModelEvent e) {
-            updateTree();
+            updateComponents();
         }
         public void treeStructureChanged(TreeModelEvent e) {
-            updateTree();
+            updateComponents();
         }
         
     };//}}}
