@@ -321,7 +321,6 @@ public class DOMSerializer implements DOMWriter {
             return false;
         }//}}}
         
-        //This should be fixed to perform better validation of the parameter name
         public Object getParameter(String name) throws DOMException {//{{{
             
             if (supportedParameters.indexOf(name) != -1) {
@@ -335,7 +334,6 @@ public class DOMSerializer implements DOMWriter {
             }
         }//}}}
         
-        //This should be fixed to perform better validation of the parameter name
         public void setParameter(String name, Object value) throws DOMException {//{{{
             
             if (supportedParameters.indexOf(name) != -1) {
