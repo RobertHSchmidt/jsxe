@@ -41,8 +41,6 @@ TODO:
           to entities.
         * Serialized XML should be 100% well-formed and parsable.
     
-    * Add at least minimal support for namespaces.
-    
     * Add a status bar to the bottom that will show a buffer's status. Like if
       the buffer failed to be validated or parsed or whatever. It's not real
       clear to the user why they got kicked to the source view when they
@@ -60,6 +58,8 @@ TODO:
     * Add a ghosted image of the node to drag and drop cursor. Hopefully the
       whole cursor can be replaced with the image since the default drag
       cursor is dumb in linux.
+    
+    * Add support for expanding nodes as you drag over them
     
     * Store some options such as recent files and file specific options in
       an XML file with jsxe's options in the .jsxe folder in the home dir.
