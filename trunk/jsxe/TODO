@@ -12,6 +12,9 @@ TODO:
     * Work on performance problems when loading an XML document. (Hint: setModel
       in DefaultXMLDocument.java)
     
+    * Change the XMLDocument interface to use something else but validate().
+      This is confusing and dumb. Use the 
+    
     * Research the EntityResolver class and see if it can be used to resolve
       DTD files.
     
@@ -48,7 +51,8 @@ TODO:
       which Nodes were previously visable.
       
     * Redo the interface for XMLDocuments and AdapterNodes so that DOM
-      implementation is abstracted away. Implement Document editing methods.
+      implementation used in a more limited way. Implement Document editing
+      methods.
     
     * Allow GUI models to register change listeners with XMLDocuments and
       AdapterNodes. This will allow GUI models to be updated automatically when
