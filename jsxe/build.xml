@@ -39,8 +39,9 @@
       <entry key="major.version" type="int" value="0"/>
       <entry key="minor.version" type="int" value="0"/>
       <entry key="build.version" type="int" default="0" operation="+"/>
-      <entry key="cvs.version" value="$Id$"/>
+      <entry key="cvs.version" default="0"/>
     </propertyfile>
+    
   </target>
 
   <target name="clean" description="clean up">
