@@ -24,7 +24,7 @@
 
     * Documents opened directly into the source view are no longer formatted
       automatically when the format-pretty-print property is true. This
-      prevents loading documents where whitespace is matters without marking
+      prevents loading documents where whitespace matters without marking
       them dirty.
     * Views now remove listeners that they add to the DocumentBuffer
     * Fixed bug that caused the document not to me marked dirty when it was
