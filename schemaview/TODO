@@ -1,9 +1,5 @@
-* Combine the parsing of the Tree Model and the Graph Model
-
 * Be able to handle whatever namespace name is given to the schema namespace.
 
-* Layout and parsing the nodes is WAY WAY too slow. This should be much faster.
-  
 * Size each cell based on the size of the text within it.
 
 * Look at Edge.Routing to try to orthoganal lines connecting nodes.

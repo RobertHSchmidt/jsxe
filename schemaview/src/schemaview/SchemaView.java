@@ -83,7 +83,7 @@ public class SchemaView extends JPanel implements DocumentView {
         
         final JGraph graph = new JGraph();
         
-        graph.setModel(new SchemaViewGraphModel(document));
+        graph.setModel(new SchemaViewModel(document));
         
        // org.jgraph.graph.GraphModel model = graph.getModel();
        // 

@@ -57,11 +57,17 @@ import java.io.IOException;
 
 //{{{ DOM Classes
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+//}}}
+
+//{{{ JGraph classes
+import org.jgraph.graph.*;
+import org.jgraph.event.*;
 //}}}
 
 //}}}
 
-public class SchemaViewModel {
+public class SchemaViewModel extends DefaultGraphModel {
     
     //{{{ Private static members
     private static final ArrayList m_rootNames = new ArrayList();
@@ -79,35 +85,77 @@ public class SchemaViewModel {
     //{{{ SchemaViewModel constructor
     public SchemaViewModel(XMLDocument document) throws IOException {
         m_document = document;
-        parse(m_document);
+        
+        Element element = m_document.getDocumentCopy().getDocumentElement();
+        
+        String uri = element.getNamespaceURI();
+        if (uri != null && uri.equals("http://www.w3.org/2001/XMLSchema")) {
+            parse();
+            layout();
+        } else {
+            throw new IOException("Schema namespace is not defined");
+        }
     }//}}}
     
-    //{{{ getRoot()
+    //{{{ getSchemaRootCount()
     
-    public DefaultMutableTreeNode getRoot() {
-        return m_rootNode;
+    public int getSchemaRootCount() {
+        return m_schemaRoots.size();
+    }//}}}
+    
+    //{{{ getSchemaRootAt()
+    
+    public SchemaGraphCell getSchemaRootAt(int index) {
+        return (SchemaGraphCell)m_schemaRoots.get(index);
+    }//}}}
+    
+    //{{{ SchemaGraphCell class
+    
+    public static class SchemaGraphCell extends DefaultGraphCell {
+        
+        //{{{ SchemaGraphCell constructor
+        
+        public SchemaGraphCell(Object userObj) {
+            super(userObj);
+        }//}}}
+        
+        //{{{ addSchemaCell()
+        /**
+         * Adds a node to the schema tree. This will probably throw exceptions in the future.
+         */
+        public void addSchemaCell(SchemaGraphCell child) {
+            m_m_children.add(child);
+            child.m_m_parent = this;
+        }//}}}
+        
+        //{{{ getSchemaChildCount()
+        
+        public int getSchemaChildCount() {
+            return m_m_children.size();
+        }//}}}
+        
+        //{{{ getSchemaChildAt()
+        
+        public SchemaGraphCell getSchemaChildAt(int index) {
+            return (SchemaGraphCell)m_m_children.get(index);
+        }//}}}
+        
+        private ArrayList m_m_children = new ArrayList();
+        protected SchemaGraphCell m_m_parent;
+        
     }//}}}
     
     //{{{ Private Members
     
     //{{{ parse()
-    /**
-     * Parses the Schema into a model.
-     */
-    private void parse(XMLDocument doc) throws IOException {
-        Log.log(Log.DEBUG,this,"Starting parse");
-        Element element = doc.getDocumentCopy().getDocumentElement();
-        
-        String uri = element.getNamespaceURI();
-        if (uri != null && uri.equals("http://www.w3.org/2001/XMLSchema")) {
-            //dummy root node
-            m_rootNode = new DefaultMutableTreeNode("Schema Root");
-            parseNode(m_rootNode, doc.getAdapterNode(), 0);
-        } else {
-            throw new IOException("Schema namespace is not defined");
-        }
-        
-        
+    
+    public void parse() {
+        m_cells = new ArrayList();
+        m_cs = new ConnectionSet();
+        m_attrib = new HashMap();
+        m_schemaRoots = new ArrayList();
+        parseNode(null, m_document.getAdapterNode(), 0);
+        insert(m_cells.toArray(), m_attrib, m_cs, null, null);
     }//}}}
     
     //{{{ parseNode()
@@ -119,27 +167,143 @@ public class SchemaViewModel {
      * The roots below the changed node should be removed
      * from the model before calling this method.
      */
-    private void parseNode(DefaultMutableTreeNode parent, AdapterNode node, int level) {
+    private void parseNode(SchemaGraphCell parent, AdapterNode node, int level) {
         
-        DefaultMutableTreeNode newParent = parent;
-        int newLevel = level;
-        if (m_rootNames.contains(node.getNodeName())) {
-            //add the node
-            DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(node);
-            parent.add(newNode);
-            newParent = newNode;
-            newLevel = level+1;
+        if (node.getNodeType() == Node.ELEMENT_NODE || node.getNodeType() == Node.DOCUMENT_NODE) {
+        
+            SchemaGraphCell newParent = parent;
+            int newLevel = level;
+            if (m_rootNames.contains(node.getNodeName())) {
+                //add the cell
+                SchemaGraphCell newCell = new SchemaGraphCell(node);
+                DefaultPort      newPort = new DefaultPort();
+                newCell.add(newPort);
+                newPort.setParent(newCell);
+                m_cells.add(newCell);
+                m_cells.add(newPort);
+                
+                //Set the attributes
+                m_attrib.put(newCell, getAttributes(node));
+                
+                newParent = newCell;
+                
+                //add it to the schema roots if it's a root
+                if (level == 0) {
+                    m_schemaRoots.add(newCell);
+                }
+                
+                newLevel = level+1;
+                
+                //add the edge with the parent
+                if (parent != null) {
+                    //connect it to it's schema parent
+                    parent.addSchemaCell(newCell);
+                    
+                    //Now add the edge
+                    DefaultEdge newEdge = new DefaultEdge();
+                    Map edgeAttrib = new Hashtable();
+                    GraphConstants.setLineEnd(edgeAttrib, GraphConstants.ARROW_CLASSIC);
+                    GraphConstants.setEndFill(edgeAttrib, true);
+                    m_attrib.put(newEdge, edgeAttrib);
+                    
+                    //get the port for the parent
+                    DefaultPort parentPort = (DefaultPort)parent.getChildAt(0);
+                    m_cs.connect(newEdge, parentPort, newPort);
+                    m_cells.add(newEdge);
+                    
+                }
+            }
+            int childCount = node.childCount();
+            for (int i=0; i<childCount; i++) {
+                parseNode(newParent, node.child(i), newLevel);
+            }
         }
-        int childCount = node.childCount();
-        for (int i=0; i<childCount; i++) {
-            parseNode(newParent, node.child(i), newLevel);
-        }
+        
     }
     
     //}}}
     
+    //{{{ layout()
+    /**
+     * Lays out the cells on the graph component by setting
+     * their locations
+     */
+    protected void layout() {
+        
+        int startY = 0;
+        int childCount = getSchemaRootCount();
+        for (int i=0; i<childCount; i++) {
+            startY = layoutNode(0,startY, (SchemaGraphCell)getSchemaRootAt(i));
+        }
+        
+    }//}}}
+    
+    //{{{ layoutNode()
+    
+    private int layoutNode(int startX, int startY, SchemaGraphCell cell) {
+        
+        AttributeMap map = cell.getAttributes();
+        
+       // Rectangle2D size = GraphConstants.getBounds(map);
+       // int width  = (int)size.getWidth();
+       // int height = (int)size.getHeight();
+       // int x      = (int)size.getX();
+       // int y      = (int)size.getY();
+        int width = 150;
+        int height = 20;
+        int padding = 20;
+        
+        int newYOffset = startY;
+        int childCount = cell.getSchemaChildCount();
+        for (int i=0; i<childCount; i++) {
+            newYOffset = layoutNode(startX + width + padding, newYOffset,cell.getSchemaChildAt(i));
+        }
+        
+        Rectangle bounds = new Rectangle(width, height);
+        bounds.x = startX+padding/2;
+        bounds.y =  (Math.max(newYOffset-startY, height+padding)/2) + startY - (height/2);
+        //sets the bounds for the cell
+        GraphConstants.setBounds(map, bounds);
+        
+        //just for good measure
+        cell.setAttributes(map);
+        
+        return Math.max(newYOffset, startY+height+padding);
+        
+    }//}}}
+    
+    //{{{ setAttributes()
+    /**
+     * gets attributes that have to with the appearance of the type of
+     * cell.
+     */
+    private HashMap getAttributes(AdapterNode node) {
+        HashMap map = new HashMap();
+        GraphConstants.setBorderColor(map, Color.black);
+        GraphConstants.setOpaque(map, false);
+       // GraphConstants.setGradientColor(map, Color.green);
+       // GraphConstants.setBackground(map, Color.blue);
+       // GraphConstants.setAutoSize(map, true);
+        
+        return map;
+    }//}}}
+    
     private XMLDocument m_document;
-    private DefaultMutableTreeNode m_rootNode;
+    
+    private ArrayList m_schemaRoots = new ArrayList();
+    
+    /**
+     * The root cells populated during parse
+     */
+    private ArrayList m_cells;
+    /**
+     * The connectionset populated during parse
+     */
+    private ConnectionSet m_cs;
+    /**
+     * The atribute set populated during parse
+     */
+    private HashMap m_attrib;
     
     //}}}
 }
