@@ -24,12 +24,8 @@ TODO:
 
 * Version 0.2.0
 
-	* Make it look like the node is selected when you are going to add the the
-      dragged node on the drop target node.
-
-    * Fix the tree node editing compatibility with drag n drop. If you select a
-      node then click again to drag it drags and begins editing at the same time
-      which causes problems.
+	* Highlight the node that is being dragged over when dropping would add
+      the dropped node to the drop target.
     
     * DOMSerializer needs to support the following parameters:
         entities
@@ -37,6 +33,8 @@ TODO:
         normalize-characters
         ignore-unknown-character-denormalizations
         split-cdata-sections
+    
+    * Update to use the newest version of Xerces
     
     * Make sure jsXe can deal with all types of XML nodes.
         * Add support for creating every type of XML node.
@@ -48,7 +46,9 @@ TODO:
     * Add at least minimal support for namespaces.
     
     * Add a status bar to the bottom that will show a buffer's status. Like if
-      the buffer failed to be validated or parsed or whatever.
+      the buffer failed to be validated or parsed or whatever. It's not real
+      clear to the user why they got kicked to the source view when they
+      opened a document but a status bar could convey that info.
     
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
     

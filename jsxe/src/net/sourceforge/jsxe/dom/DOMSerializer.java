@@ -407,7 +407,7 @@ public class DOMSerializer implements LSSerializer {
                         }
                         
                         if (writeAttr) {
-                            str = " " + currentAttr.getNodeName() + "=\"" + currentAttr.getNodeValue() + "\"";
+                            str = " " + currentAttr.getNodeName() + "=\"" + normalizeCharacters(currentAttr.getNodeValue()) + "\"";
                             doWrite(writer, str, node, line, column, offset);
                             column += str.length();
                             offset += str.length();
@@ -504,8 +504,8 @@ public class DOMSerializer implements LSSerializer {
                                 offset += m_newLine.length();
                             }
                         }
-                        //pass through the text and add entities where we find
-                        // '>' or '<' characters
+                        
+                        //This is a dumb quick fix and should be changed.
                         for (int i=0; i<text.length();i++) {
                             //this must be first or it picks up the other
                             //entities.
@@ -685,11 +685,32 @@ public class DOMSerializer implements LSSerializer {
     }//}}}
     
     //{{{ normalizeCharacters()
-    /**
-     * Does nothing right now. Should be used to normalize text when writing.
-     */
+    
     private String normalizeCharacters(String text) {
-        return text;
+        StringBuffer newText = new StringBuffer();
+        //This is a dumb quick fix and should be changed.
+        for (int i=0; i<text.length();i++) {
+            //this must be first or it picks up the other
+            //entities.
+            String str = text.substring(i, i+1);
+            if (str.equals("&")) {
+                str = "&amp;";
+            }
+            if (str.equals(">")) {
+                str = "&gt;";
+            }
+            if (str.equals("<")) {
+                str = "&lt;";
+            }
+            if (str.equals("\'")) {
+                str = "&apos;";
+            }
+            if (str.equals("\"")) {
+                str = "&quot;";
+            }
+            newText.append(str);
+        }
+        return newText.toString();
     }//}}}
     
     private DOMSerializerConfiguration config;

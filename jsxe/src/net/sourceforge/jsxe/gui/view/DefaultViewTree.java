@@ -87,6 +87,15 @@ public class DefaultViewTree extends JTree {
         //}}}
         
         addMouseListener(new TreePopupListener());
+        addTreeSelectionListener(new TreeSelectionListener() {//{{{
+            public void valueChanged(TreeSelectionEvent e) {
+                TreePath selPath = e.getPath();
+                AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+                if ( selectedNode != null ) {
+                    setEditable(isEditable(selectedNode));
+                }
+            }
+        });//}}}
         
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         
@@ -98,6 +107,8 @@ public class DefaultViewTree extends JTree {
         
     }//}}}
     
+    //{{{ Private members
+    
     //{{{ isEditable()
     /**
      * Indicates if an AdapterNode is capable of being edited in
@@ -105,11 +116,9 @@ public class DefaultViewTree extends JTree {
      * @param node the node to check
      * @return true if the node can be edited in this tree
      */
-    public static boolean isEditable(AdapterNode node) {
+    private static boolean isEditable(AdapterNode node) {
         return (node.getNodeType() == Node.ELEMENT_NODE);
     }//}}}
-    
-    //{{{ Private members
     
     //{{{ TreePopupListener class
     
@@ -399,6 +408,9 @@ public class DefaultViewTree extends JTree {
                     AdapterNode node = (AdapterNode)path.getLastPathComponent();
                     Transferable transferable = new TransferableNode(node);
                     m_dragSource.startDrag(dge, DragSource.DefaultCopyNoDrop, transferable, m_treeDSListener);
+                    
+                    //Don't want to start editing if we are doing a drag
+                    setEditable(false);
                 }
             } catch( InvalidDnDOperationException idoe) {
                 jsXe.exiterror(null, idoe.getMessage(), 1);
@@ -436,6 +448,12 @@ public class DefaultViewTree extends JTree {
             int dropAction = dsde.getDropAction();
             if ( dropAction == DnDConstants.ACTION_MOVE ) {
                 //***** Do stuff *****
+            }
+            
+            //Set the editing stuff back to normal since drag is done.
+            AdapterNode selectedNode = (AdapterNode)getLastSelectedPathComponent();
+            if ( selectedNode != null ) {
+                setEditable(isEditable(selectedNode));
             }
         }//}}}
         
