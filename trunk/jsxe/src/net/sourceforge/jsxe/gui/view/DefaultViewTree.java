@@ -3,7 +3,7 @@ DefaultViewTree.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editor
+jsXe is the Java Simple XML Editorh
 jsXe is a gui application that can edit an XML document and create a tree view.
 The user can then edit this tree and the content in the tree and save the
 document.
@@ -113,14 +113,14 @@ public class DefaultViewTree extends JTree {
     
     //{{{ isEditable()
     /**
-     * Indicates if an AdapterNode is capable of being edited in
+     * Indicates if a node is capable of being edited in
      * this tree.
      * @param node the node to check
      * @return true if the node can be edited in this tree
      */
-    private static boolean isEditable(AdapterNode node) {
+    private static boolean isEditable(DefaultViewTreeNode node) {
         if (node != null) {
-            return (node.getNodeType() == Node.ELEMENT_NODE);
+            return (node.getAdapterNode().getNodeType() == Node.ELEMENT_NODE);
         } else {
             return false;
         }
@@ -150,7 +150,9 @@ public class DefaultViewTree extends JTree {
                 
                 setSelectionPath(selPath);
                 
-                AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+                //Don't want to interact with AdapterNodes too much. Maybe change this.
+                AdapterNode selectedNode = ((DefaultViewTreeNode)selPath.getLastPathComponent()).getAdapterNode();
+                
                 JMenuItem popupMenuItem;
                 JMenu addNodeItem = new JMenu("Add");
                 JPopupMenu popup = new JPopupMenu();
@@ -244,8 +246,10 @@ public class DefaultViewTree extends JTree {
             try {
                 TreePath selPath = getLeadSelectionPath();
                 if (selPath != null) {
-                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    selectedNode.addAdapterNode(m_name, m_value, m_nodeType);
+                    DefaultViewTreeNode selectedNode = (DefaultViewTreeNode)selPath.getLastPathComponent();
+                    
+                    //add the node of the correct type to the end of the children of this node
+                    selectedNode.insert(m_name, m_value, m_nodeType, selectedNode.getChildCount());
                     expandPath(selPath);
                     //The TreeModel doesn't automatically treeNodesInserted() yet
                    // updateComponents();
@@ -312,8 +316,8 @@ public class DefaultViewTree extends JTree {
             try {
                 TreePath selPath = getLeadSelectionPath();
                 if (selPath != null) {
-                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    selectedNode.getParentNode().remove(selectedNode);
+                    DefaultViewTreeNode selectedNode = (DefaultViewTreeNode)selPath.getLastPathComponent();
+                    selectedNode.removeFromParent();
                     //The TreeModel doesn't automatically treeNodesRemoved() yet
                    // updateComponents();
                     updateUI();
@@ -349,7 +353,7 @@ public class DefaultViewTree extends JTree {
             int type = -1;
             
             try {
-                AdapterNode node = (AdapterNode)value;
+                AdapterNode node = ((DefaultViewTreeNode)value).getAdapterNode();
                 type = node.getNodeType();
             } catch (ClassCastException e) {}
             
@@ -478,7 +482,7 @@ public class DefaultViewTree extends JTree {
                 TreePath path = getPathForLocation(origin.x, origin.y);
                 //ignore dragging the Document root.
                 if (path != null && !(isRootVisible() && getRowForPath(path) == 0)) {
-                    AdapterNode node = (AdapterNode)path.getLastPathComponent();
+                    DefaultViewTreeNode node = (DefaultViewTreeNode)path.getLastPathComponent();
                     Transferable transferable = new TransferableNode(node);
                     m_dragSource.startDrag(dge, DragSource.DefaultCopyNoDrop, transferable, m_treeDSListener);
                     
@@ -598,7 +602,7 @@ public class DefaultViewTree extends JTree {
             if (data == null)
                 throw new NullPointerException();
             
-            AdapterNode node = (AdapterNode)data;
+            DefaultViewTreeNode node = (DefaultViewTreeNode)data;
             Point loc = dtde.getLocation();
             
             TreePath path = getPathForLocation(loc.x, loc.y);
@@ -606,7 +610,7 @@ public class DefaultViewTree extends JTree {
                 dtde.rejectDrop();
                 return;
             }
-            AdapterNode parentNode = (AdapterNode)path.getLastPathComponent();
+            DefaultViewTreeNode parentNode = (DefaultViewTreeNode)path.getLastPathComponent();
             
             try {
                 //Find out the relative location where I dropped.
@@ -614,9 +618,9 @@ public class DefaultViewTree extends JTree {
                 if (loc.y < bounds.y + (int)(bounds.height * 0.25)) {
                     //Insert before the node dropped on
                     if (parentNode != null) {
-                        AdapterNode trueParent = parentNode.getParentNode();
+                        DefaultViewTreeNode trueParent = (DefaultViewTreeNode)parentNode.getParent();
                         if (trueParent != null) {
-                            trueParent.addAdapterNodeAt(node, trueParent.index(parentNode));
+                            trueParent.insert(node, trueParent.getIndex(parentNode));
                             
                             makeVisible(path);
                         } else {
@@ -627,17 +631,16 @@ public class DefaultViewTree extends JTree {
                     }
                 } else {
                     if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
-                        //insert in the node
-                        parentNode.addAdapterNode(node);
+                        //insert in the node inside the parent at the end of its children
+                        parentNode.insert(node, parentNode.getChildCount());
                         //Make sure the node we just dropped is viewable
-                        System.out.println(path.toString());
                         expandPath(path);
                     } else {
                         if (parentNode != null) {
                             //insert after the node dropped on
-                            AdapterNode trueParent = parentNode.getParentNode();
+                            DefaultViewTreeNode trueParent = (DefaultViewTreeNode)parentNode.getParent();
                             if (trueParent != null) {
-                                trueParent.addAdapterNodeAt(node, trueParent.index(parentNode)+1);
+                                trueParent.insert(node, trueParent.getIndex(parentNode)+1);
                                 makeVisible(path);
                             } else {
                                 throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");

@@ -276,6 +276,48 @@ public class XMLDocument {
         return newNode;
     }//}}}
     
+    //{{{ newAdapterNode()
+    
+    public AdapterNode newAdapterNode(AdapterNode parent, String name, String value, short type) {
+        Node newNode = null;
+        
+        //Only handle text and element nodes right now.
+        switch(type) {
+            case Node.ELEMENT_NODE:
+                newNode = m_document.createElementNS("", name);
+                break;
+            case Node.TEXT_NODE:
+                newNode = m_document.createTextNode(value);
+                break;
+            case Node.CDATA_SECTION_NODE:
+                newNode = m_document.createCDATASection(value);     
+                break;
+            case Node.COMMENT_NODE:
+                newNode = m_document.createComment(value);
+                break;
+            case Node.PROCESSING_INSTRUCTION_NODE:
+                newNode = m_document.createProcessingInstruction(name, value);
+                break;
+            case Node.ENTITY_REFERENCE_NODE:
+                if (m_document.getDoctype() ==  null) {
+                    throw new DOMException(DOMException.NOT_FOUND_ERR, "No DTD defined");
+                } else {
+                    if (m_document.getDoctype().getEntities().getNamedItem(name) != null) {
+                        newNode = m_document.createEntityReference(name);
+                    } else {
+                        throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+name+"\""+" is not declared in the DTD");
+                    }
+                }
+                break;
+            case Node.DOCUMENT_TYPE_NODE:
+                throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, "DOM level 2 does not allow modification of the document type node");
+            default:
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "An attempt was made to add a node that was not supported.");
+        }
+        
+        return newAdapterNode(parent, newNode);
+    }//}}}
+    
     //{{{ getText()
     /**
      * Gets the text at a specified location in the document. This method

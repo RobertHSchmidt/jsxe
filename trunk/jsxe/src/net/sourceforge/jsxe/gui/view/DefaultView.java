@@ -47,6 +47,7 @@ import net.sourceforge.jsxe.gui.*;
 
 //{{{ Swing components
 import javax.swing.*;
+import javax.swing.text.PlainDocument;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 //}}}
@@ -183,8 +184,8 @@ public class DefaultView extends DocumentView {
         updateUI();
         
         //Make root element node expanded.
-        TreePath path = new TreePath(new Object[] { document.getAdapterNode(), document.getRootElementNode() });
-        tree.expandPath(path);
+       // TreePath path = new TreePath(new Object[] { , document.getRootElementNode() });
+       // tree.expandPath(path);
         
         if (m_buffer != null) {
             m_buffer.removeDocumentBufferListener(m_bufferListener);
@@ -260,8 +261,8 @@ public class DefaultView extends DocumentView {
     
     //{{{ canEditInJEditorPane()
     
-    private boolean canEditInJEditorPane(AdapterNode node) {
-        return (node.getNodeValue() != null);
+    private boolean canEditInJEditorPane(DefaultViewTreeNode node) {
+        return (node.getAdapterNode().getNodeValue() != null);
     }//}}}
     
     //{{{ ensureDefaultProps()
@@ -422,28 +423,27 @@ public class DefaultView extends DocumentView {
         
         public void valueChanged(TreeSelectionEvent e) {
             TreePath selPath = e.getPath();
-            AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+            DefaultViewTreeNode selectedNode = (DefaultViewTreeNode)selPath.getLastPathComponent();
             if ( selectedNode != null ) {
                 
                 //if the selected node can be edited in the text pane
                 htmlPane.setEditable(canEditInJEditorPane(selectedNode));
                 
                 //update the attributes table with the current info.
-                DefaultViewTableModel tableModel = new DefaultViewTableModel(DefaultView.this, selectedNode);
+                DefaultViewTableModel tableModel = new DefaultViewTableModel(DefaultView.this, selectedNode.getAdapterNode());
                 attributesTable.setModel(tableModel);
                 tableModel.addTableModelListener(tableListener);
                 attributesTable.updateUI();
                 
                 //update the text pane with the current info
-                DefaultViewDocument styledDoc = new DefaultViewDocument(selectedNode);
+                DefaultViewDocument styledDoc = new DefaultViewDocument(selectedNode.getAdapterNode());
                 htmlPane.setDocument(styledDoc);
                 styledDoc.addDocumentListener(docListener);
                 htmlPane.updateUI();
                 
             } else {
-                AdapterNode node = m_buffer.getXMLDocument().getAdapterNode();
-                htmlPane.setDocument(new DefaultViewDocument(node));
-                htmlPane.setEditable(canEditInJEditorPane(node));
+                htmlPane.setDocument(new PlainDocument());
+                htmlPane.setEditable(false);
             }
         }//}}}
         
