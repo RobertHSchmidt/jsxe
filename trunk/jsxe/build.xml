@@ -17,6 +17,7 @@
 		<property name="lib.dir" value="${root.dir}/lib"/>
 		<property name="bin.dir" value="${root.dir}/bin"/>
 		<property name="docs.dir" value="${src.dir}/doc"/>
+    <property name="plugin.dir" value="${root.dir}/jars"/>
 		<property name="build.src" value="${build.dir}/src"/>
 		<property name="build.dest" value="${build.dir}/classes"/>
 		<property name="build.docs" value="${build.dir}/doc"/>
@@ -51,6 +52,11 @@
 				<include name="**/*.jar"/>
 			</fileset>
 		</path>
+    
+    <!-- set whether we have the source for the default views -->
+    <available file="${plugin.dir}/treeview/build.xml" property="treeview.avail"/>
+    <available file="${plugin.dir}/sourceview/build.xml" property="sourceview.avail"/>
+    
 		<echo message="${app.name} ${app.version}"/>
 		<echo message="----------------------------------------------------------"/>
 	</target>
@@ -89,12 +95,6 @@
 				<include name="**/*.png"/>
 			</fileset>
 		</copy>
-    <copy todir="${build.src}">
-      <fileset dir="${root.dir}">
-        <include name="build.xml"/>
-        <include name="${app.name}.manifest"/>
-      </fileset>
-    </copy>
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Compiles the program ============================= -->
@@ -126,7 +126,7 @@
 		</propertyfile>
     
     <!-- create jar manifest -->
-    <manifest file="${app.name}.manifest">
+    <manifest file="${root.dir}/${app.name}.manifest">
       <attribute name="Built-By" value="${user.name}"/>
       <attribute name="Main-Class" value="${main.class}"/>
       <section name="common">
@@ -135,7 +135,7 @@
       </section>
     </manifest>
     
-		<jar jarfile="${app.name}.jar" manifest="${app.name}.manifest">
+		<jar jarfile="${root.dir}/${app.name}.jar" manifest="${app.name}.manifest">
 			<fileset dir="${build.dest}">
 				<include name="**/*.class"/>
 				<include name="**/properties"/>
@@ -145,7 +145,17 @@
 				<include name="**/*.png"/>
 			</fileset>
 		</jar>
+    
+    <!-- compile default views -->
+    <antcall target="build-treeview"/>
+    <antcall target="build-sourceview"/>
 	</target>
+  <target name="build-treeview" if="treeview.avail">
+    <ant inheritAll="false" dir="${plugin.dir}/treeview/" target="compile"/>
+  </target>
+  <target name="build-sourceview" if="sourceview.avail">
+    <ant inheritAll="false" dir="${plugin.dir}/sourceview/" target="compile"/>
+  </target>
 	<!-- }}} -->
 	<!-- {{{ ============ Prepares for a build ============================= -->
 	<target depends="init" name="prepare-build">
@@ -181,12 +191,13 @@
 	<!-- {{{ ============ Generates the binary distribution ================ -->
 	<target depends="compile, prepare-build, doc" name="bin" description="Build binary distribution">
 		
-    <!-- compile default views -->
-    <ant inheritAll="false" dir="../treeview/" target="compile"/>
-    <copy file="../treeview/treeview.jar" tofile="${distbin.dir}/jars/treeview.jar"/>
-    
-    <ant inheritAll="false" dir="../sourceview/" target="compile"/>
-    <copy file="../sourceview/sourceview.jar" tofile="${distbin.dir}/jars/sourceview.jar"/>
+    <!-- plugins -->
+    <mkdir dir="${distbin.dir}/jars"/>
+    <copy todir="${distbin.dir}/jars">
+      <fileset dir="${plugin.dir}">
+        <include name="*.jar"/>
+      </fileset>
+    </copy>
     
     <!-- doc -->
 		<mkdir dir="${distbin.dir}/doc"/>
@@ -215,7 +226,11 @@
 	<!-- }}} -->
 	<!-- {{{ ============ Generates the source distribution ================ -->
 	<target depends="prepare-build, prepare-src, doc" name="src" description="Build source distribution">
-		<!-- doc -->
+		
+    <antcall target="copy-treeview-source"/>
+    <antcall target="copy-sourceview-source"/>
+    
+    <!-- doc -->
 		<mkdir dir="${distsrc.dir}/doc"/>
 		<copy todir="${distsrc.dir}/doc">
 			<fileset dir="${build.docs}">
@@ -250,8 +265,30 @@
 				<include name="**/*"/>
 			</fileset>
 		</copy>
+    
+    <copy todir="${distsrc.dir}">
+      <fileset dir="${root.dir}">
+        <include name="build.xml"/>
+        <include name="${app.name}.manifest"/>
+      </fileset>
+    </copy>
+    
 		<zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-src/**" zipfile="${build.dir}/${app.name}-${app_version}-src.zip"/>
 	</target>
+  <target name="copy-treeview-source" if="treeview.avail">
+    <copy todir="${distsrc.dir}/jars">
+      <fileset dir="${root.dir}/jars/">
+        <include name="treeview/**/*"/>
+      </fileset>
+    </copy>
+  </target>
+  <target name="copy-sourceview-source" if="sourceview.avail">
+    <copy todir="${distsrc.dir}/jars">
+      <fileset dir="${root.dir}/jars/">
+        <include name="sourceview/**/*"/>
+      </fileset>
+    </copy>
+  </target>
 	<!-- }}} -->
 	<!-- {{{ ============ Cleans everything up ============================= -->
 	<target depends="init" name="clean" description="Clean up distribution tree">
@@ -268,6 +305,14 @@
 			<fileset dir="." includes="**/.directory"/>
 			<fileset dir="." includes="**/.xvpics"/>
 		</delete>
+    <antcall target="clean-treeview"/>
+    <antcall target="clean-sourceview"/>
 	</target>
+  <target name="clean-treeview" if="treeview.avail">
+    <ant inheritAll="false" dir="${plugin.dir}/treeview/" target="clean"/>
+  </target>
+  <target name="clean-sourceview" if="sourceview.avail">
+    <ant inheritAll="false" dir="${plugin.dir}/sourceview/" target="clean"/>
+  </target>
 	<!-- }}} -->
 </project>
