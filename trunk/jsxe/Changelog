@@ -1,3 +1,8 @@
+04/23/2004  version 0.1.69  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug that was causing comment nodes to indented too far
+      when formatting the document during serialization.
+
 04/22/2004  version 0.1.68  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a build problem that was introduced into cvs.

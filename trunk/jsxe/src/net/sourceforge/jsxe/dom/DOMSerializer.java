@@ -615,7 +615,7 @@ public class DOMSerializer implements LSSerializer {
                             column += currentIndent.length();
                             offset += str.length();
                         }
-                        str = currentIndent+"<!--"+node.getNodeValue()+"-->";
+                        str = "<!--"+node.getNodeValue()+"-->";
                         doWrite(writer, str, node, line, column, offset);
                         column += str.length();
                         offset += str.length();
