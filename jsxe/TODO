@@ -153,6 +153,9 @@ TODO:
     
     * Implement syntax highlighting for the SourceView.
     
+    * Enhance the source view with element completion and other cool stuff. See
+      the XML plugin for jEdit for ideas.
+    
     * Create a history class for the DefaultView that keeps track of the current
       state of the view and can be used to restore it later. Save the history
       in options files so that jsXe can restore them later.
@@ -189,31 +192,36 @@ TODO:
       before it shows errors saying it cannot open the document given that views
       are now plugins..
     
-    * Implement the xsl transformation feature as a plugin.
-    
-    * Create a view that uses the view from pollo and implements the
-      DocumentView interface.
-    
-    * Create a view that is similar to the xeditor view if it's ok (it kind of
-      has to be since jie bao used my GPL code his has to be open source too.)
-
-    * Create a view for XHTML documents. This could probobly be an extension
-      of the JEditorPane class that uses an adapter to attempt to transform
-      XHTML into HTML 3.2 so that the canned JEditorPane can render it properly.
-    
 * Version 0.8.0
-    
-    * Implement a JasperReports plugin that helps users view report definitions
-      for jasper reports.
-    
-    * Implement a Schema Diagram plugin that can show Shema as a flow like
-      diagram. Look at the JGraph components for this. www.jgraph.com
     
     * Implement some form of internationalization support.
     
-* Version 0.9.0
+* Plugins
     
-    * Add support in the JasperReports plugin for editing of report
-      definitions visually.
+    * Implement the xsl transformation feature as a plugin.
     
-    * Add support to the schema plugin for editing schema visually.
+    * Implement a plugin to view xsl:fo documents. Look at XSmiles for this.
+      See www.x-smiles.org
+    
+    * Create a view that uses the view from pollo and implements the
+      DocumentView interface. See pollo.sourceforge.net
+    
+    * Create a view that uses the view from Jaxe and implements the
+      DocumentView interface. See jaxe.sourceforge.net
+    
+    * Create a view that is similar to the xeditor view if it's ok (it kind of
+      has to be since jie bao used my GPL code his has to be open source too.)
+    
+    * Create a view for XHTML documents. This could probobly be an extension
+      of the JEditorPane class that uses an adapter to attempt to transform
+      XHTML into HTML 3.2 so that the canned JEditorPane can render it properly.
+      Maybe XSmiles can do this too. See www.x-smiles.org
+    
+    * Implement a JasperReports plugin that helps users view report definitions
+      for jasper reports. Eventually add support to edit visually like the
+      JasperAssistant. See jasperreports.sourceforge.net
+    
+    * Implement a Schema Diagram plugin that can show Shema as a flow like
+      diagram. Look at the JGraph components for this. www.jgraph.com.
+      Eventually add support to the 
+    
