@@ -2,9 +2,6 @@ TODO:
 
     * Document methods with javadoc.
     
-    * Research the EntityResolver class and see if it can be used to resolve
-      DTD files.
-    
     * Add funtionality for dirty files.
     
     * Allow for selecting multiple files when opening.
@@ -20,7 +17,7 @@ TODO:
     * Allow for opening files with wellformedness errors in source view. This
       way users can fix wellformedness errors in the editor.
     
-    * Release new version (0.2.1).
+    * Release new version (0.2).
     
     * Add relevent command-line option parsing to jsXe. At least things like
       '--version' and '--help' should be present.
@@ -48,7 +45,7 @@ TODO:
     * Change icons in tree in DocumentView to be different for different types
       of XML nodes.
     
-    * Release new version (0.3.1).
+    * Release new version (0.3).
     
     * Implement undo for the DefaultView and SourceView.
     
@@ -71,7 +68,7 @@ TODO:
       implements it. Other views can then be created to allow a more
       customizable look.
     
-    * Release new version (0.4.1)
+    * Release new version (0.4)
     
     * Implement syntax highlighting for the SourceView.
     
@@ -82,7 +79,7 @@ TODO:
     
     * Fix updating of the tree when users are changing a text node.
     
-    * Release new version (0.5.1).
+    * Release new version (0.5).
     
     * Implement plugin support with BeanShell. Make DocumentViews into plugins
       that are loaded at runtime. DefaultView and SourceView will be distributed
@@ -96,7 +93,7 @@ TODO:
     
     * Create an install program for jsXe.
     
-    * Release new version (0.6.1)
+    * Release new version (0.6)
     
     * Create a view that uses the view from pollo and implements the
       DocumentView interface.
@@ -107,4 +104,4 @@ TODO:
     
     * Create a help system for jsXe.
     
-    * Release new version (0.7.1)
+    * Release new version (0.7)
