@@ -34,8 +34,6 @@ TODO:
     
     * Make dialogs extend jEdit's EnhancedDialog class.
     
-    * Add the Replace field to the find dialog.
-    
     * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother? Maybe not since some views will require
       documents to be well formed.

@@ -1,3 +1,8 @@
+8/11/2004   version 0.2 pre17   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added back the replace field on the find and replace dialog in the
+      source view but this time it works!
+
 08/10/2004  version 0.2 pre16   Ian Lewis <IanLewis@member.fsf.org>
 
     * Removed code in the TabbedView that assumed that the DocumentView was
