@@ -23,6 +23,11 @@ TODO:
     
 * Version 0.2 beta
     
+    * Need to set up default document properties for each view and default
+      app properties for each view. Default document properties get set
+      to the document each time one is loaded. Default app properties get set
+      when the view is loaded.
+    
     * Implement a find dialog (for the source view at least).
     
     * Add the ability for XMLDocuments to have a structure for non-wellformed
@@ -78,7 +83,11 @@ TODO:
       dialogs, one for global options, one for view options, one for document
       options. Maybe make it like jEdit with a tree thing that displays
       option categories. So that way jsXe can have separate options for
-      serialization and visualization and ...
+      serialization and visualization and etc. General options should set
+      defaults and application level options and the document options should
+      set document/view level options.
+     
+    
     
     * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
       support for this. jsXe needs to recognize when a document has a DTD and

@@ -368,14 +368,35 @@ public class XMLDocument {
         //if the document is well formed we go by the DOM
         //if it's not we go by the source text.
         if (m_parsedMode) {
-            
             syncContentWithDOM();
-            return m_content.getText(start, length);
-            
-        } else {
-            
-            return m_content.getText(start,length);
         }
+        return m_content.getText(start,length);
+    }//}}}
+    
+    //{{{ getSegment()
+    /**
+     * Gets the text at a specified location in the document. This method
+     * method should be used sparingly as changes to the properties of this
+     * document or the tree structure could change the location of text
+     * within the document.
+     * @param start the starting index of the text to retrieve
+     * @param length the length of the text needed
+     * @return the segment representing the text requested
+     */
+    public Segment getSegment(int start, int length) throws IOException {
+        
+        if (start < 0 || length < 0 || start + length > m_content.getLength()) {
+            throw new ArrayIndexOutOfBoundsException(start + ":" + length);
+        }
+        
+        //if the document is well formed we go by the DOM
+        //if it's not we go by the source text.
+        if (m_parsedMode) {
+            syncContentWithDOM();
+        }
+        Segment seg = new Segment();
+        m_content.getText(start, length, seg);
+        return seg;
     }//}}}
     
     //{{{ getLength()
