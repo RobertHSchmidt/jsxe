@@ -47,8 +47,7 @@ import javax.swing.tree.*;
 //}}}
 
 //{{{ AWT components
-import java.awt.Point;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
@@ -395,10 +394,13 @@ public class DefaultViewTree extends JTree {
             try {
                 Point origin = dge.getDragOrigin();
                 TreePath path = getPathForLocation(origin.x, origin.y);
-                AdapterNode node = (AdapterNode)path.getLastPathComponent();
-                Transferable transferable = new TransferableNode(node);
-                m_dragSource.startDrag(dge, DragSource.DefaultCopyNoDrop, transferable, m_treeDSListener);
-            } catch( InvalidDnDOperationException idoe ) {
+                //ignore dragging the Document root.
+                if (path != null && !(isRootVisible() && getRowForPath(path) == 0)) {
+                    AdapterNode node = (AdapterNode)path.getLastPathComponent();
+                    Transferable transferable = new TransferableNode(node);
+                    m_dragSource.startDrag(dge, DragSource.DefaultCopyNoDrop, transferable, m_treeDSListener);
+                }
+            } catch( InvalidDnDOperationException idoe) {
                 jsXe.exiterror(null, idoe.getMessage(), 1);
             }
         }//}}}
@@ -507,39 +509,77 @@ public class DefaultViewTree extends JTree {
             }
             AdapterNode parentNode = (AdapterNode)path.getLastPathComponent();
             
-            if (node.getParentNode() != parentNode) {
-                try {
-                    switch(parentNode.getNodeType()) {
-                        case Node.ELEMENT_NODE:
-                            parentNode.addAdapterNode(node);
-                            break;
-                        default:
-                            //get the true parent
-                            AdapterNode element = parentNode.getParentNode();
-                            element.addAdapterNodeAt(node, element.index(parentNode));
-                            break;
+            try {
+                //Find out the relative location where I dropped.
+                Rectangle bounds = getPathBounds(path);
+                if (loc.y < bounds.y + (int)(bounds.height * 0.25)) {
+                    //Insert before the node dropped on
+                    AdapterNode trueParent = parentNode.getParentNode();
+                    trueParent.addAdapterNodeAt(node, trueParent.index(parentNode));
+                } else {
+                    if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
+                        //insert in the node
+                        parentNode.addAdapterNode(node);
+                    } else {
+                        //insert after the node dropped on
+                        AdapterNode trueParent = parentNode.getParentNode();
+                        trueParent.addAdapterNodeAt(node, trueParent.index(parentNode)+1);
                     }
-                    dtde.acceptDrop(m_acceptableActions);
-                } catch (DOMException dome) {
-                    dtde.rejectDrop();
-                    JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
                 }
-                
-                dtde.dropComplete(true);
-                updateUI();
-            } else {
+                dtde.acceptDrop(m_acceptableActions);
+            } catch (DOMException dome) {
                 dtde.rejectDrop();
-                return;
+                JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
             }
+            
+            paintImmediately(m_cueLine);
+            dtde.dropComplete(true);
+            updateUI();
         }//}}}
         
-        //{{{ dragOver
+        //{{{ dragOver()
         
         public void dragOver(DropTargetDragEvent dtde) {
             if (isDragOk(dtde) == false) {
                 dtde.rejectDrag();      
                 return;
             }
+            
+            Point loc = dtde.getLocation();
+            TreePath path = getPathForLocation(loc.x, loc.y);
+            if (path != null) {
+                Rectangle bounds = getPathBounds(path);
+                
+                //erase old cue line
+                Graphics g = getGraphics();
+                paintImmediately(m_cueLine);
+                
+                int x = bounds.x;
+                int y = bounds.y;
+                int width = bounds.width;
+                int height = 2;
+                
+                //Use RED for now
+                g.setColor(Color.red);
+                
+                if (loc.y < bounds.y + (int)(bounds.height * 0.25)) {
+                    //no change
+                    g.fillRect(x, y, width, height);
+                } else {
+                    if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
+                        //don't paint anything right now
+                        x = 0;
+                        y = 0;
+                        width = 0;
+                        height = 0;
+                    } else {
+                        y += bounds.height;
+                        g.fillRect(x, y, width, height);
+                    }
+                }
+                m_cueLine.setRect(x,y,width,height);
+            }
+            
             dtde.acceptDrag(DnDConstants.ACTION_MOVE);      
         }//}}}
         
@@ -589,6 +629,8 @@ public class DefaultViewTree extends JTree {
     private DropTarget m_dropTarget;
     private DropTargetListener m_treeDTListener = new TreeDropTargetListener();
     private int m_acceptableActions = DnDConstants.ACTION_MOVE;
+    
+    private Rectangle m_cueLine = new Rectangle();
     //}}}
 
     //{{{ Icons

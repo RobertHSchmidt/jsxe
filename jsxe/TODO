@@ -46,7 +46,7 @@ TODO:
         * Need to implement character normalization during serialization.
           Certain characters and character sequences will need to be converted
           to entities.
-        * Serialized XML should be well-formed and parsable.
+        * Serialized XML should be 100% well-formed and parsable.
     
     * Add at least minimal support for namespaces.
     

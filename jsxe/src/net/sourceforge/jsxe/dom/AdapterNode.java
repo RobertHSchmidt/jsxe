@@ -435,7 +435,7 @@ public class AdapterNode {
                         }
                         children.remove(node);
                     }
-                    if (location >= childCount()) {
+                    if (location >= children.size()) {
                         domNode.appendChild(node.getNode());
                         ensureChildrenSize(location);
                         children.add(node);
