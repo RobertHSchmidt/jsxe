@@ -7,7 +7,7 @@ TODO:
     * Allow for selecting multiple files when opening.
     
     * Make the XML document declaration header non-editable in source-view mode.
-      Update it when the user changes it in the options panel.
+      Update it when the user changes it in the options panel. (how?)
     
     * Fix the options dialog and make it look better. Maybe split into two
       dialogs, global options and view/document specific? Maybe even three
@@ -69,6 +69,11 @@ TODO:
     
     * Create a toolbar that is customizable much the same way jEdit's is.
     
+    * By this time, make sure all classes are documented with javadoc.
+    
+    * Make sure all instance variables are prefixed with m_ and are named in a
+      consistent manner.
+    
     * Release new version (0.5.0)
     
     * Create a feature to edit source for 1 node only. (Not sure how to do this
@@ -104,15 +109,7 @@ TODO:
     
     * Create an install program for jsXe.
     
-    * Create a view that uses the view from pollo and implements the
-      DocumentView interface.
-    
-    * Create a view that is similar to the xeditor view if it's ok (it kind of
-      has to be since jie bao used my GPL code his has to be open source too.)
-    
     * Release new version (0.7.0)
-    
-    * Implement the xsl transformation feature.
     
     * Implement validation against DTDs and different forms of Schema.
     
@@ -128,3 +125,15 @@ TODO:
       with jsXe as the default views.
     
     * Release new version (0.9.0)
+    
+    * Implement the xsl transformation feature as a plugin.
+    
+    * Rewrite existing views as plugins.
+    
+    * Create a view that uses the view from pollo and implements the
+      DocumentView interface.
+    
+    * Create a view that is similar to the xeditor view if it's ok (it kind of
+      has to be since jie bao used my GPL code his has to be open source too.)
+    
+    * Release new version (1.0.0)
