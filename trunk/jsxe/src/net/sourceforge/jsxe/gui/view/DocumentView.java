@@ -46,9 +46,11 @@ import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
-//{{{
+//{{{ Swing classes
 import javax.swing.*;
 //}}}
+
+import java.awt.Component;
 
 //{{{ Java base classes
 import java.io.IOException;
@@ -64,18 +66,24 @@ import java.io.IOException;
  * @version $Id$
  * @see TabbedView
  */
-public abstract class DocumentView extends JPanel {
+public interface DocumentView {
     
-    //{{{ setXMLDocument()
+    //{{{ close
     /**
-     * Sets the current document. This method is used when you want to
-     * view another document using this view object.
-     * @param view the ownerview that made the request
-     * @param document the new document to view
-     * @throws IOException if the document cannot be viewed using this view
+     * Closes the current view. This method is called whenever the view is
+     * being discarded. This is usually used to save properties associated
+     * with this view.
+     * @param view The TabbedView that is closing this view
      */
-    public abstract void setXMLDocument(TabbedView view, XMLDocument document) throws IOException;
+    public boolean close(TabbedView view);
     //}}}
+    
+    //{{{ getDocumentViewComponent()
+    /**
+     * Gets the the Component used to render this view.
+     * @return the Component used to render this view
+     */
+    public Component getDocumentViewComponent();//}}}
     
     //{{{ getMenus()
     /**
@@ -83,24 +91,7 @@ public abstract class DocumentView extends JPanel {
      * used when the view is loaded to set the menu bar.
      * @return the menus for this view
      */
-    public abstract JMenu[] getMenus();
-    //}}}
-    
-    //{{{ getOptionsPanel()
-    /**
-     * Gets the view's options panel. This is used when displaying options
-     * that are associated with this view.
-     * @return the OptionsPanel for this view
-     */
-    public abstract OptionsPanel getOptionsPanel();
-    //}}}
-    
-    //{{{ getXMLDocument()
-    /**
-     * Gets the XMLDocument that this view is currently using.
-     * @return the XMLDocument for this view
-     */
-    public abstract XMLDocument getXMLDocument();
+    public JMenu[] getMenus();
     //}}}
     
     //{{{ getName()
@@ -110,15 +101,33 @@ public abstract class DocumentView extends JPanel {
      */
     public abstract String getName();
     //}}}
-
-    //{{{ close
+    
+    //{{{ getOptionsPanel()
     /**
-     * Closes the current view. This method is called whenever the view is
-     * being discarded. This is usually used to save properties associated
-     * with this view.
-     * @param view The TabbedView that is closing this view
+     * Gets the view's options panel. This is used when displaying options
+     * that are associated with this view.
+     * @return the OptionsPanel for this view
      */
-    public abstract boolean close(TabbedView view);
+    public OptionsPanel getOptionsPanel();
+    //}}}
+    
+    //{{{ getXMLDocument()
+    /**
+     * Gets the XMLDocument that this view is currently using.
+     * @return the XMLDocument for this view
+     */
+    public XMLDocument getXMLDocument();
+    //}}}
+    
+    //{{{ setXMLDocument()
+    /**
+     * Sets the current document. This method is used when you want to
+     * view another document using this view object.
+     * @param view the ownerview that made the request
+     * @param document the new document to view
+     * @throws IOException if the document cannot be viewed using this view
+     */
+    public void setXMLDocument(TabbedView view, XMLDocument document) throws IOException;
     //}}}
 
 }

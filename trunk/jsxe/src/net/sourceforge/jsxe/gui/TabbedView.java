@@ -221,8 +221,8 @@ public class TabbedView extends JFrame {
                         
                     });//}}}
                     
-                    tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), newDocView);
-                    tabbedPane.setSelectedComponent(newDocView);
+                    tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), newDocView.getDocumentViewComponent());
+                    tabbedPane.setSelectedComponent(newDocView.getDocumentViewComponent());
                     
                     updateTitle();
                     updateMenuBar();
@@ -481,8 +481,8 @@ public class TabbedView extends JFrame {
             DocumentBuffer currentBuffer = getDocumentBuffer();
             
             //no exceptions? cool. register the new view
-            tabbedPane.remove(oldView);
-            tabbedPane.add(newView, index);
+            tabbedPane.remove(oldView.getDocumentViewComponent());
+            tabbedPane.add(newView.getDocumentViewComponent(), index);
             tabbedPane.setIconAt(index, getTabIcon(currentBuffer));
             tabbedPane.setTitleAt(index, currentBuffer.getName());
             tabbedPane.setSelectedIndex(index);
