@@ -164,6 +164,10 @@ public class DefaultViewTableModel implements TableModel {
     
     //}}}
     
+    public AdapterNode getAdapterNode() {//{{{
+        return currentNode;
+    }//}}}
+    
     //{{{ Private members
     
     // {{{ Event notification methods
