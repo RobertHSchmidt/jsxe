@@ -1,3 +1,7 @@
+01/06/2005  version 0.3 pre8    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added the beginnings of a plugin manager dialog.
+
 01/05/2005  version 0.3 pre7    Ian Lewis <IanLewis@member.fsf.org>
 
     * Tweaked the plugin interface to eliminate some redundant methods.
