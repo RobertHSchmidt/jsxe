@@ -564,7 +564,23 @@ public class AdapterNode {
      * @param parent the new parent for this AdapterNode
      */
     void setParent(AdapterNode parent) {//{{{
+        if (parentNode != null) {
+            parentNode.removeChild(this);
+        }
         parentNode = parent;
+    }//}}}
+    
+    /**
+     * <p>Ensures an AdapterNode is not in the list of children
+     * children 
+     */
+    /*
+    This is required to help maintain sync between the AdapterNode tree
+    */
+    void removeChild(AdapterNode node) {//{{{
+        if (node != null) {
+            children.remove(node);
+        }
     }//}}}
     
     //}}}

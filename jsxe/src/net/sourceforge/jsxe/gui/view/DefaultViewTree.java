@@ -489,11 +489,6 @@ public class DefaultViewTree extends JTree {
             AdapterNode parentNode = (AdapterNode)path.getLastPathComponent();
             
             try {
-                //Make sure the node is removed from it's previous parent
-                AdapterNode oldParent = node.getParentNode();
-                if (oldParent != null) {
-                    oldParent.remove(node);
-                }
                 parentNode.addAdapterNode(node);
                 dtde.acceptDrop(m_acceptableActions);
             } catch (DOMException dome) {
