@@ -17,11 +17,12 @@ TODO:
         cdata-sections
         normalize-characters
         ignore-unknown-character-denormalizations
+        split-cdata-sections
     * DOMSerializer should support the following parameters:
         well-formed
             - Is this necessary? The DOM representation can't really be
               non-well-formed can it? It provides error checking for invalid
-              characters.
+              characters and such.
         xml-declaration
         check-character-normalization
     
