@@ -56,6 +56,8 @@ import java.util.*;
  * transferring an XML node. This class handles an AdapterNode
  * object and either returning the object itself or some representation of
  * the node (such as a string) during transfer.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
  */
 public class TransferableNode implements Transferable {
     

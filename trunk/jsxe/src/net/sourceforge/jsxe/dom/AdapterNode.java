@@ -58,15 +58,16 @@ import org.w3c.dom.NodeList;
 
 /**
  * <p>The AdapterNode class is meant to provide extensions to the W3C Node
- * interface by wrapping around existing nodes created after parsing a document.
- * It provides some event functionality and some methods for editing nodes in
- * a DOM tree.</p>
+ * interface by wrapping around existing nodes created after a document is
+ * parsed. It provides some extra event functionality and some methods for
+ * editing nodes in a DOM tree.</p>
  * 
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
 public class AdapterNode {
     
+    //{{{ AdapterNode constructor
     /**
      * <p>Creates an AdapterNode for a root document node. This is normally used
      * by an implementation of the XMLDocument interface when it is created.</p>
@@ -74,29 +75,32 @@ public class AdapterNode {
      * @param document the document object that this AdapterNode is to
      *                 represent
      */
-    AdapterNode(XMLDocument xmlDocument, Document document) {//{{{
+    AdapterNode(XMLDocument xmlDocument, Document document) {
         domNode = document;
         rootDocument = xmlDocument;
     }//}}}
     
+    //{{{ AdapterNode constructor
     /**
-     * <p>Creates a new AdapterNode for a node in a DOM tree. This is normally used
+     * Creates a new AdapterNode for a node in a DOM tree. This is normally used
      * by an implementation of the XMLDocument interface. Use the
      * <code>newAdapterNode()</code> method in the XMLDocument interface to
-     * create AdapterNodes.</p>
+     * create AdapterNodes.
      * @param xmlDocument the XMLDocument that owns this node
      * @param parent the parent AdapterNode object for the parent DOM node
      * @param node the Node object that this AdapterNode represents. This node
      *             should be a child of the Node that is wrapped by the parent
      *             AdapterNode
      */
-    AdapterNode(XMLDocument xmlDocument, AdapterNode parent, Node node) {//{{{
+    AdapterNode(XMLDocument xmlDocument, AdapterNode parent, Node node) {
         domNode = node;
         setParent(parent);
         rootDocument = xmlDocument;
     }//}}}
     
-    public String toString() {//{{{
+    //{{{ toString()
+    
+    public String toString() {
         String s = new String();
         if (domNode.getNodeType() == Node.DOCUMENT_NODE)
             return "Document Root";
@@ -114,13 +118,14 @@ public class AdapterNode {
         return s;
     }//}}}
     
+    //{{{ index()
     /**
      * <p>Returns the index of the given AdapterNode if it is a child.</p>
      * @param child the child node of this node
      * @return the index where the child is located. -1 if the AdapterNode is
      *         not a child
      */
-    public int index(AdapterNode child) {//{{{
+    public int index(AdapterNode child) {
         int count = childCount();
         for (int i=0; i<count; i++) {
             AdapterNode n = this.child(i);
@@ -130,13 +135,14 @@ public class AdapterNode {
         return -1;
     }//}}}
     
+    //{{{ child()
     /**
      * <p>Gets the child node at the given index.</p>
      * @param index the index of the requested node
      * @return an AdapterNode representing the node at the given index,
      *         null if the index is out of bounds
      */
-    public AdapterNode child(int index) {//{{{
+    public AdapterNode child(int index) {
         /*
         Only populate the children list if asked for the
         Adapter. Once asked for however the object should
@@ -166,22 +172,25 @@ public class AdapterNode {
        return child;
     }//}}}
     
+    //{{{ childCount()
     /**
      * <p>Gets the number of children that this node has.</p>
      * @return the number of children of this node
      */
-    public int childCount() {//{{{
+    public int childCount() {
         return domNode.getChildNodes().getLength();
     }//}}}
     
+    //{{{ getNodeName()
     /**
      * <p>Gets the name of this node.</p>
      * @return the name of the node
      */
-    public String getNodeName() {//{{{
+    public String getNodeName() {
         return domNode.getNodeName();
     }//}}}
     
+    //{{{ setNodeName()
     /**
      * <p>Sets the name of the node. Only element nodes are currently
      * supported.</p>
@@ -189,7 +198,7 @@ public class AdapterNode {
      * @throws DOMException INVALID_CHARACTER_ERR: Raised if the specified name
      *                      contains an illegal character.
      */
-    public void setNodeName(String newValue) throws DOMException {//{{{
+    public void setNodeName(String newValue) throws DOMException {
         if (domNode.getNodeType() == Node.ELEMENT_NODE) {
             //Verify that this really is a change
             if (!domNode.getNodeName().equals(newValue)) {
@@ -217,43 +226,41 @@ public class AdapterNode {
                 domNode = newNode;
                 fireLocalNameChanged(this);
             }
-        }
-        else if(domNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE)
-        {
-            if(domNode.getNodeName() != newValue)
-            {
-                Node newNode = domNode.getOwnerDocument().createProcessingInstruction(newValue, domNode.getNodeValue());
-                domNode.getParentNode().replaceChild(newNode, domNode);
-                domNode = newNode;
-            }           
-        }
-        else if(domNode.getNodeType() == Node.ENTITY_REFERENCE_NODE)
-        {
-            if(domNode.getNodeName() != newValue)
-            {
-                if(entityDeclared(newValue))
-                {
-                    Node newNode = domNode.getOwnerDocument().createEntityReference(newValue);
+        } else {
+            if (domNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
+                if (domNode.getNodeName() != newValue) {
+                    Node newNode = domNode.getOwnerDocument().createProcessingInstruction(newValue, domNode.getNodeValue());
                     domNode.getParentNode().replaceChild(newNode, domNode);
                     domNode = newNode;
                 }
-                else
-                    throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+newValue+"\""+" is not declared in the DTD");
+            } else {
+                if (domNode.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
+                    if (domNode.getNodeName() != newValue) {
+                        if (entityDeclared(newValue)) {
+                            Node newNode = domNode.getOwnerDocument().createEntityReference(newValue);
+                            domNode.getParentNode().replaceChild(newNode, domNode);
+                            domNode = newNode;
+                        } else {
+                            throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+newValue+"\""+" is not declared in the DTD");
+                        }
+                    }
+                } else {
+                    throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Renaming this node type is not supported.");
+                }
             }
-        }
-        else {
-            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element can be renamed at this time.");
         }
     }//}}}
     
+    //{{{ getNodeValue()
     /**
      * <p>Gets the current value if this node.</p>
      * @return the current value associated with this node
      */
-    public String getNodeValue() {//{{{
+    public String getNodeValue() {
         return domNode.getNodeValue();
     }//}}}
     
+    //{{{ setNodeValue()
     /**
      * <p>Sets the value of the node.</p>
      * @param str the new value of the node
@@ -263,7 +270,7 @@ public class AdapterNode {
      *                      more characters than fit in a DOMString variable on
      *                      the implementation platform.
      */
-    public void setNodeValue(String str) throws DOMException {//{{{
+    public void setNodeValue(String str) throws DOMException {
         // Make sure there is a change.
         if (str != null && !str.equals(domNode.getNodeValue())) {
             domNode.setNodeValue(str);
@@ -271,31 +278,35 @@ public class AdapterNode {
         }
     }//}}}
     
+    //{{{ getNodeType()
     /**
      * <p>Gets the type of the node specified in the W3C Node interface.</p>
      * @return the node type
      */
-    public short getNodeType() {//{{{
+    public short getNodeType() {
         return domNode.getNodeType();
     }//}}}
     
+    //{{{ getParentNode()
     /**
      * <p>Gets the parent AdapterNode object.</p>
      * @return the AdapterNode that is the parent of this node
      */
-    public AdapterNode getParentNode() {//{{{
+    public AdapterNode getParentNode() {
         return parentNode;
     }//}}}
     
+    //{{{ getAttributes()
     /**
      * <p>Gets the attributes associated with this node.</p>
      * @return a map of the attributes associated with this node.
      *         <code>null</code> if this is not an element node
      */
-    public NamedNodeMap getAttributes() {//{{{
+    public NamedNodeMap getAttributes() {
         return domNode.getAttributes();
     }//}}}
     
+    //{{{ addAdapterNode()
     /**
      * <p>Adds a new child to this node given the node name, value, and type.</p>
      * @param name the name of the new child node
@@ -318,7 +329,7 @@ public class AdapterNode {
      *                      readonly or if the previous parent of the node being
      *                      inserted is readonly.
      */
-    public AdapterNode addAdapterNode(String name, String value, short type) throws DOMException {//{{{
+    public AdapterNode addAdapterNode(String name, String value, short type) throws DOMException {
         
         Node newNode = null;
         Document document = domNode.getOwnerDocument();
@@ -362,8 +373,11 @@ public class AdapterNode {
         return addAdapterNode(newAdapterNode);
     }//}}}
     
+    //{{{ addAdapterNode()
+    
     /**
-     * <p>Adds an already existing AdapterNode to this node as a child.</p>
+     * Adds an already existing AdapterNode to this node as a child. The node
+     * is added after all child nodes that this node contains.
      * @param node the node to be added.
      * @return a reference to the node that was added.
      * @throws DOMException HIERARCHY_REQUEST_ERR: Raised if this node is of a
@@ -377,27 +391,69 @@ public class AdapterNode {
      *                      readonly or if the previous parent of the node being
      *                      inserted is readonly.
      */
-    public AdapterNode addAdapterNode(AdapterNode node) throws DOMException {//{{{
+    public AdapterNode addAdapterNode(AdapterNode node) throws DOMException {
+        return addAdapterNodeAt(node, childCount());
+    }//}}}
+    
+    //{{{ addAdapterNodeAt()
+    /**
+     * Adds an already existing AdapterNode to this node at a specified
+     * location. The location is zero indexed so it can be any number greater
+     * than or equal to zero and less than or equal to the number of children
+     * contained currently. Using a location that is one index greater than
+     * the last child's index <code>(location == childCount())</code> then the
+     * node is added at the end.
+     * @param node the node to add to this parent node.
+     * @param location the location to add it at.
+     * @return the node added.
+     * @throws DOMException if the addition of the node is not allowed or the
+     *                      location is invalid.
+     */
+    public AdapterNode addAdapterNodeAt(AdapterNode node, int location) throws DOMException {
         if (node != null) {
-            
-            //add to this AdapterNode and the DOM.
-            if(node.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE) {
-                //Add all children of the document fragment
-                for(int i=0; i<node.childCount(); i++) {
-                    addAdapterNode(node.child(i));
+            if (location >= 0 && location <= childCount()) {
+                
+                if (children.indexOf(node) == location) {
+                    //node is already in the location specified
+                    return node;
+                }
+                
+                //add to this AdapterNode and the DOM.
+                if (node.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE) {
+                    //Add all children of the document fragment
+                    for(int i=0; i<node.childCount(); i++) {
+                        addAdapterNodeAt(node.child(i), location+i);
+                    }
+                } else {
+                    /*
+                    if the node is already contained in this node
+                    then we are effectively moving the node.
+                    */
+                    if (children.contains(node)) {
+                        if (location > children.indexOf(node)) {
+                            location -= 1;
+                        }
+                        children.remove(node);
+                    }
+                    if (location >= childCount()) {
+                        domNode.appendChild(node.getNode());
+                        ensureChildrenSize(location);
+                        children.add(node);
+                    } else {
+                        domNode.insertBefore(node.getNode(), child(location).getNode());
+                        children.add(location, node);
+                    }
+                    node.setParent(this);
+                    fireNodeAdded(this, node);
                 }
             } else {
-                domNode.appendChild(node.getNode());
-                //ensure we have the right size.
-                ensureChildrenSize(childCount()-1);
-                children.add(node);
-                node.setParent(this);
-                fireNodeAdded(this, node);
+                throw new DOMException(DOMException.INDEX_SIZE_ERR, "The location to insert this node is invalid.");
             }
         }
         return node;
     }//}}}
     
+    //{{{ remove()
     /**
      * <p>Removes a child from this node.</p>
      * @param child the child node to remove from this node
@@ -406,7 +462,7 @@ public class AdapterNode {
      * @throws DOMException NOT_FOUND_ERR: Raised if oldChild is not
      *                      a child of this node.
      */
-    public void remove(AdapterNode child) throws DOMException {//{{{
+    public void remove(AdapterNode child) throws DOMException {
         if (child != null) {
             domNode.removeChild(child.getNode());
             children.remove(child);
@@ -414,12 +470,13 @@ public class AdapterNode {
         }
     }//}}}
     
+    //{{{ entityDeclared()
     /**
      * Determines if the entity was declared by the DTD.
      * @param entityName the name of the entity
      * @return true if the entity was declared in this document
      */
-    public boolean entityDeclared(String entityName) {///{{{
+    public boolean entityDeclared(String entityName) {
         if(domNode.getOwnerDocument().getDoctype() != null) {
             NamedNodeMap entities = domNode.getOwnerDocument().getDoctype().getEntities();
             
@@ -429,6 +486,7 @@ public class AdapterNode {
         }
     }//}}}
     
+    //{{{ setAttribute()
     /**
      * <p>Sets an attribute of this node. If the specified attribute does not
      * exist it is created.</p>
@@ -441,7 +499,7 @@ public class AdapterNode {
      * @throws DOMException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
      *                      readonly
      */
-    public void setAttribute(String name, String value) throws DOMException {//{{{
+    public void setAttribute(String name, String value) throws DOMException {
         if (domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)domNode;
             element.setAttribute(name,value);
@@ -451,12 +509,13 @@ public class AdapterNode {
         }
     }//}}}
     
+    //{{{ getAttribute()
     /**
      * <p>Gets the value of an attribute associated with this node.</p>
      * @param name the name of the attribute
      * @throws DOMException NOT_SUPPORTED_ERR: if this is not an element node
      */
-    public String getAttribute(String name) throws DOMException {//{{{
+    public String getAttribute(String name) throws DOMException {
         if (domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)domNode;
             return element.getAttribute(name);
@@ -465,6 +524,7 @@ public class AdapterNode {
         }
     }//}}}
     
+    //{{{ removeAttributeAt()
     /**
      * <p>Removes an attribute at the given index.</p>
      * <p><b>Note:</b> Attributes are sorted alphabetically.</p>
@@ -473,7 +533,7 @@ public class AdapterNode {
      * @throws DOMException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
      *                      readonly
      */
-    public void removeAttributeAt(int index) throws DOMException {//{{{
+    public void removeAttributeAt(int index) throws DOMException {
         if (domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)domNode;
             NamedNodeMap attrs = element.getAttributes();
@@ -485,6 +545,7 @@ public class AdapterNode {
         }
     }//}}}
     
+    //{{{ removeAttribute()
     /**
      * <p>Removes an attribute by name.</p>
      * @param attr the name of the attribute to remove
@@ -492,7 +553,7 @@ public class AdapterNode {
      * @throws DOMException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
      *                      readonly
      */
-    public void removeAttribute(String attr) throws DOMException {//{{{
+    public void removeAttribute(String attr) throws DOMException {
         if (domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)domNode;
             element.removeAttribute(attr);
@@ -502,13 +563,14 @@ public class AdapterNode {
         }
     }//}}}
     
+    //{{{ getAttributeAt()
     /**
      * <p>Gets the value of an attribute at the given index</p>
      * <p><b>Note:</b> Attributes are sorted alphabetically.</p>
      * @param index the index of the attribute to get
      * @throws DOMException NOT_SUPPORTED_ERR: if this is not an element node
      */
-    public String getAttributeAt(int index) throws DOMException {//{{{
+    public String getAttributeAt(int index) throws DOMException {
         if (domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)domNode;
             NamedNodeMap attrs = element.getAttributes();
@@ -519,57 +581,71 @@ public class AdapterNode {
         }
     }//}}}
     
+    //{{{ equals()
     /**
      * <p>Compares this AdapterNode with another.</p>
      * @param node the AdapterNode to compare to
      * @return true if the underlying Node object for the two AdapterNodes is
      *         is the same.
      */
-    public boolean equals(AdapterNode node) {//{{{
+    public boolean equals(AdapterNode node) {
         return node.getNode() == domNode;
     }//}}}
     
+    //{{{ addAdapterNodeListener()
     /**
      * <p>Adds an AdapterNodeListener to be notified when this node changes</p>
      * @param listener the listener to add
      */
-    public void addAdapterNodeListener(AdapterNodeListener listener) {//{{{
+    public void addAdapterNodeListener(AdapterNodeListener listener) {
         listeners.add(listener);
     }//}}}
     
+    //{{{ removeAdapterNodeListener()
     /**
      * <p>Removes a listener from this node if it exists</p>
      * @param listener the listener to remove
      */
-    public void removeAdapterNodeListener(AdapterNodeListener listener) {//{{{
+    public void removeAdapterNodeListener(AdapterNodeListener listener) {
         listeners.remove(listeners.indexOf(listener));
     }//}}}
     
-    public String serializeToString() {//{{{
+    //{{{ serializeToString()
+    /**
+     * Serializes this Node to a string based on the owning XMLDocument's
+     * properties.
+     * @return the string representation of this node.
+     */
+    public String serializeToString() {
         return rootDocument.serializeNodeToString(this);
     }//}}}
     
     //{{{ Protected members
     
+    //{{{ getNode()
     /**
      * <p>Gets the underlying Node object that this AdapterNode wraps.</p>
      * @return the underlying Node object for this AdapterNode object
      */
-    Node getNode() {//{{{
+    Node getNode() {
         return domNode;
     }//}}}
     
+    //{{{ setParent()
     /**
      * <p>Sets the parent node of this AdapterNode.</p>
      * @param parent the new parent for this AdapterNode
      */
-    void setParent(AdapterNode parent) {//{{{
-        if (parentNode != null) {
-            parentNode.removeChild(this);
+    void setParent(AdapterNode parent) {
+        if (parent != parentNode) {
+            if (parentNode != null) {
+                parentNode.removeChild(this);
+            }
+            parentNode = parent;
         }
-        parentNode = parent;
     }//}}}
     
+    //{{{ removeChild()
     /**
      * <p>Ensures an AdapterNode is not in the list of children
      * children 
@@ -577,7 +653,7 @@ public class AdapterNode {
     /*
     This is required to help maintain sync between the AdapterNode tree
     */
-    void removeChild(AdapterNode node) {//{{{
+    void removeChild(AdapterNode node) {
         if (node != null) {
             children.remove(node);
         }
@@ -587,7 +663,8 @@ public class AdapterNode {
     
     //{{{ Private members
     
-    private void fireNodeAdded(AdapterNode source, AdapterNode child) {//{{{
+    //{{{ fireNodeAdded()
+    private void fireNodeAdded(AdapterNode source, AdapterNode child) {
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
@@ -595,7 +672,8 @@ public class AdapterNode {
         }
     }//}}}
     
-    private void fireNodeRemoved(AdapterNode source, AdapterNode child) {//{{{
+    //{{{ fireNodeRemoved()
+    private void fireNodeRemoved(AdapterNode source, AdapterNode child) {
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
@@ -603,7 +681,8 @@ public class AdapterNode {
         }
     }//}}}
     
-    private void fireLocalNameChanged(AdapterNode source) {//{{{
+    //{{{ fireLocalNameChanged()
+    private void fireLocalNameChanged(AdapterNode source) {
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
@@ -611,7 +690,8 @@ public class AdapterNode {
         }
     }//}}}
     
-    private void fireNamespaceChanged(AdapterNode source) {//{{{
+    //{{{ fireNamespaceChanged()
+    private void fireNamespaceChanged(AdapterNode source) {
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
@@ -619,7 +699,8 @@ public class AdapterNode {
         }
     }//}}}
     
-    private void fireNodeValueChanged(AdapterNode source) {//{{{
+    //{{{ fireNodeValueChanged()
+    private void fireNodeValueChanged(AdapterNode source) {
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
@@ -627,7 +708,8 @@ public class AdapterNode {
         }
     }//}}}
     
-    private void fireAttributeChanged(AdapterNode source, String attr) {//{{{
+    //{{{ fireAttributeChanged()
+    private void fireAttributeChanged(AdapterNode source, String attr) {
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
@@ -635,7 +717,8 @@ public class AdapterNode {
         }
     }//}}}
     
-    private void ensureChildrenSize(int size) {//{{{
+    //{{{ ensureChildrenSize()
+    private void ensureChildrenSize(int size) {
         while (children.size() < size) {
             children.add(null);
         }

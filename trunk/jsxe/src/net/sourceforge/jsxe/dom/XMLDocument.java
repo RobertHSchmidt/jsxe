@@ -84,6 +84,8 @@ import javax.swing.text.Segment;
  * that has nodes, implemented as AdapterNodes, as well as text. Methods are
  * provided to allow user objects to interact with the XML document as text
  * or as a tree structure seamlessly.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
  */
 public class XMLDocument {
     

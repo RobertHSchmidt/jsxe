@@ -86,9 +86,17 @@ import org.xml.sax.InputSource;
 
 //}}}
 
+/**
+ * The DocumentBuffer class implements application specific properties of an
+ * XML document.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class DocumentBuffer {
     
-    DocumentBuffer(File file) throws IOException {//{{{
+    //{{{ DocumentBuffer
+    
+    DocumentBuffer(File file) throws IOException {
         m_file = file;
         m_name = file.getName();
         try {
@@ -99,7 +107,9 @@ public class DocumentBuffer {
         m_document.addXMLDocumentListener(m_bufferDocListener);
     }//}}}
     
-    DocumentBuffer(Reader reader) throws IOException {//{{{
+    //{{{ DocumentBuffer
+    
+    DocumentBuffer(Reader reader) throws IOException {
         m_file = null;
         m_name = getUntitledLabel();
         try {
@@ -110,7 +120,9 @@ public class DocumentBuffer {
         m_document.addXMLDocumentListener(m_bufferDocListener);
     }//}}}
     
-    public void addDocumentBufferListener(DocumentBufferListener listener) {//{{{
+    //{{{ addDocumentBufferListener()
+    
+    public void addDocumentBufferListener(DocumentBufferListener listener) {
         if (listener != null) {
             if (!m_listeners.contains(listener)) {
                 m_listeners.add(listener);
@@ -118,49 +130,71 @@ public class DocumentBuffer {
         }
     }//}}}
     
-    public void removeDocumentBufferListener(DocumentBufferListener listener) {//{{{
+    //{{{ removeDocumentBufferListener()
+    
+    public void removeDocumentBufferListener(DocumentBufferListener listener) {
         if (listener != null) {
             m_listeners.remove(m_listeners.indexOf(listener));
         }
     }//}}}
     
-    public String getName() {//{{{
+    //{{{ getName(}
+    
+    public String getName() {
         return m_name;
     }//}}}
     
-    public File getFile() {//{{{
+    //{{{ getFile()
+    
+    public File getFile() {
         return m_file;
     }//}}}
     
-    public String setProperty(String key, String value) {//{{{
+    //{{{ setProperty()
+    
+    public String setProperty(String key, String value) {
         return m_document.setProperty(key, value);
     }//}}}
     
-    public String getProperty(String key) {//{{{
+    //{{{ getProperty()
+    
+    public String getProperty(String key) {
         return m_document.getProperty(key);
     }//}}}
     
-    public String getProperty(String key, String defaultValue) {//{{{
+    //{{{ getProperty()
+    
+    public String getProperty(String key, String defaultValue) {
         return m_document.getProperty(key, defaultValue);
     }//}}}
     
-    public XMLDocument getXMLDocument() {//{{{
+    //{{{ getXMLDocument()
+    
+    public XMLDocument getXMLDocument() {
         return m_document;
     }//}}}
     
-    public boolean isDirty() {//{{{
+    //{{{ isDirty()
+    
+    public boolean isDirty() {
         return (Boolean.valueOf(getProperty("dirty"))).booleanValue();
     }//}}}
     
-    public boolean isUntitled() {//{{{
+    //{{{ isUntitled()
+    
+    public boolean isUntitled() {
         return (m_file == null);
     }//}}}
     
-    public boolean save() throws IOException {//{{{
+    //{{{ save()
+    
+    public boolean save() throws IOException {
         return saveAs(getFile());
     }//}}}
     
-    public boolean saveAs(File file) throws IOException {//{{{
+    //{{{ saveAs()
+    
+    public boolean saveAs(File file) throws IOException {
         try {
             FileOutputStream out = new FileOutputStream(file);
             m_document.serialize(out);
@@ -182,7 +216,9 @@ public class DocumentBuffer {
         }
     }//}}}
     
-    public boolean equalsOnDisk(File file) throws IOException {//{{{
+    //{{{ equalsOnDisk()
+    
+    public boolean equalsOnDisk(File file) throws IOException {
         if (getFile() != null && file != null) {
             boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
                 || File.separatorChar == ':' /* Windows or MacOS */);
@@ -206,26 +242,36 @@ public class DocumentBuffer {
         return false;
     }//}}}
     
-    public boolean equalsOnDisk(DocumentBuffer buffer) throws IOException {//{{{
+    //{{{ equalsOnDisk()
+    
+    public boolean equalsOnDisk(DocumentBuffer buffer) throws IOException {
         return equalsOnDisk(buffer.getFile());
     }//}}}
     
-    public OptionsPanel getOptionsPanel() {//{{{
+    //{{{ getOptionsPanel()
+    
+    public OptionsPanel getOptionsPanel() {
         return new DocumentBufferOptionsPanel();
     }//}}}
     
-    //{{{ private members
+    //{{{ Private members
     
-    private void setDirty(boolean dirty) {//{{{
+    //{{{ setDirty()
+    
+    private void setDirty(boolean dirty) {
         setProperty("dirty", Boolean.toString(dirty));
     }//}}}
     
-    private void setName(String name) {//{{{
+    //{{{ setName()
+    
+    private void setName(String name) {
         m_name = name;
         fireNameChanged();
     }//}}}
     
-    private String getUntitledLabel() {//{{{
+    //{{{ getUntitledLabel()
+    
+    private String getUntitledLabel() {
         DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
         int untitledNo = 0;
         for (int i=0; i < buffers.length; i++) {
@@ -240,9 +286,13 @@ public class DocumentBuffer {
         return "Untitled-" + Integer.toString(untitledNo+1);
     }//}}}
     
-    private class DocumentBufferOptionsPanel extends OptionsPanel {//{{{
+    //{{{ DocumentBufferOptionsPanel class
     
-        public DocumentBufferOptionsPanel() {//{{{
+    private class DocumentBufferOptionsPanel extends OptionsPanel {
+    
+        //{{{ DocumentBufferOptionsPanel()
+        
+        public DocumentBufferOptionsPanel() {
             
             GridBagLayout layout = new GridBagLayout();
             GridBagConstraints constraints = new GridBagConstraints();
@@ -256,9 +306,9 @@ public class DocumentBuffer {
             supportedEncodings.add("US-ASCII");
             supportedEncodings.add("ISO-8859-1");
             supportedEncodings.add("UTF-8");
-            supportedEncodings.add("UTF-16BE");
-            supportedEncodings.add("UTF-16LE");
-            supportedEncodings.add("UTF-16");
+           // supportedEncodings.add("UTF-16BE");
+           // supportedEncodings.add("UTF-16LE");
+           // supportedEncodings.add("UTF-16");
             
             JLabel encodingLabel = new JLabel("Encoding:");
             encodingComboBox = new JComboBox(supportedEncodings);
@@ -267,7 +317,7 @@ public class DocumentBuffer {
             Enumeration encodings = supportedEncodings.elements();
             while (encodings.hasMoreElements()) {
                 String nextEncoding = (String)encodings.nextElement();
-                if (m_document.getProperty("encoding").equals(nextEncoding)) {
+                if (m_document.getProperty(XMLDocument.ENCODING).equals(nextEncoding)) {
                     encodingComboBox.setSelectedItem(nextEncoding);
                 }
             }
@@ -280,11 +330,11 @@ public class DocumentBuffer {
             sizes.add("8");
             indentComboBox = new JComboBox(sizes);
             indentComboBox.setEditable(true);
-            indentComboBox.setSelectedItem(m_document.getProperty("indent"));
+            indentComboBox.setSelectedItem(m_document.getProperty(XMLDocument.INDENT));
             
             //set up the whitespace and format output check-boxes.
-            boolean whitespace    = Boolean.valueOf(m_document.getProperty("element-content-whitespace", "true")).booleanValue();
-            boolean formatOutput = Boolean.valueOf(m_document.getProperty("format-pretty-print", "false")).booleanValue();
+            boolean whitespace    = Boolean.valueOf(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, "true")).booleanValue();
+            boolean formatOutput = Boolean.valueOf(m_document.getProperty(XMLDocument.FORMAT_XML, "false")).booleanValue();
             
             whitespaceCheckBox = new JCheckBox("Whitespace in element content", whitespace);
             formatCheckBox     = new JCheckBox("Format XML output", formatOutput);
@@ -361,7 +411,9 @@ public class DocumentBuffer {
             
         }//}}}
         
-        public void saveOptions() {//{{{
+        //{{{ saveOptions()
+        
+        public void saveOptions() {
             if (!String.valueOf(formatCheckBox.isSelected()).equals(m_document.getProperty(XMLDocument.FORMAT_XML))) {
                 setDirty(true);
                 m_document.setProperty(XMLDocument.FORMAT_XML, String.valueOf(formatCheckBox.isSelected()));
@@ -382,13 +434,19 @@ public class DocumentBuffer {
             }
         };//}}}
         
-        public String getTitle() {//{{{
+        //{{{ getTitle()
+        
+        public String getTitle() {
             return "XML Document Options";
         };//}}}
         
-        private class WhiteSpaceChangeListener implements ChangeListener {//{{{
+        //{{{ WhiteSpaceChangeListener class
+        
+        private class WhiteSpaceChangeListener implements ChangeListener {
             
-            public void stateChanged(ChangeEvent e) {//{{{
+            //{{{ stateChanged()
+            
+            public void stateChanged(ChangeEvent e) {
                 boolean whitespace = whitespaceCheckBox.isSelected();
                 if (whitespace) {
                     formatCheckBox.setSelected(false);
@@ -398,16 +456,21 @@ public class DocumentBuffer {
             
         }//}}}
         
+        //{{{ Private members
+        
         private DocumentBuffer m_buffer;
         private JComboBox encodingComboBox;
         private JComboBox indentComboBox;
         private JCheckBox whitespaceCheckBox;
         private final Vector supportedEncodings = new Vector(6);
         private JCheckBox formatCheckBox;
+        //}}}
     
     }//}}}
     
-    private void fireNameChanged() {//{{{
+    //{{{ fireNameChanged()
+    
+    private void fireNameChanged() {
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
             DocumentBufferListener listener = (DocumentBufferListener)iterator.next();
@@ -415,7 +478,9 @@ public class DocumentBuffer {
         }
     }//}}}
     
-    private void firePropertiesChanged(String key) {//{{{
+    //{{{ firePropertiesChanged()
+    
+    private void firePropertiesChanged(String key) {
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
             DocumentBufferListener listener = (DocumentBufferListener)iterator.next();
@@ -423,7 +488,9 @@ public class DocumentBuffer {
         }
     }//}}}
     
-    private void fireBufferSaved() {//{{{
+    //{{{ fireBufferSaved()
+    
+    private void fireBufferSaved() {
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
             DocumentBufferListener listener = (DocumentBufferListener)iterator.next();
@@ -431,9 +498,13 @@ public class DocumentBuffer {
         }
     }//}}}
     
-    private class DocumentBufferResolver implements EntityResolver {//{{{
+    //{{{ DocumentBufferResolver class
+    
+    private class DocumentBufferResolver implements EntityResolver {
         
-        public InputSource resolveEntity(String publicId, String systemId) {//{{{
+        //{{{ resolveEntity()
+        
+        public InputSource resolveEntity(String publicId, String systemId) {
             
             String entity = systemId;
             InputSource source = null;
@@ -457,14 +528,18 @@ public class DocumentBuffer {
         }//}}}
         
     }//}}}
-
+    
     private XMLDocumentListener m_bufferDocListener = new XMLDocumentListener() {//{{{
-                
-        public void propertiesChanged(XMLDocument source, String propertyKey) {//{{{
+        
+        //{{{ propertiesChanged()
+        
+        public void propertiesChanged(XMLDocument source, String propertyKey) {
             firePropertiesChanged(propertyKey);
         }//}}}
         
-        public void structureChanged(XMLDocument source, AdapterNode location) {//{{{
+        //{{{ structureChanged()
+        
+        public void structureChanged(XMLDocument source, AdapterNode location) {
             setDirty(true);
         }//}}}
         
