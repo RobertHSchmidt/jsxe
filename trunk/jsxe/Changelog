@@ -1,3 +1,7 @@
+04/20/2004  version 0.1.66  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Made split panes in the default tree view one touch expandable.
+
 04/18/2004  version 0.1.65  Ian Lewis <IanLewis@member.fsf.org>
 
     * Cleaned up some code in the TabbedView class. Removed the public update()
