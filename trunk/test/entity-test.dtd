@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <!NOTATION gif SYSTEM "image/gif">
+   <!ELEMENT title (#PCDATA)>
+   <!ELEMENT parent (#PCDATA)>
+   <!ATTLIST parent role (mother | father) #REQUIRED>
+   <!ELEMENT child (#PCDATA)>
+   <!ATTLIST child role (daughter | son) #REQUIRED>
+   <!ENTITY JENN SYSTEM "http://images.about.com/sites/guidepics/html.gif" NDATA gif>
+   <!ELEMENT image EMPTY>
+   <!ATTLIST image source ENTITY #REQUIRED>
+
+
