@@ -141,34 +141,51 @@ public class DefaultView extends JPanel implements DocumentView {
         
         //}}}
         
+        //focus on the tree the first time the view is shown
+        addComponentListener(new ComponentListener() {//{{{
+            
+            public void componentHidden(ComponentEvent e) {}
+            
+            public void componentMoved(ComponentEvent e) {}
+            
+            public void componentResized(ComponentEvent e) {}
+            
+            public void componentShown(ComponentEvent e) {
+                tree.requestFocus();
+                Container parent = getParent();
+                if (parent != null) {
+                    Dimension size = parent.getSize();
+                    float vertPercent = Integer.valueOf(m_document.getProperty(VERT_SPLIT_LOCATION)).floatValue();
+                    float horizPercent = Integer.valueOf(m_document.getProperty(HORIZ_SPLIT_LOCATION)).floatValue();
+                    
+                    int vertLoc = (int)((vertPercent/100.0)*size.getHeight());
+                    int horizLoc = (int)((horizPercent/100.0)*size.getWidth());
+                    
+                    vertSplitPane.setDividerLocation(vertLoc);
+                    horizSplitPane.setDividerLocation(horizLoc);
+                    m_viewShown = true;
+                    removeComponentListener(this);
+                }
+            }
+            
+        });//}}}
+        
         setDocumentBuffer(document);
     }//}}}
     
-    //{{{ setVisible()
-    /**
-     * Initializes the size of the split panes and shows the component. The
-     * divider locations cannot be set before the split pane is added to a
-     * component for some reason.
-     * @param b If true, shows this component; otherwise, hides this component.
-     */
-    public void setVisible(boolean b) {
-        if (b && m_firstShow) {
-            Container parent = getParent();
-            if (parent != null) {
-                Dimension size = parent.getSize();
-                float vertPercent = Integer.valueOf(m_document.getProperty(VERT_SPLIT_LOCATION)).floatValue();
-                float horizPercent = Integer.valueOf(m_document.getProperty(HORIZ_SPLIT_LOCATION)).floatValue();
-                
-                int vertLoc = (int)((vertPercent/100.0)*size.getHeight());
-                int horizLoc = (int)((horizPercent/100.0)*size.getWidth());
-                
-                vertSplitPane.setDividerLocation(vertLoc);
-                horizSplitPane.setDividerLocation(horizLoc);
-                m_firstShow=false;
-            }
-        }
-        super.setVisible(b);
-    }//}}}
+   // //{{{ setVisible()
+   // /**
+   //  * Initializes the size of the split panes and shows the component. The
+   //  * divider locations cannot be set before the split pane is added to a
+   //  * component for some reason.
+   //  * @param b If true, shows this component; otherwise, hides this component.
+   //  */
+   // public void setVisible(boolean b) {
+   //     if (b && m_firstShow) {
+            
+   //     }
+   //     super.setVisible(b);
+   // }//}}}
     
     //{{{ DocumentView methods
 
@@ -178,13 +195,16 @@ public class DefaultView extends JPanel implements DocumentView {
         
         //m_document should only be null if setDocumentBuffer was never called.
         if (m_document != null) {
-            Dimension size = getSize();
+            //only update the dimension settings if the view has been shown
+            if (m_viewShown) {
+                Dimension size = getSize();
             
-            String vert = Integer.toString((int)(vertSplitPane.getDividerLocation()/size.getHeight()*100));
-            String horiz = Integer.toString((int)(horizSplitPane.getDividerLocation()/size.getWidth()*100));
-            
-            m_document.setProperty(VERT_SPLIT_LOCATION,vert);
-            m_document.setProperty(HORIZ_SPLIT_LOCATION,horiz);
+                String vert = Integer.toString((int)(vertSplitPane.getDividerLocation()/size.getHeight()*100));
+                String horiz = Integer.toString((int)(horizSplitPane.getDividerLocation()/size.getWidth()*100));
+                
+                m_document.setProperty(VERT_SPLIT_LOCATION,vert);
+                m_document.setProperty(HORIZ_SPLIT_LOCATION,horiz);
+            }
         }
         
         return true;
@@ -545,7 +565,7 @@ public class DefaultView extends JPanel implements DocumentView {
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
     private DocumentBuffer m_document;
-    private boolean m_firstShow = true;
+    private boolean m_viewShown = false;
     
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {

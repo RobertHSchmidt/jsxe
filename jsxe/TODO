@@ -23,40 +23,14 @@ TODO:
     
 * Version 0.2 beta
     
-    * Fix bug where when documents are opened but not viewed the split pane
-      locations in the default view are set to zero so when you open it the
-      next time the panes are messed up
-    
     * Need to set up default document properties for each view and default
       app properties for each view. Default document properties get set
       to the document each time one is loaded. Default app properties get set
       when the view is loaded.
     
-    * Make dialogs extend jEdit's EnhancedDialog class.
-    
     * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother? Maybe not since some views will require
       documents to be well formed.
-    
-    * Create new packages for the XMLDocument and DocumentViews. Provide
-      javadoc on the jsXe website. Rename AdapterNodes to something more
-      meaningful and update it's API. Maybe make XMLDocument an interface
-      so that XMLDocument classes can be created that use something other
-      than Xerces.
-    
-    * Update javadoc for the DocumentViews and XMLDocument classes to be
-      more descriptive and less specific to jsXe.
-    
-    * Change ant build file to build the DocumentViews and XMLDocuments into
-      a different jar file. Also change the jsXe.bat and jsXe.sh to use the new
-      jar file.
-    
-    * Make a test program that uses DocumentViews to prove that they don't
-      need jsXe.
-    
-    * Change the way the TabbedView keeps track of the DocumentViews and
-      DocumentBuffers so that it's easier to get the DocumentBuffer for a
-      particular XMLDocument
     
     * Add a ghosted image of the node to drag and drop cursor. Hopefully the
       whole cursor can be replaced with the image since the default drag

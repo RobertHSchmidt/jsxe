@@ -1,3 +1,11 @@
+8/12/2004   version 0.2 pre18   Ian Lewis <IanLewis@member.fsf.org>
+
+    * The OptionsPanel now extends the EnhancedDialog class. This makes it so
+      the Options dialog responds to the escape and enter keys.
+    * Fixed bug where when documents are opened but not viewed the split pane
+      locations in the default view are set to zero so when you open it the
+      next time the panes are messed up
+
 8/11/2004   version 0.2 pre17   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added back the replace field on the find and replace dialog in the

@@ -71,12 +71,12 @@ import java.awt.event.ActionEvent;
 
 //}}}
 
-public class OptionsDialog extends JDialog {
+public class OptionsDialog extends EnhancedDialog {
     
     //{{{ OptionsDialog constructor
     
     public OptionsDialog(TabbedView view) {
-        super(view, true);
+        super(view, "Options", true);
         
         JPanel frame = new JPanel();
         getContentPane().add(frame,BorderLayout.CENTER);
@@ -86,14 +86,13 @@ public class OptionsDialog extends JDialog {
         
         JButton OKButton = new JButton("OK");
         JButton CancelButton = new JButton("Cancel");
-        OKButton.addActionListener(new OKAction(this));
-        CancelButton.addActionListener(new CancelAction(this));
+        OKButton.addActionListener(new OKAction());
+        CancelButton.addActionListener(new CancelAction());
         
         Border border1 = BorderFactory.createEmptyBorder(10,10,10,10);
         Border border2 = BorderFactory.createEmptyBorder(0,10,0,10);
         frame.setBorder(border1);
         
-        setTitle("Options");
         setSize(dialogWidth,dialogHeight);
         setLocationRelativeTo(view);
         
@@ -185,8 +184,30 @@ public class OptionsDialog extends JDialog {
         ButtonsPanel.add(CancelButton);
         
         getContentPane().add(ButtonsPanel, BorderLayout.SOUTH);
+        getRootPane().setDefaultButton(OKButton);
         
     } //}}}
+    
+    //{{{ ok()
+    
+    public void ok() {
+        if (OptionsNorthPanel != null) {
+            OptionsNorthPanel.saveOptions();
+        }
+        if (OptionsSouthPanel != null) {
+            OptionsSouthPanel.saveOptions();
+        }
+        if (bufferOptionsPanel != null) {
+            bufferOptionsPanel.saveOptions();
+        }
+        dispose();
+    }//}}}
+    
+    //{{{ cancel()
+    
+    public void cancel() {
+        dispose();
+    }//}}}
     
     //{{{ Private members
     
@@ -194,30 +215,11 @@ public class OptionsDialog extends JDialog {
     
     private class OKAction implements ActionListener {
         
-        //{{{ OKAction constructor
-        
-        public OKAction(Dialog p) {
-            parent = p;
-        }//}}}
-        
         //{{{ actionPerformed()
         
         public void actionPerformed(ActionEvent e) {
-            if (OptionsNorthPanel != null) {
-                OptionsNorthPanel.saveOptions();
-            }
-            if (OptionsSouthPanel != null) {
-                OptionsSouthPanel.saveOptions();
-            }
-            if (bufferOptionsPanel != null) {
-                bufferOptionsPanel.saveOptions();
-            }
-            parent.dispose();
+            ok();
         }//}}}
-        
-        //{{{ Private members
-        private Dialog parent;
-        //}}}
         
     } //}}}
     
@@ -225,22 +227,11 @@ public class OptionsDialog extends JDialog {
     
     private class CancelAction implements ActionListener {
         
-        //{{{ CancelAction constructor
-        
-        public CancelAction(Dialog p) {
-            parent = p;
-        }//}}}
-        
         //{{{ actionPerformed()
         
         public void actionPerformed(ActionEvent e) {
-            parent.dispose();
+            cancel();
         }//}}}
-        
-        //{{{ Private members
-        
-        private Dialog parent;
-        //}}}
         
     } //}}}
     
