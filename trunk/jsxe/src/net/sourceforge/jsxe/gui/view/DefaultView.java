@@ -44,6 +44,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.OptionsPanel;
@@ -72,6 +73,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 //}}}
 
 //{{{ AWT components
@@ -116,6 +118,7 @@ public class DefaultView extends DocumentView {
         //create a table model
         JScrollPane attrView = new JScrollPane(attributesTable);
         
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
         
         //{{{ Create and set up the splitpanes
@@ -138,7 +141,10 @@ public class DefaultView extends DocumentView {
 
     } //}}}
     
-    public void setDocument(TabbedView view, XMLDocument document) throws IOException {//{{{
+    public void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException {//{{{
+        
+        XMLDocument document = buffer.getXMLDocument();
+        
         try {
             document.checkWellFormedness();
         } catch (Exception e) {
@@ -177,7 +183,7 @@ public class DefaultView extends DocumentView {
         tree.updateUI();
         updateUI();
         
-        currentDoc = document;
+        m_buffer = buffer;
     } //}}}
     
     public JMenu[] getMenus() {//{{{
@@ -211,18 +217,19 @@ public class DefaultView extends DocumentView {
         return new DefaultViewOptionsPanel();
     }//}}}
     
-    public XMLDocument getXMLDocument() {//{{{
-        return currentDoc;
+    public DocumentBuffer getDocumentBuffer() {//{{{
+        return m_buffer;
     }//}}}
     
     public boolean close(TabbedView view) {//{{{
         
-        if (currentDoc != null) {
+        //m_buffer should only be null if setBuffer was never called.
+        if (m_buffer != null) {
             String vert = Integer.toString(vertSplitPane.getDividerLocation());
             String horiz = Integer.toString(horizSplitPane.getDividerLocation());
             
-            currentDoc.setProperty(viewname+".splitpane.vert.loc",vert);
-            currentDoc.setProperty(viewname+".splitpane.horiz.loc",horiz);
+            m_buffer.setProperty(viewname+".splitpane.vert.loc",vert);
+            m_buffer.setProperty(viewname+".splitpane.horiz.loc",horiz);
         }
         
         return true;
@@ -249,9 +256,9 @@ public class DefaultView extends DocumentView {
             
             int gridY = 0;
             
-            boolean showCommentNodes = Boolean.valueOf(currentDoc.getProperty(viewname+".show.comment.nodes", "false")).booleanValue();
-            boolean showEmptyNodes = Boolean.valueOf(currentDoc.getProperty(viewname+".show.empty.nodes", "false")).booleanValue();
-            boolean continuousLayout = Boolean.valueOf(currentDoc.getProperty(viewname+".continuous.layout", "false")).booleanValue();
+            boolean showCommentNodes = Boolean.valueOf(m_buffer.getProperty(viewname+".show.comment.nodes", "false")).booleanValue();
+            boolean showEmptyNodes = Boolean.valueOf(m_buffer.getProperty(viewname+".show.empty.nodes", "false")).booleanValue();
+            boolean continuousLayout = Boolean.valueOf(m_buffer.getProperty(viewname+".continuous.layout", "false")).booleanValue();
             
             showCommentsCheckBox = new JCheckBox("Show comment nodes",showCommentNodes);
             showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
@@ -292,11 +299,11 @@ public class DefaultView extends DocumentView {
         }//}}}
         
         public void saveOptions() {//{{{
-            currentDoc.setProperty(viewname+".show.comment.nodes",(new Boolean(showCommentsCheckBox.isSelected())).toString());
-            currentDoc.setProperty(viewname+".show.empty.nodes",(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
+            m_buffer.setProperty(viewname+".show.comment.nodes",(new Boolean(showCommentsCheckBox.isSelected())).toString());
+            m_buffer.setProperty(viewname+".show.empty.nodes",(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
             
             boolean layout = ContinuousLayoutCheckBox.isSelected();
-            currentDoc.setProperty(viewname+".continuous.layout",(new Boolean(layout)).toString());
+            m_buffer.setProperty(viewname+".continuous.layout",(new Boolean(layout)).toString());
             vertSplitPane.setContinuousLayout(layout);
             horizSplitPane.setContinuousLayout(layout);
             tree.updateUI();
@@ -515,6 +522,7 @@ public class DefaultView extends DocumentView {
     /**
      * This is temporary. It causes GUI components to be updated but does
      * not retain their state.
+     * Since AdapterNodes are persistent now. This should go away NOW.
      */
     private void updateComponents() {//{{{
         
@@ -522,8 +530,10 @@ public class DefaultView extends DocumentView {
         //Clear the right hand pane of previous values.
         htmlPane.setText("");
         
+        XMLDocument document = m_buffer.getXMLDocument();
+        
         //set the attributes table to the document itself
-        AdapterNode adapter = currentDoc.getAdapterNode();
+        AdapterNode adapter = document.getAdapterNode();
         DefaultViewTableModel tableModel = new DefaultViewTableModel(this, adapter);
         attributesTable.setModel(tableModel);
         attributesTable.updateUI();
@@ -534,7 +544,7 @@ public class DefaultView extends DocumentView {
     private JTable attributesTable = new JTable();
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
-    private XMLDocument currentDoc;
+    private DocumentBuffer m_buffer;
     
     private static final String viewname="documentview.default";
     private TableModelListener tableListener = new TableModelListener() {//{{{

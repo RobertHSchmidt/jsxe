@@ -41,6 +41,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.view.DocumentView;
 //}}}
@@ -79,7 +80,7 @@ public class OptionsDialog extends JDialog {
         getContentPane().add(frame,BorderLayout.CENTER);
         
         DocumentView panel = view.getDocumentView();
-        document = panel.getXMLDocument();
+        m_buffer = panel.getDocumentBuffer();
         
         JButton OKButton = new JButton("OK");
         JButton CancelButton = new JButton("Cancel");
@@ -153,9 +154,9 @@ public class OptionsDialog extends JDialog {
             constraints.weighty = 0;
         }
         
-        // Create the Document specific panel
+        // Create the Buffer specific panel
         
-        DocumentOptionsPanel = new XMLDocumentOptionsPanel(document);
+        bufferOptionsPanel = m_buffer.getOptionsPanel();
         
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridwidth = GridBagConstraints.REMAINDER;
@@ -163,18 +164,18 @@ public class OptionsDialog extends JDialog {
 	    constraints.weightx = 1.0f;
 		constraints.insets = new Insets(1,0,1,0);
         
-        label = new JLabel(DocumentOptionsPanel.getTitle());
+        label = new JLabel(bufferOptionsPanel.getTitle());
         layout.setConstraints(label, constraints);
         frame.add(label);
         sep = new JSeparator(JSeparator.HORIZONTAL);
         layout.setConstraints(sep, constraints);
         frame.add(sep);
         
-        DocumentOptionsPanel.setBorder(border2);
+        bufferOptionsPanel.setBorder(border2);
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weighty = 1.0f;
-        layout.setConstraints(DocumentOptionsPanel, constraints);
-        frame.add(DocumentOptionsPanel);
+        layout.setConstraints(bufferOptionsPanel, constraints);
+        frame.add(bufferOptionsPanel);
         constraints.weighty = 0;
         
         JPanel ButtonsPanel = new JPanel();
@@ -196,8 +197,8 @@ public class OptionsDialog extends JDialog {
                 OptionsNorthPanel.saveOptions();
             if (OptionsSouthPanel != null)
                 OptionsSouthPanel.saveOptions();
-            if (DocumentOptionsPanel != null)
-                DocumentOptionsPanel.saveOptions();
+            if (bufferOptionsPanel != null)
+                bufferOptionsPanel.saveOptions();
             parent.dispose();
         }
         private Dialog parent;
@@ -215,10 +216,10 @@ public class OptionsDialog extends JDialog {
     
     private int dialogWidth=450;
     private int dialogHeight=450;
-    private XMLDocument document;
+    private DocumentBuffer m_buffer;
     private OptionsPanel OptionsNorthPanel;
     private OptionsPanel OptionsSouthPanel;
-    private OptionsPanel DocumentOptionsPanel;
+    private OptionsPanel bufferOptionsPanel;
     //}}}
     
 }

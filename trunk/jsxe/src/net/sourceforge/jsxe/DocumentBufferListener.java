@@ -1,5 +1,5 @@
 /*
-DocumentView.java
+DocumentBufferListener.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
@@ -8,8 +8,8 @@ jsXe is a gui application that can edit an XML document and create a tree view.
 The user can then edit this tree and the content in the tree and save the
 document.
 
-This file contains the abstract class that defines the interface for
-views that are used by jsXe.
+This file contains the BufferListener interface that is used when notifying
+objects that a Buffer has changed.
 
 This file written by Ian Lewis (IanLewis@member.fsf.org)
 Copyright (C) 2002 Ian Lewis
@@ -31,43 +31,14 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package net.sourceforge.jsxe.gui.view;
+package net.sourceforge.jsxe;
 
-//{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
-
-//{{{ jsXe classes
-import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.gui.OptionsPanel;
-import net.sourceforge.jsxe.gui.TabbedView;
-//}}}
-
-//{{{ Swing components
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-//}}}
-
-//{{{ Java base classes
-import java.io.IOException;
-//}}}
-
-//}}}
-
-public abstract class DocumentView extends JPanel {
-
-    public abstract void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException;
+public interface DocumentBufferListener {
     
-    public abstract JMenu[] getMenus();
+    public void nameChanged(DocumentBuffer source, String newName);
     
-    public abstract OptionsPanel getOptionsPanel();
+    public void propertiesChanged(DocumentBuffer source, String key);
     
-    public abstract DocumentBuffer getDocumentBuffer();
-
-    public abstract boolean close(TabbedView view);
-
+    public void bufferSaved(DocumentBuffer source);
+    
 }

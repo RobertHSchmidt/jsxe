@@ -41,10 +41,8 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.dom.AdapterNode;
-import net.sourceforge.jsxe.dom.XMLDocument;
-import net.sourceforge.jsxe.dom.XMLDocumentListener;
-import net.sourceforge.jsxe.dom.DOMSerializer;
+import net.sourceforge.jsxe.DocumentBuffer;
+import net.sourceforge.jsxe.DocumentBufferListener;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
@@ -129,31 +127,25 @@ public class SourceView extends DocumentView {
         return null;
     }//}}}
     
-    public void setDocument(TabbedView view, XMLDocument document) throws IOException {//{{{
+    public void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException {//{{{
         
-        if (currentdoc != null) {
-            currentdoc.removeXMLDocumentListener(docListener);
+        if (m_buffer != null) {
+            m_buffer.removeDocumentBufferListener(docListener);
         }
         
-        currentdoc = document;
-        textarea.setDocument(new SourceViewDocument(view, document));
-        textarea.setTabSize((new Integer(document.getProperty("indent", "4"))).intValue());
-        currentdoc.addXMLDocumentListener(docListener);
+        m_buffer = buffer;
+        textarea.setDocument(new SourceViewDocument(view, m_buffer));
+        textarea.setTabSize((new Integer(m_buffer.getProperty("indent", "4"))).intValue());
+        m_buffer.addDocumentBufferListener(docListener);
         
     }//}}}
     
-    public XMLDocument getXMLDocument() {//{{{
-        return currentdoc;
+    public DocumentBuffer getDocumentBuffer() {//{{{
+        return m_buffer;
     }//}}}
     
     public boolean close(TabbedView view) {//{{{
-       // try {
-       //     currentdoc.setModel(textarea.getText());
-       //     currentdoc.removeXMLDocumentListener(docListener);
-       // } catch (IOException ioe) {
-       //     jsXe.exiterror(view, ioe.getMessage(), 1);
-       // }
-        currentdoc.removeXMLDocumentListener(docListener);
+        m_buffer.removeDocumentBufferListener(docListener);
         return true;
     }//}}}
     
@@ -201,23 +193,24 @@ public class SourceView extends DocumentView {
         }
     }//}}}
     
-    private class SourceViewXMLDocumentListener implements XMLDocumentListener {//{{{
+    private class SourceViewBufferListener implements DocumentBufferListener {//{{{
         
-        public void propertiesChanged(XMLDocument source, String propertyKey) {
-            if (propertyKey.equals("indent")) {
+        public void propertiesChanged(DocumentBuffer source, String key) {//{{{
+            if (key.equals("indent")) {
                 textarea.setTabSize((new Integer(source.getProperty("indent", "4"))).intValue());
                 textarea.updateUI();
             }
-        }
+        }//}}}
         
-        public void structureChanged(XMLDocument source, AdapterNode location) {}
+        public void nameChanged(DocumentBuffer source, String newName) {}
         
-        public void fileChanged(XMLDocument source) {}
+        public void bufferSaved(DocumentBuffer source) {}
+        
     }//}}}
     
-    private SourceViewXMLDocumentListener docListener = new SourceViewXMLDocumentListener();
+    private SourceViewBufferListener docListener = new SourceViewBufferListener();
     
-    private XMLDocument currentdoc;
+    private DocumentBuffer m_buffer;
     private JTextArea textarea;
     private JPanel panel;
     //}}}
