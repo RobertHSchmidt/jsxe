@@ -280,6 +280,13 @@ public class SchemaViewModel extends DefaultGraphModel {
        // GraphConstants.setBackground(map, Color.blue);
        // GraphConstants.setAutoSize(map, true);
         
+        String name = node.getAttribute("name");
+        if (name.equals("")) {
+            GraphConstants.setValue(map, node.toString());
+        } else {
+            GraphConstants.setValue(map, name);
+        }
+        
         return map;
     }//}}}
     
