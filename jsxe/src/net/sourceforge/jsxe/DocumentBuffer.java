@@ -114,6 +114,7 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = null;
         m_name = getUntitledLabel();
+        addXMLDocumentListener(m_bufferDocListener);
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -128,6 +129,7 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = file;
         m_name = file.getName();
+        addXMLDocumentListener(m_bufferDocListener);
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -143,6 +145,7 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = null;
         m_name = getUntitledLabel();
+        addXMLDocumentListener(m_bufferDocListener);
     }//}}}
     
     //{{{ DocumentBuffer constructor

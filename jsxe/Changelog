@@ -5,6 +5,8 @@
       prevents loading documents where whitespace is matters without marking
       them dirty.
     * Views now remove listeners that they add to the DocumentBuffer
+    * Fixed bug that caused the document not to me marked dirty when it was
+      changed.
 
 8/25/2004   version 0.2 pre21   Ian Lewis <IanLewis@member.fsf.org>
 

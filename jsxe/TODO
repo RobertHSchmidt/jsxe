@@ -23,26 +23,12 @@ TODO:
     
 * Version 0.2 beta
     
-    * Revamp the DOM objects.
-        * Create Adapter... objects (AdapterDocument, AdapterNode,
-          AdapterElement, etc.) that wraps around the objects created when
-          parsing. They add the fuctionality needed like ability to change the
-          name, support for change listeners etc.
-        * Create a parser class that manages parsing a document and creating
-          the Adapter objects.
-    
     * Fix bug where the file is kept open by a reader or something too long.
       This doesn't allow other editors to open the document until jsXe is
       closed or the objects are garbage collected.
     
     * Fix the reload fuctionality so it doesn't put the whole document into
       a string. see readFile() in the DocumentBuffer class
-    
-    * Do something with formatting. Should there be a formatting action that
-      formats the document for you? Other options may apply here, like
-      whitespace in element content. Maybe the options should be applied
-      immediately to the document when the options change. Doing this would
-      require that the document was well formed.
     
     * Need to set up default document properties for each view and default
       app properties for each view. Default document properties get set
@@ -68,13 +54,33 @@ TODO:
     * Use the Nodefilter interface with the DefaultView to determine which types
       of nodes to show.
     
-    * Add full support for namespaces. (adding, editing, serialization, etc.)
-      New Cell Renderer for nodes that edits namespaces separately?
+* Version 0.3 beta (Plugin Support)
     
-    * Update the package structures to be a bit better before releasing next
-      beta version
+    * Revamp the DOM objects.
+        * Create Adapter... objects (AdapterDocument, AdapterNode,
+          AdapterElement, etc.) that wraps around the objects created when
+          parsing. They add the fuctionality needed like ability to change the
+          name, support for change listeners etc.
+        * Create a parser class that manages parsing a document and creating
+          the Adapter objects.
+        * Update the package structures to be a bit better before releasing next
+          beta version
     
-* Version 0.3 beta (Actions)
+    * Finalize the class structure and public plugin interface as it will be
+      harder to remove/deprecate methods after the introduction of plugins.
+    
+    * Implement plugin support for views with BeanShell. Make DocumentViews
+      into plugins that are loaded at runtime. DefaultView and SourceView will
+      be distributed with jsXe as the default views.
+    
+    * Create an interface for other plugins like Load and save plugins. Plugins
+      shouldn't have to be DocumentViews. They could have other purposes.
+    
+    * Add a way for jsXe to try to open a document in any of the installed views
+      before it shows errors saying it cannot open the document given that views
+      are now plugins.
+    
+* Version 0.4 beta (Actions)
     
     * Implement cut, copy, paste in the DefaultView
     
@@ -97,7 +103,7 @@ TODO:
     * Make sure all instance variables are prefixed with m_ and are named in a
       consistent manner.
     
-* Version 0.4 beta (DTD support and Threading)
+* Version 0.5 beta (DTD support and Threading)
     
     * Allow Views to be split so that one DocumentView can be displayed left/top
       and one on the right/bottom. Views should be able to update automatically
@@ -133,7 +139,7 @@ TODO:
     
     * Create some sort of interface to deal with editing of entity reference.
     
-* Version 0.5 beta (GUI focus)
+* Version 0.6 beta (GUI focus)
     
     * Enhance the source view with element completion and other cool stuff. See
       the XML plugin for jEdit for ideas. How would I display well-formedness
@@ -158,28 +164,12 @@ TODO:
     
     * Create a help system for jsXe.
     
-* Version 0.6 beta (Plugin Support)
-    
-    * Finalize the class structure and public plugin interface as it will be
-      harder to remove/deprecate methods after the introduction of plugins.
-      Build into the interfaces support for printing.
-    
-    * Implement plugin support for views with BeanShell. Make DocumentViews
-      into plugins that are loaded at runtime. DefaultView and SourceView will
-      be distributed with jsXe as the default views.
-    
-    * Create an interface for other plugins like Load and save plugins. Plugins
-      shouldn't have to be DocumentViews. They could have other purposes.
-    
-    * Add a way for jsXe to try to open a document in any of the installed views
-      before it shows errors saying it cannot open the document given that views
-      are now plugins.
-    
 * Version 0.7 beta
     
     * Implement some form of internationalization support.
     
-    * Implement printing support in the Default View and SourceView
+    * Build into the interfaces support for printing. Implement printing
+      support in the Default View and SourceView
     
     * Add a command line option so that a user can specify the view to open
       the document with. This will allow you to open large document in the
