@@ -31,7 +31,7 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package net.sourceforge.jsxe.gui;
+package net.sourceforge.jsxe.gui.view;
 
 //{{{ imports
 
@@ -53,7 +53,7 @@ import java.util.*;
 
 /**
  * A transferable class that manages the physical data that is transferred when
- * transferring an XML node. This class handles an AdapterNode
+ * transferring an XML node. This class handles an DefaultViewTreeNode
  * object and either returning the object itself or some representation of
  * the node (such as a string) during transfer.
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
@@ -64,9 +64,9 @@ public class TransferableNode implements Transferable {
     //{{{ TransferableNode constructor
     /**
      * Creates a new TransferableNode to handle the AdapterNode given.
-     * @param node The AdapterNode that is being transferred.
+     * @param node The node that is being transferred.
      */
-    public TransferableNode(AdapterNode node) {
+    public TransferableNode(DefaultViewTreeNode node) {
         m_node = node;
     }//}}}
     
@@ -85,7 +85,7 @@ public class TransferableNode implements Transferable {
     
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
         if (stringFlavor.equals(flavor)) {
-            return m_node.serializeToString();
+            return m_node.getAdapterNode().serializeToString();
         } else {
             if (nodeFlavor.equals(flavor)) {
                 return m_node;
@@ -102,7 +102,7 @@ public class TransferableNode implements Transferable {
     static {
         DataFlavor flav = null;
         try {
-            flav = new DataFlavor(Class.forName("net.sourceforge.jsxe.dom.AdapterNode"), "XML Node");
+            flav = new DataFlavor(Class.forName("net.sourceforge.jsxe.gui.view.DefaultViewTreeNode"), "XML Node");
         } catch (ClassNotFoundException e) {
             jsXe.exiterror(null, e.getMessage(), 1);
         }
@@ -115,7 +115,7 @@ public class TransferableNode implements Transferable {
     };
 
     private static final List flavorList = Arrays.asList( flavors );
-    private AdapterNode m_node;
+    private DefaultViewTreeNode m_node;
     //}}}
     
 }
