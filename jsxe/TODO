@@ -23,18 +23,32 @@ TODO:
     
 * Version 0.2 beta
     
+    * Fix bug where the document is saved with formating checked but not
+      formatted, then closed and reopened. This formats the document without
+      marking it dirty. If opened in source view the document should look
+      exactly like it would in any text editor.
+    
+    * Fix bug where the file is kept open by a reader or something too long.
+      This doesn't allow other editors to open the document until jsXe is
+      closed or the objects are garbage collected.
+    
+    * Fix the whitespace in element content option to work like it should.
+      It should not affect text nodes that are not in element content (node
+      content where the only nodes are whitespace only text nodes and elements).
+      If the option is unchecked then the whitespace only nodes should be
+      removed. It should have to be true for you to format the document since
+      formatting requires whitespace in element content.
+    
+    * Do something with formatting. Should there be a formatting button that
+      formats the document for you? Other options may apply here, like
+      whitespace in element content. Maybe the options should be applied
+      immediately to the document when the options change. Doing this would
+      require that the document was well formed.
+    
     * Need to set up default document properties for each view and default
       app properties for each view. Default document properties get set
       to the document each time one is loaded. Default app properties get set
       when the view is loaded.
-    
-    * Add the ability for XMLDocuments to have a structure for non-wellformed
-      documents. Should I bother? Maybe not since some views will require
-      documents to be well formed.
-    
-    * Add a ghosted image of the node to drag and drop cursor. Hopefully the
-      whole cursor can be replaced with the image since the default drag
-      cursor is dumb in linux.
     
     * Make the XML document declaration header non-editable in source-view
       mode. (how?) Update it when the user changes options in the options panel.
@@ -50,36 +64,20 @@ TODO:
       deal with serializing to it if necessary. Investigate XNI or whatever
       that is part of the xerces distribution as a way to do this.
     
-    * Build an adapter for DocumentBuilder so that it implements the DOM3
-      standard DOMBuilder interface? Maybe use it with DOMSerializer to created
-      filtered documents? Or use a TreeWalker to serialize (how)? Create a
-      stack that retains element info.
-    
     * Use the Nodefilter interface with the DefaultView to determine which types
       of nodes to show.
     
     * Add full support for namespaces. (adding, editing, serialization, etc.)
       New Cell Renderer for nodes that edits namespaces separately?
     
-    * Redo the interface for XMLDocuments and AdapterNodes so that DOM
-      implementation used in a more limited way? Implement Document editing
-      methods? Can I eventually make my own DOM implementation? Look at
-      extending the Xerces implementations of these interfaces. Maybe doing that
-      is more feasable. However, that approach would make the application
-      highly dependent on Xerces.
-    
-    * Implement undo for the DefaultView and SourceView.
-    
     * Update the package structures to be a bit better before releasing next
       beta version
     
-* Version 0.3 beta
+* Version 0.3 beta (Actions)
     
     * Implement cut, copy, paste in the DefaultView
     
-    * Allow Views to be split so that one DocumentView can be displayed left/top
-      and one on the right/bottom. Views should be able to update automatically
-      using some sort of listener interface.
+    * Implement undo for the DefaultView and SourceView.
     
     * Implement BeanShell support. This is required for dynamic actions like
       those in jEdit. Create a way for actions to be created dynamically and
@@ -93,14 +91,19 @@ TODO:
     
     * Create a toolbar that is customizable much the same way jEdit's is.
 	    
-	* Make a splash screen that displays on startup.
-
     * By this time, make sure all classes are documented with javadoc.
     
     * Make sure all instance variables are prefixed with m_ and are named in a
       consistent manner.
     
-* Version 0.4 beta
+* Version 0.4 beta (DTD support and Threading)
+    
+    * Allow Views to be split so that one DocumentView can be displayed left/top
+      and one on the right/bottom. Views should be able to update automatically
+      using some sort of listener interface. How would you sync between views?
+      Some will required well formedness or validation to a schema and some will
+      not. What happens if one view invalidates the document with the other
+      view?
     
     * Add threading support and allow multiple windows/Views to be open for one
       document at once. This can let you edit a document using one view and
@@ -110,19 +113,9 @@ TODO:
       handle editing using a view that uses source and one that uses the tree
       structure at the same time?
     
-    * Create a feature to edit source for 1 node only? (Not sure how to do this
-      given current design. How would I allow the source view to do that?)
-      Should I bother?
-    
     * Create an interface for the main view in jsXe where the TabbedView
       implements it. Other views can then be created to allow a more
       customizable look.
-    
-    * Implement syntax highlighting for the SourceView.
-    
-    * Enhance the source view with element completion and other cool stuff. See
-      the XML plugin for jEdit for ideas. How would I display well-formedness
-      errors.
     
     * Add support for DTDs and Schema and add feedback about whether the
       current document can be validated by the DTD and what needs to be done to
@@ -137,12 +130,17 @@ TODO:
     * Create some sort of interface to deal with editing of entity reference
       nodes. Can this be done before adding more support for DTDs?
     
-* Version 0.5 beta
+* Version 0.5 beta (GUI focus)
     
-    * Implement some version of the DOM Document interfaces and add features
-      such as the registering of listeners that can tell when the structure
-      has changed and a builder that can give the location of a parser error
-      etc. Is this reasonable/possible?
+    * Enhance the source view with element completion and other cool stuff. See
+      the XML plugin for jEdit for ideas. How would I display well-formedness
+      errors?
+        * Element completion
+        * Highlighting where a parse error is located. Is it feasable to do
+          multiple parses to find as many errors as possible? SAX parsers find
+          the first one and then quit.
+    
+    * Implement syntax highlighting for the SourceView.
     
     * Fix the options dialog and make it look better. Maybe split into two
       dialogs, global options and view/document specific? Maybe even three
@@ -158,17 +156,26 @@ TODO:
     
     * Create an install program for jsXe.
     
+    * Add a ghosted image of the node to drag and drop cursor. Hopefully the
+      whole cursor can be replaced with the image since the default drag
+      cursor is dumb in linux.
+    
+    * Make a splash screen that displays on startup.
+    
     * Create a help system for jsXe.
     
-* Version 0.6 beta
+* Version 0.6 beta (Plugin Support)
     
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
       Build into the interfaces support for printing.
     
-    * Implement plugin support with BeanShell. Make DocumentViews into plugins
-      that are loaded at runtime. DefaultView and SourceView will be distributed
-      with jsXe as the default views.
+    * Implement plugin support for views with BeanShell. Make DocumentViews
+      into plugins that are loaded at runtime. DefaultView and SourceView will
+      be distributed with jsXe as the default views.
+    
+    * Create an interface for other plugins like Load and save plugins. Plugins
+      shouldn't have to be DocumentViews. They could have other purposes.
     
     * Add a way for jsXe to try to open a document in any of the installed views
       before it shows errors saying it cannot open the document given that views
@@ -223,7 +230,8 @@ TODO:
     * Create a view for XHTML documents. This could probobly be an extension
       of the JEditorPane class that uses an adapter to attempt to transform
       XHTML into HTML 3.2 so that the canned JEditorPane can render it properly.
-      Maybe XSmiles can do this too. See www.x-smiles.org
+      Maybe XSmiles can do this too. See www.x-smiles.org. Maybe look for other
+      java XHTML browsers.
     
     * Implement a JasperReports plugin that helps users view report definitions
       for jasper reports. Eventually add support to edit visually like the
