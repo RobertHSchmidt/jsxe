@@ -481,10 +481,11 @@ public class TabbedView extends JFrame {
         //{{{ Create View Menu
         m_viewMenu = new JMenu("View");
         m_viewMenu.setMnemonic('V');
-            menuItem = new JMenuItem(new SetDefaultViewAction());
+        Enumeration viewTypes = DocumentViewFactory.getAvailableViewTypes();
+        while (viewTypes.hasMoreElements()) {
+            menuItem = new JMenuItem(new SetViewAction(viewTypes.nextElement().toString()));
             m_viewMenu.add( menuItem );
-            menuItem = new JMenuItem(new SetSourceViewAction());
-            m_viewMenu.add( menuItem );
+        }
         //}}}
         
         //{{{ Create Tools Menu
@@ -547,16 +548,23 @@ public class TabbedView extends JFrame {
         return m_cleanIcon;
     }//}}}
     
-    //{{{ SetDefaultViewAction class
+    //{{{ SetViewAction class
     /**
      * Temporary class to change views.
      */
-    private class SetDefaultViewAction extends AbstractAction {
+    private class SetViewAction extends AbstractAction {
+        
+        //{{{ Instance variables
+        private String m_viewName;
+        //}}}
         
         //{{{ SetDefaultViewAction constructor
         
-        public SetDefaultViewAction() {
-            putValue(Action.NAME, "Tree View");
+        public SetViewAction(String viewname) {
+            
+            //need to get the human readable name.
+            putValue(Action.NAME, viewname);
+            m_viewName = viewname;
         }//}}}
         
         //{{{ actionPerformed()
@@ -564,39 +572,9 @@ public class TabbedView extends JFrame {
         public void actionPerformed(ActionEvent e) {
             
             DocumentBuffer buffer = getDocumentBuffer();
-            
             try {
                 DocumentViewFactory factory = DocumentViewFactory.newInstance();
-                DocumentView view = factory.newDocumentView(buffer);
-                setDocumentView(view);
-            } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-            }
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ SetSourceViewAction class
-    /**
-     * Temporary class to change views.
-     */
-    private class SetSourceViewAction extends AbstractAction {
-        
-        //{{{ SetSourceViewAction constructor
-        
-        public SetSourceViewAction() {
-            putValue(Action.NAME, "Source View");
-        }//}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            
-            DocumentBuffer buffer = getDocumentBuffer();
-            
-            try {
-                DocumentViewFactory factory = DocumentViewFactory.newInstance();
-                factory.setDocumentViewType("source");
+                factory.setDocumentViewType(m_viewName);
                 DocumentView view = factory.newDocumentView(buffer);
                 setDocumentView(view);
             } catch (IOException ioe) {
@@ -631,21 +609,21 @@ public class TabbedView extends JFrame {
     
     private DocumentBufferListener m_docBufListener = new DocumentBufferListener() {//{{{
     
-            public void propertiesChanged(DocumentBuffer source, String propertyKey) {}
-            
-            public void nameChanged(DocumentBuffer source, String newName) {//{{{
-                updateTitle();
-                DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
-                for (int i=0; i < buffers.length; i++) {
-                    if (buffers[i] == source) {
-                        tabbedPane.setTitleAt(i, source.getName());
-                    }
+        public void propertiesChanged(DocumentBuffer source, String propertyKey) {}
+        
+        public void nameChanged(DocumentBuffer source, String newName) {//{{{
+            updateTitle();
+            DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+            for (int i=0; i < buffers.length; i++) {
+                if (buffers[i] == source) {
+                    tabbedPane.setTitleAt(i, source.getName());
                 }
-            };//}}}
-            
-            public void bufferSaved(DocumentBuffer source) {}
-            
-            public void statusChanged(DocumentBuffer source, int status, boolean oldStatus) {//{{{
+            }
+        };//}}}
+        
+        public void bufferSaved(DocumentBuffer source) {}
+        
+        public void statusChanged(DocumentBuffer source, int status, boolean oldStatus) {//{{{
                 if (status == DocumentBuffer.DIRTY) {
                     //It's dirtyness has changed
                     //change the tab title
@@ -660,8 +638,6 @@ public class TabbedView extends JFrame {
                 }
             }//}}}
             
-        };//}}}
-    //}}}
-    
+    };//}}}
     //}}}
 }
