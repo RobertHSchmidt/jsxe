@@ -237,7 +237,7 @@ public class DefaultView extends JPanel implements DocumentView {
     //{{{ getDescription()
     
     public String getDescription() {
-        return "View a document in as a tree";
+        return "View a document in a tree";
     }//}}}
     
     //{{{ getDocumentViewComponent
