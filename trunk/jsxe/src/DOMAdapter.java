@@ -41,9 +41,12 @@ belongs to.
 //{{{ Swing components
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.table.TableModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 //}}}
@@ -58,6 +61,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -84,7 +88,7 @@ import java.util.Enumeration;
 
 import java.io.PrintWriter;
 
-public class DOMAdapter implements TreeModel {
+public class DOMAdapter implements TreeModel, TableModel {
 
     private DOMAdapter(TabbedView parent, File file, Document doc, String docname) {//{{{
         props.setProperty("format.output", "true");
@@ -179,8 +183,8 @@ public class DOMAdapter implements TreeModel {
     // {{{ Implemented TreeModel methods
 
     public void addTreeModelListener( TreeModelListener listener ) {//{{{
-        if ( listener != null && ! listenerList.contains( listener ) ) {
-            listenerList.addElement( listener );
+        if ( listener != null && ! treeListenerList.contains( listener ) ) {
+            treeListenerList.addElement( listener );
         }
     }//}}}
 
@@ -212,7 +216,7 @@ public class DOMAdapter implements TreeModel {
 
     public void removeTreeModelListener( TreeModelListener listener ) {//{{{
         if ( listener != null ) {
-            listenerList.removeElement( listener );
+            treeListenerList.removeElement( listener );
         }
     }//}}}
 
@@ -244,10 +248,126 @@ public class DOMAdapter implements TreeModel {
 
     //}}}
 
+    // {{{ Implemented TableModel methods
+
+    public void addTableModelListener(TableModelListener l) {//{{{
+        if ( l != null && !tableListenerList.contains( l ) ) {
+            tableListenerList.addElement( l );
+        }
+    }//}}}
+
+    public Class getColumnClass(int columnIndex) {//{{{
+        //the attributes table should contain strings only
+        return data[0].get(0).getClass();
+    }//}}}
+
+    public int getColumnCount() {//{{{
+        //the attributes table will always contain 2 columns
+        //an attribute and value
+        return 2;
+    }//}}}
+
+    public String getColumnName(int columnIndex) {//{{{
+        if (columnIndex==0)
+            return "Attribute";
+        else
+            return "Value";
+    }//}}}
+
+    public int getRowCount() {//{{{
+        //data[0] and data[1] are associated and will be equal in size
+        return data[0].size();
+    }//}}}
+
+    public Object getValueAt(int rowIndex, int columnIndex) {//{{{
+        return data[columnIndex].get(rowIndex);
+    }//}}}
+
+    public boolean isCellEditable(int rowIndex, int columnIndex) {//{{{
+        //Do not allow editing of attribute values that have no
+        //attribute defined yet.
+        if (columnIndex==1 && (((String)getValueAt(rowIndex,0)).equals(""))) {
+            return false;
+        }
+        return true;
+    }//}}}
+
+    public void removeTableModelListener(TableModelListener l) {//{{{
+        if ( l != null ) {
+            tableListenerList.removeElement( l );
+        }
+    }//}}}
+
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {//{{{
+        //This algorithm makes sure that there is an empty table row
+        //at the bottom of the table for users to add new attributes.
+
+        //add intermittent blank rows (this should never happen
+        //more than once)
+        while (rowIndex + 1 > getRowCount()) {
+            data[columnIndex].addElement("");
+            data[columnIndex+1%2].addElement("");
+        }
+        if (columnIndex!=1 || !aValue.equals("")) {
+            //If setting a value on the last row (greater shouldn't happen)
+            if (rowIndex + 1 >= getRowCount()) {
+                //We need to check if there really is a change.
+                //If we don't the UI croaks NullPointerExceptions
+                //when trying to update the UI for the table.
+                if (!aValue.equals(getValueAt(rowIndex, columnIndex))) {
+                    //Set the value in the table
+                    data[columnIndex].set(rowIndex, aValue);
+                    //If you aren't setting the final blank row
+                    //it needs to be added.
+                    if (!aValue.equals("")) {
+                        data[columnIndex].addElement("");
+                        data[columnIndex+1%2].addElement("");
+                    }
+                    fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
+                }
+            } else {
+                //We're not on the last row so just set the value.
+                if (!aValue.equals(getValueAt(rowIndex, columnIndex))) {
+                    data[columnIndex].set(rowIndex, aValue);
+                    fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
+                }
+            }
+        }
+    }//}}}
+
+    //}}}
+
+    public void removeRow(int rowIndex) {//{{{
+        data[0].removeElementAt(rowIndex);
+        data[1].removeElementAt(rowIndex);
+    }//}}}
+
+    public void updateTable(AdapterNode selectedNode) {//{{{
+        NamedNodeMap attrs = selectedNode.getAttributes();
+        if (attrs!=null) {
+            while(getRowCount()>0) {
+                removeRow(0);
+            }
+            for(int i = 0; i < attrs.getLength(); i++) {
+                setValueAt(attrs.item(i).getNodeName(),i,0);
+                setValueAt(attrs.item(i).getNodeValue(),i,1);
+            }
+        } else {
+            if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
+                //One extra table entry for adding an attribute
+                setValueAt("",attrs.getLength(),0);
+                setValueAt("",attrs.getLength(),1);
+            }
+           // while(getRowCount()>0) {
+           //     removeRow(0);
+           // }
+        }
+    }//}}}
+
     // {{{ Event notification methods
 
     private void fireTreeNodesChanged(TreeModelEvent e) {//{{{
-        Enumeration listeners = listenerList.elements();
+        Enumeration listeners = treeListenerList.elements();
         while ( listeners.hasMoreElements() ) {
             TreeModelListener listener = (TreeModelListener) listeners.nextElement();
             listener.treeNodesChanged( e );
@@ -255,7 +375,7 @@ public class DOMAdapter implements TreeModel {
     }//}}}
 
     private void fireTreeNodesInserted(TreeModelEvent e) {//{{{
-        Enumeration listeners = listenerList.elements();
+        Enumeration listeners = treeListenerList.elements();
         while ( listeners.hasMoreElements() ) {
             TreeModelListener listener = (TreeModelListener) listeners.nextElement();
             listener.treeNodesInserted( e );
@@ -263,7 +383,7 @@ public class DOMAdapter implements TreeModel {
     }//}}}
 
     private void fireTreeNodesRemoved(TreeModelEvent e) {//{{{
-        Enumeration listeners = listenerList.elements();
+        Enumeration listeners = treeListenerList.elements();
         while ( listeners.hasMoreElements() ) {
             TreeModelListener listener = (TreeModelListener) listeners.nextElement();
             listener.treeNodesRemoved( e );
@@ -271,10 +391,18 @@ public class DOMAdapter implements TreeModel {
     }//}}}
 
     private void fireTreeStructureChanged(TreeModelEvent e) {//{{{
-        Enumeration listeners = listenerList.elements();
+        Enumeration listeners = treeListenerList.elements();
         while ( listeners.hasMoreElements() ) {
             TreeModelListener listener = (TreeModelListener) listeners.nextElement();
             listener.treeStructureChanged( e );
+        }
+    }//}}}
+
+    private void fireTableChanged(TableModelEvent e) {//{{{
+        Enumeration listeners = tableListenerList.elements();
+        while ( listeners.hasMoreElements() ) {
+            TableModelListener listener = (TableModelListener)listeners.nextElement();
+            listener.tableChanged(e);
         }
     }//}}}
 
@@ -371,7 +499,7 @@ public class DOMAdapter implements TreeModel {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            document = builder.parse( new InputSource( new StringReader(source) ) );
+            document = builder.parse(new InputSource(new StringReader(source)));
             document.getDocumentElement().normalize();
         }
         catch(SAXParseException spe) {
@@ -412,7 +540,12 @@ public class DOMAdapter implements TreeModel {
     private File XMLFile;
     private String name;
     private TabbedView view;
-    private Vector listenerList = new Vector();
+    private Vector treeListenerList = new Vector();
+    private Vector tableListenerList = new Vector();
     private static Vector adapterList = new Vector(10, 1);
+    private Vector[] data={
+        new Vector(),
+        new Vector()
+    };
     //}}}
 }
