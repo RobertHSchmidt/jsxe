@@ -39,7 +39,6 @@ import gnu.regexp.*;
 public class RESearchMatcher {
     /**
      * Perl5 syntax with character classes enabled.
-     * @since jEdit 3.0pre5
      */
     public static final RESyntax RE_SYNTAX_JEDIT
         = new RESyntax(RESyntax.RE_SYNTAX_PERL5)
