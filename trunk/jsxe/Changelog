@@ -1,3 +1,7 @@
+03/08/2005  version 0.4 pre15 build 01 Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added dependency checking for plugins.
+
 03/04/2005  version 0.4 pre15   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added better error checking when loading plugins.

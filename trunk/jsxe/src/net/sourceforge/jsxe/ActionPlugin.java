@@ -69,7 +69,7 @@ public abstract class ActionPlugin {
      * Constructs an ActionPlugin with the supplied values.
      */
     public ActionPlugin() {
-        m_actionSet = new ActionSet(m_name);
+        m_actionSet = new ActionSet(jsXe.getPluginLoader().getPluginProperty(this, JARClassLoader.PLUGIN_HUMAN_READABLE_NAME));
     }//}}}
     
     //{{{ getPluginMenu()

@@ -99,7 +99,7 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         model.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         model.addListSelectionListener(new ListSelectionListener() {//{{{
             public void valueChanged(ListSelectionEvent e) {
-                descArea.setText(jsXe.getPluginLoader().getPlugin(m_pluginNames.get(e.getLastIndex()).toString()).getDescription());
+                descArea.setText(jsXe.getPluginLoader().getPluginProperty(m_pluginNames.get(e.getLastIndex()).toString(), JARClassLoader.PLUGIN_DESCRIPTION));
             }
         });//}}}
         
