@@ -63,6 +63,12 @@ import java.io.File;
 
 //}}}
 
+/**
+ * An action that opens a specific file based on a BufferHistoryEntry
+ *
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$ 
+ */
 public class OpenRecentFileAction extends AbstractAction {
     
     //{{{ OpenRecentFileAction constructor

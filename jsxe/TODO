@@ -23,8 +23,7 @@ TODO:
     
 * Version 0.2 beta
     
-    * Implement storing actions in an ActionSet or something so that actions
-      can be retrieved easily.
+    * Documents that are not well formed seem not to open any more. Fix this.
     
     * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother? Maybe not since some views will require
