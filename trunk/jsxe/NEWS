@@ -1,3 +1,38 @@
+05/16/2004  version 0.1.75
+    
+    * Added code to remember the expanded states of nodes after they are
+      dragged and dropped into other nodes
+    * Added xsd files to the file filters when opening a document.
+    * Updated how the splitpane locations are set up. The look better now and
+      and set themselves to a percentage of the window size as a starting
+      value.
+    * Updated the DOMSerializer to implement the newest version
+      of the LSSerializer interface. jsXe requires Xerces 2.6.2.
+    * Fixed a bug in the serializer that caused the root element opening tag
+      to be placed directly after a document type definition.
+    * Fixed a bug in serialization that caused only the public id and not
+      the system id to be seraliazed if both existed in a doctype node.
+    * Fixed a bug that was causing comment nodes to indented too far
+      when formatting the document during serialization.
+    * When dragging and dropping and/or adding nodes the nodes that whose
+      locations have changed are always visible after the change.
+    * Added a Close All action to the file menu so that users can close all of
+      the open xml documents at once.
+    * Made it so that external dtds are not loaded since jsXe can't do anything
+      with them anyway.
+    * Implemented support for split-cdata-sections in the DOMSerializer. CDATA
+      nodes are now split when serializing so that they are valid when saved.
+    * Fixed bug where jsxe generated NumberFormatExceptions if user defined
+      saved properties were incorrectly formatted.
+    * Made it so that element nodes can't be edited in the JTree unless
+      you select 'Rename Node' from the context menu. This is done because of
+      some problems with compatiblity between the editing and drag and drop.
+    * Made split panes in the default tree view one touch expandable.
+    * Made it so if opening a file and the only document open is untitled
+      and clean then jsXe closes it.
+    * Added key mnemonics to the menu bar items so that you can navigate them
+      easier using the keyboard.
+
 04/17/2004  version 0.1.64
 
     * Updated Drag and Drop to look nicer.
