@@ -376,7 +376,7 @@ public class SourceView extends JPanel implements DocumentView {
             }
             Frame frame = (Frame)parent;
             //display find dialog
-            SourceViewSearchDialog dialog = new SourceViewSearchDialog(frame, SourceView.this);
+            SourceViewSearchDialog dialog = new SourceViewSearchDialog(frame, SourceView.this, textarea);
             dialog.setVisible(true);
         }//}}}
         
