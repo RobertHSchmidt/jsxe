@@ -82,7 +82,10 @@ public class SourceViewPlugin extends ViewPlugin {
     //{{{ getOptionsPanel()
     
     public OptionsPanel getOptionsPanel(DocumentBuffer buffer) {
-        return new SourceViewOptionsPanel(buffer);
+       // return new SourceViewOptionsPanel(buffer);
+        // moved the soft tabs option to the jsXe core.
+        // no need for a options panel right now.
+        return null;
     }//}}}
     
 }
