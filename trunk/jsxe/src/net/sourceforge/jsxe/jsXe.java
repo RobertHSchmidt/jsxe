@@ -52,6 +52,7 @@ import net.sourceforge.jsxe.dom.UnrecognizedDocTypeException;
 //}}}
 
 //{{{ Swing classes
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -241,6 +242,25 @@ public class jsXe {
         return version;
     }//}}}
     
+     //{{{ getIcon()
+    /**
+     * Gets jsXe's icon that is displayed in the about menu,
+     * taskbar and upper left hand corner (where appropriate)
+     * @return jsXe's icon
+     */
+    public static ImageIcon getIcon() {
+        return jsXeIcon;
+    }//}}}
+    
+    //{{{ getAppTitle()
+    /**
+     * Gets the title of the jsXe application. Most likely "jsXe"
+     * @return The title of the jsXe application.
+     */
+    public static String getAppTitle() {
+        return buildProps.getProperty("application.name");
+    }//}}}
+    
     //{{{ showOpenFileDialog()
     /**
      * Shows an open file dialog for jsXe. When a file is selected jsXe attempts
@@ -257,7 +277,7 @@ public class jsXe {
             loadDialog.setMultiSelectionEnabled(true);
             
             int returnVal = loadDialog.showOpenDialog(view);
-            if(returnVal == JFileChooser.APPROVE_OPTION) {
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
                 boolean success = false;
                 File[] files = loadDialog.getSelectedFiles();
                 for (int i = 0; i < files.length; i++) {
@@ -320,7 +340,11 @@ public class jsXe {
         
         DocumentBuffer buffer = getOpenBuffer(file);
         if (buffer != null) {
-            //ignore properties
+            /*
+            ignore properties since it's already open and the user may have
+            set propeties him/herself. We don't want to change what the user
+            has set.
+            */
             view.setDocumentBuffer(buffer);
             return true;
         } else {
@@ -498,25 +522,6 @@ public class jsXe {
         return null;
     }//}}}
     
-    //{{{ getIcon()
-    /**
-     * Gets jsXe's icon that is displayed in the about menu,
-     * taskbar and upper left hand corner (where appropriate)
-     * @return jsXe's icon
-     */
-    public static ImageIcon getIcon() {
-        return jsXeIcon;
-    }//}}}
-    
-    //{{{ getAppTitle()
-    /**
-     * Gets the title of the jsXe application. Most likely "jsXe"
-     * @return The title of the jsXe application.
-     */
-    public static String getAppTitle() {
-        return buildProps.getProperty("application.name");
-    }//}}}
-    
     //{{{ exit()
     /**
      * Called when exiting jsXe.
@@ -637,6 +642,36 @@ public class jsXe {
     public static final String getProperty(String key, String defaultValue) {
 		return props.getProperty(key, defaultProps.getProperty(key, defaultValue));
 	} //}}}
+    
+    //{{{ addActionSet()
+    
+    public static void addActionSet(ActionSet set) {
+        m_actionSets.add(set);
+    }//}}}
+    
+    //{{{ getAction()
+    
+    /**
+     * Gets the action set with the given name
+     */
+    public static Action getAction(String name) {
+        for (int i = 0; i < m_actionSets.size(); i++) {
+			Action action = ((ActionSet)m_actionSets.get(i)).getAction(name);
+			if (action != null) {
+				return action;
+            }
+		}
+		return null;
+    }//}}}
+    
+    //{{{ getActionSets()
+    /**
+     * Gets all action sets that have been registered with jsXe
+     * @return an ArrayList of ActionSet objects
+     */
+    public ArrayList getActionSets() {
+        return m_actionSets;
+    }//}}}
     
     //{{{ getOptionsPanel()
     /**
@@ -855,6 +890,7 @@ public class jsXe {
     private static final Properties defaultProps = new Properties();
     private static Properties props = new Properties();
     private static BufferHistory m_bufferHistory;
+    private static ArrayList m_actionSets = new ArrayList();
     
     private static OptionsPanel jsXeOptions;
     //}}}

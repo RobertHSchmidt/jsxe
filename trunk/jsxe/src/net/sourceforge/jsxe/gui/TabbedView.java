@@ -41,6 +41,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.ActionSet;
 import net.sourceforge.jsxe.BufferHistory;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.DocumentBufferListener;
@@ -414,6 +415,7 @@ public class TabbedView extends JFrame {
     //{{{ init()
     
     private void init() {
+        
         //{{{ load global properties
         
         //Make sure user defined properties don't cause unwanted exceptions.
@@ -437,6 +439,20 @@ public class TabbedView extends JFrame {
             y = Integer.valueOf(jsXe.getProperty(_Y)).intValue();
         } catch (NumberFormatException e) {}
         
+        //}}}
+        
+        //{{{ build and add action set
+        ActionSet set = new ActionSet("Built-In Commands");
+        set.addAction("open-file", new FileOpenAction(this));
+        set.addAction("save-file", new FileSaveAction(this));
+        set.addAction("save-as", new FileSaveAsAction(this));
+        set.addAction("reload-file", new FileReloadAction(this));
+        set.addAction("close-file", new FileCloseAction(this));
+        set.addAction("close-all", new FileCloseAllAction(this));
+        set.addAction("exit", new FileExitAction(this));
+        set.addAction("general-options", new ToolsOptionsAction(this));
+        set.addAction("about-jsxe", new jsxeAboutDialog(this));
+        jsXe.addActionSet(set);
         //}}}
         
         createDefaultMenuItems();
@@ -475,7 +491,7 @@ public class TabbedView extends JFrame {
         m_fileMenu.setMnemonic('F');
             JMenuItem menuItem = new JMenuItem(new FileNewAction(this));
             m_fileMenu.add( menuItem );
-            menuItem = new JMenuItem(new FileOpenAction(this));
+            menuItem = new JMenuItem(jsXe.getAction("open-file"));
             m_fileMenu.add( menuItem );
             
             //Add recent files menu
@@ -483,19 +499,19 @@ public class TabbedView extends JFrame {
             m_fileMenu.add(m_recentFilesMenu);
             
             m_fileMenu.addSeparator();
-            menuItem = new JMenuItem(new FileSaveAction(this));
+            menuItem = new JMenuItem(jsXe.getAction("save-file"));
             m_fileMenu.add( menuItem );
-            menuItem = new JMenuItem(new FileSaveAsAction(this));
-            m_fileMenu.add( menuItem );
-            m_fileMenu.addSeparator();
-            menuItem = new JMenuItem(new FileReloadAction(this));
+            menuItem = new JMenuItem(jsXe.getAction("save-as"));
             m_fileMenu.add( menuItem );
             m_fileMenu.addSeparator();
-            menuItem = new JMenuItem(new FileCloseAction(this));
+            menuItem = new JMenuItem(jsXe.getAction("reload-file"));
             m_fileMenu.add( menuItem );
-            menuItem = new JMenuItem(new FileCloseAllAction(this));
+            m_fileMenu.addSeparator();
+            menuItem = new JMenuItem(jsXe.getAction("close-file"));
             m_fileMenu.add( menuItem );
-            menuItem = new JMenuItem(new FileExitAction(this));
+            menuItem = new JMenuItem(jsXe.getAction("close-all"));
+            m_fileMenu.add( menuItem );
+            menuItem = new JMenuItem(jsXe.getAction("exit"));
             m_fileMenu.add( menuItem );
         //}}}
         
@@ -511,14 +527,14 @@ public class TabbedView extends JFrame {
         //{{{ Create Tools Menu
         m_toolsMenu = new JMenu("Tools");
         m_toolsMenu.setMnemonic('T');
-            menuItem = new JMenuItem(new ToolsOptionsAction(this));
+            menuItem = new JMenuItem(jsXe.getAction("general-options"));
             m_toolsMenu.add( menuItem );
         //}}}
         
         //{{{ Create Help Menu
         m_helpMenu = new JMenu("Help");
         m_helpMenu.setMnemonic('H');
-            menuItem = new JMenuItem(new jsxeAboutDialog(this));
+            menuItem = new JMenuItem(jsXe.getAction("about-jsxe"));
             m_helpMenu.add(menuItem);
         //}}}
 

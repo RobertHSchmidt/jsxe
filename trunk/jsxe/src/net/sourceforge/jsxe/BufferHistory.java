@@ -5,7 +5,9 @@ jsXe.java
 
 jsXe is the Java Simple XML Editor
 jsXe is a gui application that creates a tree view of an XML document.
-The user can then edit this tree and the content in the tree.
+The user can then edit this tree and the content in the tree. The idea for a
+buffer history was obtained from jEdit but this file was implemented from
+scratch.
 
 This file written by Ian Lewis (IanLewis@member.fsf.org)
 Copyright (C) 2002 Ian Lewis
@@ -53,15 +55,32 @@ import org.xml.sax.helpers.DefaultHandler;
 
 //}}}
 
+/**
+ * Maintains the files that have been used recently and their properties.
+ * The recent.xml file in the .jsXe directory in the user's home directory
+ * holds properties and info about how the user was using the document when
+ * he or she closed it last. This way the user can resume work on a file
+ * fairly seamlessly even though they closed the file previously or exited jsXe
+ * entirely
+ *
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class BufferHistory {
 
     //{{{ BufferHistory constructor
-    
+    /**
+     * Creates a new empty buffer history
+     */
     public BufferHistory() {}
     //}}}
     
     //{{{ getEntry()
-    
+    /**
+     * Gets an entry in the buffer history for the path given.
+     * @param path the path of the file in the buffer history
+     * @return the BufferHistoryEntry object containing the info
+     */
     public BufferHistoryEntry getEntry(String path) {
         Iterator historyItr = m_history.iterator();
         while (historyItr.hasNext()) {
@@ -74,23 +93,34 @@ public class BufferHistory {
     }//}}}
     
     //{{{ getEntries()
-    
+    /**
+     * Gets a list of all entries in the buffer history
+     * @return an ArrayList of BufferHistoryEntry objects
+     */
     public ArrayList getEntries() {
         return m_history;
     }//}}}
     
     //{{{ setEntry()
-    
+    /**
+     * Adds or updates an entry in the buffer history for an open file
+     * @param buffer the DocumentBuffer to update the history for
+     * @param viewName the name of the document view that was being used
+     */
     public void setEntry(DocumentBuffer buffer, String viewName) {
         if (!buffer.isUntitled()) {
             String path = buffer.getFile().getPath();
-            BufferHistoryEntry entry = new BufferHistoryEntry(path, viewName, buffer.getProperties());
-            setEntry(entry);
+            setEntry(path, viewName, buffer.getProperties());
         }
     }//}}}
     
     //{{{ setEntry()
-    
+    /**
+     * Adds or updates an entry in the buffer history for the path given
+     * @param the path of the file to update the history entry for
+     * @param viewName the name of the document view that was being used
+     * @param properties the properties to save to the history
+     */
     public void setEntry(String path, String viewName, Properties properties) {
         BufferHistoryEntry entry = new BufferHistoryEntry(path, viewName, properties);
         setEntry(entry);
@@ -98,6 +128,12 @@ public class BufferHistory {
     
     //{{{ setEntry()
     
+    /**
+     * Adds a new entry to the buffer history. If the entry is for a file that
+     * is already in the history then the info in the history is updated with
+     * the new info.
+     * @param entry the BufferHistoryEntry to set to the history
+     */
     public void setEntry(BufferHistoryEntry entry) {
         if (!m_history.contains(entry)) {
             String path = entry.getPath();
@@ -121,6 +157,10 @@ public class BufferHistory {
     
     //{{{ load()
     
+    /**
+     * Loads the buffer history from a file on disk.
+     * @param file the file from which to load the buffer history
+     */
     public void load(File file) throws IOException, SAXException, ParserConfigurationException {
         // if file doesn't exist then the history is empty
         m_history = new ArrayList();
@@ -135,7 +175,10 @@ public class BufferHistory {
     }//}}}
 
     //{{{ save()
-    
+    /**
+     * Saves the buffer history to a file on disk
+     * @param file the file to save the buffer history to
+     */
     public void save(File file) throws IOException {
         
         String lineSep = System.getProperty("line.separator");
@@ -202,10 +245,21 @@ public class BufferHistory {
     
     //{{{ BufferHistoryEntry class
     
+    /**
+     * Represents an entry in the buffer history. Entries are comprised of
+     * the path of the file in the entry, the name of the document view that
+     * was used to edit the document, and the properties that are associated
+     * with that document.
+     */
     public class BufferHistoryEntry {
         
         //{{{ BufferHistoryEntry constructor
-        
+        /**
+         * Creates a new Buffer history entry for the path given
+         * @param path the path of the file for this entry
+         * @param viewName the name of the view that was used
+         * @param properties the properties associated with the document
+         */
         public BufferHistoryEntry(String path, String viewName, Properties properties) {
             m_path = path;
             m_viewName = viewName;
@@ -213,19 +267,30 @@ public class BufferHistory {
         }//}}}
         
         //{{{ getPath()
-        
+        /**
+         * Gets the path of the file for this entry
+         * @return the path to the file
+         */
         public String getPath() {
             return m_path;
         }//}}}
         
         //{{{ getViewName()
-        
+        /**
+         * Gets the name of the document view used to edit the file. This is
+         * the name normally returned by the method DocumentView.getViewName();
+         * @return the view name
+         * @see net.sourceforge.jsxe.gui.view.DocumentView#getViewName()
+         */
         public String getViewName() {
             return m_viewName;
         }//}}}
         
         //{{{ getProperties()
-        
+        /**
+         * Gets the properties associated with the file
+         * @return the properties associated with the file
+         */
         public Properties getProperties() {
             return m_properties;
         }//}}}
@@ -241,7 +306,9 @@ public class BufferHistory {
     //{{{ Private members
     
     //{{{ BufferHistoryHandler class
-    
+    /**
+     * Used to load the buffer history
+     */
     private class BufferHistoryHandler extends DefaultHandler {
         
         //{{{ characters()
