@@ -58,12 +58,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JEditorPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 //}}}
@@ -87,7 +90,7 @@ public class DefaultView extends DocumentView {
         JScrollPane treeView = new JScrollPane(tree);
         
         //Create html editor pane
-        htmlPane.setEditable(false);
+        htmlPane.setEditable(true);
         JScrollPane htmlView = new JScrollPane(htmlPane);
         
         //create a table model
@@ -112,6 +115,7 @@ public class DefaultView extends DocumentView {
     public void setDocument(TabbedView view, XMLDocument document) {//{{{
         DefaultViewTreeModel treeModel = new DefaultViewTreeModel(this, document);
         DefaultViewTableModel tableModel = new DefaultViewTableModel(this, new AdapterNode(document.getDocument()));
+        DefaultStyledDocument styledDoc = new DefaultStyledDocument();
         //This adapter may have the listener already.
         //addTreeModelListener does not add the listener
         //again if it is already added.
@@ -122,7 +126,8 @@ public class DefaultView extends DocumentView {
         
         //Clear the right hand pane of previous values.
         htmlPane.setText("");
-        
+        htmlPane.setDocument(styledDoc);
+        styledDoc.addDocumentListener(docListener);
         //update the UI so that the components
         //are redrawn.
         attributesTable.updateUI();
@@ -229,5 +234,16 @@ public class DefaultView extends DocumentView {
                 tree.updateUI();
             }
         };//}}}
+    private DocumentListener docListener = new DocumentListener() {//{{{
+        public void changedUpdate(DocumentEvent e) {
+            System.out.println("changedUpdate: " + e.toString());
+        }
+        public void insertUpdate(DocumentEvent e) {
+            System.out.println("insertUpdate: " + e.toString());
+        }
+        public void removeUpdate(DocumentEvent e) {
+            System.out.println("removeUpdate: " + e.toString());
+        }
+    };//}}}
     //}}}
 }
