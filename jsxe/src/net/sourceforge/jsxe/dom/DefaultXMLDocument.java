@@ -51,6 +51,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -66,6 +67,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Properties;
@@ -98,6 +100,36 @@ public class DefaultXMLDocument extends XMLDocument {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
+        
+        //Enable the parser to find external entities by searching
+        //for it relative to the file's path and not the path
+        //where you started jsXe
+        builder.setEntityResolver(new EntityResolver() {
+            public InputSource resolveEntity(String publicId, String systemId) {
+                
+                String entity = systemId;
+                InputSource source = null;
+                
+                if (XMLFile != null) {
+                    try {
+                        entity = entity.substring(entity.lastIndexOf("/")+1);
+                        
+                        String filePathURI = XMLFile.toURL().toExternalForm();
+                        filePathURI = filePathURI.substring(0, filePathURI.lastIndexOf("/")+1);
+                        
+                        entity = filePathURI + entity;
+                        
+                        source = new InputSource(entity);
+                        
+                    } catch (MalformedURLException e) {
+                        //Do nothing and open this entity normally
+                        //source = null
+                    }
+                }
+                return source;
+            }
+            
+        });
         Document doc = builder.parse(new InputSource(new StringReader(source)));
         doc.getDocumentElement().normalize();
         document=doc;
@@ -175,15 +207,22 @@ public class DefaultXMLDocument extends XMLDocument {
             while (bytesRead != -1);
             source = text.toString();
             
+            File oldFile = XMLFile;
+            XMLFile = file;
+            
             try {
                 checkWellFormedness();
             } catch (SAXException saxe) {
+                XMLFile = oldFile;
             } catch (ParserConfigurationException pce) {
+                XMLFile = oldFile;
                 throw new IOException(pce.getMessage());
+            } catch (IOException ioe) {
+                XMLFile = oldFile;
+                throw ioe;
             }
             
             //set here so file is not set if there is an I/O Error.
-            XMLFile = file;
             fireFileChanged();
         } else {
             throw new FileNotFoundException("File Not Found: null");
