@@ -14,7 +14,7 @@ document to an output using serialization.
 This is a bad implementation of a serialization class. It will soon be replaced
 by a DOM3 implementation.
 
-This file written by ian Lewis (iml001@bridgewater.edu)
+This file written by Ian Lewis (IanLewis@member.fsf.org)
 Copied extensively and modified from Java & XML by Brett McLaughlin
 
 This program is free software; you can redistribute it and/or

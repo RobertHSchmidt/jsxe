@@ -10,8 +10,8 @@ The user can then edit this tree and the content in the tree.
 This file contains the OptionsPanel class that defines a panel in the options
 dialog.
 
-This file written by ian Lewis (iml001@bridgewater.edu)
-Copyright (C) 2002 ian Lewis
+This file written by Ian Lewis (IanLewis@member.fsf.org)
+Copyright (C) 2002 Ian Lewis
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

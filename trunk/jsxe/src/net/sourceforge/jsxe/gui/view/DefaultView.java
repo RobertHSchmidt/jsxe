@@ -13,8 +13,8 @@ Since you don't want a panel for every document each with its own splitpane
 dimensions this is a singleton. It may not be forever as jsXe may one day
 may be multi-threaded and have multiple TabbedViews.
 
-This file written by ian Lewis (iml001@bridgewater.edu)
-Copyright (C) 2002 by ian Lewis
+This file written by Ian Lewis (IanLewis@member.fsf.org)
+Copyright (C) 2002 Ian Lewis
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
