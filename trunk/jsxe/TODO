@@ -14,14 +14,12 @@ TODO:
         xml-declaration
         check-character-normalization
         entities
-
-* Version 0.2.0
-    
-    * DOMSerializer needs to support the following parameters:
         normalize-characters
             This maybe needs to be done after I better understand and have
             built methods for interacting with the DTD.
         ignore-unknown-character-denormalizations
+
+* Version 0.2.0
     
     * Update to use the newest version of Xerces.
     
@@ -38,9 +36,6 @@ TODO:
       opened a document but a status bar could convey that info. Add an option
       to the options menu that allows you to hide it. Maybe an error dialog
       would be suitable.
-    
-    * Fix updateMenuBar in TabbedPane to not create the menus and menu items
-      every time it is called.
     
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
       Update the DefaultViewTreeModel to use a DefaultViewTreeNode class

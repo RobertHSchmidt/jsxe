@@ -2,6 +2,11 @@
 
     * Fixed a bug that was causing comment nodes to indented too far
       when formatting the document during serialization.
+    * Reworked the updatedMenuBar() method in the TabbedView so that
+      it doesn't create the whole menubar from scratch each time it's
+      updated.
+    * Fixed a bug in serialization that caused only the public id and not
+      the system id to be seraliazed if both existed in a doctype node.
 
 04/22/2004  version 0.1.68  Ian Lewis <IanLewis@member.fsf.org>
 

@@ -665,14 +665,20 @@ public class DOMSerializer implements LSSerializer {
                         doWrite(writer, str, node, line, column, offset);
                         column += str.length();
                         offset += str.length();
-                    } else {
+                    }
+                   // else {
                         if (docType.getSystemId() != null) {
-                            str = " SYSTEM \"" + docType.getSystemId() + "\"";
+                            if (docType.getPublicId() == null) {
+                                str = " SYSTEM ";
+                            } else {
+                                str = new String();
+                            }
+                            str +=  "\"" + docType.getSystemId() + "\"";
                             doWrite(writer, str, node, line, column, offset);
                             column += str.length();
                             offset += str.length();
                         }
-                    }
+                   // }
                     
                     String internalSubset = docType.getInternalSubset();
                     if (internalSubset != null && !internalSubset.equals("")) {
