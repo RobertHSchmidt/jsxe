@@ -180,8 +180,8 @@
       destdir="${build.javadocs}"
       author="true"
       version="true"
-      windowtitle="${app.name} API"
-      doctitle="${app.name} API"
+      windowtitle="${app.name} ${app.version} API"
+      doctitle="${app.name} ${app.version} API"
       link="${javadoc.link}"
     />
   </target>
