@@ -43,6 +43,8 @@ import net.sourceforge.jsxe.gui.OptionsPanel;
 
 //{{{ Java classes
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 //}}}
 
 //}}}
