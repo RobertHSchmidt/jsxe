@@ -50,6 +50,9 @@ TODO:
     
     * Add at least minimal support for namespaces.
     
+    * Add a status bar to the bottom that will show a buffer's status. Like if
+      the buffer failed to be validated or parsed or whatever.
+    
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
     
 * Version 0.3.0
