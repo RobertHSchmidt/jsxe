@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 4 U (http://www.xmlspy.com) by Ian Lewis (Datatel) -->
 <!--
 
 This free of charge Software is provided on an "AS IS" basis, without
@@ -78,26 +79,19 @@ The following have contributed material to this draft:
 
 Please send your comments and suggestions to asirv@webmethods.com
 
---><schema blockDefault="#all" elementFormDefault="qualified" targetNamespace="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/2000/10/XMLSchema" xmlns:xpath="http://www.w3.org/TR/2001/WD-xptr-20010108/" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-        
-        
-        <import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2000/10/xml.xsd"/>
-        
-        
-        
-       	<!-- *** import schema for xpath
+-->
+<schema targetNamespace="http://www.w3.org/1999/XSL/Transform" elementFormDefault="qualified" blockDefault="#all" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xpath="http://www.w3.org/TR/2001/WD-xptr-20010108/" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2000/10/xml.xsd"/>
+	<!-- *** import schema for xpath
        		authored by C. M. Sperberg-McQueen [cmsmcq@acm.org]
        		Chair, XML Schema WG   		
        	  	
         <import namespace="http://www.w3.org/TR/2001/WD-xptr-20010108/" 
         	schemaLocation="xpath.xsd"/>
-		--> 
-	
-	
-		<!-- *** result elements *** -->
-		<!-- *** 				 *** -->
-
-		<!-- 	There are three ways that you can construct a 
+		-->
+	<!-- *** result elements *** -->
+	<!-- *** 				 *** -->
+	<!-- 	There are three ways that you can construct a 
 				schema for XSLT stylesheets that create instances of a 
 				particular result structure
 
@@ -116,72 +110,50 @@ Please send your comments and suggestions to asirv@webmethods.com
 				for your convenience
 
 		-->
-
-		<element abstract="true" name="result-element" type="anyType"/>
-
-
-		<attributeGroup name="result-element">
-			<attribute form="qualified" name="extension-element-prefixes" type="string"/>
-			<attribute form="qualified" name="exclude-result-prefixes" type="string"/>
-			<attribute form="qualified" name="use-attribute-sets" type="xsl:QNames"/>
-			<attribute form="qualified" name="version" type="NMTOKEN"/>
-			<anyAttribute namespace="##other" processContents="skip"/>
-		</attributeGroup>
-
-
-		<group name="result-element">
-			<choice>
-				<element ref="xsl:result-element"/>
-				<any namespace="##other" processContents="skip"/>
-			</choice>
-        </group>
-	
-	
-	
-	
-	
-		<!-- *** Style Sheet Elements *** -->
-		<!-- *** 					  *** -->
-		
-		
-		<element name="stylesheet" type="xsl:wrapper"/>
-		<element name="transform" type="xsl:wrapper"/>
-	
-		<complexType name="wrapper">
-			<complexContent>
-				<extension base="xsl:anyType">
-					<sequence>
-						<element maxOccurs="unbounded" minOccurs="0" ref="xsl:import"/>
-						<choice maxOccurs="unbounded" minOccurs="0">
-							<element ref="xsl:top-level-element"/>
-							<element ref="xsl:variable"/>
-							<any namespace="##other" processContents="skip"/> <!-- weaker than XSLT 1.0 -->
-						</choice>
-					</sequence>
-					<attribute name="id" type="ID"/>
-					<attribute name="extension-element-prefixes" type="xsl:tokens"/>
-					<attribute name="exclude-result-prefixes" type="xsl:tokens"/>
-					<attribute name="version" type="decimal" use="required"/>
-					<attribute ref="xml:space"/>
-				</extension>
-			</complexContent>
-		</complexType>
-		
-		
-		
-		
-		
-		
-		<!-- *** top level elements *** -->
-		<!-- ***					*** -->
-		
-		
-		<element abstract="true" name="top-level-element" type="xsl:anyType"/>
-		<element abstract="true" name="top-level-element-and-char-instruction" type="xsl:anyType"/>
-        
-        <element name="attribute-set" substitutionGroup="xsl:top-level-element">
-				        
-			<!-- ***
+	<element name="result-element" type="anyType" abstract="true"/>
+	<attributeGroup name="result-element">
+		<attribute name="extension-element-prefixes" type="string" form="qualified"/>
+		<attribute name="exclude-result-prefixes" type="string" form="qualified"/>
+		<attribute name="use-attribute-sets" type="xsl:QNames" form="qualified"/>
+		<attribute name="version" type="NMTOKEN" form="qualified"/>
+		<anyAttribute namespace="##other" processContents="skip"/>
+	</attributeGroup>
+	<group name="result-element">
+		<choice>
+			<element ref="xsl:result-element"/>
+			<any namespace="##other" processContents="skip"/>
+		</choice>
+	</group>
+	<!-- *** Style Sheet Elements *** -->
+	<!-- *** 					  *** -->
+	<element name="stylesheet" type="xsl:wrapper"/>
+	<element name="transform" type="xsl:wrapper"/>
+	<complexType name="wrapper">
+		<complexContent>
+			<extension base="xsl:anyType">
+				<sequence>
+					<element ref="xsl:import" minOccurs="0" maxOccurs="unbounded"/>
+					<choice minOccurs="0" maxOccurs="unbounded">
+						<element ref="xsl:top-level-element"/>
+						<element ref="xsl:variable"/>
+						<any namespace="##other" processContents="skip"/>
+						<!-- weaker than XSLT 1.0 -->
+					</choice>
+				</sequence>
+				<attribute name="id" type="ID"/>
+				<attribute name="extension-element-prefixes" type="xsl:tokens"/>
+				<attribute name="exclude-result-prefixes" type="xsl:tokens"/>
+				<attribute name="version" type="decimal" use="required"/>
+				<attribute ref="xml:space"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<!-- *** top level elements *** -->
+	<!-- ***					*** -->
+	<element name="top-level-element" type="xsl:anyType" abstract="true"/>
+	<element name="top-level-element-and-char-instruction" type="xsl:anyType" abstract="true"/>
+	<element name="attribute-set" substitutionGroup="xsl:top-level-element">
+		<!-- ***
 
 			<xsl:attribute-set 
 			  name = qname 
@@ -190,26 +162,21 @@ Please send your comments and suggestions to asirv@webmethods.com
 			</xsl:attribute-set> 
 
 			-->
-
-			<complexType>
-				<complexContent>
-					<extension base="xsl:anyType">
-						<sequence maxOccurs="unbounded" minOccurs="0">
-							<element ref="xsl:attribute"/>
-						</sequence>
-						<attributeGroup ref="xsl:name"/>
-						<attributeGroup ref="xsl:use-attribute-sets"/>
-						<attribute ref="xml:space"/>
-					</extension>
-				</complexContent>
-			</complexType>
-				        	
-        </element>
-        
-        
-        <element name="decimal-format" substitutionGroup="xsl:top-level-element">
-        
-        	<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<sequence minOccurs="0" maxOccurs="unbounded">
+						<element ref="xsl:attribute"/>
+					</sequence>
+					<attributeGroup ref="xsl:name"/>
+					<attributeGroup ref="xsl:use-attribute-sets"/>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="decimal-format" substitutionGroup="xsl:top-level-element">
+		<!-- ***
         	
         	<xsl:decimal-format 
 			  name = qname 
@@ -225,43 +192,33 @@ Please send your comments and suggestions to asirv@webmethods.com
 			  pattern-separator = char /> 
  
  			-->
- 			
- 			<complexType>
- 				<complexContent>
- 					<extension base="xsl:anyType">
-						<attribute name="name" type="xsl:QName"/>
-						<attribute name="decimal-separator" type="string" use="default" value="."/>
-						<attribute name="grouping-separator" type="string" use="default" value=","/>
-						<attribute name="infinity" type="string" use="default" value="Infinity"/>
-						<attribute name="minus-sign" type="string" use="default" value="-"/>
-						<attribute name="NaN" type="string" use="default" value="NaN"/>
-						<attribute name="percent" type="string" use="default" value="%"/>
-						<attribute name="per-mille" type="string" use="default" value="‰"/>
-						<attribute name="zero-digit" type="string" use="default" value="0"/>
-						<attribute name="digit" type="string" use="default" value="#"/>
-						<attribute name="pattern-separator" type="string" use="default" value=";"/>
-					</extension>
-				</complexContent>
- 			</complexType>
- 			
-        </element>
-        
-        
-        <element/>
-        
-        	<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<attribute name="name" type="xsl:QName"/>
+					<attribute name="decimal-separator" type="string" default="."/>
+					<attribute name="grouping-separator" type="string" default=","/>
+					<attribute name="infinity" type="string" default="Infinity"/>
+					<attribute name="minus-sign" type="string" default="-"/>
+					<attribute name="NaN" type="string" default="NaN"/>
+					<attribute name="percent" type="string" default="%"/>
+					<attribute name="per-mille" type="string" default="‰"/>
+					<attribute name="zero-digit" type="string" default="0"/>
+					<attribute name="digit" type="string" default="#"/>
+					<attribute name="pattern-separator" type="string" default=";"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- ***
         	
         		<xse 
   				href = uri-reference />
   				
         	-->
-        	
-        <!--</element>-->
-        
-        
-        <element name="key" substitutionGroup="xsl:top-level-element">
-        
-        	<!-- ***
+	<!--</element>-->
+	<element name="key" substitutionGroup="xsl:top-level-element">
+		<!-- ***
         	
         		<xsl:key 
 				  name = qname 
@@ -269,41 +226,31 @@ Please send your comments and suggestions to asirv@webmethods.com
   				  use = expression />
         		
         	-->
-        	
-        	<complexType>
-        		<complexContent>
-        			<extension base="xsl:anyType">
-						<attributeGroup ref="xsl:name"/>
-						<attribute name="match" type="xsl:pattern" use="required"/>
-						<attribute name="use" type="xsl:expression" use="required"/>
-					</extension>
-				</complexContent>
-        	</complexType>
-        
-        </element>
-        
-        
-        <element name="namespace-alias" substitutionGroup="xsl:top-level-element">
-        
-        	<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<attributeGroup ref="xsl:name"/>
+					<attribute name="match" type="xsl:pattern" use="required"/>
+					<attribute name="use" type="xsl:expression" use="required"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="namespace-alias" substitutionGroup="xsl:top-level-element">
+		<!-- ***
         	
         	-->
-        	
-        	<complexType>
-        		<complexContent>
-        			<extension base="xsl:anyType">
-						<attribute name="stylesheet-prefix" type="xsl:prefix" use="required"/>
-						<attribute name="result-prefix" type="xsl:prefix" use="required"/>
-					</extension>
-				</complexContent>
-        	</complexType>
-        	
-        </element>
-        
-        
-        <element name="output" substitutionGroup="xsl:top-level-element">
-        
-        	<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<attribute name="stylesheet-prefix" type="xsl:prefix" use="required"/>
+					<attribute name="result-prefix" type="xsl:prefix" use="required"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="output" substitutionGroup="xsl:top-level-element">
+		<!-- ***
         	  		
         		<xsl:output
 				  method = "xml" | "html" | "text" | qname-but-not-ncname 
@@ -318,50 +265,42 @@ Please send your comments and suggestions to asirv@webmethods.com
 				  media-type = string /> 
 
         	-->
-        	
-        	<complexType>
-        		
-        		<complexContent>
-        			<extension base="xsl:anyType">
-						<attribute name="method">
-							<simpleType>
-								<union>
-									<simpleType>
-										<restriction base="string">
-											<enumeration value="xml"/>
-											<enumeration value="html"/>
-											<enumeration value="text"/>
-										</restriction>
-									</simpleType>
-									<simpleType>
-										<restriction base="xsl:QName">
-											<pattern value="\c*:\c*"/>
-										</restriction>
-									</simpleType>
-								</union>
-							</simpleType>
-						</attribute>
-
-						<attribute name="version" type="NMTOKEN"/>
-						<attribute name="encoding" type="string"/>
-						<attribute name="omit-xml-declaration" type="xsl:YesOrNo"/>
-						<attribute name="standalone" type="xsl:YesOrNo"/>
-						<attribute name="doctype-public" type="string"/>
-						<attribute name="doctype-system" type="string"/>
-						<attribute name="cdata-section-elements" type="xsl:QNames"/>
-						<attribute name="indent" type="xsl:YesOrNo"/>
-						<attribute name="media-type" type="string"/>
-					</extension>
-				</complexContent>
-				
-        	</complexType>
-        
-        </element>
-
-		
-		<element name="param" substitutionGroup="xsl:top-level-element" type="xsl:variable">
-		
-			<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<attribute name="method">
+						<simpleType>
+							<union>
+								<simpleType>
+									<restriction base="string">
+										<enumeration value="xml"/>
+										<enumeration value="html"/>
+										<enumeration value="text"/>
+									</restriction>
+								</simpleType>
+								<simpleType>
+									<restriction base="xsl:QName">
+										<pattern value="\c*:\c*"/>
+									</restriction>
+								</simpleType>
+							</union>
+						</simpleType>
+					</attribute>
+					<attribute name="version" type="NMTOKEN"/>
+					<attribute name="encoding" type="string"/>
+					<attribute name="omit-xml-declaration" type="xsl:YesOrNo"/>
+					<attribute name="standalone" type="xsl:YesOrNo"/>
+					<attribute name="doctype-public" type="string"/>
+					<attribute name="doctype-system" type="string"/>
+					<attribute name="cdata-section-elements" type="xsl:QNames"/>
+					<attribute name="indent" type="xsl:YesOrNo"/>
+					<attribute name="media-type" type="string"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="param" type="xsl:variable" substitutionGroup="xsl:top-level-element">
+		<!-- ***
 			
 				<xsl:param
 				  name = qname 
@@ -370,35 +309,25 @@ Please send your comments and suggestions to asirv@webmethods.com
 				</xsl:param> 
 				
 			-->
-        	
-		</element>
-		
-		
-        <element name="preserve-space" substitutionGroup="xsl:top-level-element">
-        
-        	<!-- ***
+	</element>
+	<element name="preserve-space" substitutionGroup="xsl:top-level-element">
+		<!-- ***
         	
         		<xsl:preserve-space
 				  elements = tokens /> 
         	
         	-->
-        
-        	<complexType>
-        		<complexContent>
-        			<extension base="xsl:anyType">
-        				<attribute name="elements" type="xsl:element-names" use="required"/>
-        			</extension>
-        		</complexContent>
-        	</complexType>
-        	
-        </element>
-        
-        <element name="strip-space" substitutionGroup="xsl:preserve-space"/>
-        
-        
-        <element name="template" substitutionGroup="xsl:top-level-element">
-        
-        	<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<attribute name="elements" type="xsl:element-names" use="required"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="strip-space" substitutionGroup="xsl:preserve-space"/>
+	<element name="template" substitutionGroup="xsl:top-level-element">
+		<!-- ***
         		
         		<xsl:template
 				  match = pattern 
@@ -409,39 +338,30 @@ Please send your comments and suggestions to asirv@webmethods.com
 				</xsl:template> 
 
         	-->
-        	
-        	<complexType mixed="true">
-        	
-        		<complexContent>
-        			<extension base="xsl:anyType">
-        				<sequence>
-        					<element maxOccurs="unbounded" minOccurs="0" ref="xsl:param"/>
-							<choice maxOccurs="unbounded" minOccurs="0">
-								<element ref="xsl:top-level-element-and-char-instruction"/>
-								<element ref="xsl:instruction"/>
-								<group ref="xsl:result-element"/>
-							</choice>
-						</sequence>
-						<attribute name="match" type="xsl:pattern"/>
-						<attribute name="name" type="xsl:QName"/>
-						<attribute name="priority" type="decimal"/>
-						<attribute name="mode" type="xsl:QName"/>
-						<attribute ref="xml:space"/>
-					</extension>
-				</complexContent>
-				
-        	</complexType>
-        	
-        </element>
-        
-        
-        <!-- *** top level elements and char instructions *** -->
-        <!-- ***										  *** -->
-        
-        
-        <element name="variable" substitutionGroup="xsl:char-instruction" type="xsl:variable">
-        
-        	<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<sequence>
+						<element ref="xsl:param" minOccurs="0" maxOccurs="unbounded"/>
+						<choice minOccurs="0" maxOccurs="unbounded">
+							<element ref="xsl:top-level-element-and-char-instruction"/>
+							<element ref="xsl:instruction"/>
+							<group ref="xsl:result-element"/>
+						</choice>
+					</sequence>
+					<attribute name="match" type="xsl:pattern"/>
+					<attribute name="name" type="xsl:QName"/>
+					<attribute name="priority" type="decimal"/>
+					<attribute name="mode" type="xsl:QName"/>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- *** top level elements and char instructions *** -->
+	<!-- ***										  *** -->
+	<element name="variable" type="xsl:variable" substitutionGroup="xsl:char-instruction">
+		<!-- ***
         	
         		<xsl:variable
 				  name = qname 
@@ -450,35 +370,20 @@ Please send your comments and suggestions to asirv@webmethods.com
 				</xsl:variable>
 				
         	-->
-        
-        </element>
-        
-        
-        
-        
-        <!-- *** instructions *** -->
-        <!-- *** 			  *** -->
-        
-              
-        <element abstract="true" name="instruction" type="xsl:anyType"/>
-        
-        <element abstract="true" name="char-instruction" substitutionGroup="xsl:instruction" type="xsl:anyType"/>
-        
-        <element name="apply-imports" substitutionGroup="xsl:char-instruction" type="xsl:anyType">
-        
-        	<!-- ***
+	</element>
+	<!-- *** instructions *** -->
+	<!-- *** 			  *** -->
+	<element name="instruction" type="xsl:anyType" abstract="true"/>
+	<element name="char-instruction" type="xsl:anyType" abstract="true" substitutionGroup="xsl:instruction"/>
+	<element name="apply-imports" type="xsl:anyType" substitutionGroup="xsl:char-instruction">
+		<!-- ***
         	
         		<xsl:apply-imports />
         	
         	-->
-			
-		</element>
-        
-        
-        <element name="apply-templates" substitutionGroup="xsl:char-instruction">
-        	
-        	
-        	<!-- ***
+	</element>
+	<element name="apply-templates" substitutionGroup="xsl:char-instruction">
+		<!-- ***
 
         	<xsl:apply-templates
 			  select = node-set-expression 
@@ -487,31 +392,22 @@ Please send your comments and suggestions to asirv@webmethods.com
 			</xsl:apply-templates> 
 
         	-->
-        	
-        	<complexType>
-        	
-        		<complexContent>
-        			<extension base="xsl:anyType">
-						<choice maxOccurs="unbounded" minOccurs="0">
-							<element ref="xsl:sort"/>
-							<element ref="xsl:with-param"/>
-						</choice>
-						<attribute name="select" type="xsl:expression" use="default" value="node()"/>
-						<attribute name="mode" type="xsl:QName"/>
-					</extension>
-				</complexContent>
-				
-        	</complexType>
-        
-        </element>
-        
-        
-        <element name="attribute" substitutionGroup="xsl:instruction" type="xsl:attribute-type"/>
-        
-        
-        <element name="call-template" substitutionGroup="xsl:char-instruction">
-        	
-        	<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<choice minOccurs="0" maxOccurs="unbounded">
+						<element ref="xsl:sort"/>
+						<element ref="xsl:with-param"/>
+					</choice>
+					<attribute name="select" type="xsl:expression" default="node()"/>
+					<attribute name="mode" type="xsl:QName"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="attribute" type="xsl:attribute-type" substitutionGroup="xsl:instruction"/>
+	<element name="call-template" substitutionGroup="xsl:char-instruction">
+		<!-- ***
         	
         	<xsl:call-template
 			  name = qname>
@@ -519,74 +415,59 @@ Please send your comments and suggestions to asirv@webmethods.com
 			</xsl:call-template> 
 			
 			-->
-        	
-        	<complexType>
-        		<complexContent>
-        			<extension base="xsl:anyType">
-						<sequence maxOccurs="unbounded" minOccurs="0">
-							<element ref="xsl:with-param"/>
-						</sequence>
-						<attributeGroup ref="xsl:name"/>
-					</extension>
-				</complexContent>
-        	</complexType>
-        	
-        </element>
-        
-        
-        <element name="choose" substitutionGroup="xsl:char-instruction">
-        
-        	
-        	<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<sequence minOccurs="0" maxOccurs="unbounded">
+						<element ref="xsl:with-param"/>
+					</sequence>
+					<attributeGroup ref="xsl:name"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="choose" substitutionGroup="xsl:char-instruction">
+		<!-- ***
         	
         		<xsl:choose>
 				  Content: (xsl:when+, xsl:otherwise?) 
 				</xsl:choose> 
 
         	-->
-        	
-        	<complexType>
-        		<complexContent>
-        			<extension base="xsl:anyType">
-						<sequence>
-							<element maxOccurs="unbounded" minOccurs="1" ref="xsl:when"/>
-							<element minOccurs="0" ref="xsl:otherwise"/>
-						</sequence>
-						<attribute ref="xml:space"/>
-					</extension>
-				</complexContent>
-        	</complexType>
-        	
-        </element>
-        
-        <element name="comment" substitutionGroup="xsl:instruction">
-        	
-        	<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<sequence>
+						<element ref="xsl:when" maxOccurs="unbounded"/>
+						<element ref="xsl:otherwise" minOccurs="0"/>
+					</sequence>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="comment" substitutionGroup="xsl:instruction">
+		<!-- ***
         		
         		<xsl:comment>
 				  Content: template
 				</xsl:comment> 
 
         	-->
-        	
-        	<complexType mixed="true">
-        		<complexContent>
-        			<extension base="xsl:anyType">
-						<choice maxOccurs="unbounded" minOccurs="0">
-							<element ref="xsl:char-instruction"/>
-							<element ref="xsl:top-level-element-and-char-instruction"/>
-						</choice>
-						<attribute ref="xml:space"/>
-					</extension>
-				</complexContent>
-        	</complexType>
-        	
-        </element>
-        
-        
-        <element name="copy" substitutionGroup="xsl:char-instruction">
-        
-        	<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<choice minOccurs="0" maxOccurs="unbounded">
+						<element ref="xsl:char-instruction"/>
+						<element ref="xsl:top-level-element-and-char-instruction"/>
+					</choice>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="copy" substitutionGroup="xsl:char-instruction">
+		<!-- ***
         	
         	<xsl:copy
 			  use-attribute-sets = qnames>
@@ -594,43 +475,33 @@ Please send your comments and suggestions to asirv@webmethods.com
 			</xsl:copy> 
 			
 			-->
-        	
-        	<complexType mixed="true">
-        		<complexContent>
-        			<extension base="xsl:anyType">
-						<group maxOccurs="unbounded" minOccurs="0" ref="xsl:template"/>
-						<attribute ref="xml:space"/>
-						<attributeGroup ref="xsl:use-attribute-sets"/>
-					</extension>
-				</complexContent>
-        	</complexType>
-        
-        </element>
-        
-        
-        <element name="copy-of" substitutionGroup="xsl:char-instruction">
-        
-        	<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<group ref="xsl:template" minOccurs="0" maxOccurs="unbounded"/>
+					<attribute ref="xml:space"/>
+					<attributeGroup ref="xsl:use-attribute-sets"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="copy-of" substitutionGroup="xsl:char-instruction">
+		<!-- ***
         	
         		<xsl:copy-of
 				  select = expression /> 
 
         	-->
-        	
-        	<complexType mixed="true">
-        		<complexContent>
-        			<extension base="xsl:anyType">
-						<attributeGroup ref="xsl:select-required"/>
-					</extension>
-				</complexContent>
-        	</complexType>
-        
-        </element>
-        
-        
-        <element name="element" substitutionGroup="xsl:instruction">
-        
-        	<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<attributeGroup ref="xsl:select-required"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="element" substitutionGroup="xsl:instruction">
+		<!-- ***
         	
         		<xsl:element 
 				  name = { qname }
@@ -639,47 +510,37 @@ Please send your comments and suggestions to asirv@webmethods.com
 				  Content: template
 				</xsl:element>
 			-->
-			
-			<complexType mixed="true">
-				<complexContent>
-					<extension base="xsl:anyType">
-						<group maxOccurs="unbounded" minOccurs="0" ref="xsl:template"/>
-						<attributeGroup ref="xsl:name-avt"/>
-						<attribute name="namespace" type="xsl:expr-avt"/>
-						<attributeGroup ref="xsl:use-attribute-sets"/>
-						<attribute ref="xml:space"/>
-					</extension>
-				</complexContent>
-			</complexType>
-			
-        </element>
-        
-        
-        <element name="fallback" substitutionGroup="xsl:char-instruction">
-        
-        	<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<group ref="xsl:template" minOccurs="0" maxOccurs="unbounded"/>
+					<attributeGroup ref="xsl:name-avt"/>
+					<attribute name="namespace" type="xsl:expr-avt"/>
+					<attributeGroup ref="xsl:use-attribute-sets"/>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="fallback" substitutionGroup="xsl:char-instruction">
+		<!-- ***
         		
         		<xsl:fallback>
 				  Content: template
 				</xsl:fallback>
 				
 			-->
-			
-			<complexType mixed="true">
-				<complexContent>
-					<extension base="xsl:anyType">
-						<group maxOccurs="unbounded" minOccurs="0" ref="xsl:template"/>
-						<attribute ref="xml:space"/>
-					</extension>
-				</complexContent>
-			</complexType>
-		
-		</element>
-        
-        
-        <element name="for-each" substitutionGroup="xsl:char-instruction">
-        
-        	<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<group ref="xsl:template" minOccurs="0" maxOccurs="unbounded"/>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="for-each" substitutionGroup="xsl:char-instruction">
+		<!-- ***
         	
         		<xsl:for-each 
 				  select = node-set-expression>
@@ -687,29 +548,25 @@ Please send your comments and suggestions to asirv@webmethods.com
 				</xsl:for-each> 
 
 			-->
-		
-			<complexType mixed="true">
-				<complexContent>
-					<extension base="xsl:anyType">
-						<sequence>
-							<element maxOccurs="unbounded" minOccurs="0" ref="xsl:sort"/>
-							<choice maxOccurs="unbounded" minOccurs="0">
-								<element ref="xsl:top-level-element-and-char-instruction"/>
-								<element ref="xsl:instruction"/>
-								<group ref="xsl:result-element"/>
-							</choice>
-						</sequence>
-						<attributeGroup ref="xsl:select-required"/>
-						<attribute ref="xml:space"/>
-					</extension>
-				</complexContent>
-			</complexType>
-			
-		</element>
-		
-		<element name="if" substitutionGroup="xsl:char-instruction">
-			
-			<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<sequence>
+						<element ref="xsl:sort" minOccurs="0" maxOccurs="unbounded"/>
+						<choice minOccurs="0" maxOccurs="unbounded">
+							<element ref="xsl:top-level-element-and-char-instruction"/>
+							<element ref="xsl:instruction"/>
+							<group ref="xsl:result-element"/>
+						</choice>
+					</sequence>
+					<attributeGroup ref="xsl:select-required"/>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="if" substitutionGroup="xsl:char-instruction">
+		<!-- ***
 			
 				<xsl:if 
 				  test = boolean-expression>
@@ -717,23 +574,18 @@ Please send your comments and suggestions to asirv@webmethods.com
 				</xsl:if> 
 
 			-->
-			
-			<complexType mixed="true">
-				<complexContent>
-					<extension base="xsl:anyType">
-						<group maxOccurs="unbounded" minOccurs="0" ref="xsl:template"/>
-						<attribute name="test" type="xsl:expression" use="required"/>
-						<attribute ref="xml:space"/>
-					</extension>
-				</complexContent>
-			</complexType>
-			
-		</element>
-		
-		
-		<element name="message" substitutionGroup="xsl:char-instruction">
-			
-			<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<group ref="xsl:template" minOccurs="0" maxOccurs="unbounded"/>
+					<attribute name="test" type="xsl:expression" use="required"/>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="message" substitutionGroup="xsl:char-instruction">
+		<!-- ***
 			
 				<xsl:message 
 				  terminate = "yes" | "no">
@@ -741,24 +593,18 @@ Please send your comments and suggestions to asirv@webmethods.com
 				</xsl:message> 
 			
 			-->
-		
-			<complexType mixed="true">
-				
-				<complexContent>
-					<extension base="xsl:anyType">
-						<group maxOccurs="unbounded" minOccurs="0" ref="xsl:template"/>
-						<attribute ref="xml:space"/>
-						<attribute name="terminate" type="xsl:YesOrNo" use="default" value="no"/>
-					</extension>
-				</complexContent>
-			</complexType>
-			
-		</element>
-		
-		
-		<element name="number" substitutionGroup="xsl:char-instruction">
-		
-			<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<group ref="xsl:template" minOccurs="0" maxOccurs="unbounded"/>
+					<attribute ref="xml:space"/>
+					<attribute name="terminate" type="xsl:YesOrNo" default="no"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="number" substitutionGroup="xsl:char-instruction">
+		<!-- ***
 			
 				<xsl:number 
 				  level = "single" | "multiple" | "any"
@@ -772,40 +618,32 @@ Please send your comments and suggestions to asirv@webmethods.com
   				  grouping-size = { number } />
 			
 			-->
-			
-			<complexType>
-				
-				<complexContent>
-					<extension base="xsl:anyType">
-						<attribute name="level" use="default" value="single">
-							<simpleType>
-								<restriction base="NMTOKEN">
-									<enumeration value="single"/>
-									<enumeration value="multiple"/>
-									<enumeration value="any"/>
-								</restriction>
-							</simpleType>
-						</attribute>
-
-						<attribute name="count" type="xsl:pattern"/>
-						<attribute name="from" type="xsl:pattern"/>
-						<attribute name="value" type="xsl:expression"/>
-						<attribute name="format" type="xsl:expr-avt" use="default" value="1"/>
-						<attribute name="lang" type="xsl:expr-avt"/>
-						<attribute name="letter-value" type="xsl:expr-avt"/>
-						<attribute name="grouping-separator" type="xsl:expr-avt"/>
-						<attribute name="grouping-size" type="xsl:expr-avt"/>
-					</extension>
-				</complexContent>
-				
-			</complexType>
-		
-		</element>
-		
-		
-		<element name="processing-instruction" substitutionGroup="xsl:instruction">
-		
-			<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<attribute name="level" default="single">
+						<simpleType>
+							<restriction base="NMTOKEN">
+								<enumeration value="single"/>
+								<enumeration value="multiple"/>
+								<enumeration value="any"/>
+							</restriction>
+						</simpleType>
+					</attribute>
+					<attribute name="count" type="xsl:pattern"/>
+					<attribute name="from" type="xsl:pattern"/>
+					<attribute name="value" type="xsl:expression"/>
+					<attribute name="format" type="xsl:expr-avt" default="1"/>
+					<attribute name="lang" type="xsl:expr-avt"/>
+					<attribute name="letter-value" type="xsl:expr-avt"/>
+					<attribute name="grouping-separator" type="xsl:expr-avt"/>
+					<attribute name="grouping-size" type="xsl:expr-avt"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="processing-instruction" substitutionGroup="xsl:instruction">
+		<!-- ***
 			
 				<xsl:processing-instruction
 				  name = { ncname }>
@@ -813,27 +651,21 @@ Please send your comments and suggestions to asirv@webmethods.com
 				</xsl:processing-instruction>
 				
 			-->
-		
-			<complexType mixed="true">
-		
-				<complexContent>
-					<extension base="xsl:anyType">
-						<choice maxOccurs="unbounded" minOccurs="0">
-							<element ref="xsl:char-instruction"/>
-							<element ref="xsl:top-level-element-and-char-instruction"/>
-						</choice>
-						<attributeGroup ref="xsl:name-avt"/>
-						<attribute ref="xml:space"/>
-					</extension>
-				</complexContent>
-			</complexType>
-		
-		</element>
-		
-		
-		<element name="text" substitutionGroup="xsl:char-instruction">
-		
-			<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<choice minOccurs="0" maxOccurs="unbounded">
+						<element ref="xsl:char-instruction"/>
+						<element ref="xsl:top-level-element-and-char-instruction"/>
+					</choice>
+					<attributeGroup ref="xsl:name-avt"/>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="text" substitutionGroup="xsl:char-instruction">
+		<!-- ***
 			
 				<xsl:text
 				  disable-output-escaping = "yes" | "no">
@@ -841,82 +673,61 @@ Please send your comments and suggestions to asirv@webmethods.com
 				</xsl:text> 
 			
 			-->
-			
-			<complexType mixed="true">
-				<complexContent>
-					<extension base="xsl:anyType">
-						<attributeGroup ref="xsl:disable-output-escaping"/>
-						<attribute ref="xml:lang"/>
-						<attribute ref="xml:space"/>
-					</extension>
-				</complexContent>
-			</complexType>
-		
-		</element>
-		
-		
-		<element name="value-of" substitutionGroup="xsl:char-instruction">
-		
-			<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<attributeGroup ref="xsl:disable-output-escaping"/>
+					<attribute ref="xml:lang"/>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="value-of" substitutionGroup="xsl:char-instruction">
+		<!-- ***
 			
 				<xsl:value-of
 				  select = string-expression 
 				  disable-output-escaping = "yes" | "no" /> 
 			
 			-->
-			
-			<complexType>
-				<complexContent>
-					<extension base="xsl:anyType">
-						<attributeGroup ref="xsl:select-required"/>
-						<attributeGroup ref="xsl:disable-output-escaping"/>
-					</extension>
-				</complexContent>
-			</complexType>
-			
-		</element>
-		
-		
-		
-		<!-- *** orphans *** -->
-		<!-- *** 		 *** -->
-		
-		<element name="import" type="xsl:combine-stylesheets">
-			
-			<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<attributeGroup ref="xsl:select-required"/>
+					<attributeGroup ref="xsl:disable-output-escaping"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<!-- *** orphans *** -->
+	<!-- *** 		 *** -->
+	<element name="import" type="xsl:combine-stylesheets">
+		<!-- ***
 			
 				<xsl:import
   					href = uri-reference /> 
   			-->
-			
-		</element>
-		
-		
-		<element name="otherwise">
-		
-			<!-- ***
+	</element>
+	<element name="otherwise">
+		<!-- ***
 			
 				<xsl:otherwise>
 				  Content: template 
 				</xsl:otherwise>
 			
 			-->
-			
-				<complexType mixed="true">
-					<complexContent>
-						<extension base="xsl:anyType">
-							<group maxOccurs="unbounded" minOccurs="0" ref="xsl:template"/>
-							<attribute ref="xml:space"/>
-						</extension>
-					</complexContent>
-				</complexType>
-		
-		</element>
-		
-		
-		<element name="sort">
-		
-			<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<group ref="xsl:template" minOccurs="0" maxOccurs="unbounded"/>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="sort">
+		<!-- ***
 			
 				xsl:sort
 				  select = string-expression 
@@ -926,47 +737,37 @@ Please send your comments and suggestions to asirv@webmethods.com
 				  case-order = { "upper-first" | "lower-first" } /> 
 
 			-->
-			
-			<complexType>
-				<complexContent>
-					<extension base="xsl:anyType">
-						<attribute name="select" type="xsl:expression" use="default" value="."/>	
-						<attribute name="lang" type="xsl:expr-avt"/>				
-						<attribute name="data-type" type="xsl:expr-avt" use="default" value="text"/>				
-						<attribute name="order" type="xsl:expr-avt" use="default" value="ascending"/>				
-						<attribute name="case-order" type="xsl:expr-avt"/>
-					</extension>
-				</complexContent>
-			</complexType>
-		
-		</element>
-		
-		
-		<element name="when">
-		
-			<!-- ***
+		<complexType>
+			<complexContent>
+				<extension base="xsl:anyType">
+					<attribute name="select" type="xsl:expression" default="."/>
+					<attribute name="lang" type="xsl:expr-avt"/>
+					<attribute name="data-type" type="xsl:expr-avt" default="text"/>
+					<attribute name="order" type="xsl:expr-avt" default="ascending"/>
+					<attribute name="case-order" type="xsl:expr-avt"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="when">
+		<!-- ***
 				<xsl:when
 				  test = boolean-expression>
 				  Content: template
 				</xsl:when>
 			-->
-			
-			<complexType mixed="true">
-				<complexContent>
-					<extension base="xsl:anyType">
-						<group maxOccurs="unbounded" minOccurs="0" ref="xsl:template"/>
-						<attribute name="test" type="xsl:expression" use="required"/>
-						<attribute ref="xml:space"/>
-					</extension>
-				</complexContent>
-			</complexType>
-			
-		</element>
-		
-		
-		<element name="with-param" type="xsl:variable">
-		
-			<!-- ***
+		<complexType mixed="true">
+			<complexContent mixed="true">
+				<extension base="xsl:anyType">
+					<group ref="xsl:template" minOccurs="0" maxOccurs="unbounded"/>
+					<attribute name="test" type="xsl:expression" use="required"/>
+					<attribute ref="xml:space"/>
+				</extension>
+			</complexContent>
+		</complexType>
+	</element>
+	<element name="with-param" type="xsl:variable">
+		<!-- ***
 			
 				<xsl:with-param
 				  name = qname 
@@ -974,21 +775,23 @@ Please send your comments and suggestions to asirv@webmethods.com
 				  Content: template
 				</xsl:with-param> 
 			-->
-			
-		</element>
-		
-		
-		
-		
-		
-		
-        <!-- *** utils - internal types and groups *** -->
-		<!-- *** not for public use                *** -->
-        <!-- ***								   *** -->
-        
-        <complexType mixed="true" name="attribute-type">
-        
-        	<!-- ***
+	</element>
+	<!-- *** utils - internal types and groups *** -->
+	<!-- *** not for public use                *** -->
+	<!-- ***								   *** -->
+	<complexType name="attribute-type" mixed="true">
+		<complexContent mixed="true">
+			<extension base="xsl:anyType">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element ref="xsl:char-instruction"/>
+					<element ref="xsl:top-level-element-and-char-instruction"/>
+				</choice>
+				<attributeGroup ref="xsl:name-avt"/>
+				<attribute name="namespace" type="xsl:expr-avt"/>
+				<attribute ref="xml:space"/>
+			</extension>
+		</complexContent>
+		<!-- ***
         	
 			 <xsl:attribute
 			   name = { qname }
@@ -997,149 +800,111 @@ Please send your comments and suggestions to asirv@webmethods.com
 			 </xsl:attribute> 
 
         	-->
-        	<complexContent>
-        		<extension base="xsl:anyType">
-					<choice maxOccurs="unbounded" minOccurs="0">
-						<element ref="xsl:char-instruction"/>
-						<element ref="xsl:top-level-element-and-char-instruction"/>
-					</choice>
-
-					<attributeGroup ref="xsl:name-avt"/>
-					<attribute name="namespace" type="xsl:expr-avt"/>
-					<attribute ref="xml:space"/>
-				</extension>
-			</complexContent>
-			
-        </complexType>
-        
-        
-        <simpleType name="tokens">
-        	<list itemType="token"/>
-        </simpleType>
-        
-        <simpleType name="QNames">
-        	<list itemType="xsl:QName"/>
-        </simpleType>
-        
-        <attributeGroup name="name">
-        	<attribute name="name" type="xsl:QName" use="required"/>
-        </attributeGroup>
-        
-        <attributeGroup name="name-avt">
-        	<attribute name="name" type="xsl:expr-avt" use="required"/>
-        </attributeGroup>
-        
-        <attributeGroup name="select-optional">
-        	<attribute name="select" type="xsl:expression"/>
-        </attributeGroup>
-        
-        <attributeGroup name="select-required">
-		    <attribute name="select" type="xsl:expression" use="required"/>
-        </attributeGroup>
-        
-        <attributeGroup name="use-attribute-sets">
-        	<attribute name="use-attribute-sets" type="xsl:QNames"/>
-        </attributeGroup>
-        
-        
-        
-        
-        <group name="template">
-			<choice>
-				<element ref="xsl:top-level-element-and-char-instruction"/>
-				<element ref="xsl:instruction"/>
-				<group ref="xsl:result-element"/>
-			</choice>
-        </group>
-        
-        <complexType name="combine-stylesheets">
-        	<complexContent>
-        		<extension base="xsl:anyType">
-        			<attribute name="href" type="uriReference" use="required"/>
-        		</extension>
-        	</complexContent>
-        </complexType>
-        
-		<simpleType name="YesOrNo">
-			<restriction base="string">
-				<enumeration value="yes"/>
-				<enumeration value="no"/>
-			</restriction>
-		</simpleType>
-		
-		<simpleType name="QName">
-			<union memberTypes="NCName QName"/>
-		</simpleType>
-		
-		<simpleType name="element-names">
-			<list>
-				<simpleType>
-					<union memberTypes="QName">
-						<simpleType>
-							<restriction base="CDATA">
-								<pattern value="\*"/>
-								<pattern value="\i\c*:\*"/>
-							</restriction>
-						</simpleType>
-					</union>
-				</simpleType>
-			</list>
-		</simpleType>
-		
-		<attributeGroup name="disable-output-escaping">
-			<attribute name="disable-output-escaping" type="xsl:YesOrNo" use="default" value="no"/>
-		</attributeGroup>
-		
-		<complexType mixed="true" name="variable">
-			<complexContent>
-				<extension base="xsl:anyType">
-					<group maxOccurs="unbounded" minOccurs="0" ref="xsl:template"/>
-					<attributeGroup ref="xsl:name"/>
-					<attributeGroup ref="xsl:select-optional"/>
-				</extension>
-			</complexContent>
-		</complexType>
-		
-		
-		<simpleType name="expr-avt">
-		   <restriction base="string">
-		      <!-- <pattern
+	</complexType>
+	<simpleType name="tokens">
+		<list itemType="token"/>
+	</simpleType>
+	<simpleType name="QNames">
+		<list itemType="xsl:QName"/>
+	</simpleType>
+	<attributeGroup name="name">
+		<attribute name="name" type="xsl:QName" use="required"/>
+	</attributeGroup>
+	<attributeGroup name="name-avt">
+		<attribute name="name" type="xsl:expr-avt" use="required"/>
+	</attributeGroup>
+	<attributeGroup name="select-optional">
+		<attribute name="select" type="xsl:expression"/>
+	</attributeGroup>
+	<attributeGroup name="select-required">
+		<attribute name="select" type="xsl:expression" use="required"/>
+	</attributeGroup>
+	<attributeGroup name="use-attribute-sets">
+		<attribute name="use-attribute-sets" type="xsl:QNames"/>
+	</attributeGroup>
+	<group name="template">
+		<choice>
+			<element ref="xsl:top-level-element-and-char-instruction"/>
+			<element ref="xsl:instruction"/>
+			<group ref="xsl:result-element"/>
+		</choice>
+	</group>
+	<complexType name="combine-stylesheets">
+		<complexContent>
+			<extension base="xsl:anyType">
+				<attribute name="href" type="anyURI" use="required"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<simpleType name="YesOrNo">
+		<restriction base="string">
+			<enumeration value="yes"/>
+			<enumeration value="no"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="QName">
+		<union memberTypes="NCName QName"/>
+	</simpleType>
+	<simpleType name="element-names">
+		<list>
+			<simpleType>
+				<union memberTypes="QName">
+					<simpleType>
+						<restriction base="normalizedString">
+							<pattern value="\*"/>
+							<pattern value="\i\c*:\*"/>
+						</restriction>
+					</simpleType>
+				</union>
+			</simpleType>
+		</list>
+	</simpleType>
+	<attributeGroup name="disable-output-escaping">
+		<attribute name="disable-output-escaping" type="xsl:YesOrNo" default="no"/>
+	</attributeGroup>
+	<complexType name="variable" mixed="true">
+		<complexContent mixed="true">
+			<extension base="xsl:anyType">
+				<group ref="xsl:template" minOccurs="0" maxOccurs="unbounded"/>
+				<attributeGroup ref="xsl:name"/>
+				<attributeGroup ref="xsl:select-optional"/>
+			</extension>
+		</complexContent>
+	</complexType>
+	<simpleType name="expr-avt">
+		<restriction base="string">
+			<!-- <pattern
 		value="([^\{\}]|\{\{|\}\})*\{([^&quot;'\{\}]|&quot;[^&quot;]*&quot;|'[^']*')+\}([^\{\}]|\{\{|\}\}|\{([^&quot;'\{\}]|&quot;[^&quot;]*&quot;|'[^']*')+\})*"/> -->
-		   </restriction>
-		</simpleType>
-		
-		<simpleType name="expression">
-			<restriction base="string">
-				<!-- ****
+		</restriction>
+	</simpleType>
+	<simpleType name="expression">
+		<restriction base="string">
+			<!-- ****
 				
 					patterns go here 
 					
 					-->
-			</restriction>
-		</simpleType>
-		
-		<simpleType name="pattern">
-			<restriction base="string">
-				<!-- ***
+		</restriction>
+	</simpleType>
+	<simpleType name="pattern">
+		<restriction base="string">
+			<!-- ***
 				
 					patterns go here
 					
 					-->
-			</restriction>
-		</simpleType>
-		
-		<simpleType name="prefix">
-			<union memberTypes="NCName">
-				<simpleType>
-					<restriction base="string">
-						<enumeration value="#default"/>
-					</restriction>
-				</simpleType>
-			</union>
-		</simpleType>
-		
-		
-		<complexType name="anyType">
-			<anyAttribute namespace="##other" processContents="skip"/>
-		</complexType>
+		</restriction>
+	</simpleType>
+	<simpleType name="prefix">
+		<union memberTypes="NCName">
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="#default"/>
+				</restriction>
+			</simpleType>
+		</union>
+	</simpleType>
+	<complexType name="anyType">
+		<anyAttribute namespace="##other" processContents="skip"/>
+	</complexType>
 </schema>
