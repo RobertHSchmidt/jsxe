@@ -47,9 +47,8 @@ public interface XMLDocumentListener {
     /**
      * Called when the properties associated with the XMLDocument have changed.
      * @param source The source XMLDocument
-     * @param propertyKey The key to the property that has changed.
      */
-    public void propertiesChanged(XMLDocument source, String propertyKey);//}}}
+    public void propertiesChanged(XMLDocument source);//}}}
     
     //{{{ structureChanged()
     

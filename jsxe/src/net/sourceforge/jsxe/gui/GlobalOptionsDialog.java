@@ -41,6 +41,8 @@ belongs to.
 import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.options.*;
 
+import java.util.Iterator;
+
 //}}}
 
 public class GlobalOptionsDialog extends OptionsDialog {
@@ -70,10 +72,20 @@ public class GlobalOptionsDialog extends OptionsDialog {
         if (pane != null) {
             addOptionPane(pane);
         }
-        pane = docView.getOptionsPanel();
-        if (pane != null) {
-            addOptionPane(pane);
+        
+        Iterator pluginItr = jsXe.getPluginLoader().getAllPlugins().iterator();
+        while (pluginItr.hasNext()) {
+            ActionPlugin plugin = (ActionPlugin)pluginItr.next();
+            pane = plugin.getOptionsPanel(buffer);
+            if (pane != null) {
+                addOptionPane(pane);
+            }
         }
+        
+       // pane = docView.getOptionsPanel();
+       // if (pane != null) {
+       //     addOptionPane(pane);
+       // }
         pane = buffer.getOptionsPanel();
         if (pane != null) {
             addOptionPane(pane);

@@ -219,6 +219,27 @@ public class JARClassLoader extends ClassLoader {
         return jar.getJarEntry(name);
     }//}}}
     
+    //{{{ getAllPlugins()
+    
+    public ArrayList getAllPlugins() {
+        Iterator pluginItr = getViewPluginNames();
+        ArrayList plugins = new ArrayList();
+        while (pluginItr.hasNext()) {
+            String pluginName = pluginItr.next().toString();
+            ViewPlugin plugin = (ViewPlugin)m_viewPlugins.get(pluginName);
+            plugins.add(plugin);
+        }
+        
+        pluginItr = getActionPluginNames();
+        while (pluginItr.hasNext()) {
+            String pluginName = pluginItr.next().toString();
+            ActionPlugin plugin = (ActionPlugin)m_actionPlugins.get(pluginName);
+            plugins.add(plugin);
+        }
+        
+        return plugins;
+    }//}}}
+    
     //{{{ getViewPluginNames()
     
     public Iterator getViewPluginNames() {
@@ -435,35 +456,30 @@ public class JARClassLoader extends ClassLoader {
         String mainPluginClass = getMainPluginClass(jarfile);
         
         try {
-            
-           // for(int i = 0; i < m_pluginClasses.size(); i++) {
-           //     if (className.equals(mainPluginClass) {
-                    Class pluginClass = loadClass(mainPluginClass);
+                Class pluginClass = loadClass(mainPluginClass);
                 
+                int modifiers = pluginClass.getModifiers();
+                if (!Modifier.isInterface(modifiers)
+                    && !Modifier.isAbstract(modifiers)
+                    && ActionPlugin.class.isAssignableFrom(pluginClass)) {
+                    
                     Object plugin = pluginClass.newInstance();
                     
-                    int modifiers = pluginClass.getModifiers();
-                    if (!Modifier.isInterface(modifiers)
-                        && !Modifier.isAbstract(modifiers)
-                        && ActionPlugin.class.isAssignableFrom(pluginClass)) {
-                        
-                        if (ViewPlugin.class.isAssignableFrom(pluginClass)) {
-                            //It's a view plugin
-                            ViewPlugin viewPlugin = (ViewPlugin)plugin;
-                            m_viewPlugins.put(viewPlugin.getName(), viewPlugin);
-                        } else {
-                            //It's an Action plugin
-                            ActionPlugin actionPlugin = (ActionPlugin)plugin;
-                            m_actionPlugins.put(actionPlugin.getName(), actionPlugin);
-                        }
-                        
+                    if (ViewPlugin.class.isAssignableFrom(pluginClass)) {
+                        //It's a view plugin
+                        ViewPlugin viewPlugin = (ViewPlugin)plugin;
+                        m_viewPlugins.put(viewPlugin.getName(), viewPlugin);
                     } else {
-                        throw new IOException("Could not load plugin main class: "+pluginClass.getName());
+                        //It's an Action plugin
+                        ActionPlugin actionPlugin = (ActionPlugin)plugin;
+                        m_actionPlugins.put(actionPlugin.getName(), actionPlugin);
                     }
-           //     } else {
-           //         
-           //     }
-           // }
+                } else {
+                    /*
+                    It's not a plugin. No biggie. We need it to be loaded
+                    anyway.
+                    */
+                }
             
         } catch (ClassNotFoundException e) {
             throw new IOException(e.getMessage());
@@ -478,7 +494,6 @@ public class JARClassLoader extends ClassLoader {
     private static HashMap m_jarFiles = new HashMap();
     private static HashMap m_viewPlugins = new HashMap();
     private static HashMap m_actionPlugins = new HashMap();
-   // private static ArrayList m_pluginClasses = new ArrayList();
     
     //}}}
 }

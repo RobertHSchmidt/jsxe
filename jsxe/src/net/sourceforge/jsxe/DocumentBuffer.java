@@ -789,9 +789,7 @@ public class DocumentBuffer extends XMLDocument {
         
         //{{{ propertiesChanged()
         
-        public void propertiesChanged(XMLDocument source, String propertyKey) {
-            
-        }//}}}
+        public void propertiesChanged(XMLDocument source) {}//}}}
         
         //{{{ structureChanged()
         

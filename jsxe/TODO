@@ -26,10 +26,6 @@ TODO:
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
     
-    * Fix bug when loading a jar file that's not a plugin. jsXe should not
-      try to load it as a plugin. Need a way to tell the difference between
-      a normal jar and a plugin jar.
-    
     * Update the options dialog to show options from all installed views
     
     * jsXe should have a plugin manager window to display plugin information.
