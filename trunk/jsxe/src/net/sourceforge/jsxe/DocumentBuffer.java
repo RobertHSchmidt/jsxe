@@ -112,7 +112,9 @@ public class DocumentBuffer {
     public DocumentBuffer() throws IOException {
         m_file = null;
         m_name = getUntitledLabel();
-        readFile(new StringReader(jsXe.getDefaultDocument()));
+        StringReader reader = new StringReader(jsXe.getDefaultDocument());
+        readFile(reader);
+        reader.close();
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -125,7 +127,9 @@ public class DocumentBuffer {
     DocumentBuffer(File file) throws IOException {
         m_file = file;
         m_name = file.getName();
-        readFile(new FileReader(file));
+        FileReader reader = new FileReader(file);
+        readFile(reader);
+        reader.close();
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -355,9 +359,13 @@ public class DocumentBuffer {
         
         if (stillReload) {
             if (isUntitled()) {
-                readFile(new StringReader(jsXe.getDefaultDocument()));
+                StringReader reader = new StringReader(jsXe.getDefaultDocument());
+                readFile(reader);
+                reader.close();
             } else {
-                readFile(new FileReader(m_file));
+                FileReader reader = new FileReader(m_file);
+                readFile(reader);
+                reader.close();
             }
             setDirty(false);
             return true;
