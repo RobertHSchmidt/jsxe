@@ -34,6 +34,9 @@ TODO:
       so that XMLDocument classes can be created that use something othe
       than Xerces.
     
+    * Updated javadoc for the DocumentViews and XMLDocument classes to be
+      more descriptive and less specific to jsXe
+    
     * Store some options such as recent files and file specific options in
       an XML file with jsxe's options in the .jsxe folder in the home dir.
     
