@@ -182,6 +182,31 @@ public class DefaultView extends DocumentView {
         return (node.getNodeType() == Node.TEXT_NODE);
     }//}}}
     
+    private void updateTree() {//{{{
+        //Cannot reexpand TreePaths for some
+        //reason so we store the rows that are expanded.
+        int rowcount = tree.getRowCount();
+        Vector allRows = new Vector();
+        //build a list of rows that are expanded
+        for (int i=0; i<rowcount; i++) {
+            TreePath root = tree.getPathForRow(i);
+            Enumeration expandedPaths = tree.getExpandedDescendants(root);
+            if (expandedPaths != null) {
+                while (expandedPaths.hasMoreElements()) {
+                    TreePath path = (TreePath)expandedPaths.nextElement();
+                    int row = tree.getRowForPath(path);
+                    allRows.add(new Integer(row));
+                }
+            }
+        }
+        tree.updateUI();
+        Enumeration rows = allRows.elements();
+        while (rows.hasMoreElements()) {
+            Integer row = (Integer)rows.nextElement();
+            tree.expandRow(row.intValue());
+        }
+    }//}}}
+    
     private class DefaultTreeSelectionListener implements TreeSelectionListener {//{{{
         
         DefaultTreeSelectionListener(Component p) {
@@ -245,26 +270,6 @@ public class DefaultView extends DocumentView {
             updateTree();
         }
         
-        private void updateTree() {
-            int rowcount = tree.getRowCount();
-            Vector allPaths = new Vector();
-            for (int i=0; i<rowcount; i++) {
-                TreePath root = tree.getPathForRow(i);
-                Enumeration expandedPaths = tree.getExpandedDescendants(root);
-                if (expandedPaths != null) {
-                    allPaths.add(expandedPaths);
-                }
-            }
-            Enumeration paths = allPaths.elements();
-            while (paths.hasMoreElements()) {
-                Enumeration nodepaths = (Enumeration) paths.nextElement();
-                while (nodepaths.hasMoreElements()) {
-                    TreePath path = (TreePath)nodepaths.nextElement();
-                    tree.expandPath(path);
-                }
-            }
-        }
-        
     };//}}}
     private DocumentListener docListener = new DocumentListener() {//{{{
         
@@ -277,26 +282,6 @@ public class DefaultView extends DocumentView {
         public void removeUpdate(DocumentEvent e) {
            updateTree();
         };
-        
-        private void updateTree() {
-            int rowcount = tree.getRowCount();
-            Vector allPaths = new Vector();
-            for (int i=0; i<rowcount; i++) {
-                TreePath root = tree.getPathForRow(i);
-                Enumeration expandedPaths = tree.getExpandedDescendants(root);
-                if (expandedPaths != null) {
-                    allPaths.add(expandedPaths);
-                }
-            }
-            Enumeration paths = allPaths.elements();
-            while (paths.hasMoreElements()) {
-                Enumeration nodepaths = (Enumeration) paths.nextElement();
-                while (nodepaths.hasMoreElements()) {
-                    TreePath path = (TreePath)nodepaths.nextElement();
-                    tree.expandPath(path);
-                }
-            }
-        }
         
     };//}}}
     //}}}
