@@ -42,6 +42,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.DocumentBufferListener;
+import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.dom.AdapterNode;
@@ -224,8 +225,8 @@ public class SourceView extends JPanel implements DocumentView {
     
     //{{{ getViewName()
     
-    public String getViewName() {
-        return m_plugin.getName();
+    public ViewPlugin getViewPlugin() {
+        return m_plugin;
     }//}}}
     
     //{{{ setDocumentBuffer()

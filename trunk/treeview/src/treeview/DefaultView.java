@@ -37,6 +37,7 @@ package treeview;
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.DocumentBuffer;
+import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.DocumentView;
 //}}}
@@ -228,10 +229,10 @@ public class DefaultView extends JPanel implements DocumentView {
         return this;
     }//}}}
 
-    //{{{ getViewName()
+    //{{{ getViewPlugin()
     
-    public String getViewName() {
-        return m_plugin.getName();
+    public ViewPlugin getViewPlugin() {
+        return m_plugin;
     }//}}}
     
     //{{{ getMenus()

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
      This is a build.xml file for building the Tree View for jsXe.
+     Version: $Id$
 -->
 <project basedir="." default="usage" name="treeview">
 	
@@ -30,7 +31,7 @@
     <property name="main.class" value="treeview.TreeViewPlugin"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="3"/>
-		<property name="build.description" value="pre3"/>
+		<property name="build.description" value="pre7"/>
 		<property name="app.version" value="${major.version}.${minor.version} ${build.description}"/>
 		<property name="app_version" value="${major.version}_${minor.version}${build.description}"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
@@ -194,8 +195,6 @@
 			<fileset dir="." includes="${app.name}.jar"/>
       <fileset dir="." includes="${app.name}.manifest"/>
 			<fileset dir="." includes="**/*.class"/>
-			<fileset defaultexcludes="no" dir="." includes="**/*~"/>
-			<fileset defaultexcludes="no" dir="." includes="**/#*#"/>
 			<fileset dir="." includes="**/*.rej"/>
 			<fileset dir="." includes="**/*.orig"/>
 			<fileset dir="." includes="**/.*.swp"/>

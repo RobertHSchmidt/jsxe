@@ -1,3 +1,7 @@
+01/05/2005  version 0.3 pre7    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated to use new Plugin API
+
 12/13/2004  verison 0.3 pre2    Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated to use the build properties to get the plugin version
