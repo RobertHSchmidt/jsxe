@@ -41,7 +41,6 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.dom.DOMAdapter;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -66,14 +65,10 @@ public class FileNewAction extends AbstractAction {
     }//}}}
     
     public void actionPerformed(ActionEvent e) {//{{{
-        view.setAdapter(DOMAdapter.getDOMAdapter(view, jsXe.getDefaultDocument()));
+        jsXe.openXMLDocument(view, jsXe.getDefaultDocument());
     }//}}}
     
-    /*
-    *************************************************
-    Data Fields
-    *************************************************
-    *///{{{
+    //{{{ Private members
     private TabbedView view;
     //}}}
 }

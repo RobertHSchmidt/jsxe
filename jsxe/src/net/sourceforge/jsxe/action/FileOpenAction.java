@@ -47,6 +47,7 @@ import net.sourceforge.jsxe.gui.TabbedView;
 //{{{ Swing components
 import javax.swing.Action;
 import javax.swing.AbstractAction;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 //}}}
 
@@ -65,14 +66,12 @@ public class FileOpenAction extends AbstractAction {
     }//}}}
     
     public void actionPerformed(ActionEvent e) {//{{{
-        jsXe.showOpenFileDialog(view);
+        if (!jsXe.showOpenFileDialog(view)) {
+            JOptionPane.showMessageDialog(view, "Could not open file.", "IO Error", JOptionPane.WARNING_MESSAGE);
+        }
     }//}}}
     
-    /*
-    *************************************************
-    Data Fields
-    *************************************************
-    *///{{{
+    //{{{ Public members
     private TabbedView view;
     //}}}
 }

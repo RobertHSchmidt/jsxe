@@ -40,7 +40,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.gui.DocumentPanel;
+import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -63,15 +63,10 @@ public class FileSaveAsAction extends AbstractAction {
     }//}}}
     
     public void actionPerformed(ActionEvent e) {//{{{
-        DocumentPanel docpanel = view.getDocumentPanel();
-        docpanel.getDOMAdapter().saveAs();
+        view.getDocumentView().getXMLDocument().saveAs(view);
     }//}}}
     
-        /*
-    *************************************************
-    Data Fields
-    *************************************************
-    *///{{{
+    //{{{ Private members
     private TabbedView view;
     //}}}
 }
