@@ -175,6 +175,10 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
             if (name.equals("xml-declaration")) {
                 return true;
             }
+            if (name.equals("soft-tabs")) {
+                return true;
+            }
+            
             return false;
         } else {
             if (name.equals("error-handler")) {
