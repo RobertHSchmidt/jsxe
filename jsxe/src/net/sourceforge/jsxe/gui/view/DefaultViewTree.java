@@ -188,6 +188,7 @@ public class DefaultViewTree extends JTree {
                 if (selPath != null) {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                     AdapterNode newNode = selectedNode.addAdapterNode("New_Element", "", Node.ELEMENT_NODE);
+                    setExpandedState(selPath, true);
                     //The TreeModel doesn't automatically treeNodesInserted() yet
                    // updateComponents();
                     updateUI();
@@ -226,6 +227,7 @@ public class DefaultViewTree extends JTree {
                 if (selPath != null) {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                     selectedNode.addAdapterNode("", "New Text Node", Node.TEXT_NODE);
+                    setExpandedState(selPath, true);
                     //The TreeModel doesn't automatically treeNodesInserted() yet
                    // updateComponents();
                     updateUI();
@@ -548,6 +550,7 @@ public class DefaultViewTree extends JTree {
                         AdapterNode trueParent = parentNode.getParentNode();
                         if (trueParent != null) {
                             trueParent.addAdapterNodeAt(node, trueParent.index(parentNode));
+                            setExpandedState(path.getParentPath(), true);
                         } else {
                             throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
                         }
@@ -558,12 +561,14 @@ public class DefaultViewTree extends JTree {
                     if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
                         //insert in the node
                         parentNode.addAdapterNode(node);
+                        setExpandedState(path, true);
                     } else {
                         if (parentNode != null) {
                             //insert after the node dropped on
                             AdapterNode trueParent = parentNode.getParentNode();
                             if (trueParent != null) {
                                 trueParent.addAdapterNodeAt(node, trueParent.index(parentNode)+1);
+                                setExpandedState(path.getParentPath(), true);
                             } else {
                                 throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
                             }
