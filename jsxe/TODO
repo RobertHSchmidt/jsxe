@@ -26,15 +26,6 @@ TODO:
     * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother?
     
-    * Add a command line option so that a user can specify the view to open
-      the document with. This will allow you to open large document in the
-      source view without parsing it into the tree view using DOM.
-    
-    * Remove references to the TabbedView class in DocumentViews. This
-      will allow DocumentViews and XMLDocuments to be used as a separate
-      packages that can be imbedded in other applications. DocumentViews are
-      too specific to jsXe.
-    
     * Create new packages for the XMLDocument and DocumentViews. Provide
       javadoc on the jsXe website. Rename AdapterNodes to something more
       meaningful and update it's API. Maybe make XMLDocument an interface
@@ -42,7 +33,7 @@ TODO:
       than Xerces.
     
     * Updated javadoc for the DocumentViews and XMLDocument classes to be
-      more descriptive and less specific to jsXe
+      more descriptive and less specific to jsXe.
     
     * Change ant build file to build the DocumentViews and XMLDocuments into
       a different jar file. Also change the jsXe.bat and jsXe.sh to use the new
@@ -202,6 +193,10 @@ TODO:
     * Implement some form of internationalization support.
     
     * Implement printing support in the Default View and SourceView
+    
+    * Add a command line option so that a user can specify the view to open
+      the document with. This will allow you to open large document in the
+      source view without parsing it into the tree view using DOM.
     
     * Add an option when opening documents that lets users specify which
       installed view to open the document with.
