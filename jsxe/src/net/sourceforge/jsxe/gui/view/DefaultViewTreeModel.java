@@ -105,16 +105,54 @@ public class DefaultViewTreeModel implements TreeModel {
     
     public Object getChild(Object parent, int index) {//{{{
         AdapterNode node = (AdapterNode) parent;
+        
+        boolean showComments = Boolean.valueOf(document.getProperty("show.comment.nodes", "false")).booleanValue();
+        boolean showEmpty    = Boolean.valueOf(document.getProperty("show.empty.nodes", "false")).booleanValue();
+        
+        boolean found = false;
+        
+        //massage the index so that it points returns
+        //the correct child depending of if we are displaying
+        //comments, empty nodes etc.
+        for (int i=0; i<=index; i++) {
+            AdapterNode child = node.child(i);
+            
+            if (child != null) {
+                if (!showComments && child.getNodeType()==Node.COMMENT_NODE) {
+                    index++;
+                }
+                if (!showEmpty && child.getNodeType()==Node.TEXT_NODE && child.getNodeValue().trim()=="") {
+                    index++;
+                }
+            }
+            
+        }
+        
         return node.child(index);
     }//}}}
     
     public int getChildCount(Object parent) {//{{{
         AdapterNode node = (AdapterNode) parent;
-        return node.childCount();
+        int totalcount = node.childCount();
+        int count = 0;
+        for (int i=0; i<totalcount; i++) {
+            if (getChild(parent, i)!=null)
+                count++;
+        }
+        return count;
     }//}}}
     
     public int getIndexOfChild(Object parent, Object child) {//{{{
         AdapterNode node = (AdapterNode) parent;
+        
+        boolean showComments = Boolean.valueOf(document.getProperty("show.comment.nodes", "false")).booleanValue();
+        boolean showEmpty    = Boolean.valueOf(document.getProperty("show.empty.nodes", "false")).booleanValue();
+        
+        if (!showComments && node.getNodeType()==Node.COMMENT_NODE)
+            return -1;
+        if (!showEmpty && node.getNodeType()==Node.TEXT_NODE && node.getNodeValue().trim()=="")
+            return -1;
+        
         return node.index((AdapterNode) child);
     }//}}}
     

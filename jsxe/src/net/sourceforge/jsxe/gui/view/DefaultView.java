@@ -254,6 +254,7 @@ public class DefaultView extends DocumentView {
         public void saveOptions() {
             currentDoc.setProperty("show.comment.nodes",Boolean.toString(showCommentsCheckBox.isSelected()));
             currentDoc.setProperty("show.empty.nodes",Boolean.toString(showEmptyNodesCheckBox.isSelected()));
+            tree.updateUI();
         }
         
         private JCheckBox showCommentsCheckBox;
