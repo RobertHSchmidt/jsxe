@@ -8,5 +8,5 @@
       implementation of the Document interface without having to write a
       DOMBuilder?
     
-    * CVS in Cygwin seeems to be corrupting jar files and jpg files when
-      checking out. Not sure why this is but it didn't used to do this.
+    * CVS in windows seems to have problems with corrupted binary files (jpg
+      etc.)
