@@ -362,11 +362,21 @@ public class DocumentBuffer {
         }//}}}
         
         public void saveOptions() {//{{{
-            m_document.setProperty("format-pretty-print", (new Boolean(formatCheckBox.isSelected())).toString());
-            m_document.setProperty("element-content-whitespace", (new Boolean(whitespaceCheckBox.isSelected())).toString());
-            m_document.setProperty("encoding", encodingComboBox.getSelectedItem().toString());
+            if (!String.valueOf(formatCheckBox.isSelected()).equals(m_document.getProperty(XMLDocument.FORMAT_XML))) {
+                setDirty(true);
+                m_document.setProperty(XMLDocument.FORMAT_XML, String.valueOf(formatCheckBox.isSelected()));
+            }
+            if (!String.valueOf(whitespaceCheckBox.isSelected()).equals(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT))) {
+                setDirty(true);
+                m_document.setProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, String.valueOf(whitespaceCheckBox.isSelected()));
+            }
+            if (!encodingComboBox.getSelectedItem().toString().equals(m_document.getProperty(XMLDocument.ENCODING))) {
+                setDirty(true);
+                m_document.setProperty(XMLDocument.ENCODING, encodingComboBox.getSelectedItem().toString());
+            }
             try {
-                m_document.setProperty("indent", (new Integer(indentComboBox.getSelectedItem().toString())).toString());
+                //don't need to set dirty, no change to text
+                m_document.setProperty(XMLDocument.INDENT, (new Integer(indentComboBox.getSelectedItem().toString())).toString());
             } catch (NumberFormatException nfe) {
                 //Bad input, don't save.
             }

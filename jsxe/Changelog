@@ -1,3 +1,11 @@
+03/31/2004  version 0.1.58  Ian Lewis <IanLewis@member.fsf.org>
+
+	* When you save out of the options panel after you changed options that
+	  change the XML document itself the open document is marked as dirty.
+	* Fixed a bug where the source was not being changed when the encoding
+	  was changed because the XMLDocument object thought that the source
+	  was synced with the DOM.
+
 03/18/2004  version 0.1.57  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added check so that dragging and dropping a node on it's parent doesn't

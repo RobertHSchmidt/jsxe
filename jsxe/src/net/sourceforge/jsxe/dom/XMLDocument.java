@@ -129,16 +129,19 @@ public class XMLDocument {
             // do this first so NullPointerExceptions are thrown
             returnValue = (String)props.setProperty(key, value);
             
-            if (key == "format-pretty-print") {
+            if (key == ENCODING) {
+                m_syncedWithContent = false;
+            }
+            if (key == FORMAT_XML) {
                 m_syncedWithContent = false;
                 if (Boolean.valueOf(value).booleanValue()) {
-                    setProperty("element-content-whitespace", "false");
+                    setProperty(WS_IN_ELEMENT_CONTENT, "false");
                 }
             }
-            if (key == "element-content-whitespace") {
+            if (key == WS_IN_ELEMENT_CONTENT) {
                 m_syncedWithContent = false;
                 if (Boolean.valueOf(value).booleanValue()) {
-                    setProperty("format-pretty-print", "false");
+                    setProperty(FORMAT_XML, "false");
                 }
             }
             firePropertiesChanged(key);

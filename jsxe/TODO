@@ -1,9 +1,11 @@
 TODO:
 
-    & Slowly document methods with javadoc.
-    
+* General
+
+    & Slowly document methods with javadoc.    
+
     & Slowly prefix instance variables with m_ as a naming convention.
-    
+
     & Think about how the XMLDocument hierarchy should be. Most XMLDocuments
       are going to need the functionality in DefaultXMLDocument. Should
       XMLDocument have most of that logic in it and sub-classes define their own
@@ -19,11 +21,13 @@ TODO:
               characters and such.
         xml-declaration
         check-character-normalization
+
+* Version 0.2.0
     
-    * Need to mark an open document as dirty if any options that change the
-      output have changed, like ws in element content, format output, and
-      encoding.
-    
+	* Using UTF-16, UTF-16BE and UTF-16LE seems to have an adverse effect
+      on viewingthe document in the source view. Should probobly remove
+      them from the list of available encodings for now.
+
     * Fix the tree node editing compatibility with drag n drop. If you select a
       node then click again to drag it drags and begins editing at the same time
       which causes problems.
@@ -44,13 +48,14 @@ TODO:
     * Add relevent command-line option parsing to jsXe. At least things like
       '--version' and '--help' should be present.
     
-    * Add drag & drop functionality to the default view tree
+    * Add better drag and drop functionality to the tree view. Allow users
+      to rearrange nodes within a particular node.
     
     * Add minimal support for namespaces.
     
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
     
-    * Release new version (0.2.0), jsXe needs to be at least usable.
+* Version 0.3.0
     
     * Make the XML document declaration header non-editable in source-view
       mode. (how?) Update it when the user changes options in the options panel.
@@ -87,7 +92,7 @@ TODO:
       DefaultXMLDocument classes. Should use char arrays instead of String
       objects. Implement a much more efficient way of storing the text source.
     
-    * Release new minor version (0.3.0)
+* Version 0.4.0
     
     * Implement BeanShell support. This is required for dynamic actions like
       those in jEdit.
@@ -99,13 +104,15 @@ TODO:
       expect.
     
     * Create a toolbar that is customizable much the same way jEdit's is.
-    
+	    
+	* Make a splash screen that displays on startup.
+
     * By this time, make sure all classes are documented with javadoc.
     
     * Make sure all instance variables are prefixed with m_ and are named in a
       consistent manner.
     
-    * Release new version (0.4.0)
+* Version 0.5.0
     
     * Create a feature to edit source for 1 node only. (Not sure how to do this
       given current design. How would I allow the source view to do that?)
@@ -125,7 +132,7 @@ TODO:
       can be validated by the DTD and what needs to be done to the document
       before it will comply with the DTD.
     
-    * Release new version (0.5.0).
+* Version 0.6.0
     
     * Implement some version of the DOM Document interfaces and add features
       such as the registering of listeners that can tell when the structure
@@ -138,7 +145,7 @@ TODO:
     
     * Implement validation against DTDs and different forms of Schema.
     
-    * Release new version (0.6.0)
+* Version 0.7.0
     
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
@@ -170,6 +177,6 @@ TODO:
     * Create a view that is similar to the xeditor view if it's ok (it kind of
       has to be since jie bao used my GPL code his has to be open source too.)
     
-    * Release new version (0.7.0)
+* Version 0.8.0
     
     * Implement some form of internationalization support.
