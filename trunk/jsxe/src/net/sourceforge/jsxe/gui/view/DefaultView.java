@@ -80,6 +80,11 @@ import java.awt.Dimension;
 import org.w3c.dom.Node;
 //}}}
 
+//{{{ Java base classes
+import java.util.Enumeration;
+import java.util.Vector;
+//}}}
+
 //}}}
 
 public class DefaultView extends DocumentView {
@@ -215,9 +220,6 @@ public class DefaultView extends DocumentView {
     }//}}}
     
     private JTree tree = new JTree();
-    //htmlPane will one day be more true to its name. I wanted to
-    //use the JEditorPane to add support for viewing graphics in
-    //the right hand pane but so far that isn't supported.
     private JEditorPane htmlPane = new JEditorPane("text/plain","");
     private JTable attributesTable = new JTable();
     private JSplitPane vertSplitPane;
@@ -228,35 +230,74 @@ public class DefaultView extends DocumentView {
            attributesTable.updateUI();
         }
     };//}}}
-    
-    //These listeners that update the tree cause it to collapse fully.
-    //This is not desirable and should be changed.
     private TreeModelListener treeListener = new TreeModelListener() {//{{{
+        
         public void treeNodesChanged(TreeModelEvent e) {
-            tree.updateUI();
+            updateTree();
         }
         public void treeNodesInserted(TreeModelEvent e) {
-            tree.updateUI();
+            updateTree();
         }
         public void treeNodesRemoved(TreeModelEvent e) {
-            tree.updateUI();
+            updateTree();
         }
         public void treeStructureChanged(TreeModelEvent e) {
-            tree.updateUI();
+            updateTree();
         }
+        
+        private void updateTree() {
+            int rowcount = tree.getRowCount();
+            Vector allPaths = new Vector();
+            for (int i=0; i<rowcount; i++) {
+                TreePath root = tree.getPathForRow(i);
+                Enumeration expandedPaths = tree.getExpandedDescendants(root);
+                if (expandedPaths != null) {
+                    allPaths.add(expandedPaths);
+                }
+            }
+            Enumeration paths = allPaths.elements();
+            while (paths.hasMoreElements()) {
+                Enumeration nodepaths = (Enumeration) paths.nextElement();
+                while (nodepaths.hasMoreElements()) {
+                    TreePath path = (TreePath)nodepaths.nextElement();
+                    tree.expandPath(path);
+                }
+            }
+        }
+        
     };//}}}
     private DocumentListener docListener = new DocumentListener() {//{{{
-        //The tree should be updated but it collapses.
-        //We dont want to do this yet.
+        
         public void changedUpdate(DocumentEvent e) {
-           // tree.updateUI();
+           updateTree();
         }
         public void insertUpdate(DocumentEvent e) {
-           // tree.updateUI();
+           updateTree();
         }
         public void removeUpdate(DocumentEvent e) {
-           // tree.updateUI();
+           updateTree();
         };
+        
+        private void updateTree() {
+            int rowcount = tree.getRowCount();
+            Vector allPaths = new Vector();
+            for (int i=0; i<rowcount; i++) {
+                TreePath root = tree.getPathForRow(i);
+                Enumeration expandedPaths = tree.getExpandedDescendants(root);
+                if (expandedPaths != null) {
+                    allPaths.add(expandedPaths);
+                }
+            }
+            Enumeration paths = allPaths.elements();
+            while (paths.hasMoreElements()) {
+                Enumeration nodepaths = (Enumeration) paths.nextElement();
+                while (nodepaths.hasMoreElements()) {
+                    TreePath path = (TreePath)nodepaths.nextElement();
+                    tree.expandPath(path);
+                }
+            }
+        }
+        
     };//}}}
     //}}}
 }
