@@ -69,6 +69,7 @@ import java.util.StringTokenizer;
 public class DefaultViewDocument extends DefaultStyledDocument {
 
     protected DefaultViewDocument(AdapterNode n) {//{{{
+        super(new GapContent(), new StyleContext);
         try {
             if (n != null) {
                 String value = n.getNodeValue();
