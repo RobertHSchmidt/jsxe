@@ -54,24 +54,9 @@ import java.awt.Toolkit;
 
 //{{{ Java Base classes
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Vector;
-//}}}
-
-//{{{ JAXP classes
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-//}}}
-
-//{{{ DOM uses SAX Exceptions
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 //}}}
 
 //}}}
