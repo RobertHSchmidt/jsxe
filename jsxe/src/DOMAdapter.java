@@ -426,34 +426,61 @@ public class DOMAdapter implements TreeModel, TableModel {
     public void saveAs() {//{{{
         //  if XMLFile is null, defaults to home directory
         JFileChooser saveDialog = new JFileChooser(XMLFile);
-        saveDialog.setFileFilter(//{{{
-            new FileFilter() {
-                public boolean accept(File f) {
-                    if(f != null) {
-                        if(f.isDirectory()) {
-                            return true;
-                        }
-                        String extention = getExtension(f);
-                        if(extention!=null && extention.compareTo(new String("xml"))==0) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-                public String getDescription() {
-                    return new String("XML Documents (.xml)");
-                }
-                private String getExtension(File f) {
-                    if(f != null) {
-                        String filename = f.getName();
-                        int i = filename.lastIndexOf('.');
-                        if (i>0 && i<filename.length()-1) {
-                            return filename.substring(i+1).toLowerCase();
-                        }
-                    }
-                    return null;
-                }
-            });//}}}
+        //Add a filter to display only XML files
+        Vector extentionList = new Vector();
+        extentionList.add(new String("xml"));
+        CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
+        saveDialog.addChoosableFileFilter(firstFilter);
+        //Add a filter to display only XSL files
+        extentionList = new Vector();
+        extentionList.add(new String("xsl"));
+        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
+        //Add a filter to display only XSL:FO files
+        extentionList = new Vector();
+        extentionList.add(new String("fo"));
+        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
+        //Add a filter to display all formats
+        extentionList = new Vector();
+        extentionList.add(new String("xml"));
+        extentionList.add(new String("xsl"));
+        extentionList.add(new String("fo"));
+        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "All XML Documents"));
+        
+        //The "All Files" file filter is added to the dialog
+        //by default. Put it at the end of the list.
+        FileFilter all = saveDialog.getAcceptAllFileFilter();
+        saveDialog.removeChoosableFileFilter(all);
+        saveDialog.addChoosableFileFilter(all);
+        saveDialog.setFileFilter(firstFilter);
+        
+       // saveDialog.setFileFilter(//{{{
+       //     new FileFilter() {
+       //         public boolean accept(File f) {
+       //             if(f != null) {
+       //                 if(f.isDirectory()) {
+       //                     return true;
+       //                 }
+       //                 String extention = getExtension(f);
+       //                 if(extention!=null && extention.compareTo(new String("xml"))==0) {
+       //                     return true;
+       //                 }
+       //             }
+       //             return false;
+       //         }
+       //         public String getDescription() {
+       //             return new String("XML Documents (.xml)");
+       //         }
+       //         private String getExtension(File f) {
+       //             if(f != null) {
+       //                 String filename = f.getName();
+       //                 int i = filename.lastIndexOf('.');
+       //                 if (i>0 && i<filename.length()-1) {
+       //                     return filename.substring(i+1).toLowerCase();
+       //                 }
+       //             }
+       //             return null;
+       //         }
+       //     });//}}}
         
         int returnVal = saveDialog.showOpenDialog(view);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -462,6 +489,7 @@ public class DOMAdapter implements TreeModel, TableModel {
                 File newFile = saveDialog.getSelectedFile();
                 serializer.serialize(document, newFile);
                 jsXe.openXMLDocument(view, newFile);
+                jsXe.closeXMLDocument(view, this);
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(view, ioe, "Write Error"
                     , JOptionPane.WARNING_MESSAGE);
