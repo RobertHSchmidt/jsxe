@@ -6,6 +6,8 @@ Here are some features that will, one day, be added to jsXe.
   Schema.</li>
   <li>Transformation - jsXe will be able to transform XML documents using
   a XSLT stylesheet.</li>
+  <li>Drag and Drop interface - You will be able to drag and drop nodes into
+  areas of jsXe and other text editors.</li>
   <li>Unlimited undo</li>
   <li>Syntax highlighted source view.</li>
 </ul>
