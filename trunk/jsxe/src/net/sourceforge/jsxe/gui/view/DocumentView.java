@@ -62,6 +62,7 @@ import java.io.IOException;
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @see TabbedView
  */
 public abstract class DocumentView extends JPanel {
     

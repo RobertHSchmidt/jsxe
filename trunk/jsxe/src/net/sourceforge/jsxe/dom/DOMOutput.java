@@ -45,6 +45,13 @@ import java.io.Writer;
 
 //}}}
 
+/**
+ * An implementation of the LSOutput interface for use with the DOMSerializer
+ * class. This object is used when generating locations into a document.
+ * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
+ * @version $Id$
+ * @see DOMSerializer
+ */
 public class DOMOutput implements LSOutput {
     
     //{{{ DOMOutput constructor

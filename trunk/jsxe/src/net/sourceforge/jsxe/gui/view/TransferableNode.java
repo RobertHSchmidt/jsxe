@@ -58,10 +58,17 @@ import java.util.*;
  * the node (such as a string) during transfer.
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @see DefaultView
+ * @see DefaultViewTree
+ * @see DefaultViewTreeModel
+ * @see DefaultViewTreeNode
  */
 public class TransferableNode implements Transferable {
     
     public static final DataFlavor stringFlavor = DataFlavor.stringFlavor;
+    /**
+     * The flavor for transferring DefaultViewTreeNodes
+     */
     public static final DataFlavor nodeFlavor;
     
     //{{{ TransferableNode constructor

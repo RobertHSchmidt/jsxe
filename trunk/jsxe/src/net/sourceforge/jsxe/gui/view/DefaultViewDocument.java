@@ -65,7 +65,12 @@ import org.w3c.dom.DOMException;
 import java.util.StringTokenizer;
 
 //}}}
-
+/**
+ * The document model used with the JEditorPane on the right side of the DefaultView.
+ * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
+ * @version $Id$
+ * @see DefaultView
+ */
 public class DefaultViewDocument extends DefaultStyledDocument {
 
     //{{{ DefaultViewDocument constructor

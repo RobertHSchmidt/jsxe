@@ -87,6 +87,7 @@ import java.util.Vector;
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @see DocumentView
  */
 public class TabbedView extends JFrame {
     

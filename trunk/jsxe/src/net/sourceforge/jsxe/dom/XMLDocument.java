@@ -90,6 +90,7 @@ import javax.swing.text.Segment;
  * or as a tree structure seamlessly.
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @see AdapterNode
  */
 public class XMLDocument {
     
@@ -949,7 +950,7 @@ public class XMLDocument {
     
     //{{{ XMLDocErrorHandler class
     
-    public class XMLDocErrorHandler implements DOMErrorHandler {
+    private class XMLDocErrorHandler implements DOMErrorHandler {
         
         //{{{ handleError()
         

@@ -55,6 +55,15 @@ import org.w3c.dom.Node;
 
 //}}}
 
+/**
+ * Defines a node that is used in the DefaultView tree. Contains attributes specific
+ * to the GUI such as an expanded state and a toString() method for displaying text.
+ * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
+ * @version $Id$
+ * @see DefaultView
+ * @see DefaultViewTree
+ * @see DefaultViewTreeModel
+ */
 public class DefaultViewTreeNode implements MutableTreeNode {
     
     //{{{ DefaultViewTreeNode constructor

@@ -96,6 +96,8 @@ import java.util.Enumeration;
  * an XML document as a tree.
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @see DefaultView
+ * @see DefaultViewTree
  */
 public class DefaultViewTreeModel implements TreeModel {
     
