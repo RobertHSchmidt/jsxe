@@ -1,3 +1,15 @@
+03/09/2005  version 0.3 pre15
+
+    * Added plugin support. Now additional views can be added to jsXe easily
+      without recompiling. Plugins can set dependencies. If the plugin requires
+      a certain version of java, jsXe, or another plugin it can be specified
+      by the plugin writer.
+    * Added a plugin manager dialog to show information about loaded plugins.
+    * Fixed bug in the find and replace dialog that caused a null pointer
+      exception.
+    * Added an 'Ignore Case' Check box to the find dialog
+    
+
 11/23/2004  version 0.2 beta
 
     * Fixed bug that didn't update the tab width for the source view when

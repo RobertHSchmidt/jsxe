@@ -1,2 +1,6 @@
 #jsXe default properties
 max.recent.files=20
+pluginmgr.x=100
+pluginmgr.y=100
+pluginmgr.height=300
+pluginmgr.width=400

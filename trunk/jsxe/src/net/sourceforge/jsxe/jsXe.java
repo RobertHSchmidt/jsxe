@@ -112,11 +112,19 @@ public class jsXe {
             String fileSep = System.getProperty("file.separator");
             
             String settingsDirectory = homeDir+fileSep+".jsxe";
-    
+            
+            File _settingsDirectory = new File(settingsDirectory);
+            if(!_settingsDirectory.exists())
+                _settingsDirectory.mkdirs();
+            String pluginsDirectory = settingsDirectory+"/jars";
+            File _pluginsDirectory = new File(pluginsDirectory);
+            if(!_pluginsDirectory.exists())
+                _pluginsDirectory.mkdirs();
+            
             Log.init(true, Log.ERROR, true);
             
             try {
-                BufferedWriter stream = new BufferedWriter(new FileWriter(settingsDirectory+fileSep+"jsXe.log"));
+                BufferedWriter stream = new BufferedWriter(new FileWriter(new File(settingsDirectory+fileSep+"jsXe.log")));
                 
                 stream.write("Log file created on " + new Date());
                 stream.write(System.getProperty("line.separator"));
@@ -129,14 +137,6 @@ public class jsXe {
             
             //{{{ get and load the configuration files
             initDefaultProps();
-            
-            File _settingsDirectory = new File(settingsDirectory);
-            if(!_settingsDirectory.exists())
-                _settingsDirectory.mkdirs();
-            String pluginsDirectory = settingsDirectory+"/jars";
-            File _pluginsDirectory = new File(pluginsDirectory);
-            if(!_pluginsDirectory.exists())
-                _pluginsDirectory.mkdirs();
             
             File properties = new File(settingsDirectory,"properties");
             try {
@@ -312,10 +312,28 @@ public class jsXe {
      */
     public static String getBuild() {
         // Major.Minor.Beta.Build
-        return buildProps.getProperty("major.version")+"."+
-               buildProps.getProperty("minor.version")+"."+
-               buildProps.getProperty("beta.version")+"."+
-               buildProps.getProperty("build.version");
+        String major  = buildProps.getProperty("major.version");
+        String minor  = buildProps.getProperty("minor.version");
+        String beta   = buildProps.getProperty("beta.version");
+        String bugfix = buildProps.getProperty("build.version");
+        
+        if (major.length() == 1) {
+            major = "0"+major;
+        }
+        if (minor.length() == 1) {
+            minor = "0"+minor;
+        }
+        if (beta.length() == 1) {
+            beta = "0"+beta;
+        }
+        if (bugfix.length() == 1) {
+            bugfix = "0"+bugfix;
+        }
+        
+        return major+"."+
+               minor+"."+
+               beta+"."+
+               bugfix;
     }//}}}
     
     //{{{ getVersion()
