@@ -133,7 +133,12 @@ public class TabbedView extends JFrame {
      * @return the current DocumentView
      */
     public DocumentView getDocumentView() {
-        return (DocumentView)tabbedPane.getSelectedComponent();
+        int index = tabbedPane.getSelectedIndex();
+        if (index >= 0) {
+            return (DocumentView)m_documentViews.get(index);
+        } else {
+            return null;
+        }
     }//}}}
     
     //{{{ addDocumentBuffer()
@@ -182,6 +187,7 @@ public class TabbedView extends JFrame {
             
         });//}}}
         
+        m_documentViews.add(newDocView);
         tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), newDocView.getDocumentViewComponent());
         tabbedPane.setSelectedComponent(newDocView.getDocumentViewComponent());
         
@@ -259,27 +265,25 @@ public class TabbedView extends JFrame {
      * @return true if the document was removed
      */
     public boolean removeDocumentBuffer(DocumentBuffer buffer) {
-        boolean success = false;
         if (buffer != null) {
-            DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
-            for (int i=0; i < buffers.length; i++) {
-                if (buffers[i] == buffer) {
-                    
-                    DocumentView docView = (DocumentView)tabbedPane.getComponentAt(i);
-                    
+            
+            for (int i=0; i<m_documentViews.size(); i++) {
+                DocumentView docView = (DocumentView)m_documentViews.get(i);
+                if (docView.getDocumentBuffer() == buffer) {
                     //only close if we _mean_ it.
                     if (docView.close()) {
                         tabbedPane.remove(i);
+                        m_documentViews.remove(docView);
                         //if the tab removed is not the rightmost tab
                         //stateChanged is not called for some
                         //reason so we must update the title.
                         updateTitle();
-                        success = true;
+                        return true;
                     }
                 }
             }
         }
-        return success;
+        return false;
     }//}}}
     
     //{{{ getBufferCount()
@@ -558,11 +562,14 @@ public class TabbedView extends JFrame {
             DocumentBuffer currentBuffer = getDocumentBuffer();
             
             //no exceptions? cool. register the new view
-            tabbedPane.remove(oldView.getDocumentViewComponent());
+            m_documentViews.remove(oldView);
+            m_documentViews.add(index, newView);
+            tabbedPane.remove(index);
             tabbedPane.add(newView.getDocumentViewComponent(), index);
             tabbedPane.setIconAt(index, getTabIcon(currentBuffer));
             tabbedPane.setTitleAt(index, currentBuffer.getName());
             tabbedPane.setSelectedIndex(index);
+            
             updateMenuBar();
         }
     }//}}}
@@ -655,6 +662,7 @@ public class TabbedView extends JFrame {
     private JMenu m_toolsMenu;
     private JMenu m_helpMenu;
     private JMenu m_recentFilesMenu;
+    private ArrayList m_documentViews = new ArrayList();
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     //The current document

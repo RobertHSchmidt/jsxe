@@ -23,10 +23,6 @@ TODO:
     
 * Version 0.2 beta
     
-    * Separate the DefaultView class so that the DefaultView class implements
-      the DocumentView methods but the gui component features are implemented
-      in another class that is not dependent on jsXe
-    
     * Fix bug where when documents are opened but not viewed the split pane
       locations in the default view are set to zero so when you open it the
       next time the panes are messed up
