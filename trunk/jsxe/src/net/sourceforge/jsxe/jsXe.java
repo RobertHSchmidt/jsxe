@@ -272,6 +272,15 @@ public class jsXe {
                 buffer = new DocumentBuffer(file);
                 m_buffers.add(buffer);
                 view.addDocumentBuffer(buffer);
+                /*
+                if there was only one untitled, clean buffer open then go
+                ahead and close it so it doesn't clutter up the user's
+                workspace.
+                */
+                DocumentBuffer[] buffers = getDocumentBuffers();
+                if (buffers.length == 2 && buffers[0].isUntitled() && !buffers[0].isDirty()) {
+                    closeDocumentBuffer(view, buffers[0]);
+                }
                 return true;
             } catch (IOException ioe) {
                 m_buffers.remove(buffer);
@@ -283,7 +292,8 @@ public class jsXe {
     
     //{{{ openXMLDocument()
     /**
-     * Attempts to open an XML document in the form of a String object in jsXe.
+     * Attempts to open an XML document in the form of a String object as an
+     * untitled document.
      * @param view The view to open the document in.
      * @param doc The String document to open.
      * @return true if the file is opened successfully.
@@ -295,7 +305,8 @@ public class jsXe {
     
     //{{{ openXMLDocument()
     /**
-     * Attempts to open an XML document in the form of a Reader object in jsXe.
+     * Attempts to open an XML document in the form of a Reader object as an
+     * untitled document..
      * @param view The view to open the document in.
      * @param reader The Reader document to open.
      * @return true if the file is opened successfully.

@@ -95,7 +95,12 @@ import org.xml.sax.InputSource;
 public class DocumentBuffer {
     
     //{{{ DocumentBuffer
-    
+    /**
+     * Creates a new DocumentBuffer for a file on disk. The name of the
+     * DocumentBuffer is taken from the filename.
+     * @param file the file to read the XML document from.
+     * @throws IOException if there was a problem reading the file
+     */
     DocumentBuffer(File file) throws IOException {
         m_file = file;
         m_name = file.getName();
@@ -108,7 +113,13 @@ public class DocumentBuffer {
     }//}}}
     
     //{{{ DocumentBuffer
-    
+    /**
+     * Creates a new untitled DocumentBuffer. The buffer is initialized from
+     * the reader given and takes the name Untitled-X, where X is the highest
+     * untitled document number plus 1.
+     * @param reader the reader used to read the XML document.
+     * @throws IOException if there is a problem using the reader
+     */
     DocumentBuffer(Reader reader) throws IOException {
         m_file = null;
         m_name = getUntitledLabel();

@@ -27,6 +27,8 @@ TODO:
     
     * DOMSerializer needs to support the following parameters:
         normalize-characters
+            This maybe needs to be done after I better understand and have
+            built methods for interacting with the DTD.
         ignore-unknown-character-denormalizations
         split-cdata-sections
     
@@ -45,7 +47,8 @@ TODO:
       the buffer failed to be validated or parsed or whatever. It's not real
       clear to the user why they got kicked to the source view when they
       opened a document but a status bar could convey that info. Add an option
-      to the options menu that allows you to hide it.
+      to the options menu that allows you to hide it. Maybe an error dialog
+      would be suitable.
     
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
       Update the DefaultViewTreeModel to use a DefaultViewTreeNode class
@@ -66,6 +69,11 @@ TODO:
     
     * Add option to use soft tabs in the source view. Override processKeyEvent
       in JEditorPane to accomplish this.
+    
+    * Add a feature that allows the cursor to be set to the location of a
+      parse error in the source view.
+    
+    * Implement a find dialog (for the source view at least).
     
     * Refactor the class structure and DocumentView classes
     
@@ -101,10 +109,9 @@ TODO:
     
 * Version 0.4.0
     
-    * Add threading support and allow multiple windows/Views to be open for one
-      document at once. This can let you edit a document using one view and
-      view it using another. Views should be able to update automatically using
-      some sort of listener interface.
+    * Allow Views to be split so that one DocumentView can be displayed left/top
+      and one on the right/bottom. Views should be able to update automatically
+      using some sort of listener interface.
     
     * Implement BeanShell support. This is required for dynamic actions like
       those in jEdit.
@@ -116,8 +123,6 @@ TODO:
       act like you would expect. Allow users to define keys shortcuts to
       actions.
     
-    * Implement a find dialog.
-    
     * Create a toolbar that is customizable much the same way jEdit's is.
 	    
 	* Make a splash screen that displays on startup.
@@ -128,6 +133,12 @@ TODO:
       consistent manner.
     
 * Version 0.5.0
+    
+    * Add threading support and allow multiple windows/Views to be open for one
+      document at once. This can let you edit a document using one view and
+      view it using another. Views should be able to update automatically using
+      some sort of listener interface.  This will be another option to allow users
+      to see more than one view of the document at the same time.
     
     * Create a feature to edit source for 1 node only? (Not sure how to do this
       given current design. How would I allow the source view to do that?)
