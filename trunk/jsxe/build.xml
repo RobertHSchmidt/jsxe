@@ -24,8 +24,10 @@
   </target>
   
   <target name="dist" depends="compile">
-    
-    <propertyfile file="net/sourceforge/jsxe/build.properties" comment="jsXe build properties">
+    <!-- For concurrency of the build version you need to do a cvs update
+         of the build.properties when you begin work and commit it when
+         you are finished. Even still the bulid version won't be perfect.-->
+    <propertyfile file="net/sourceforge/jsxe/build.properties" comment="jsXe's build properties">
       <entry key="application.name" value="jsXe"/>
       <entry key="build.time" type="date" value="now" pattern="dd/MM/yyyy HH:mm"/>
       <entry key="build.type" value="development"/>
@@ -48,7 +50,7 @@
   
   <target name="minor" depends="compile">
     
-    <propertyfile file="net/sourceforge/jsxe/build.properties" comment="jsXe build properties">
+    <propertyfile file="net/sourceforge/jsxe/build.properties" comment="jsXe's build properties">
       <entry key="application.name" value="jsXe"/>
       <entry key="build.time" type="date" value="now" pattern="dd/MM/yyyy HH:mm"/>
       <entry key="build.type" value="stable"/>
@@ -71,7 +73,7 @@
   
   <target name="major" depends="compile">
     
-    <propertyfile file="net/sourceforge/jsxe/build.properties" comment="jsXe build properties">
+    <propertyfile file="net/sourceforge/jsxe/build.properties" comment="jsXe's build properties">
       <entry key="application.name" value="jsXe"/>
       <entry key="build.time" type="date" value="now" pattern="dd/MM/yyyy HH:mm"/>
       <entry key="build.type" value="stable"/>
