@@ -90,23 +90,41 @@ import java.util.Enumeration;
 
 //}}}
 
+/**
+ * A tree model for the default view of jsXe that models
+ * an XML document as a tree.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class DefaultViewTreeModel implements TreeModel {
     
-    protected DefaultViewTreeModel(Component parent, DocumentBuffer doc) {//{{{
+    //{{{ DefaultViewTreeModel constructor
+    
+    /**
+     * Constructs a new tree model for the default view for jsXe.
+     * @param parent the parent gui component that is used to display errors
+     *               when necessary.
+     * @param doc the document that this tree model models
+     */
+    protected DefaultViewTreeModel(Component parent, DocumentBuffer doc) {
         m_buffer = doc;
         m_rootTreeNode = new DefaultViewTreeNode(m_buffer.getXMLDocument());
         view = parent;
     }//}}}
 
-    // {{{ Implemented TreeModel methods
+    //{{{ Implemented TreeModel methods
     
-    public void addTreeModelListener( TreeModelListener listener ) {//{{{
+    //{{{ addTreeModelListener()
+    
+    public void addTreeModelListener( TreeModelListener listener ) {
         if ( listener != null && ! treeListenerList.contains( listener ) ) {
             treeListenerList.addElement( listener );
         }
     }//}}}
     
-    public Object getChild(Object parent, int index) {//{{{
+    //{{{ getChild()
+    
+    public Object getChild(Object parent, int index) {
         DefaultViewTreeNode node = (DefaultViewTreeNode) parent;
         
         boolean showComments = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
@@ -140,7 +158,9 @@ public class DefaultViewTreeModel implements TreeModel {
         return node.getChildAt(index);
     }//}}}
     
-    public int getChildCount(Object parent) {//{{{
+    //{{{ getChildCount()
+    
+    public int getChildCount(Object parent) {
         DefaultViewTreeNode node = (DefaultViewTreeNode)parent;
         int totalcount = node.getChildCount();
         int count = 0;
@@ -154,7 +174,6 @@ public class DefaultViewTreeModel implements TreeModel {
             DefaultViewTreeNode child = (DefaultViewTreeNode)node.getChildAt(i);
             
             if (child != null) {
-                System.out.println(i+".) "+child.toString());
                 boolean displayNode = true;
                 AdapterNode adapter = child.getAdapterNode();
                 if (!showComments && adapter.getNodeType()==Node.COMMENT_NODE) {
@@ -174,7 +193,9 @@ public class DefaultViewTreeModel implements TreeModel {
         return count;
     }//}}}
     
-    public int getIndexOfChild(Object parent, Object child) {//{{{
+    //{{{ getIndexOfChild()
+    
+    public int getIndexOfChild(Object parent, Object child) {
         DefaultViewTreeNode node = (DefaultViewTreeNode) parent;
         AdapterNode adapter = node.getAdapterNode();
         
@@ -189,22 +210,30 @@ public class DefaultViewTreeModel implements TreeModel {
         return node.getIndex((DefaultViewTreeNode)child);
     }//}}}
     
-    public Object getRoot() {//{{{
+    //{{{ getRoot()
+    
+    public Object getRoot() {
         return m_rootTreeNode;
     }//}}}
     
-    public boolean isLeaf(Object aNode) {//{{{
+    //{{{ isLeaf()
+    
+    public boolean isLeaf(Object aNode) {
         // Return true for any node with no children
         return ((DefaultViewTreeNode)aNode).isLeaf();
     }//}}}
     
-    public void removeTreeModelListener(TreeModelListener listener) {//{{{
+    //{{{ removeTreeModelListener()
+    
+    public void removeTreeModelListener(TreeModelListener listener) {
         if ( listener != null ) {
             treeListenerList.removeElement( listener );
         }
     }//}}}
     
-    public void valueForPathChanged(TreePath path, Object newValue) {//{{{
+    //{{{ valueForPathChanged()
+    
+    public void valueForPathChanged(TreePath path, Object newValue) {
         try {
             //get the nodes needed
             AdapterNode node = ((DefaultViewTreeNode)path.getLastPathComponent()).getAdapterNode();

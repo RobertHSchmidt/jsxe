@@ -3,6 +3,8 @@
     * Fixed a bug in the displaying of nodes in the tree. The algorithm
       That desides if a node is to be displayed caused null pointer exceptions
       to be thrown.
+    * Fixed various bugs. Moved logic for opening save dialogs to the
+      DocumentBuffer class.
 
 05/07/2004  version 0.1.71  Ian Lewis <IanLewis@member.fsf.org>
 

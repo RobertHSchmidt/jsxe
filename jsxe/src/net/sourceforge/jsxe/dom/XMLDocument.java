@@ -112,6 +112,12 @@ public class XMLDocument {
      * document is displayed as text or otherwise.
      */
     public static String INDENT = DOMSerializerConfiguration.INDENT;
+    /**
+     * The property key for the property defining whether to serialize
+     * using soft tabs (tabs replaced by spaces). Has a value of "true" if
+     * using soft tabs.
+     */
+    public static String IS_USING_SOFT_TABS = DOMSerializerConfiguration.SOFT_TABS;
     
     //{{{ XMLDocument constructor
     /**

@@ -568,8 +568,8 @@ public class DefaultView extends DocumentView {
             
             tree.updateUI();
             //Make root element node expanded.
-            TreePath path = new TreePath(new Object[] { m_buffer.getXMLDocument().getAdapterNode(), m_buffer.getXMLDocument().getRootElementNode() });
-            tree.expandPath(path);
+           // TreePath path = new TreePath(new Object[] { m_buffer.getXMLDocument().getAdapterNode(), m_buffer.getXMLDocument().getRootElementNode() });
+           // tree.expandPath(path);
             
             //clear the html pane
             htmlPane.setDocument(new DefaultViewDocument(m_buffer.getXMLDocument().getAdapterNode()));

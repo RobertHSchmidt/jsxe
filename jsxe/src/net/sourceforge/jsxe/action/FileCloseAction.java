@@ -44,10 +44,15 @@ import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
+//{{{ Java classes
+import java.io.IOException;
+//}}}
+
 //{{{ Swing components
 import javax.swing.Action;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
+import javax.swing.JOptionPane;
 //}}}
 
 //{{{ AWT components
@@ -58,18 +63,26 @@ import java.awt.event.ActionEvent;
 
 public class FileCloseAction extends AbstractAction {
     
-    public FileCloseAction(TabbedView parent) {//{{{
+    //{{{ FileCloseAction constructor
+    
+    public FileCloseAction(TabbedView parent) {
         putValue(Action.NAME, "Close");
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl W"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("C").getKeyCode()));
-        view = parent;
+        m_view = parent;
     }//}}}
     
-    public void actionPerformed(ActionEvent e) {//{{{
-        jsXe.closeDocumentBuffer(view, view.getDocumentView().getDocumentBuffer());
+    //{{{ actionPerformed()
+    
+    public void actionPerformed(ActionEvent e) {
+        try {
+            jsXe.closeDocumentBuffer(m_view, m_view.getDocumentView().getDocumentBuffer());
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(m_view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+        }
     }//}}}
     
     //{{{ Private members
-    private TabbedView view;
+    private TabbedView m_view;
     //}}}
 }

@@ -313,8 +313,10 @@ public class TabbedView extends JFrame {
     /**
      * Closes the view.
      * @return true if you really want to close.
+     * @throws IOException if all the DocumentBuffers could not be saved
+     *                     due to an I/O error.
      */
-    public boolean close() {
+    public boolean close() throws IOException {
         
         DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
         DocumentView currentDocView = null;
