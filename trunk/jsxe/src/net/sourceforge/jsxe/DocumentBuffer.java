@@ -628,15 +628,15 @@ public class DocumentBuffer {
             indentComboBox.setSelectedItem(m_document.getProperty(XMLDocument.INDENT));
             
             //set up the whitespace and format output check-boxes.
-            boolean whitespace    = Boolean.valueOf(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, "true")).booleanValue();
+           // boolean whitespace    = Boolean.valueOf(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, "true")).booleanValue();
             boolean formatOutput = Boolean.valueOf(m_document.getProperty(XMLDocument.FORMAT_XML, "false")).booleanValue();
             
-            whitespaceCheckBox = new JCheckBox("Whitespace in element content", whitespace);
+           // whitespaceCheckBox = new JCheckBox("Whitespace in element content", whitespace);
             formatCheckBox     = new JCheckBox("Format XML output", formatOutput);
             
-            whitespaceCheckBox.addChangeListener(new WhiteSpaceChangeListener());
+           // whitespaceCheckBox.addChangeListener(new WhiteSpaceChangeListener());
             
-            formatCheckBox.setEnabled(!whitespace);
+           // formatCheckBox.setEnabled(!whitespace);
             
             constraints.gridy      = gridY;
             constraints.gridx      = 0;
@@ -682,16 +682,16 @@ public class DocumentBuffer {
             layout.setConstraints(indentComboBox, constraints);
             add(indentComboBox);
             
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = GridBagConstraints.REMAINDER;
-            constraints.weightx    = 0.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
+           // constraints.gridy      = gridY++;
+           // constraints.gridx      = 0;
+           // constraints.gridheight = 1;
+           // constraints.gridwidth  = GridBagConstraints.REMAINDER;
+           // constraints.weightx    = 0.0f;
+           // constraints.fill       = GridBagConstraints.BOTH;
+           // constraints.insets     = new Insets(1,0,1,0);
             
-            layout.setConstraints(whitespaceCheckBox, constraints);
-            add(whitespaceCheckBox);
+           // layout.setConstraints(whitespaceCheckBox, constraints);
+           // add(whitespaceCheckBox);
             
             constraints.gridy      = gridY++;
             constraints.gridx      = 0;
@@ -713,10 +713,10 @@ public class DocumentBuffer {
                 setDirty(true);
                 m_document.setProperty(XMLDocument.FORMAT_XML, String.valueOf(formatCheckBox.isSelected()));
             }
-            if (!String.valueOf(whitespaceCheckBox.isSelected()).equals(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT))) {
-                setDirty(true);
-                m_document.setProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, String.valueOf(whitespaceCheckBox.isSelected()));
-            }
+           // if (!String.valueOf(whitespaceCheckBox.isSelected()).equals(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT))) {
+           //     setDirty(true);
+           //     m_document.setProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, String.valueOf(whitespaceCheckBox.isSelected()));
+           // }
             if (!encodingComboBox.getSelectedItem().toString().equals(m_document.getProperty(XMLDocument.ENCODING))) {
                 setDirty(true);
                 m_document.setProperty(XMLDocument.ENCODING, encodingComboBox.getSelectedItem().toString());
@@ -735,21 +735,21 @@ public class DocumentBuffer {
             return "XML Document Options";
         };//}}}
         
-        //{{{ WhiteSpaceChangeListener class
+       // //{{{ WhiteSpaceChangeListener class
         
-        private class WhiteSpaceChangeListener implements ChangeListener {
+       // private class WhiteSpaceChangeListener implements ChangeListener {
             
-            //{{{ stateChanged()
+       //     //{{{ stateChanged()
             
-            public void stateChanged(ChangeEvent e) {
-                boolean whitespace = whitespaceCheckBox.isSelected();
-                if (whitespace) {
-                    formatCheckBox.setSelected(false);
-                }
-                formatCheckBox.setEnabled(!whitespace);
-            }//}}}
+       //     public void stateChanged(ChangeEvent e) {
+       //         boolean whitespace = whitespaceCheckBox.isSelected();
+       //         if (whitespace) {
+       //             formatCheckBox.setSelected(false);
+       //         }
+       //         formatCheckBox.setEnabled(!whitespace);
+       //     }//}}}
             
-        }//}}}
+       // }//}}}
         
         //{{{ Private members
         
