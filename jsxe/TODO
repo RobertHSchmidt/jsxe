@@ -3,36 +3,42 @@ TODO:
     * Document methods with javadoc.
     
     * Fix bug that has to do with the DOM1 method createElement() making nodes
-      so that localName returns null.
+      so that localName returns null. Use createElementNS() instead.
     
     * Work on performance problems when loading an XML document. (Hint: setModel
       in DefaultXMLDocument.java)
     
     * Change the XMLDocument interface to use something else but validate().
-      This is confusing and dumb. Use the 
+      This is confusing and dumb.
     
     * Research the EntityResolver class and see if it can be used to resolve
       DTD files.
     
     * Build an adapter for DocumentBuilder so that it implements the DOM3
-      standard DOMBuilder interface?
-    
-    * Use the Nodefilter interface with the DefaultView to determine which types
-      of nodes to show.
+      standard DOMBuilder interface? Maybe use it with DOMSerializer to created
+      filtered documents? Or use a TreeWalker to serialize?
     
     * Add funtionality for dirty files.
     
     * Allow for selecting multiple files when opening.
     
     * Fix the options dialog and make it look better. Maybe split into two
-      dialogs, global options and view/document specific?
+      dialogs, global options and view/document specific? Maybe even three
+      dialogs, one for global options, one for view options, one for document
+      options.
     
     * Allow for opening files with wellformedness errors in source view. This
       way users can fix wellformedness errors in the editor.
     
-    * Update the DOM3 classes to the current version of the DOM3 interfaces.
-    
     * Release new version (0.2.1).
+    
+    * Use the Nodefilter interface with the DefaultView to determine which types
+      of nodes to show.
+    
+    * Update the DOM3 classes to the current version of the DOM3 interfaces.
+      DOMSerializer needs to be renamed. DOMSerializerConfiguration needs to
+      be updated to support the parameters specified in DOM3 javadoc for
+      DOMSerializer.
     
     * Add full support for namespaces. (adding, editing, serialization, etc.)
     
@@ -45,7 +51,7 @@ TODO:
       and call updateUI the TreePath is no longer valid because it contains
       objects no longer in the TreeModel. So when updating the UI I can't tell
       which Nodes were previously visable.
-      
+    
     * Redo the interface for XMLDocuments and AdapterNodes so that DOM
       implementation used in a more limited way. Implement Document editing
       methods.
@@ -62,7 +68,10 @@ TODO:
     
     * Release new version (0.3.1).
     
-    * Create a feature to edit source for 1 node only.
+    * Implement undo for the DefaultView and SourceView.
+    
+    * Create a feature to edit source for 1 node only. (Not sure how to do this
+      given current design. How would I allow the source view to do that?)
     
     * Create a way for actions to be created dynamically and then registered
       with jsXe. Much the same way that jEdit does.
@@ -76,11 +85,9 @@ TODO:
       implements it. Other views can then be created to allow a more
       customizable look.
     
-    * Implement undo for the DefaultView and SourceView.
+    * Release new version (0.4.1)
     
     * Implement syntax highlighting for the SourceView.
-    
-    * Release new version (0.4.1)
     
     * Add drag & drop functionality to the default view.
     
@@ -88,6 +95,8 @@ TODO:
       state of the view and can be used to restore it later.
     
     * Fix updating of the tree when users are changing a text node.
+    
+    * Release new version (0.5.1).
     
     * Implement plugin support with BeanShell. Make DocumentViews into plugins
       that are loaded at runtime. DefaultView and SourceView will be distributed
@@ -101,7 +110,7 @@ TODO:
     
     * Create an install program for jsXe.
     
-    * Release new version (0.5.1).
+    * Release new version (0.6.1)
     
     * Create a view that uses the view from pollo and implements the
       DocumentView interface.
@@ -112,4 +121,4 @@ TODO:
     
     * Create a help system for jsXe.
     
-    * Release new version (0.6.1)
+    * Release new version (0.7.1)

@@ -12,9 +12,12 @@ This file contains the code for the DOMSerializer class that will write an XML
 document to an output using serialization. Probobly the most complex and
 nasty class in jsXe.
 
-This at2tempts to conform to the DOM3 implementation in Xerces. It conforms
+This attempts to conform to the DOM3 implementation in Xerces. It conforms
 to DOM3 as of Xerces 2.3.0. I'm not one to stay on the bleeding edge but
-there is as close to a standard interface for load & save as you can get.
+there is as close to a standard interface for load & save as you can get and I
+didn't want to work around the fact that current serializers aren't very good.
+This class name will have to changed because DOMWriter was changed to
+DOMSerializer among other changes.
 
 This file written by Ian Lewis (IanLewis@member.fsf.org)
 
