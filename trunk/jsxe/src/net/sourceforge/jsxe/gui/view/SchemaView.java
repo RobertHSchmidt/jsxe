@@ -1,5 +1,5 @@
 /*
-DocumentView.java
+SchemaView.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
@@ -8,8 +8,7 @@ jsXe is a gui application that can edit an XML document and create a tree view.
 The user can then edit this tree and the content in the tree and save the
 document.
 
-This file contains the abstract class that defines the interface for
-views that are used by jsXe.
+This file contains the view class for the Schema view.
 
 This file written by Ian Lewis (IanLewis@member.fsf.org)
 Copyright (C) 2002 Ian Lewis
@@ -36,59 +35,66 @@ package net.sourceforge.jsxe.gui.view;
 //{{{ imports
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 //}}}
 
-//{{{ AWT classes
-import java.awt.Component;
-//}}}
-
-//{{{ Swing classes
+//{{{ Swing components
 import javax.swing.*;
+import javax.swing.event.*;
 //}}}
 
+//{{{ AWT components
+import java.awt.*;
+import java.awt.event.*;
+//}}}
 
-//{{{ Java base classes
+//{{{ Java classes
 import java.io.IOException;
 //}}}
 
 //}}}
 
-/**
- * The DocumentView class defines the methods that will be implemented by
- * all views in jsXe that provide features for editing XML documents. This is
- * the precursor to jsXe's view/plugin interface.
- *
- * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
- * @version $Id$
- * @see TabbedView
- */
-public interface DocumentView {
+public class SchemaView extends JPanel implements DocumentView {
+    
+    private static final String _VIEWNAME = "schema";
+    
+    //{{{ Instance variables
+    private DocumentBuffer m_document;
+    //}}}
+    
+    //{{{ SchemaView constructor
+    
+    public SchemaView(DocumentBuffer document) throws IOException {
+        setDocumentBuffer(document);
+    }//}}}
+    
+    //{{{ DocumentView methods
     
     //{{{ close
-    /**
-     * Closes the current view. This method is called whenever the view is
-     * being discarded. This is usually used to save properties associated
-     * with this view.
-     */
-    public boolean close();
-    //}}}
+    
+    public boolean close() {
+        return true;
+    }//}}}
     
     //{{{ getDescription()
     /**
      * Gets a short, one line, description of this view.
      * @return a short description of the view
      */
-    public String getDescription();
-    //}}}
+    public String getDescription() {
+        return "View a Schema document in a diagram";
+    }//}}}
     
     //{{{ getDocumentViewComponent()
     /**
      * Gets the the Component used to render this view.
      * @return the Component used to render this view
      */
-    public Component getDocumentViewComponent();//}}}
+     public Component getDocumentViewComponent() {
+         return this;
+     }//}}}
     
     //{{{ getHumanReadableName()
     /**
@@ -96,7 +102,9 @@ public interface DocumentView {
      * things
      * @return the human readable name of this view
      */
-    public String getHumanReadableName();
+    public String getHumanReadableName() {
+        return "Schema View";
+    }
     //}}}
     
     //{{{ getMenus()
@@ -105,7 +113,9 @@ public interface DocumentView {
      * used when the view is loaded to set the menu bar.
      * @return the menus for this view
      */
-    public JMenu[] getMenus();
+    public JMenu[] getMenus() {
+        return null;
+    }
     //}}}
     
     //{{{ getOptionsPanel()
@@ -114,7 +124,9 @@ public interface DocumentView {
      * that are associated with this view.
      * @return the OptionsPanel for this view
      */
-    public OptionsPanel getOptionsPanel();
+    public OptionsPanel getOptionsPanel() {
+        return null;
+    }
     //}}}
     
     //{{{ getViewName()
@@ -123,7 +135,9 @@ public interface DocumentView {
      * a view to create.
      * @return the name of the view
      */
-    public String getViewName();
+    public String getViewName() {
+        return _VIEWNAME;
+    }
     //}}}
     
     //{{{ getDocumentBuffer()
@@ -131,7 +145,9 @@ public interface DocumentView {
      * Gets the DocumentBuffer that this view is currently using.
      * @return the DocumentBuffer for this view
      */
-    public DocumentBuffer getDocumentBuffer();
+    public DocumentBuffer getDocumentBuffer() {
+        return m_document;
+    }
     //}}}
     
     //{{{ setDocumentBuffer()
@@ -142,7 +158,9 @@ public interface DocumentView {
      * @param document the new document to view
      * @throws IOException if the document cannot be viewed using this view
      */
-    public void setDocumentBuffer(DocumentBuffer document) throws IOException;
-    //}}}
+    public void setDocumentBuffer(DocumentBuffer document) throws IOException {
+        m_document = document;
+    }//}}}
 
+    //}}}
 }

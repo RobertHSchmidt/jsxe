@@ -82,7 +82,11 @@ public class DocumentViewFactory {
             if (viewType.equals("source")) {
                 return new SourceView(document);
             } else {
-                throw new UnrecognizedDocViewException(viewType);
+                if (viewType.equals("schema")) {
+                    return new SchemaView(document);
+                } else {
+                    throw new UnrecognizedDocViewException(viewType);
+                }
             }
         }
     }//}}}
@@ -104,6 +108,7 @@ public class DocumentViewFactory {
         DocumentViews() {
             elements.add("tree");
             elements.add("source");
+           // elements.add("schema");
         }//}}}
         
         //{{{ Enumeration methods
@@ -127,7 +132,7 @@ public class DocumentViewFactory {
         
         //{{{ Private members
         
-        private ArrayList elements = new ArrayList(2);
+        private ArrayList elements = new ArrayList(3);
         //}}}
     }//}}}
     
