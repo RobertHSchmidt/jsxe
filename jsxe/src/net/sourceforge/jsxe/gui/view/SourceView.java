@@ -47,6 +47,7 @@ import net.sourceforge.jsxe.dom.XMLDocumentListener;
 //}}}
 
 //{{{ Swing components
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -56,14 +57,12 @@ import javax.swing.JTextArea;
 import javax.swing.Action;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
+import javax.swing.text.BadLocationException;
 //}}}
 
 //{{{ AWT components
-import java.awt.Component;
-import java.awt.BorderLayout;
-import java.awt.Window;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.awt.*;
+import java.awt.event.*;
 //}}}
 
 //{{{ DOM Classes
@@ -87,6 +86,14 @@ import java.io.IOException;
  */
 public class SourceView extends JPanel implements DocumentView {
     
+    //{{{ Private static members
+    private static final String _VIEWNAME = "source";
+    //}}}
+    
+    //{{{ Public static members
+    public static final String SOFT_TABS = _VIEWNAME+".soft.tabs";
+    //}}}
+    
     //{{{ SourceView constructor
     /**
      * Creates a new SourceView for the XMLDocument specified.
@@ -95,7 +102,7 @@ public class SourceView extends JPanel implements DocumentView {
      */
     public SourceView(XMLDocument document) throws IOException {
         
-        textarea = new JTextArea("");
+        textarea = new SourceViewTextPane();
         textarea.setTabSize(4);
         textarea.setCaretPosition(0);
         textarea.setLineWrap(false);
@@ -167,7 +174,7 @@ public class SourceView extends JPanel implements DocumentView {
     //{{{ getOptionsPanel()
     
     public OptionsPanel getOptionsPanel() {
-        return null;
+        return new SourceViewOptionsPanel();
     }//}}}
     
     //{{{ getXMLDocument()
@@ -301,12 +308,92 @@ public class SourceView extends JPanel implements DocumentView {
         
     }//}}}
     
+    //{{{ SourceViewOptionsPanel class
+    
+    private class SourceViewOptionsPanel extends OptionsPanel {
+        
+        //{{{ SourceViewOptionsPanel constructor
+        
+        public SourceViewOptionsPanel() {
+            
+            GridBagLayout layout = new GridBagLayout();
+            GridBagConstraints constraints = new GridBagConstraints();
+            
+            setLayout(layout);
+            
+            int gridY = 0;
+            
+            boolean softTabs = Boolean.valueOf(m_document.getProperty(SOFT_TABS, "false")).booleanValue();
+            
+            m_m_softTabsCheckBox = new JCheckBox("Soft tabs (emulated with spaces)", softTabs);
+            
+            constraints.gridy      = gridY++;
+            constraints.gridx      = 1;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
+            layout.setConstraints(m_m_softTabsCheckBox, constraints);
+            add(m_m_softTabsCheckBox);
+        }//}}}
+        
+        //{{{ saveOptions()
+        
+        public void saveOptions() {
+            m_document.setProperty(SOFT_TABS,(new Boolean(m_m_softTabsCheckBox.isSelected())).toString());
+        }//}}}
+        
+        //{{{ getTitle()
+        
+        public String getTitle() {
+            return "Source View Options";
+        }//}}}
+        
+        //{{{ Private Members
+        private JCheckBox m_m_softTabsCheckBox;
+        //}}}
+        
+    }//}}}
+    
+    //{{{ SourceViewTextPane class
+    
+    private class SourceViewTextPane extends JTextArea {
+        
+        //{{{ SourceViewTextPane constructor
+        
+        public SourceViewTextPane() {
+            super("");
+        }//}}}
+        
+        //{{{ processKeyEvent()
+        
+        protected void processComponentKeyEvent(KeyEvent e) {
+            if (!e.isConsumed() && e.getKeyCode() == KeyEvent.VK_TAB && e.getID() == KeyEvent.KEY_PRESSED) {
+                boolean softTabs = Boolean.valueOf(m_document.getProperty(SOFT_TABS, "false")).booleanValue();
+                if (softTabs) {
+                    try {
+                        int indent = Integer.parseInt(m_document.getProperty(XMLDocument.INDENT));
+                        StringBuffer tab = new StringBuffer();
+                        for (int i=0; i<indent; i++) {
+                            tab.append(" ");
+                        }
+                        getDocument().insertString(getCaretPosition(),tab.toString(),null);
+                        e.consume();
+                    } catch (NumberFormatException nfe) {}
+                      catch (BadLocationException ble) {}
+                }
+            }
+            super.processComponentKeyEvent(e);
+        }//}}}
+        
+    }//}}}
+    
     private SourceViewXMLDocumentListener docListener = new SourceViewXMLDocumentListener();
     
-    private static final String _VIEWNAME = "source";
-    
     private XMLDocument m_document;
-    private JTextArea textarea;
+    private SourceViewTextPane textarea;
     //}}}
     
 }
