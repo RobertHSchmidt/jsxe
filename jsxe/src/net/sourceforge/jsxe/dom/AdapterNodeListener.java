@@ -57,9 +57,9 @@ import org.w3c.dom.NodeList;
 
 public interface AdapterNodeListener {
     
-    public void nodeAdded(AdapterNode source);
+    public void nodeAdded(AdapterNode source, AdapterNode added);
     
-    public void nodeRemoved(AdapterNode source);
+    public void nodeRemoved(AdapterNode source, AdapterNode removed);
     
     public void localNameChanged(AdapterNode source);
     
