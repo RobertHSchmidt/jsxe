@@ -40,6 +40,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.DOMSerializer;
 import net.sourceforge.jsxe.gui.TabbedView;
@@ -62,6 +63,16 @@ import java.awt.BorderLayout;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+//}}}
+
+//{{{ DOM Classes
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import javax.xml.parsers.ParserConfigurationException;
+//}}}
+
+//{{{ Java base classes
+import java.io.IOException;
 //}}}
 
 //}}}
@@ -125,7 +136,22 @@ public class SourceView extends DocumentView {
         currentdoc.setModel(textarea.getText());
         try {
             currentdoc.validate();
-        } catch (Exception e) {}
+        } catch(SAXParseException spe) {
+            if (!jsXe.isExiting())
+                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+        }
+        catch (SAXException sxe) {
+            if (!jsXe.isExiting())
+                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+        }
+        catch (ParserConfigurationException pce) {
+            if (!jsXe.isExiting())
+                JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
+        }
+        catch (IOException ioe) {
+            if (!jsXe.isExiting())
+                JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+        }
     }//}}}
     
     //{{{ Private members
