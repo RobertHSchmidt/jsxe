@@ -570,7 +570,13 @@ public class DOMSerializer implements LSSerializer {
                                 DefaultDOMLocator loc = new DefaultDOMLocator(node, line, column, offset, "");
                                 if (config.getFeature(DOMSerializerConfiguration.SPLIT_CDATA)) {
                                     i+=2;
-                                    str = "]]]]><![CDATA[>";
+                                    str = "]]]]>";
+                                    if (formatting) {
+                                        str += (m_newLine + currentIndent);
+                                        column = currentIndent.length();
+                                        offset += (m_newLine.length() + currentIndent.length());
+                                    }
+                                    str += "<![CDATA[>";
                                     throwError(loc, "cdata-sections-splitted", DOMError.SEVERITY_WARNING, null);
                                 } else {
                                     throwError(loc, "invalid-data-in-cdata-section", DOMError.SEVERITY_FATAL_ERROR, null);
