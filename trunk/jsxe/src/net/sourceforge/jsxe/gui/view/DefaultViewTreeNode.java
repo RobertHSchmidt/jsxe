@@ -264,24 +264,24 @@ public class DefaultViewTreeNode implements MutableTreeNode {
     
     //{{{ isExpanded()
     
-   // /**
-   //  * Gets whether this tree node should be expanded or not when viewable
-   //  * @return true if this node should be expanded in the JTree
-   //  */
-   // public boolean isExpanded() {
-   //     return m_expanded;
-   // }//}}}
+    /**
+     * Gets whether this tree node should be expanded or not when viewable
+     * @return true if this node should be expanded in the JTree
+     */
+    public boolean isExpanded() {
+        return m_expanded;
+    }//}}}
     
     //{{{ setExpanded()
     
-   // /**
-   //  * Sets whether the node should be expanded in the JTree
-   //  * or not.
-   //  * @param expanded true if this node should be expanded
-   //  */
-   // public void setExpanded(boolean expanded) {
-   //     m_expanded = expanded;
-   // }//}}}
+    /**
+     * Sets whether the node should be expanded in the JTree
+     * or not.
+     * @param expanded true if this node should be expanded
+     */
+    public void setExpanded(boolean expanded) {
+        m_expanded = expanded;
+    }//}}}
     
     //{{{ Protected members
     
@@ -318,6 +318,6 @@ public class DefaultViewTreeNode implements MutableTreeNode {
     private AdapterNode m_node;
     private DefaultViewTreeNode m_parent = null;
     private ArrayList m_children = new ArrayList();
-   // private boolean m_expanded = false;
+    private boolean m_expanded = false;
    //}}}
 }
