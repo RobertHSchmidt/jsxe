@@ -121,7 +121,7 @@ public class jsXe {
             if(!_pluginsDirectory.exists())
                 _pluginsDirectory.mkdirs();
             
-            Log.init(true, Log.ERROR, true);
+            Log.init(true, Log.DEBUG, true);
             
             try {
                 BufferedWriter stream = new BufferedWriter(new FileWriter(new File(settingsDirectory+fileSep+"jsXe.log")));
