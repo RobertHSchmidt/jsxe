@@ -224,6 +224,16 @@ public class XMLDocument {
         return oldValue;
     }//}}}
     
+    //{{{ getDocument()
+    /**
+     * Gets a copy of the underlying Document objects.
+     * @return a deep copy of the underlying document object
+     */
+    public Document getDocumentCopy() {
+        //makes a deep copy of the document node
+        return (Document)m_document.cloneNode(true);
+    }//}}}
+    
     //{{{ getProperties()
     
     public Properties getProperties() {
