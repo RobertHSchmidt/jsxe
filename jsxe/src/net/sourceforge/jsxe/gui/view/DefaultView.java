@@ -190,7 +190,7 @@ public class DefaultView extends DocumentView {
     }//}}}
     
     private boolean canEditInJEditorPane(AdapterNode node) {//{{{
-        return (node.getNodeType() == Node.TEXT_NODE);
+        return (node.getNodeValue() != null);
     }//}}}
     
     private void updateTree() {//{{{
