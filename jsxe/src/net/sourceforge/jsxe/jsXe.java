@@ -131,7 +131,7 @@ public class jsXe {
         File _settingsDirectory = new File(settingsDirectory);
         if(!_settingsDirectory.exists())
 		    _settingsDirectory.mkdirs();
-        String pluginsDirectory = settingsDirectory+"/plugins";
+        String pluginsDirectory = settingsDirectory+"/jars";
         File _pluginsDirectory = new File(pluginsDirectory);
         if(!_pluginsDirectory.exists())
 		    _pluginsDirectory.mkdirs();
