@@ -32,7 +32,9 @@ TODO:
       to the document each time one is loaded. Default app properties get set
       when the view is loaded.
     
-    * Implement a find dialog (for the source view at least).
+    * Make dialogs extend jEdit's EnhancedDialog class.
+    
+    * Add the Replace field to the find dialog.
     
     * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother? Maybe not since some views will require
