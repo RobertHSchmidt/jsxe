@@ -393,11 +393,8 @@ public class JARClassLoader extends ClassLoader {
         String dep;
         int i=0;
         
-        Log.log(Log.DEBUG, this, "Checking dependencies for "+name);
-        
         while ((dep = m_pluginProperties.getProperty(name+".dependency."+i++)) != null) {
             //parse the dependency
-            Log.log(Log.DEBUG, this, name+".dependency."+i+": "+dep);
             int index = dep.indexOf(' ');
             if(index == -1) {
                 throw new PluginDependencyException(name, name + " has an invalid dependency: " + dep);
@@ -405,8 +402,6 @@ public class JARClassLoader extends ClassLoader {
             
             String what = dep.substring(0,index);
             String arg = dep.substring(index + 1);
-            Log.log(Log.DEBUG, this, "dependency is "+what);
-            Log.log(Log.DEBUG, this, "required version is "+arg);
             if(what.equals("jdk")) {
                 if (MiscUtilities.compareStrings(System.getProperty("java.version"), arg,false) < 0) {
                     throw new PluginDependencyException(name, "Java", arg, System.getProperty("java.version"));
@@ -608,7 +603,6 @@ public class JARClassLoader extends ClassLoader {
             ZipEntry entry = jarFile.getEntry("dependency.props");
             //If no dependency file assume no dependencies
             if (entry != null) {
-                Log.log(Log.DEBUG, this, "Loading dependencies for "+pluginName);
                 InputStream stream = jarFile.getInputStream(entry);
                 Properties dependencies = new Properties();
                 dependencies.load(stream);
@@ -616,9 +610,7 @@ public class JARClassLoader extends ClassLoader {
                 String dep;
                 int i = 0;
                 while ((dep = dependencies.getProperty("dependency." + i)) != null) {
-                    Log.log(Log.DEBUG, this, "Setting dependency "+propPrefix1 + "dependency." + i + ": "+ dep);
                     m_pluginProperties.setProperty(propPrefix1 + "dependency." + i, dep);
-                    Log.log(Log.DEBUG, this, "Setting dependency "+propPrefix2 + "dependency." + i + ": "+ dep);
                     m_pluginProperties.setProperty(propPrefix2 + "dependency." + i++, dep);
                 }
             }

@@ -23,13 +23,7 @@ TODO:
 
 * Version 0.3 beta (Plugin Support)
 
-    * Dependency tracking for plugins
-        * Update JARClassLoader to load plugins and check dependencies
-        * Update jsXe.java to handle the errors created by startPlugins. It
-          should show a dialog containing the serious errors.
-        * Update plugins to use new interface.
-            * Remove version and name methods. Set the name and version in
-              the manifest.
+    * Make any changes necessary for the Schema View.
 
 * Version 0.4 beta (DTD support)
     

@@ -107,7 +107,7 @@ public class jsXe {
                 System.exit(1);
             }//}}}
             
-            //{{{ start logging
+            //{{{ set settings dirs
             String homeDir = System.getProperty("user.home");
             String fileSep = System.getProperty("file.separator");
             
@@ -120,19 +120,6 @@ public class jsXe {
             File _pluginsDirectory = new File(pluginsDirectory);
             if(!_pluginsDirectory.exists())
                 _pluginsDirectory.mkdirs();
-            
-            Log.init(true, Log.DEBUG, true);
-            
-            try {
-                BufferedWriter stream = new BufferedWriter(new FileWriter(new File(settingsDirectory+fileSep+"jsXe.log")));
-                
-                stream.write("Log file created on " + new Date());
-                stream.write(System.getProperty("line.separator"));
-                
-                Log.setLogWriter(stream);
-            } catch (IOException ioe) {
-                Log.log(Log.ERROR, jsXe.class, ioe);
-            }
             //}}}
             
             //{{{ get and load the configuration files
@@ -171,6 +158,7 @@ public class jsXe {
             //{{{ parse command line arguments
             String viewname = null;
             ArrayList files = new ArrayList();
+            boolean debug = false;
             for (int i=0; i<args.length; i++) {
                 if (args[i].equals("--help") || args[i].equals("-h")) {
                     printUsage();
@@ -180,6 +168,13 @@ public class jsXe {
                     System.out.println(getVersion());
                     System.exit(0);
                 }
+                
+                if (args[i].equals("--debug")) {
+                    debug = true;
+                } else {
+                    files.add(args[i]);
+                }
+                
                // if (args[i].startsWith("--view") || args[i].startsWith("-v")) {
                //     if (i+1<args.length) {
                //         viewname = args[++i];
@@ -188,8 +183,23 @@ public class jsXe {
                //         System.exit(1);
                //     }
                // } else {
-                    files.add(args[i]);
+               //     files.add(args[i]);
                // }
+            }
+            //}}}
+            
+            //{{{ start logging
+            Log.init(true, Log.ERROR, debug);
+                
+            try {
+                BufferedWriter stream = new BufferedWriter(new FileWriter(new File(settingsDirectory+fileSep+"jsXe.log")));
+                
+                stream.write("Log file created on " + new Date());
+                stream.write(System.getProperty("line.separator"));
+                
+                Log.setLogWriter(stream);
+            } catch (IOException ioe) {
+                Log.log(Log.ERROR, jsXe.class, ioe);
             }
             //}}}
             
@@ -1047,6 +1057,7 @@ public class jsXe {
        // System.out.println("                            valid views are:");
        // System.out.println("                                            tree");
        // System.out.println("                                            source");
+        System.out.println("      --debug               print debug information");
         System.out.println("  -h, --help                display this help and exit");
         System.out.println("  -V, --version             print version information and exit");
         System.out.println();
