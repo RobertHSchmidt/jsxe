@@ -9,10 +9,9 @@ def test():
 	click('Options...')
 
 	window('Global Options')
-	click('JTree', '//jsxe/Source View Options')
-	select('Soft tabs #{emulated with spaces#}', 'true')
 	doubleclick('JTree', '//jsxe/XML Document Options')
 	select('JComboBox2', '4')
+	select('Soft tabs #{emulated with spaces#}', 'true')
 	click('OK')
 	close()
 
@@ -24,10 +23,9 @@ def test():
 	click('Options...')
 
 	window('Global Options')
-	click('JTree', '//jsxe/Source View Options')
-	select('Soft tabs #{emulated with spaces#}', 'true')
 	doubleclick('JTree', '//jsxe/XML Document Options')
 	select('JComboBox2', '8')
+	select('Soft tabs #{emulated with spaces#}', 'true')
 	click('OK')
 	close()
 
