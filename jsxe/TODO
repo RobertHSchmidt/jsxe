@@ -26,10 +26,18 @@ TODO:
         xml-declaration
         check-character-normalization
     
+    * Need better serialization of DOCTYPE nodes. How can I know what Nodes in
+      the DOCTYPE are local to this file and which aren't? i.e. how do I know
+      which ones to serialize from the DOM?
+    
+    * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
+      support for this. jsXe needs to recognise when a document has a DTD and
+      deal with serializing to it if necessary.
+    
     * Make sure jsXe can deal with all types of XML nodes.
         * Add support for creating every type of XML node.
         * Need to implement character normalization during serialization.
-          Certain characters and character sequences will need to be normalized
+          Certain characters and character sequences will need to be converted
           to entities.
     
     * Make the XML document declaration header non-editable in source-view
