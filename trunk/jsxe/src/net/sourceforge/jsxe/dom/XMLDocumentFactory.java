@@ -41,6 +41,10 @@ it is easy to see which package it
 belongs to.
 */
 
+//{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
+//}}}
+
 //{{{ Java base classes
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -75,7 +79,7 @@ public class XMLDocumentFactory {
     public XMLDocument newXMLDocument(Reader reader) throws IOException, UnrecognizedDocTypeException {//{{{
         //Document type validation is pretty simple right now
         if (docType == "xmldocument.default") {
-            return new DefaultXMLDocument(reader);
+            return new DefaultXMLDocument(reader, getUntitledLabel());
         } else {
             throw new UnrecognizedDocTypeException();
         }
@@ -86,6 +90,22 @@ public class XMLDocumentFactory {
     }//}}}
     
     //{{{ Private members
+    
+    private String getUntitledLabel() {//{{{
+        XMLDocument[] docs = jsXe.getXMLDocuments();
+        int untitledNo = 0;
+        for (int i=0; i < docs.length; i++) {
+            if ( docs[i].getName().startsWith("Untitled-")) {
+                // Kinda stolen from jEdit
+                try {
+					untitledNo = Math.max(untitledNo,Integer.parseInt(docs[i].getName().substring(9)));
+                }
+				catch(NumberFormatException nf) {}
+            }
+        }
+        return "Untitled-" + Integer.toString(untitledNo+1);
+    }//}}}
+    
     private String docType = "xmldocument.default";
     //}}}
 

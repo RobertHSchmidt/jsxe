@@ -1,3 +1,10 @@
+10/20/2003  version 0.1.17  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added the ability to register listeners with the AdapterNode and
+      XMLDocument interfaces.
+    * Updated GUI classes to register listeners with the XMLDocuments and
+      update themselves when properties change.
+
 10/08/2003  version 0.1.16  Ian Lewis  <IanLewis@member.fsf.org>
 
     * Made AdapterNodes persistent. Now the JTree functions like it

@@ -75,36 +75,35 @@ import java.util.Properties;
 
 public class DefaultXMLDocument extends XMLDocument {
     
-    protected DefaultXMLDocument(File file) throws FileNotFoundException, IOException {//{{{
+    DefaultXMLDocument(File file) throws FileNotFoundException, IOException {//{{{
         setDefaultProperties();
         setModel(file);
-        wellFormed=false;
     }//}}}
     
-    protected DefaultXMLDocument(Reader reader) throws IOException {//{{{
+    DefaultXMLDocument(Reader reader, String name) throws IOException {//{{{
         setDefaultProperties();
         setModel(reader);
-        name = getUntitledLabel();
-        wellFormed=false;
+        this.name = name;
     }//}}}
     
-    protected DefaultXMLDocument(String string) throws IOException {//{{{
+    DefaultXMLDocument(String string, String name) throws IOException {//{{{
         setDefaultProperties();
         setModel(string);
-        name = getUntitledLabel();
-        wellFormed=false;
+        this.name = name;
     }//}}}
-    
-    public void checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {//{{{
-        if (!wellFormed) {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(new InputSource(new StringReader(source)));
-            doc.getDocumentElement().normalize();
-            document=doc;
-            wellFormed=true;
-        }
+
+    public boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {//{{{
+        wellFormed = false;
+        
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(new InputSource(new StringReader(source)));
+        doc.getDocumentElement().normalize();
+        document=doc;
+        
+        wellFormed=true;
+        return wellFormed;
     }//}}}
     
     public Document getDocument() {//{{{
@@ -119,7 +118,7 @@ public class DefaultXMLDocument extends XMLDocument {
             setProperty("format-output", "false");
         }
         String returnValue = (String)props.setProperty(key, value);
-        firePropertiesChanged(returnValue);
+        firePropertiesChanged(key);
         return returnValue;
     }//}}}
     
@@ -175,6 +174,15 @@ public class DefaultXMLDocument extends XMLDocument {
             }
             while (bytesRead != -1);
             source = text.toString();
+            
+            try {
+                checkWellFormedness();
+            } catch (SAXException saxe) {
+            } catch (ParserConfigurationException pce) {
+                throw new IOException(pce.getMessage());
+            }
+            
+            //set here so file is not set if there is an I/O Error.
             XMLFile = file;
             fireFileChanged();
         } else {
@@ -198,19 +206,24 @@ public class DefaultXMLDocument extends XMLDocument {
         source = text.toString();
     }//}}}
     
-    public void setModel(String string) {//{{{
-        wellFormed = false;
+    public void setModel(String string) throws IOException {//{{{
+        String backupSource = source;
         source=string;
-    }//}}}
-    
-    public boolean isWellFormed() {//{{{
         try {
             checkWellFormedness();
-            wellFormed = true;
-        } catch (Exception e) {
-            wellFormed=false;
+        } catch (SAXException saxe) {
+        } catch (ParserConfigurationException pce) {
+            //resore the source variable.
+            source = backupSource;
+            throw new IOException(pce.getMessage());
+        } catch (IOException ioe) {
+            //restore the source variable.
+            source = backupSource;
+            throw ioe;
         }
-        
+    }//}}}
+    
+    public boolean isWellFormed() throws IOException {//{{{
         return wellFormed;
     }//}}}
 
@@ -251,21 +264,6 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
     
     //{{{ Private members
-    
-    private String getUntitledLabel() {//{{{
-        XMLDocument[] docs = jsXe.getXMLDocuments();
-        int untitledNo = 0;
-        for (int i=0; i < docs.length; i++) {
-            if ( docs[i].getName().startsWith("Untitled-")) {
-                // Kinda stolen from jEdit
-                try {
-					untitledNo = Math.max(untitledNo,Integer.parseInt(docs[i].getName().substring(9)));
-                }
-				catch(NumberFormatException nf) {}
-            }
-        }
-        return "Untitled-" + Integer.toString(untitledNo+1);
-    }//}}}
     
     private void setDefaultProperties() {///{{{
         setProperty("format-output", "false");
