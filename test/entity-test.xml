@@ -7,5 +7,6 @@
 	<parent role="father">Layard</parent>
 	<child role="daughter">Jennifer</child>
 	<image source="JENN"/>
-	<child role="son">Brendan</child>&footer;
+	<child role="son">Brendan</child>
+	&footer;
 </family>

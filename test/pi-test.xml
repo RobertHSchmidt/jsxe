@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="classic.xsl" type="text/xml"?>
+<?xml-stylesheet href="funky.xsl" type="text/xml" alternate="yes"?>
 <pi-test>
 	<?pitest test?>
 	<New_Element>New Text Node1</New_Element>
