@@ -61,14 +61,7 @@ import javax.swing.tree.TreePath;
 import java.awt.Component;
 //}}}
 
-//{{{ JAXP classes
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-//}}}
-
 //{{{ DOM classes
-import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -98,7 +91,7 @@ import java.util.Enumeration;
 public class DefaultViewTreeModel implements TreeModel {
     
     protected DefaultViewTreeModel(Component parent, XMLDocument doc) {//{{{
-        document=doc.getDocument();
+        document=doc;
         view=parent;
     }//}}}
 
@@ -126,14 +119,13 @@ public class DefaultViewTreeModel implements TreeModel {
     }//}}}
     
     public Object getRoot() {//{{{
-        return new AdapterNode(document);
+        return new AdapterNode(document.getDocument());
     }//}}}
     
     public boolean isLeaf(Object aNode) {//{{{
         // Return true for any node with no children
         AdapterNode node = (AdapterNode) aNode;
-        if (node.childCount() > 0) return false;
-        return true;
+        return (node.childCount() <= 0);
     }//}}}
     
     public void removeTreeModelListener(TreeModelListener listener) {//{{{
@@ -143,35 +135,14 @@ public class DefaultViewTreeModel implements TreeModel {
     }//}}}
     
     public void valueForPathChanged(TreePath path, Object newValue) {//{{{
-        AdapterNode changedNode = (AdapterNode)path.getLastPathComponent();
-        //Verify that this really is a change
-        if (changedNode.toString() != newValue.toString()) {
-            //get the nodes needed
-            Node node = ((AdapterNode)path.getLastPathComponent()).getNode();
-            Node parent = node.getParentNode();
-            NodeList children = node.getChildNodes();
-            //replace the changed node
-            try {
-                Element newNode = document.createElement(newValue.toString());
-                parent.replaceChild(newNode, node);
-                NamedNodeMap attrs = node.getAttributes();
-                int attrlength = attrs.getLength();
-                
-                for(int i = 0; i < attrlength; i++) {
-                    Node attr = attrs.item(i);
-                    newNode.setAttribute(attr.getNodeName(), attr.getNodeValue());
-                }
-                
-                for (int i = 0; i < children.getLength(); i++ ) {
-                    Node child = children.item(i);
-                    node.removeChild(child);
-                    newNode.appendChild(child);
-                }
-            } catch (DOMException dome) {
-               JOptionPane.showMessageDialog(view, dome, "Internal Error", JOptionPane.WARNING_MESSAGE);
-            }
+        //get the nodes needed
+        AdapterNode node = (AdapterNode)path.getLastPathComponent();
+        try {
+            node.setNodeName(newValue.toString());
             //notify the listeners that the tree structure has changed
             fireTreeNodesChanged(new TreeModelEvent(this, path));
+        } catch (DOMException dome) {
+           JOptionPane.showMessageDialog(view, dome, "Internal Error", JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
     
@@ -215,7 +186,7 @@ public class DefaultViewTreeModel implements TreeModel {
 
     // }}}
     
-    private Document document;
+    private XMLDocument document;
     private Component view;
     private Vector treeListenerList = new Vector();
     //}}}
