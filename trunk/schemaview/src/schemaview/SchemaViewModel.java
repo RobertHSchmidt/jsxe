@@ -96,6 +96,10 @@ public class SchemaViewModel extends DefaultGraphModel {
      */
     private void parse(XMLDocument doc) throws IOException {
         Log.log(Log.DEBUG,this,"Starting parse");
+        m_cells = new ArrayList();
+        m_cs = new ConnectionSet();
+        m_attrib = new HashMap();
+        
         Element element = doc.getDocumentCopy().getDocumentElement();
         roots = new ArrayList();
         String uri = element.getNamespaceURI();
@@ -104,6 +108,8 @@ public class SchemaViewModel extends DefaultGraphModel {
         } else {
             throw new IOException("Schema namespace is not defined");
         }
+        
+        insert(m_cells.toArray(), m_attrib, m_cs, null, null);
     }//}}}
     
     //{{{ parseNode()
@@ -115,29 +121,33 @@ public class SchemaViewModel extends DefaultGraphModel {
      * The roots below the changed node should be removed
      * from the model before calling this method.
      */
-    private void parseNode(DefaultGraphCell parent, AdapterNode node, int level) {
+    private void parseNode(DefaultPort parent, AdapterNode node, int level) {
         Log.log(Log.DEBUG,this,"Parsing node: "+node.getNodeName());
-        DefaultGraphCell newParent = parent;
+        DefaultPort newParent = parent;
         int newLevel = level;
         if (m_rootNames.contains(node.getNodeName())) {
             //add the cell
             DefaultGraphCell newCell = new DefaultGraphCell(node);
-            DefaultPort      newPort = new DefaultPort(node);
+            DefaultPort      newPort = new DefaultPort();
             newCell.add(newPort);
-            setAttributes(node.getNodeName(), newCell);
-           // roots.add(newCell);
-            Object[] insert = new Object[]{newCell};
-            insert(insert, null, null, null, null);
-            toFront(insert);
-            newParent = newCell;
+            newPort.setParent(newCell);
+            m_cells.add(newCell);
+            m_cells.add(newPort);
+            //Set the attributes
+            m_attrib.put(newCell, setAttributes(node.getNodeName()));
+            
+            newParent = newPort;
             newLevel = level+1;
             //add the edge with the parent
             if (parent != null) {
                 DefaultEdge newEdge = new DefaultEdge();
-                ConnectionSet conSet = new ConnectionSet(newEdge, parent, newCell);
-                insert = new Object[]{newEdge};
-                insert(insert, null, conSet, null, null);
-                toBack(insert);
+                Map edgeAttrib = new Hashtable();
+                int arrow = GraphConstants.ARROW_CLASSIC;
+                GraphConstants.setLineEnd(edgeAttrib, arrow);
+                GraphConstants.setEndFill(edgeAttrib, true);
+                m_attrib.put(newEdge, edgeAttrib);
+                m_cs.connect(newEdge, parent, newPort);
+                m_cells.add(newEdge);
             }
         }
         int childCount = node.childCount();
@@ -148,26 +158,26 @@ public class SchemaViewModel extends DefaultGraphModel {
     
     //}}}
     
-    
     //{{{ setAttributes()
-    
-    public void setAttributes(String type, DefaultGraphCell cell) {
-        AttributeMap map = cell.getAttributes();
+    /**
+     * Sets attributes that have to with the appearance of the type of
+     * cell.
+     */
+    private HashMap setAttributes(String type) {
+        HashMap map = new HashMap();
         GraphConstants.setBorderColor(map, Color.black);
         GraphConstants.setOpaque(map, false);
        // GraphConstants.setGradientColor(map, Color.green);
        // GraphConstants.setBackground(map, Color.blue);
         GraphConstants.setAutoSize(map, true);
-        cell.setAttributes(map);
-       // if (type.equals("xsd:simpleType") {
-       //     
-       // }
         
-        
-        
+        return map;
     }//}}}
     
     private XMLDocument m_document;
+    private ArrayList m_cells;
+    private ConnectionSet m_cs;
+    private HashMap m_attrib;
     
     //}}}
 }

@@ -1,0 +1,10 @@
+03/14/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added some more code to make the graph cells look nicer when you move them
+      around. The edges now point to the ports correctly.
+
+03/13/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Initial import of the schema view.
+    * The schema view parses out the and correctly creates the right
+      graph cells but doesn't format them correctly.
