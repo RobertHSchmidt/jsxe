@@ -82,7 +82,7 @@ public class SourceViewDocument extends DefaultStyledDocument {
         document = doc;
         view = parent;
         
-        document.addXMLDocumentListener(new SourceViewDocumentXMLDocumentListener());
+       // document.addXMLDocumentListener(new SourceViewDocumentXMLDocumentListener());
         
         if (doc != null) {
             
@@ -102,14 +102,15 @@ public class SourceViewDocument extends DefaultStyledDocument {
 
         try {
             super.insertString(offs, str, a);
-            document.setModel(super.getText(0,super.getLength()));
+           // document.setModel(super.getText(0,super.getLength()));
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
-        } catch (IOException ioe) {
-            //This should never happen. If it does however jsXe will
-            //act abnormally so crash.
-            jsXe.exiterror(view, ioe.toString(), 1);
         }
+       // catch (IOException ioe) {
+       //     //This should never happen. If it does however jsXe will
+       //     //act abnormally so crash.
+       //     jsXe.exiterror(view, ioe.toString(), 1);
+       // }
 
     }//}}}
 
@@ -117,38 +118,40 @@ public class SourceViewDocument extends DefaultStyledDocument {
         
         try {
             super.remove(offs, len);
-            document.setModel(super.getText(0,super.getLength()));
+           // document.setModel(super.getText(0,super.getLength()));
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
-        } catch (IOException ioe) {
-            //This should never happen. If it does however jsXe will
-            //act abnormally so crash.
-            jsXe.exiterror(view, ioe.toString(), 1);
         }
+       // catch (IOException ioe) {
+       //     //This should never happen. If it does however jsXe will
+       //     //act abnormally so crash.
+       //     jsXe.exiterror(view, ioe.toString(), 1);
+       // }
         
     }//}}}
 
-    private class SourceViewDocumentXMLDocumentListener implements XMLDocumentListener {//{{{
-        
-        public void propertiesChanged(XMLDocument source, String propertyKey) {
-            if (propertyKey.equals("encoding")) {
-                try {
-                    SourceViewDocument.super.remove(0, getLength());
-                    SourceViewDocument.super.insertString(0, document.getSource(), new SimpleAttributeSet());
-                } catch (BadLocationException ble) {
-                    //This should never happen. If it does however jsXe will
-                    //act abnormally so... crash.
-                    jsXe.exiterror(view, ble.toString(), 1);
-                } catch (IOException ioe) {
-                    //This might happen. If it does jsXe will
-                    //act abnormally so... crash.
-                    jsXe.exiterror(view, ioe.toString(), 1);
-                }
-            }
-        }
-        
-        public void fileChanged(XMLDocument source) {}
-    }//}}}
+   // private class SourceViewDocumentXMLDocumentListener implements XMLDocumentListener {//{{{
+   //     
+   //     public void propertiesChanged(XMLDocument source, String propertyKey) {
+   //         if (propertyKey.equals("encoding")) {
+   //             try {
+   //                 String text = getText(0, getLength());
+   //                 SourceViewDocument.super.remove(0, getLength());
+   //                 SourceViewDocument.super.insertString(0, document.getSource(), new SimpleAttributeSet());
+   //             } catch (BadLocationException ble) {
+   //                 //This should never happen. If it does however jsXe will
+   //                 //act abnormally so... crash.
+   //                 jsXe.exiterror(view, ble.toString(), 1);
+   //             } catch (IOException ioe) {
+   //                 //This might happen. If it does jsXe will
+   //                 //act abnormally so... crash.
+   //                 jsXe.exiterror(view, ioe.toString(), 1);
+   //             }
+   //         }
+   //     }
+   //     
+   //     public void fileChanged(XMLDocument source) {}
+   // }//}}}
 
     //{{{ Private members
     TabbedView view;
