@@ -110,16 +110,6 @@ public class DefaultXMLDocument extends XMLDocument {
         return document;
     }//}}}
 
-    public String setProperty(String name, String value) {//{{{
-        if (name == "format-output" && Boolean.valueOf(value).booleanValue()) {
-            validated=false;
-        }
-        if (name == "whitespace-in-element-content" && Boolean.valueOf(value).booleanValue()) {
-            validated=false;
-        }
-        return super.setProperty(name, value);
-    }//}}}
-
     public String getName() {//{{{
         return name;
     }//}}}
