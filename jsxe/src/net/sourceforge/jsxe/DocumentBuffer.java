@@ -109,12 +109,7 @@ public class DocumentBuffer {
     DocumentBuffer(File file) throws IOException {
         m_file = file;
         m_name = file.getName();
-        try {
-            XMLDocumentFactory factory = XMLDocumentFactory.newInstance();
-            factory.setEntityResolver(new DocumentBufferResolver());
-            m_document = factory.newXMLDocument(new FileReader(file));
-        } catch (UnrecognizedDocTypeException e) {}
-        m_document.addXMLDocumentListener(m_bufferDocListener);
+        readFile(new FileReader(file));
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -128,12 +123,7 @@ public class DocumentBuffer {
     DocumentBuffer(Reader reader) throws IOException {
         m_file = null;
         m_name = getUntitledLabel();
-        try {
-            XMLDocumentFactory factory = XMLDocumentFactory.newInstance();
-            factory.setEntityResolver(new DocumentBufferResolver());
-            m_document = factory.newXMLDocument(reader);
-        } catch (UnrecognizedDocTypeException e) {}
-        m_document.addXMLDocumentListener(m_bufferDocListener);
+        readFile(reader);
     }//}}}
     
     //{{{ close()
@@ -284,6 +274,48 @@ public class DocumentBuffer {
      */
     public boolean isUntitled() {
         return (m_file == null);
+    }//}}}
+    
+    //{{{ reload()
+    /**
+     * Reloads the file for this DocumentBuffer. If the document
+     * is dirty then the user is prompted if they want to continue.
+     * If the user decides to cancel at that point then the reload
+     * is aborted and this method returns false.
+     * @param view the view that requested the reload operation
+     * @return true if the document was reloaded sucessfully
+     */ 
+    public boolean reload(TabbedView view) throws IOException {
+        boolean stillReload = true;
+        if (isDirty()) {
+            
+             //If it's dirty ask if you want to save.
+            String msg = getName()+" unsaved!\n You will lose all unsaved changes if you reload!\n\nContinue?";
+            String title = "Document Modified";
+            int optionType = JOptionPane.YES_NO_OPTION;
+            int messageType = JOptionPane.WARNING_MESSAGE;
+            
+            int returnVal = JOptionPane.showConfirmDialog(view,
+                                msg,
+                                title,
+                                optionType,
+                                messageType);
+            
+            if (returnVal == JOptionPane.YES_OPTION) {
+                stillReload=true;
+            } else {
+                stillReload=false;
+            }
+        }
+        
+        if (stillReload) {
+            readFile(new FileReader(m_file));
+            setDirty(false);
+            return true;
+        } else {
+            return false;
+        }
+        
     }//}}}
     
     //{{{ save()
@@ -701,6 +733,17 @@ public class DocumentBuffer {
             DocumentBufferListener listener = (DocumentBufferListener)iterator.next();
             listener.bufferSaved(this);
         }
+    }//}}}
+    
+    //{{{ readFile()
+    
+    public void readFile(Reader reader) throws IOException {
+        try {
+            XMLDocumentFactory factory = XMLDocumentFactory.newInstance();
+            factory.setEntityResolver(new DocumentBufferResolver());
+            m_document = factory.newXMLDocument(reader);
+        } catch (UnrecognizedDocTypeException e) {}
+        m_document.addXMLDocumentListener(m_bufferDocListener);
     }//}}}
     
     //{{{ DocumentBufferResolver class

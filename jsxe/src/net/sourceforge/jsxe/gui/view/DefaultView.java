@@ -576,5 +576,4 @@ public class DefaultView extends DocumentView {
     };//}}}
     //}}}
 
-    //}}}
 }
