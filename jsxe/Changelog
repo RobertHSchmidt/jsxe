@@ -1,3 +1,9 @@
+02/27/2004  version 0.1.55  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Refactored the tree in the DefaultView to it's own class.
+    * Added in some preliminary drag n drop stuff. Commented out
+      so it will compile
+
 02/21/2004  version 0.1.54  Ian Lewis <IanLewis@member.fsf.org>
 
     * DOCTYPE nodes are no longer visible in the tree. Some other method for
