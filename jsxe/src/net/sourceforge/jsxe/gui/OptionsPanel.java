@@ -81,4 +81,10 @@ public abstract class OptionsPanel extends JPanel implements OptionPane {
     public void init() {
         //default implementation
     }//}}}
+
+    //{{{ toString()
+    
+    public String toString() {
+        return getTitle();
+    }//}}}
 }

@@ -119,6 +119,10 @@ public class OptionGroup
 			}
 		}
 	}
+   
+   public String toString() {
+      return getName();
+   }
 
 	private String name;
     private String m_title;
