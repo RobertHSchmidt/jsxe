@@ -40,6 +40,9 @@ TODO:
       to the options menu that allows you to hide it. Maybe an error dialog
       would be suitable.
     
+    * Fix updateMenuBar in TabbedPane to not create the menus and menu items
+      every time it is called.
+    
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
       Update the DefaultViewTreeModel to use a DefaultViewTreeNode class
       that defines the toString() method for how the node is displayed in the
