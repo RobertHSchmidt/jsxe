@@ -48,9 +48,6 @@ TODO:
           to entities.
         * Serialized XML should be well-formed and parsable.
     
-    * Add relevent command-line option parsing to jsXe. At least things like
-      '--version' and '--help' should be present.
-    
     * Add at least minimal support for namespaces.
     
     * Clean up code. Be consistent about fold marks. Alphabetize methods.

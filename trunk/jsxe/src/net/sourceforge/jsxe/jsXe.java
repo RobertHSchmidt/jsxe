@@ -97,11 +97,13 @@ import java.util.Properties;
  */
 public class jsXe {
     
+    //{{{ The main() method of jsXe
+    
     /**
      * The main method of jsXe
      * @param args The command line arguments
      */
-    public static void main(String args[]) {//{{{
+    public static void main(String args[]) {
         
         //{{{ Check the java version
         String javaVersion = System.getProperty("java.version");
@@ -135,6 +137,21 @@ public class jsXe {
         }
         //}}}
         
+        //{{{ check if help or version was requested
+        for (int i=0; i<args.length; i++) {
+            if (args[i].equals("--help") || args[i].equals("-h")) {
+                printUsage();
+                System.exit(0);
+            }
+            if (args[i].equals("--version") || args[i].equals("-V")) {
+                System.out.println(getVersion());
+                System.exit(0);
+            }
+        }
+        //}}}
+        
+        //{{{ create the TabbedView
+        
         TabbedView tabbedview = null;
         DocumentBuffer defaultBuffer = null;
         try {
@@ -145,11 +162,10 @@ public class jsXe {
         } catch (IOException ioe) {
             exiterror(tabbedview, "Could not open default document", 1);
         }
+        //}}}
         
         //{{{ Parse command line arguments
-        
         if (args.length >= 1) {
-            
             if (openXMLDocuments(tabbedview, args)) {
                 closeDocumentBuffer(tabbedview, defaultBuffer);
             }
@@ -159,11 +175,12 @@ public class jsXe {
         tabbedview.show();
     }//}}}
     
+    //{{{ getVersion()
     /**
      * Gets the current version of jsXe.
      * @return The current version of jsXe.
      */
-    public static String getVersion() {//{{{
+    public static String getVersion() {
         // Major.Minor.Build
         String version = buildProps.getProperty("major.version") + "." +
                          buildProps.getProperty("minor.version") + "." +
@@ -171,6 +188,7 @@ public class jsXe {
         return version;
     }//}}}
     
+    //{{{ showOpenFileDialog()
     /**
      * Shows an open file dialog for jsXe. When a file is selected jsXe attempts
      * to open it.
@@ -178,7 +196,7 @@ public class jsXe {
      * @return true if the file is selected and opened successfully.
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
-    public static boolean showOpenFileDialog(TabbedView view) throws IOException {//{{{
+    public static boolean showOpenFileDialog(TabbedView view) throws IOException {
             // if current file is null, defaults to home directory
             DocumentView docView = view.getDocumentView();
             DocumentBuffer buffer = docView.getDocumentBuffer();
@@ -233,6 +251,7 @@ public class jsXe {
             return false;
     }//}}}
     
+    //{{{ openXMLDocument()
     /**
      * Attempts to open an XML document in jsXe from a file on disk.
      * @param view The view to open the document in.
@@ -240,7 +259,7 @@ public class jsXe {
      * @return true if the file is opened successfully.
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
-    public static boolean openXMLDocument(TabbedView view, File file) throws IOException {//{{{
+    public static boolean openXMLDocument(TabbedView view, File file) throws IOException {
         if (file == null)
             return false;
         
@@ -262,6 +281,7 @@ public class jsXe {
         
     }//}}}
     
+    //{{{ openXMLDocument()
     /**
      * Attempts to open an XML document in the form of a String object in jsXe.
      * @param view The view to open the document in.
@@ -269,10 +289,11 @@ public class jsXe {
      * @return true if the file is opened successfully.
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
-    public static boolean openXMLDocument(TabbedView view, String doc) throws IOException {//{{{
+    public static boolean openXMLDocument(TabbedView view, String doc) throws IOException {
         return openXMLDocument(view, new StringReader(doc));
     }//}}}
     
+    //{{{ openXMLDocument()
     /**
      * Attempts to open an XML document in the form of a Reader object in jsXe.
      * @param view The view to open the document in.
@@ -280,7 +301,7 @@ public class jsXe {
      * @return true if the file is opened successfully.
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
-    public static boolean openXMLDocument(TabbedView view, Reader reader) throws IOException {//{{{
+    public static boolean openXMLDocument(TabbedView view, Reader reader) throws IOException {
         
         DocumentBuffer buffer = new DocumentBuffer(reader);
         try {
@@ -295,13 +316,14 @@ public class jsXe {
         
     }//}}}
     
+    //{{{ getOpenBuffer()
     /**
      * Gets the DocumentBuffer for this file if the file is open already. Returns
      * null if the file is not open.
      * @param file The file that is open in jsXe
      * @return the DocumentBuffer for the given file or null if the file not open.
      */
-    public static DocumentBuffer getOpenBuffer(File file) {//{{{
+    public static DocumentBuffer getOpenBuffer(File file) {
         
         boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
 			|| File.separatorChar == ':' /* Windows or MacOS */);
@@ -322,6 +344,7 @@ public class jsXe {
         return null;
     }//}}}
     
+    //{{{ closeDocumentBuffer()
     /**
      * Closes an open DocumentBuffer.
      * @param view The view that contains the buffer.
@@ -329,7 +352,7 @@ public class jsXe {
      * @return true if the buffer was closed successfully. May return false if
      *         user hits cancel when asked to save changes.
      */
-    public static boolean closeDocumentBuffer(TabbedView view, DocumentBuffer buffer) {//{{{
+    public static boolean closeDocumentBuffer(TabbedView view, DocumentBuffer buffer) {
         if (m_buffers.contains(buffer)) {
             
             if (buffer.isDirty()) {
@@ -376,20 +399,22 @@ public class jsXe {
         }
     }//}}} 
     
+    //{{{ getDefaultDocument()
     /**
      * Gets the default XML document in jsXe. This is necessary 
      * as XML documents cannot be blank files.
      * @return jsXe's default XML document.
      */
-    public static String getDefaultDocument() {//{{{
+    public static String getDefaultDocument() {
         return DefaultDocument;
     }//}}}
     
+    //{{{ getDocumentBuffers()
     /**
      * Gets an array of the open Buffers.
      * @return An array of DocumentBuffers that jsXe currently has open.
      */
-    public static DocumentBuffer[] getDocumentBuffers() {//{{{
+    public static DocumentBuffer[] getDocumentBuffers() {
         DocumentBuffer[] buffers = new DocumentBuffer[m_buffers.size()];
         for (int i=0; i < m_buffers.size(); i++) {
             buffers[i] = (DocumentBuffer)m_buffers.get(i);
@@ -397,28 +422,31 @@ public class jsXe {
         return buffers;
     }//}}}
     
+    //{{{ getIcon()
     /**
      * Gets jsXe's icon that is displayed in the about menu,
      * taskbar and upper left hand corner (where appropriate)
      * @return jsXe's icon
      */
-    public static ImageIcon getIcon() {//{{{
+    public static ImageIcon getIcon() {
         return jsXeIcon;
     }//}}}
     
+    //{{{ getAppTitle()
     /**
      * Gets the title of the jsXe application. Most likely "jsXe"
      * @return The title of the jsXe application.
      */
-    public static String getAppTitle() {//{{{
+    public static String getAppTitle() {
         return buildProps.getProperty("application.name");
     }//}}}
     
+    //{{{ exit()
     /**
      * Called when exiting jsXe.
      * @param view The view from which the exit was called.
      */
-    public static void exit(TabbedView view) {//{{{
+    public static void exit(TabbedView view) {
         //nothing much here yet. Open documents should
         //be checked for dirty documents.
         
@@ -443,6 +471,7 @@ public class jsXe {
         }
     }//}}}
     
+    //{{{ exiterror()
     /**
      * Called when crashing jsXe. jsXe prints an error message and
      * exits with the error code specifed.
@@ -450,7 +479,7 @@ public class jsXe {
      * @param errormsg The error message to display.
      * @param errorcode The errorcode to exit with.
      */
-    public static void exiterror(TabbedView view, String errormsg, int errorcode) {//{{{
+    public static void exiterror(TabbedView view, String errormsg, int errorcode) {
         if (view != null) {
             String errorhdr = "jsXe has encountered a fatal error and is unable to continue.\n";
             errorhdr        +="This is most likely a bug and should be reported to the jsXe\n";
@@ -470,58 +499,64 @@ public class jsXe {
         System.exit(errorcode);
     }//}}}
     
+    //{{{ setProperty()
     /**
      * Sets a global property to jsXe.
      * @param key The key name for the property.
      * @param value The value to associate with the key.
      * @return The previous value for the key, or null if there was none.
      */
-    public static Object setProperty(String key, String value) {//{{{
+    public static Object setProperty(String key, String value) {
         return props.setProperty(key, value);
     }//}}}
     
+    //{{{ getProperty()
     /**
      * Gets a jsXe global property. Returns null if the property is not found.
      * @param key The key of the property to get.
      * @return The value associated with the key or null if the key is not found.
      */
-    public static final String getProperty(String key) {//{{{
+    public static final String getProperty(String key) {
         return props.getProperty(key);
     }//}}}
     
+    //{{{ getProperty()
     /**
      * Gets a jsXe global property specifying a default value.
      * @param key The key of the property to get.
      * @param defaultValue The default value to return when the key is not found.
      * @return The value associated with the key or the default value if the key is not found.
      */
-    public static final String getProperty(String key, String defaultValue) {//{{{
+    public static final String getProperty(String key, String defaultValue) {
 		return props.getProperty(key, defaultValue);
 	} //}}}
     
+    //{{{ getOptionsPanel()
     /**
      * Gets the options panel for the jsXe application.
      * @return The OptionsPanel with the options for jsXe.
      */
-    public static final OptionsPanel getOptionsPanel() {//{{{
+    public static final OptionsPanel getOptionsPanel() {
         jsXeOptions = new jsXeOptionsPanel();
         return jsXeOptions;
     }//}}}
     
+    //{{{ isExiting()
     /**
      * Indicates whether jsXe is exiting i.e. in the exit method.
      * @return true if jsXe is exiting.
      */
-    public static final boolean isExiting() {//{{{
+    public static final boolean isExiting() {
         return m_exiting;
     }//}}}
     
     // Private static members {{{
 
+    //{{{ openXMLDocuments()
     /**
      * Open the XML documents in the command line arguments.
      */
-    private static boolean openXMLDocuments(TabbedView view, String args[]) {//{{{
+    private static boolean openXMLDocuments(TabbedView view, String args[]) {
     
         boolean success = false;
         for (int i = 0; i < args.length; i++) {
@@ -540,10 +575,11 @@ public class jsXe {
     
     }//}}}
     
+    //{{{ initDefaultProps()
     /**
      * Initialize the Default properties.
      */
-    private static void initDefaultProps() {//{{{
+    private static void initDefaultProps() {
         
         //{{{ Load jsXe default properties
         InputStream inputstream = jsXe.class.getResourceAsStream("/net/sourceforge/jsxe/properties");
@@ -603,20 +639,44 @@ public class jsXe {
         
     }//}}}
     
-    private static class jsXeOptionsPanel extends OptionsPanel {//{{{
+    //{{{ jsXeOptionsPanel class
+    
+    private static class jsXeOptionsPanel extends OptionsPanel {
         
-        public jsXeOptionsPanel() {//{{{
+        //{{{ jsXeOptionsPanel constructor
+        
+        public jsXeOptionsPanel() {
             super();
         }//}}}
         
-        public void saveOptions() {//{{{
+        //{{{ saveOptions()
+        public void saveOptions() {
             
         }//}}}
         
-        public String getTitle() {//{{{
+        //{{{ getTitle()
+        
+        public String getTitle() {
             return "jsXe Global Options";
         }//}}}
         
+    }//}}}
+    
+    //{{{ printUsage()
+    
+    private static void printUsage() {
+        System.out.println("jsXe "+getVersion());
+        System.out.println("The Java Simple XML Editor");
+        System.out.println();
+        System.out.println("Copyright 2004 Ian Lewis");
+        System.out.println("This is free software; see the source for copying conditions. There is NO");
+        System.out.println("warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.");
+        System.out.println();
+        System.out.println("Usage: jsXe [<options>] [<files>]");
+        System.out.println("  -h, --help                display this help and exit");
+        System.out.println("  -V, --version             print version information and exit");
+        System.out.println();
+        System.out.println("Report bugs to <ian_lewis@users.sourceforge.net>");
     }//}}}
     
     private static ArrayList m_buffers = new ArrayList();

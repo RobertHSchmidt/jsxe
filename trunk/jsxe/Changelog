@@ -6,6 +6,8 @@
     * Added some more fold marks and javadoc to several classes.
     * Added the ability to rearrange text nodes and other nodes that aren't
       elements around within an element.
+    * Added support for checking the version and getting command-line help
+      for jsXe via command-line options
 
 03/31/2004  version 0.1.58  Ian Lewis <IanLewis@member.fsf.org>
 
