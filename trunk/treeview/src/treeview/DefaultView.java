@@ -40,6 +40,7 @@ import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.DocumentView;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Swing components
@@ -471,8 +472,17 @@ public class DefaultView extends JPanel implements DocumentView {
             
             super.editingStopped(e);
             
-            if (editRow==getRowCount()-1 && editColumn == 0) {
-                editCellAt(editRow, 1);
+            Log.log(Log.DEBUG, this, "editRow: "+editRow);
+            Log.log(Log.DEBUG, this, "editColumn: "+editColumn);
+            
+            if (editRow==getRowCount()-1) {
+                //users can switch the columns around in the ui
+                if (editColumn == 0) {
+                    editColumn = 1;
+                } else {
+                    editColumn = 0;
+                }
+                editCellAt(editRow, editColumn);
             }
         }//}}}
         
