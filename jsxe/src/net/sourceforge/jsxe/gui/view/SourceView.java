@@ -96,6 +96,7 @@ public class SourceView extends JPanel implements DocumentView {
     
     //{{{ Public static members
     public static final String SOFT_TABS = _VIEWNAME+".soft.tabs";
+    public static final String LAST_FIND_STRING = _VIEWNAME+".last.find.string";
     //}}}
     
     static {
@@ -343,8 +344,15 @@ public class SourceView extends JPanel implements DocumentView {
         //{{{ actionPerformed()
         
         public void actionPerformed(ActionEvent e) {
+            
+            //Assumed that a view is added to a frame.
+            Container parent = getParent();
+            while (!(parent instanceof Frame)) {
+                parent = parent.getParent();
+            }
+            Frame frame = (Frame)parent;
             //display find dialog
-            SourceViewSearchDialog dialog = new SourceViewSearchDialog(SourceView.this);
+            SourceViewSearchDialog dialog = new SourceViewSearchDialog(frame, SourceView.this);
             dialog.setVisible(true);
         }//}}}
         

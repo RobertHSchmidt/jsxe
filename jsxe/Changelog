@@ -2,6 +2,8 @@
 
     * Removed code in the TabbedView that assumed that the DocumentView was
       the same reference as the document view component.
+    * Made the search dialog get the parent frame so it works better now.
+    * Removed the replace field since it doesn't work.
 
 07/30/2004  version 0.2 pre15   Ian Lewis <IanLewis@member.fsf.org>
 

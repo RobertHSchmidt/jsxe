@@ -38,7 +38,10 @@ it is easy to see which package it
 belongs to.
 */
 
+//{{{ jsXe classes
+import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
+//}}}
 
 //{{{ Swing components
 import javax.swing.BorderFactory;
@@ -68,13 +71,14 @@ import java.io.IOException;
 public class SourceViewSearchDialog extends JDialog {
     
     //{{{ Private static members
-    private static int m_dialogHeight = 450;
-    private static int m_dialogWidth = 450;
+    private static int m_dialogHeight = 150;
+    private static int m_dialogWidth = 350;
     //}}}
     
     //{{{ SourceViewSearchDialog constructor
     
-    public SourceViewSearchDialog(SourceView view) {
+    public SourceViewSearchDialog(Frame parentFrame, SourceView view) {
+        super(parentFrame, "Search and Replace", false);
         
         m_view = view;
         
@@ -82,22 +86,21 @@ public class SourceViewSearchDialog extends JDialog {
         getContentPane().add(frame,BorderLayout.CENTER);
         
         JButton findButton = new JButton("Find");
-        JButton replaceButton = new JButton("Replace&Find");
+       // JButton replaceButton = new JButton("Replace&Find");
        // JButton replaceAllButton = new JButton("Replace All");
         JButton cancelButton = new JButton("Cancel");
         
         
         findButton.addActionListener(new FindAction());
-        replaceButton.addActionListener(new ReplaceAction());
+       // replaceButton.addActionListener(new ReplaceAction());
        // replaceAllButton.addActionListener(new ReplaceAllAction());
         cancelButton.addActionListener(new CancelAction());
         
         Border border = BorderFactory.createEmptyBorder(10,10,10,10);
         frame.setBorder(border);
         
-        setTitle("Search and Replace");
         setSize(m_dialogWidth, m_dialogHeight);
-        setLocationRelativeTo(view);
+        setLocationRelativeTo(parentFrame);
         
         GridBagLayout layout = new GridBagLayout();
         GridBagConstraints constraints = new GridBagConstraints();
@@ -106,8 +109,8 @@ public class SourceViewSearchDialog extends JDialog {
         m_findComboBox = new JComboBox();
         m_findComboBox.setEditable(true);
         
-        m_replaceComboBox = new JComboBox();
-        m_replaceComboBox.setEditable(true);
+       // m_replaceComboBox = new JComboBox();
+       // m_replaceComboBox.setEditable(true);
         
         constraints.gridy      = 0;
         constraints.gridx      = 0;
@@ -136,36 +139,36 @@ public class SourceViewSearchDialog extends JDialog {
         layout.setConstraints(m_findComboBox, constraints);
         frame.add(m_findComboBox);
         
-        constraints.gridy      = 2;
-        constraints.gridx      = 0;
-        constraints.gridheight = 1;
-        constraints.gridwidth = GridBagConstraints.REMAINDER;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.anchor = GridBagConstraints.NORTHWEST;
-        constraints.weightx    = 1.0f;
-        constraints.fill       = GridBagConstraints.BOTH;
-        constraints.insets     = new Insets(1,0,1,0);
+       // constraints.gridy      = 2;
+       // constraints.gridx      = 0;
+       // constraints.gridheight = 1;
+       // constraints.gridwidth = GridBagConstraints.REMAINDER;
+       // constraints.fill = GridBagConstraints.BOTH;
+       // constraints.anchor = GridBagConstraints.NORTHWEST;
+       // constraints.weightx    = 1.0f;
+       // constraints.fill       = GridBagConstraints.BOTH;
+       // constraints.insets     = new Insets(1,0,1,0);
         
-        JLabel replaceLabel = new JLabel("Replace With:");
-        layout.setConstraints(replaceLabel, constraints);
-        frame.add(replaceLabel);
+       // JLabel replaceLabel = new JLabel("Replace With:");
+       // layout.setConstraints(replaceLabel, constraints);
+       // frame.add(replaceLabel);
         
-        constraints.gridy      = 3;
-        constraints.gridx      = 0;
-        constraints.gridheight = 1;
-        constraints.gridwidth = GridBagConstraints.REMAINDER;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.anchor = GridBagConstraints.NORTHWEST;
-        constraints.weightx    = 1.0f;
-        constraints.fill       = GridBagConstraints.BOTH;
-        constraints.insets     = new Insets(1,0,1,0);
+       // constraints.gridy      = 3;
+       // constraints.gridx      = 0;
+       // constraints.gridheight = 1;
+       // constraints.gridwidth = GridBagConstraints.REMAINDER;
+       // constraints.fill = GridBagConstraints.BOTH;
+       // constraints.anchor = GridBagConstraints.NORTHWEST;
+       // constraints.weightx    = 1.0f;
+       // constraints.fill       = GridBagConstraints.BOTH;
+       // constraints.insets     = new Insets(1,0,1,0);
         
-        layout.setConstraints(m_replaceComboBox, constraints);
-        frame.add(m_replaceComboBox);
+       // layout.setConstraints(m_replaceComboBox, constraints);
+       // frame.add(m_replaceComboBox);
         
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.add(findButton);
-        buttonsPanel.add(replaceButton);
+       // buttonsPanel.add(replaceButton);
         buttonsPanel.add(cancelButton);
         getContentPane().add(frame, BorderLayout.NORTH);
         getContentPane().add(buttonsPanel, BorderLayout.SOUTH);
@@ -214,13 +217,23 @@ public class SourceViewSearchDialog extends JDialog {
     
     private void find(boolean doReplace) {
         try {
-            XMLDocument doc = m_view.getDocumentBuffer().getXMLDocument();
+            DocumentBuffer buffer = m_view.getDocumentBuffer();
+            XMLDocument doc = buffer.getXMLDocument();
             Segment seg = doc.getSegment(0, doc.getLength());
             int caretPosition = m_view.getCaretPosition();
             CharIndexedSegment charSeg = new CharIndexedSegment(seg, caretPosition);
             
-            String search = m_findComboBox.getSelectedItem().toString();
-            String replace = m_replaceComboBox.getSelectedItem().toString();
+            Object searchItem = m_findComboBox.getSelectedItem();
+           // Object replaceItem = m_replaceComboBox.getSelectedItem();
+            
+            String search = "";
+            if (searchItem != null) {
+                search = searchItem.toString();
+            }
+            String replace = "";
+           // if (replaceItem != null) {
+           //     replace = replaceItem.toString();
+           // }
             
             RESearchMatcher matcher = new RESearchMatcher(search, replace, true);
             
@@ -231,19 +244,21 @@ public class SourceViewSearchDialog extends JDialog {
             
             int[] match = matcher.nextMatch(charSeg, false, true, true, false);
             
+            buffer.setProperty(SourceView.LAST_FIND_STRING, search);
+            
             if (match != null) {
                 m_view.selectText(match[0]+caretPosition, match[1]+caretPosition);
             }
             requestFocus();
         } catch (Exception ex) {
-           // ex.printStackTrace();
+            ex.printStackTrace();
             JOptionPane.showMessageDialog(m_view, ex, "Search Error", JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
     
     private SourceView m_view;
     private JComboBox m_findComboBox;
-    private JComboBox m_replaceComboBox;
+   // private JComboBox m_replaceComboBox;
     
     //}}}
 }
