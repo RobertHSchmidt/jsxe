@@ -1,7 +1,8 @@
 8/30/2003   version 0.1.11  Ian Lewis  <IanLewis@member.fsf.org>
 
     * Added an indent width option to the options dialog. Currently only used
-      when formatting a document.
+      when formatting a document while serializing and as the tab width in the
+      source view.
 
 8/29/2003   version 0.1.10  Ian Lewis  <IanLewis@member.fsf.org>
 
