@@ -81,6 +81,11 @@ import javax.swing.text.Segment;
 
 public class DefaultXMLDocument extends XMLDocument {
     
+    public static String ENCODING = "encoding";
+    public static String WS_IN_ELEMENT_CONTENT = DOMSerializerConfiguration.WS_IN_ELEMENT_CONTENT;
+    public static String FORMAT_XML = DOMSerializerConfiguration.FORMAT_XML;
+    public static String INDENT = DOMSerializerConfiguration.INDENT;
+    
     DefaultXMLDocument(Reader reader) throws IOException {//{{{
         setDefaultProperties();
         setModel(reader);
@@ -97,6 +102,7 @@ public class DefaultXMLDocument extends XMLDocument {
         if (!m_parsedMode) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
+            factory.setExpandEntityReferences(false);
             DocumentBuilder builder = factory.newDocumentBuilder();
             
             if (m_entityResolver != null) {
@@ -219,12 +225,12 @@ public class DefaultXMLDocument extends XMLDocument {
         if (m_parsedMode) {
             
             //since we are in parsed mode let's serialize.
-            DOMOutput output = new DOMOutput(out, getProperty("encoding"));
+            DOMOutput output = new DOMOutput(out, getProperty(ENCODING));
             
             DOMSerializerConfiguration config = new DOMSerializerConfiguration();
-            config.setParameter("format-pretty-print", getProperty("format-pretty-print"));
-            config.setParameter("element-content-whitespace", getProperty("element-content-whitespace"));
-            config.setParameter("indent", new Integer(getProperty("indent")));
+            config.setParameter(FORMAT_XML, getProperty(FORMAT_XML));
+            config.setParameter(WS_IN_ELEMENT_CONTENT, getProperty(WS_IN_ELEMENT_CONTENT));
+            config.setParameter(INDENT, new Integer(getProperty(INDENT)));
             
             DOMSerializer serializer = new DOMSerializer(config);
             
@@ -244,7 +250,7 @@ public class DefaultXMLDocument extends XMLDocument {
                     size = Math.min(length - index, WRITE_SIZE);
 				} catch(NumberFormatException nf) {}
                 
-                out.write(m_content.getText(index, size).getBytes(getProperty("encoding")), index, size);
+                out.write(m_content.getText(index, size).getBytes(getProperty(ENCODING)), index, size);
                 index += size;
             }
         }
@@ -391,10 +397,10 @@ public class DefaultXMLDocument extends XMLDocument {
    // }//}}}
     
     private void setDefaultProperties() {//{{{
-        setProperty("format-pretty-print", "false");
-        setProperty("element-content-whitespace", "true");
-        setProperty("encoding", "UTF-8");
-        setProperty("indent", "4");
+        setProperty(FORMAT_XML, "false");
+        setProperty(WS_IN_ELEMENT_CONTENT, "true");
+        setProperty(ENCODING, "UTF-8");
+        setProperty(INDENT, "4");
     }//}}}
     
     private void firePropertiesChanged(String key) {//{{{
@@ -411,12 +417,14 @@ public class DefaultXMLDocument extends XMLDocument {
             XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
             listener.structureChanged(this, location);
         }
+        m_syncedWithContent = false;
     }//}}}
     
     private void setDocument(Document doc) {//{{{
         m_document=doc;
         m_adapterNode = new AdapterNode(this, m_document);
         m_adapterNode.addAdapterNodeListener(docAdapterListener);
+        m_syncedWithContent = false;
     }//}}}
     
     /**
@@ -424,17 +432,21 @@ public class DefaultXMLDocument extends XMLDocument {
      * formatting options.
      */
     private void syncContentWithDOM() {//{{{
-        //create a new content manager to be written to.
-        ContentManager content = new ContentManager();
-        //create the content manager's output stream
-        ContentManagerOutputStream out = new ContentManagerOutputStream(content);
-        try {
-            serialize(out);
-        } catch (IOException ioe) {
-            //Shouldn't happen.
+        if (m_parsedMode) {
+            if (!m_syncedWithContent) {
+                //create a new content manager to be written to.
+                ContentManager content = new ContentManager();
+                //create the content manager's output stream
+                ContentManagerOutputStream out = new ContentManagerOutputStream(content);
+                try {
+                    serialize(out);
+                    m_content = content;
+                } catch (IOException ioe) {
+                    //Shouldn't happen.
+                }
+            }
         }
-        
-        m_content = content;
+        m_syncedWithContent = true;
     }//}}}
     
     private class XMLDocAdapterListener implements AdapterNodeListener {//{{{
@@ -698,6 +710,7 @@ public class DefaultXMLDocument extends XMLDocument {
     private AdapterNode m_adapterNode;
     private ContentManager m_content;
     private boolean m_parsedMode = false;
+    private boolean m_syncedWithContent = false;
     private EntityResolver m_entityResolver;
     private ArrayList listeners = new ArrayList();
     private Properties props = new Properties();

@@ -111,7 +111,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         setFeature(CHAR_NORMALIZATION,          false);
         setFeature(COMMENTS,                    true);
         setFeature(DATATYPE_NORMALIZATION,      false);
-        setFeature(ENTITIES,                    false);
+        setFeature(ENTITIES,                    true);
         //infoset is not present because it is determined
         //by checking the values of other features.
         setFeature(NAMESPACES,                  true);

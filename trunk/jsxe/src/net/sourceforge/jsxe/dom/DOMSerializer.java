@@ -560,34 +560,43 @@ public class DOMSerializer implements LSSerializer {
                 case Node.DOCUMENT_TYPE_NODE://{{{
                     DocumentType docType = (DocumentType)node;
                     
-                    if (formatting) {
-                        //set to zero here for error handling (if doWrite throws exception).
-                        column = 0;
-                        str = m_newLine + currentIndent;
-                        doWrite(writer, str, node, line, column, offset);
-                        column += currentIndent.length();
-                        offset += str.length();
-                    }
+                    String systemId = docType.getSystemId();
+                    System.out.println(docType.getName());
+                    if (systemId != null) { 
                     
-                    str = "<!DOCTYPE " + docType.getName();
-                    doWrite(writer, str, node, line, column, offset);
-                    column += str.length();
-                    offset += str.length();
-                    if (docType.getPublicId() != null) {
-                        str = " PUBLIC \"" + docType.getPublicId() + "\" ";
+                        if (formatting) {
+                            //set to zero here for error handling (if doWrite throws exception).
+                            column = 0;
+                            str = m_newLine + currentIndent;
+                            doWrite(writer, str, node, line, column, offset);
+                            column += currentIndent.length();
+                            offset += str.length();
+                        }
+                        
+                        str = "<!DOCTYPE " + docType.getName();
                         doWrite(writer, str, node, line, column, offset);
                         column += str.length();
                         offset += str.length();
+                        if (docType.getPublicId() != null) {
+                            str = " PUBLIC \"" + docType.getPublicId() + "\" ";
+                            doWrite(writer, str, node, line, column, offset);
+                            column += str.length();
+                            offset += str.length();
+                        } else {
+                            str = " SYSTEM ";
+                            doWrite(writer, str, node, line, column, offset);
+                            column += str.length();
+                            offset += str.length();
+                        }
+                        str = "\"" + docType.getSystemId() + "\">";
+                        doWrite(writer, str, node, line, column, offset);
+                        column += str.length();
+                        offset += str.length();
+                        
                     } else {
-                        str = " SYSTEM ";
-                        doWrite(writer, str, node, line, column, offset);
-                        column += str.length();
-                        offset += str.length();
+                        String str1 = docType.getInternalSubset();
+                        System.out.println(str1);
                     }
-                    str = "\"" + docType.getSystemId() + "\">";
-                    doWrite(writer, str, node, line, column, offset);
-                    column += str.length();
-                    offset += str.length();
                     break;//}}}
             }
         }
