@@ -358,7 +358,7 @@ public class DOMSerializer implements LSSerializer {
     private void rSerializeNode(Writer writer, Node node, String encoding, String currentIndent, int line, int column, int offset) throws DOMSerializerException {
         
         boolean formatting = config.getFeature(DOMSerializerConfiguration.FORMAT_XML);
-        boolean whitespace = config.getFeature(DOMSerializerConfiguration.WS_IN_ELEMENT_CONTENT);
+       // boolean whitespace = config.getFeature(DOMSerializerConfiguration.WS_IN_ELEMENT_CONTENT);
         
         //This is used many times below as a temporary variable.
         String str = "";
@@ -516,11 +516,15 @@ public class DOMSerializer implements LSSerializer {
                     String text = node.getNodeValue();
                     //formatting implies no whitespace
                     //but to be explicit...
-                    if (!whitespace || formatting) {
-                        text = text.trim();
-                    }
+                   // if (!whitespace || formatting) {
+                   //     text = text.trim();
+                   // }
                     if (!text.equals("")) {
                         if (formatting) {
+                            if (text.trim().equals("")) {
+                                //ignore this whitespace only text if formatting
+                                return;
+                            }
                             if (node.getNextSibling()!=null || node.getPreviousSibling()!=null) {
                                 line++;
                                 column=0;

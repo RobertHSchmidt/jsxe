@@ -1,3 +1,13 @@
+8/25/2004   version 0.2 pre21   Ian Lewis <IanLewis@member.fsf.org>
+
+    * The serializer now ignores the element-content-whitespace parameter since
+      the parameter only makes sense when the document is validated by DTD or
+      Schema that specifies that an element MUST have only child elements
+      (element-content). Also if the DOM validates this info when being edited
+      then the serializer could never write out whitespace in element content
+      without invalidating the document. See
+      http://xml.apache.org/xerces2-j/javadocs/dom3-api/index.html Section 2.10
+
 8/19/2004   version 0.2 pre20   Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed bug where the file is kept open by a reader or something too long.
