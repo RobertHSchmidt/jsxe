@@ -130,6 +130,7 @@ public class SourceView extends DocumentView {
     public void setDocument(TabbedView view, XMLDocument document) throws IOException {//{{{
         
         currentdoc = document;
+        textarea.setTabSize((new Integer(document.getProperty("indent", "4"))).intValue());
         textarea.setDocument(new SourceViewDocument(view, document));
         
     }//}}}
