@@ -111,9 +111,19 @@ public class DefaultView extends DocumentView {
         //{{{ Create and set up the splitpanes
         vertSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treeView, attrView);
         vertSplitPane.setContinuousLayout(false);
-                
+        vertSplitPane.setOneTouchExpandable(true);
+        
         horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, vertSplitPane, htmlView);
         horizSplitPane.setContinuousLayout(false);
+        horizSplitPane.setOneTouchExpandable(true);
+        
+       // horizSplitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new java.beans.PropertyChangeListener() {
+       //     public void propertyChange(java.beans.PropertyChangeEvent evt) {
+       //         JSplitPane pane = (JSplitPane)evt.getSource();
+       //         System.out.println("Packing");
+       //         pane.resetToPreferredSizes();
+       //     }
+       // });
         
         //set to arbitrary size.
         vertSplitPane.setDividerLocation(200);
