@@ -771,6 +771,11 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     }
                 }
                 refreshExpandedStates(droppedPath);
+                /*
+                need to make sure that the new path of the dropped node
+                is in the selection model
+                */
+                addSelectionPath(droppedPath.pathByAddingChild(node));
                 dtde.acceptDrop(m_acceptableActions);
             } catch (DOMException dome) {
                 dtde.rejectDrop();

@@ -36,7 +36,7 @@ package net.sourceforge.jsxe.gui.view;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.*;
-import net.sourceforge.jsxe.gui.*;
+import net.sourceforge.jsxe.gui.OptionsPanel;
 //}}}
 
 //{{{ Swing components
@@ -78,6 +78,11 @@ public class DefaultView extends JPanel implements DocumentView {
     
     //{{{ Private static members
     private static final String _VIEWNAME="tree";
+    public static final String CONTINUOUS_LAYOUT = _VIEWNAME+".continuous.layout";
+    public static final String VERT_SPLIT_LOCATION = _VIEWNAME+".splitpane.vert.loc";
+    public static final String HORIZ_SPLIT_LOCATION = _VIEWNAME+".splitpane.horiz.loc";
+    public static final String SHOW_COMMENTS = _VIEWNAME+".show.comment.nodes";
+    public static final String SHOW_EMPTY_NODES = _VIEWNAME+".show.empty.nodes";
     
     private static final Properties m_defaultProperties;
     
@@ -90,12 +95,6 @@ public class DefaultView extends JPanel implements DocumentView {
         } catch (IOException ioe) {}
     }
     //}}}
-    
-    public static final String CONTINUOUS_LAYOUT = _VIEWNAME+".continuous.layout";
-    public static final String VERT_SPLIT_LOCATION = _VIEWNAME+".splitpane.vert.loc";
-    public static final String HORIZ_SPLIT_LOCATION = _VIEWNAME+".splitpane.horiz.loc";
-    public static final String SHOW_COMMENTS = _VIEWNAME+".show.comment.nodes";
-    public static final String SHOW_EMPTY_NODES = _VIEWNAME+".show.empty.nodes";
     
     //{{{ DefaultView constructor
     /**

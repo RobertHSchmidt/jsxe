@@ -1,3 +1,9 @@
+06/23/2004  version 0.2 pre10   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed problem where the node did not appear to be selected after drag and
+      drop but was. Needed to add the node to the selection model.
+    * Removed references to the TabbedView from the DocumentViewFactory
+
 06/22/2004  version 0.2 pre9    Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug that caused the right hand text pane to clear when trying to
