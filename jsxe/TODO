@@ -1,24 +1,65 @@
 TODO:
 
-- Allow GUI models to register change listeners with XMLDocuments and
-  AdapterNodes. This will allow GUI models to be updated automatically when the
-  DOM is changed.
-- Create an interface for the main view in jsXe where the TabbedView implements
-  it. Other views can then be created to allow a more customizable look.
-- Document methods with javadoc.
-- Create a history class for the DefaultView that keeps track of the current
-  state of the view and can be used to restore it later.
-- Change the DOMSerializer class to conform to the DOM3 standard DOMWriter
-  class.
-- Allow for selecting multiple files when opening
-- Allow for opening files with wellformedness errors in source view. This way
-  users can fix wellformedness errors in the editor.
-- Fix updating of the tree when users are changing a text node.
-- Add a way for jsXe to try to open a document in any of the installed views
-  before it shows errors saying it cannot open the document. i.e. If a document
-  is not validated try to open it in the requested view and if that fails then
-  open it in one of the remaining installed views until it works or you run out
-  of views.
-- Fix the DOMSerializer class so that it writes entities when given nodes with
-  text that has < or > or something like that.
-
+    * Document methods with javadoc.
+    
+    * Fix the DOMSerializer class so that it writes entities when given nodes
+      with text that has < or > or something like that.
+    
+    * Change the DOMSerializer class to conform to the DOM3 standard DOMWriter
+      class.
+    
+    * Allow for selecting multiple files when opening.
+    
+    * Fix the options dialog and make it look better. Maybe split into two
+      dialogs, global options and view/document specific?
+    
+    * Allow for opening files with wellformedness errors in source view. This
+      way users can fix wellformedness errors in the editor.
+    
+    * Make sure jsXe can deal with all types of XML nodes.
+    
+    * Allow GUI models to register change listeners with XMLDocuments and
+      AdapterNodes. This will allow GUI models to be updated automatically when
+      the DOM is changed.
+    
+    * Create a way for actions to be created dynamically and then registered
+      with jsXe. Much the same way that jEdit does.
+    
+    * Create a toolbar that is customizable much the same way jEdit's is.
+    
+    * Create an interface for the main view in jsXe where the TabbedView
+      implements it. Other views can then be created to allow a more
+      customizable look.
+    
+    * Implement undo for the DefaultView and SourceView.
+    
+    * Implement syntax highlighting for the SourceView.
+    
+    * Change icons in tree in DocumentView to be different for different types
+      of XML nodes.
+    
+    * Add drag & drop functionality to the default view.
+    
+    * Create a history class for the DefaultView that keeps track of the current
+      state of the view and can be used to restore it later.
+    
+    * Fix updating of the tree when users are changing a text node.
+    
+    * Implement plugin support with BeanShell. Make DocumentViews into plugins
+      that are loaded at runtime. DefaultView and SourceView will be distributed
+      with jsXe as the default views.
+    
+    * Add a way for jsXe to try to open a document in any of the installed views
+      before it shows errors saying it cannot open the document. i.e. If a
+      document is not validated try to open it in the requested view and if that
+      fails then open it in one of the remaining installed views until it works
+      or you run out of views.
+    
+    * Create a view that uses the view from pollo and implements the
+      DocumentView interface.
+    
+    * Implement the xsl transformation feature.
+    
+    * Implement validation against DTDs and different forms of Schema.
+    
+    * Create a help system for jsXe.
