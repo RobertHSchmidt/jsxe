@@ -1,6 +1,17 @@
-12/15/2003  version 0.1.44  Ian Lewis <IanLewis@member.fsf.org>
+12/16/2003  version 0.1.45  Ian Lewis <IanLewis@member.fsf.org>
 
-    * Updataed the DOMSerializer and related classes to be complient with the
+    * Fixed a bug in the attributes table where it wasn't updated properly.
+      It now updates properly and sorts based on the order in which they will
+      be serialized (alphabetical).
+    * Updated many of the interfaces to make them more OO like. Before,
+      DefaultView and TabbedView could be created but would have wierd default
+      values and relied on the user to initialize them with a document. Now an
+      initial document is required to construct them. This should be better for
+      reuse.
+
+12/14/2003  version 0.1.44  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated the DOMSerializer and related classes to be complient with the
       latest version of the DOM3. So now jsXe requires Xerces 2.6.0.
     * Fixed a bug where the html pane was editable after opening a new document
       though no node was selected.

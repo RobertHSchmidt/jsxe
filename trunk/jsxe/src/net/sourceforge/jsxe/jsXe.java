@@ -135,28 +135,23 @@ public class jsXe {
         }
         //}}}
         
-        TabbedView tabbedview = new TabbedView();
+        TabbedView tabbedview = null;
+        DocumentBuffer defaultBuffer = null;
+        try {
+            defaultBuffer = new DocumentBuffer(new StringReader(getDefaultDocument()));
+            m_buffers.add(defaultBuffer);
+            tabbedview = new TabbedView(defaultBuffer);
+            
+        } catch (IOException ioe) {
+            exiterror(tabbedview, "Could not open default document", 1);
+        }
         
         //{{{ Parse command line arguments
         
         if (args.length >= 1) {
             
-            if (!openXMLDocuments(tabbedview, args)) {
-                try {
-                    if (!openXMLDocument(tabbedview, getDefaultDocument())) {
-                        exiterror(tabbedview, "Could not open default document.",1);
-                    }
-                } catch (IOException ioe) {
-                    exiterror(tabbedview, "Could not open default document: " + ioe.toString(),1);
-                }
-            }
-        } else {
-            try {
-                if (!openXMLDocument(tabbedview, getDefaultDocument())) {
-                    exiterror(tabbedview, "Could not open default document.",1);
-                }
-            } catch (IOException ioe) {
-                exiterror(tabbedview, "Could not open default document: " + ioe.toString(),1);
+            if (openXMLDocuments(tabbedview, args)) {
+                closeDocumentBuffer(tabbedview, defaultBuffer);
             }
         }
         //}}}

@@ -275,6 +275,17 @@ public class AdapterNode {
             Element element = (Element)domNode;
             element.setAttribute(name,value);
             fireAttributeChanged(this, name);
+        } else {
+            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
+        }
+    }//}}}
+    
+    public String getAttribute(String name) throws DOMException {//{{{
+        if (domNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element element = (Element)domNode;
+            return element.getAttribute(name);
+        } else {
+            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
         }
     }//}}}
     
@@ -285,6 +296,29 @@ public class AdapterNode {
             Node attr = attrs.item(index);
             element.removeAttribute(attr.getNodeName());
             fireAttributeChanged(this, attr.getNodeName());
+        } else {
+            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
+        }
+    }//}}}
+    
+    public void removeAttribute(String attr) throws DOMException {//{{{
+        if (domNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element element = (Element)domNode;
+            element.removeAttribute(attr);
+            fireAttributeChanged(this, attr);
+        } else {
+            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
+        }
+    }//}}}
+    
+    public String getAttributeAt(int index) throws DOMException {//{{{
+        if (domNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element element = (Element)domNode;
+            NamedNodeMap attrs = element.getAttributes();
+            Node attr = attrs.item(index);
+            return attr.getNodeName();
+        } else {
+            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
         }
     }//}}}
     
