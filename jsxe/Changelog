@@ -1,3 +1,8 @@
+8/29/2003   version 0.1.10  Ian Lewis  <IanLewis@member.fsf.org>
+
+    * Fixed indentation when serializing a document.
+    * Changed the layout of the options dialog. It looks a little better now.
+
 8/28/2003   version 0.1.9  Ian Lewis  <IanLewis@member.fsf.org>
 
     * Changed the DOMSerializer class to conform to the DOM3 standard
