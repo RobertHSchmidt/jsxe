@@ -95,30 +95,14 @@ public class TabbedView extends JFrame {
         int y = Integer.valueOf(jsXe.getProperty("tabbedview.y")).intValue();
         
         DocumentViewFactory factory = DocumentViewFactory.newInstance();
-       // factory.setDocumentViewType("documentview.sourceview");
-        docview = factory.newDocumentView();
+       // docView = factory.newDocumentView();
         
-        updateMenuBar();
+       // updateMenuBar();
         
         tabbedPane.addChangeListener(//{{{
             new ChangeListener() {
                 public void stateChanged(ChangeEvent e) {
-                    //This could be called after removing the only tab
-                    //if there is only 1 or 0 tabs then we don't need to
-                    //do this stuff.
-                    if (tabbedPane.getTabCount() > 1) {
-                        XMLDocument[] docs = jsXe.getXMLDocuments();
-                        try {
-                            setDocument(docs[tabbedPane.getSelectedIndex()]);
-                            ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
-                            updateTitle();
-                        } catch (IOException ioe) {
-                            //Some sort of error occured
-                            //try to recover by closing the document.
-                            JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-                            jsXe.closeXMLDocument(TabbedView.this, docs[tabbedPane.getSelectedIndex()]);
-                        }
-                    }
+                    updateTitle();
                 }
            });//}}}
         
@@ -136,19 +120,18 @@ public class TabbedView extends JFrame {
     }//}}}
     
     public DocumentView getDocumentView() {//{{{
-        return docview;
+        return (DocumentView)tabbedPane.getSelectedComponent();
     }//}}}
     
     public void addDocument(XMLDocument doc) throws IOException {//{{{
-        Rectangle bounds = getBounds();
         if (doc != null) {
-            docview.close(this);
-            docview.setDocument(this,doc);
-            JPanel dummypanel = new JPanel(new BorderLayout());
-            dummypanel.add(docview, BorderLayout.CENTER);
-            tabbedPane.add(doc.getName(), dummypanel);
-            tabbedPane.setSelectedComponent(dummypanel);
+            DocumentViewFactory factory = DocumentViewFactory.newInstance();
+            DocumentView newDocView = factory.newDocumentView();
+            newDocView.setDocument(this,doc);
+            tabbedPane.add(doc.getName(), newDocView);
+            tabbedPane.setSelectedComponent(newDocView);
             updateTitle();
+            updateMenuBar();
         }
     }//}}}
     
@@ -157,12 +140,11 @@ public class TabbedView extends JFrame {
             XMLDocument[] docs = jsXe.getXMLDocuments();
             for (int i=0; i < docs.length; i++) {
                 if (docs[i] == doc) {
-                    docview.close(this);
-                    docview.setDocument(this,doc);
                     tabbedPane.setSelectedIndex(i);
                 }
             }
             updateTitle();
+            updateMenuBar();
         }
     }//}}}
     
@@ -175,19 +157,7 @@ public class TabbedView extends JFrame {
                     //if the tab removed is not the rightmost tab
                     //stateChanged is not called for some
                     //reason.
-                    if (i != tabbedPane.getTabCount()) {
-                        try {
-                            docview.setDocument(this,docs[tabbedPane.getSelectedIndex()+1]);
-                            tabbedPane.setSelectedIndex(i);
-                            ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
-                            updateTitle();
-                        } catch (IOException ioe) {
-                            //Some sort of error occured
-                            //try to recover by closing the document.
-                            JOptionPane.showMessageDialog(this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-                            jsXe.closeXMLDocument(this, docs[tabbedPane.getSelectedIndex()]);
-                        }
-                    }
+                    updateTitle();
                 }
             }
         }
@@ -198,18 +168,30 @@ public class TabbedView extends JFrame {
     }//}}}
     
     public void updateTitle() {//{{{
-        XMLDocument document = docview.getXMLDocument();
-        String name = "";
-        if (document != null) {
-            name = document.getName();
+        DocumentView currentDocView = getDocumentView();
+        if (currentDocView != null) {
+            XMLDocument document = currentDocView.getXMLDocument();
+            String name = "";
+            if (document != null) {
+                name = document.getName();
+            }
+            setTitle(jsXe.getAppTitle() + " - " + name);
+        } else {
+            setTitle(jsXe.getAppTitle());
         }
-        setTitle(jsXe.getAppTitle() + " - " + name);;
     }//}}}
     
     public void close() {//{{{
         
-        //close the document view
-        docview.close(this);
+        XMLDocument[] docs = jsXe.getXMLDocuments();
+        DocumentView currentDocView = null;
+        
+        //sequentially close all the document views
+        for (int i=0; i < docs.length; i++) {
+            currentDocView = (DocumentView)tabbedPane.getComponentAt(0);
+            currentDocView.close(this);
+            tabbedPane.remove(0);
+        }
         
         //save properties
         Rectangle bounds = getBounds();
@@ -224,78 +206,94 @@ public class TabbedView extends JFrame {
     
     private void updateMenuBar() {//{{{
         JMenuBar menubar = new JMenuBar();
+        DocumentView currentDocView = getDocumentView();
         
-        //{{{ Add File Menu
-        JMenu fileMenu = new JMenu("File");
-            JMenuItem menuItem = new JMenuItem(new FileNewAction(this));
-            fileMenu.add( menuItem );
-            menuItem = new JMenuItem(new FileOpenAction(this));
-            fileMenu.add( menuItem );
-            fileMenu.addSeparator();
-            menuItem = new JMenuItem(new FileSaveAction(this));
-            fileMenu.add( menuItem );
-            menuItem = new JMenuItem(new FileSaveAsAction(this));
-            fileMenu.add( menuItem );
-            fileMenu.addSeparator();
-            menuItem = new JMenuItem(new FileCloseAction(this));
-            fileMenu.add( menuItem );
-            menuItem = new JMenuItem(new FileExitAction(this));
-            fileMenu.add( menuItem );
-        menubar.add(fileMenu);//}}}
-        
-        //{{{ Add View Specific Menus
-            JMenu[] menus = docview.getMenus();
-            if (menus != null) {
-                for (int i=0;i<menus.length;i++) {
-                    menubar.add(menus[i]);
+        if (currentDocView != null) {
+            
+            //{{{ Add File Menu
+            JMenu fileMenu = new JMenu("File");
+                JMenuItem menuItem = new JMenuItem(new FileNewAction(this));
+                fileMenu.add( menuItem );
+                menuItem = new JMenuItem(new FileOpenAction(this));
+                fileMenu.add( menuItem );
+                fileMenu.addSeparator();
+                menuItem = new JMenuItem(new FileSaveAction(this));
+                fileMenu.add( menuItem );
+                menuItem = new JMenuItem(new FileSaveAsAction(this));
+                fileMenu.add( menuItem );
+                fileMenu.addSeparator();
+                menuItem = new JMenuItem(new FileCloseAction(this));
+                fileMenu.add( menuItem );
+                menuItem = new JMenuItem(new FileExitAction(this));
+                fileMenu.add( menuItem );
+            menubar.add(fileMenu);//}}}
+            
+            //{{{ Add View Specific Menus
+                JMenu[] menus = currentDocView.getMenus();
+                if (menus != null) {
+                    for (int i=0;i<menus.length;i++) {
+                        menubar.add(menus[i]);
+                    }
                 }
-            }
-        //}}}
-        
-        //{{{ Add View Menu
-        JMenu viewMenu = new JMenu("View");
-            menuItem = new JMenuItem(new SetDefaultViewAction());
-            viewMenu.add( menuItem );
-            menuItem = new JMenuItem(new SetSourceViewAction());
-            viewMenu.add( menuItem );
-        menubar.add(viewMenu);
-        //}}}
-        
-        //{{{ Add Tools Menu
-        JMenu toolsMenu = new JMenu("Tools");
-            menuItem = new JMenuItem(new ToolsOptionsAction(this));
-            toolsMenu.add( menuItem );
-        menubar.add(toolsMenu);//}}}
-        
-        //{{{ Add Help Menu
-        JMenu helpMenu = new JMenu("Help");
-            menuItem = new JMenuItem(new jsxeAboutDialog(this));
-            helpMenu.add( menuItem );
-        menubar.add(helpMenu);//}}}
-        
-        setJMenuBar(menubar);
-        
-        //Need to cause a repaint after menubar is changed.
-        getRootPane().revalidate();
+            //}}}
+            
+            //{{{ Add View Menu
+            JMenu viewMenu = new JMenu("View");
+                menuItem = new JMenuItem(new SetDefaultViewAction());
+                viewMenu.add( menuItem );
+                menuItem = new JMenuItem(new SetSourceViewAction());
+                viewMenu.add( menuItem );
+            menubar.add(viewMenu);
+            //}}}
+            
+            //{{{ Add Tools Menu
+            JMenu toolsMenu = new JMenu("Tools");
+                menuItem = new JMenuItem(new ToolsOptionsAction(this));
+                toolsMenu.add( menuItem );
+            menubar.add(toolsMenu);//}}}
+            
+            //{{{ Add Help Menu
+            JMenu helpMenu = new JMenu("Help");
+                menuItem = new JMenuItem(new jsxeAboutDialog(this));
+                helpMenu.add( menuItem );
+            menubar.add(helpMenu);//}}}
+            
+            setJMenuBar(menubar);
+            
+            //Need to cause a repaint after menubar is changed.
+            getRootPane().revalidate();
+        }
     }//}}}
     
-    private void setDocumentView(DocumentView view) {//{{{
+    private void setDocumentView(DocumentView newView) {//{{{
         
         XMLDocument[] docs = jsXe.getXMLDocuments();
-        try {
-            //close the previous view
-            docview.close(this);
-            ((JPanel)tabbedPane.getSelectedComponent()).remove(docview);
-            //register the new view
-            docview = view;
-            setDocument(docs[tabbedPane.getSelectedIndex()]);
-            ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
-            updateMenuBar();
-        } catch (IOException ioe) {
-            //Some sort of error occured
-            //try to recover by closing the document.
-            JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-            jsXe.closeXMLDocument(TabbedView.this, docs[tabbedPane.getSelectedIndex()]);
+        DocumentView oldView = getDocumentView();
+        int index = tabbedPane.getSelectedIndex();
+        
+        
+        XMLDocument currentDoc = docs[index];
+        
+        if (oldView != null) {
+            try {
+                //close the previous view
+                oldView.close(this);
+                
+                //try to open the document in the new view
+                newView.setDocument(this, currentDoc);
+                
+                //no exceptions? cool. register the new view
+                tabbedPane.remove(oldView);
+                tabbedPane.add(newView, index);
+                tabbedPane.setTitleAt(index, currentDoc.getName());
+                tabbedPane.setSelectedIndex(index);
+                updateMenuBar();
+            } catch (IOException ioe) {
+                //Some sort of error occured
+                //We didn't register the new view yet.
+                //So do nothing but display an error.
+                JOptionPane.showMessageDialog(this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            }
         }
     }//}}}
     
@@ -336,7 +334,7 @@ public class TabbedView extends JFrame {
     }//}}}
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-    private DocumentView docview;
+    //The current document
     private JPanel panel;
     //}}}
 }
