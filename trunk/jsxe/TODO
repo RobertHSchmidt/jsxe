@@ -61,6 +61,9 @@ TODO:
     * Make the XML document declaration header non-editable in source-view
       mode. (how?) Update it when the user changes options in the options panel.
     
+    * Add option to use soft tabs in the source view. Override processKeyEvent
+      in JEditorPane to accomplish this.
+    
     * Refactor the class structure and DocumentView classes
     
     * Fix the options dialog and make it look better. Maybe split into two
@@ -93,6 +96,11 @@ TODO:
     * Implement undo for the DefaultView and SourceView.
     
 * Version 0.4.0
+    
+    * Add threading support and allow multiple windows/Views to be open for one
+      document at once. This can let you edit a document using one view and
+      view it using another. Views should be able to update automatically using
+      some sort of listener interface.
     
     * Implement BeanShell support. This is required for dynamic actions like
       those in jEdit.
