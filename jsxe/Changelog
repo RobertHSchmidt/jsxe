@@ -1,3 +1,10 @@
+02/07/2004  version 0.1.51  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Cleaned up the DOMSerializer and DOMSerializerConfiguration classes
+    * Added a flag to the DefaultXMLDocument class to tell if the DOM is synced
+      with the text content in parsed mode. Now it won't sync and thus serialize
+      the DOM to the content every time text is requested.
+
 01/23/2004  version 0.1.50  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added support for soft tabs in the DOMSerializer
