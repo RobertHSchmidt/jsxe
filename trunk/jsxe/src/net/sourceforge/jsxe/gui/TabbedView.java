@@ -190,7 +190,7 @@ public class TabbedView extends JFrame {
     public void close() {//{{{
         
         //close the document view
-        docview.close();
+        docview.close(this);
         
         //save properties
         Rectangle bounds = getBounds();
@@ -260,7 +260,7 @@ public class TabbedView extends JFrame {
     
     private void setDocumentView(DocumentView view) {//{{{
         //close the previous view
-        docview.close();
+        docview.close(this);
         ((JPanel)tabbedPane.getSelectedComponent()).remove(docview);
         
         //register the new view
