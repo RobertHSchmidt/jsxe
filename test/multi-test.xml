@@ -7,4 +7,7 @@
 	<CDATA>
 		<![CDATA[`~!@#$%^&*()[{]}?/+=|\_-;:]]>
 	</CDATA>
+	<PI>
+		<?pi-test test?>
+	</PI>
 </test>
