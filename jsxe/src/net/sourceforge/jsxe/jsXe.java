@@ -546,7 +546,7 @@ public class jsXe {
     
     //{{{ getProperty()
     /**
-     * * Gets a jsXe global property. This returns a user defined value for the
+     * Gets a jsXe global property. This returns a user defined value for the
      * property, the default value of the property if no user defined value is
      * found or the default value given if neither exist.
      * @param key The key of the property to get.
