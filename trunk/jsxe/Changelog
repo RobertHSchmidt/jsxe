@@ -1,3 +1,8 @@
+02/16/2004  version 0.1.53  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug introduced in 0.1.51 that caused formatting not to work in
+      the source view and when saving.
+
 02/08/2004  version 0.1.52  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added support for writing the internal part of a DOCTYPE to the XML
