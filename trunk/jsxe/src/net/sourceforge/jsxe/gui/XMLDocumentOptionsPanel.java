@@ -77,6 +77,7 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
         
         setLayout(layout);
         
+        //set up the encoding combo-box.
         supportedEncodings.add("US-ASCII");
         supportedEncodings.add("ISO-8859-1");
         supportedEncodings.add("UTF-8");
@@ -84,7 +85,7 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
         supportedEncodings.add("UTF-16LE");
         supportedEncodings.add("UTF-16");
         
-        JLabel label = new JLabel("Encoding:");
+        JLabel encodingLabel = new JLabel("Encoding:");
         encodingComboBox = new JComboBox(supportedEncodings);
         encodingComboBox.setEditable(false);
         
@@ -96,6 +97,17 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
             }
         }
         
+        JLabel indentLabel = new JLabel("Indent width:");
+        
+        Vector sizes = new Vector(3);
+        sizes.add("2");
+        sizes.add("4");
+        sizes.add("8");
+        indentComboBox = new JComboBox(sizes);
+        indentComboBox.setEditable(true);
+        indentComboBox.setSelectedItem(document.getProperty("indent"));
+        
+        //set up the whitespace and format output check-boxes.
         boolean whitespace    = Boolean.valueOf(document.getProperty("whitespace-in-element-content", "true")).booleanValue();
         boolean formatOutput = Boolean.valueOf(document.getProperty("format-output", "false")).booleanValue();
         
@@ -112,10 +124,10 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
         constraints.gridwidth  = 1;
         constraints.weightx    = 1.0f;
         constraints.fill       = GridBagConstraints.BOTH;
-		constraints.insets     = new Insets(1,0,1,0);
+        constraints.insets     = new Insets(1,0,1,0);
         
-        layout.setConstraints(label, constraints);
-        add(label);
+        layout.setConstraints(encodingLabel, constraints);
+        add(encodingLabel);
         
         constraints.gridy      = gridY++;
         constraints.gridx      = 1;
@@ -123,10 +135,32 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
         constraints.gridwidth  = 1;
         constraints.weightx    = 1.0f;
         constraints.fill       = GridBagConstraints.BOTH;
-		constraints.insets     = new Insets(1,0,1,0);
+        constraints.insets     = new Insets(1,0,1,0);
         
         layout.setConstraints(encodingComboBox, constraints);
         add(encodingComboBox);
+        
+        constraints.gridy      = gridY;
+        constraints.gridx      = 0;
+        constraints.gridheight = 1;
+        constraints.gridwidth  = 1;
+        constraints.weightx    = 1.0f;
+        constraints.fill       = GridBagConstraints.BOTH;
+        constraints.insets     = new Insets(1,0,1,0);
+        
+        layout.setConstraints(indentLabel, constraints);
+        add(indentLabel);
+        
+        constraints.gridy      = gridY++;
+        constraints.gridx      = 1;
+        constraints.gridheight = 1;
+        constraints.gridwidth  = 1;
+        constraints.weightx    = 1.0f;
+        constraints.fill       = GridBagConstraints.BOTH;
+        constraints.insets     = new Insets(1,0,1,0);
+        
+        layout.setConstraints(indentComboBox, constraints);
+        add(indentComboBox);
         
         constraints.gridy      = gridY++;
         constraints.gridx      = 0;
@@ -134,7 +168,7 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
         constraints.gridwidth  = GridBagConstraints.REMAINDER;
         constraints.weightx    = 0.0f;
         constraints.fill       = GridBagConstraints.BOTH;
-		constraints.insets     = new Insets(1,0,1,0);
+        constraints.insets     = new Insets(1,0,1,0);
         
         layout.setConstraints(whitespaceCheckBox, constraints);
         add(whitespaceCheckBox);
@@ -145,7 +179,7 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
         constraints.gridwidth  = GridBagConstraints.REMAINDER;
         constraints.weightx    = 0.0f;
         constraints.fill       = GridBagConstraints.BOTH;
-		constraints.insets     = new Insets(1,0,1,0);
+        constraints.insets     = new Insets(1,0,1,0);
         
         layout.setConstraints(formatCheckBox, constraints);
         add(formatCheckBox);
@@ -156,6 +190,11 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
         document.setProperty("format-output", (new Boolean(formatCheckBox.isSelected())).toString());
         document.setProperty("whitespace-in-element-content", (new Boolean(whitespaceCheckBox.isSelected())).toString());
         document.setProperty("encoding", encodingComboBox.getSelectedItem().toString());
+        try {
+            document.setProperty("indent", (new Integer(indentComboBox.getSelectedItem().toString())).toString());
+        } catch (NumberFormatException nfe) {
+            //Bad input, don't save.
+        }
     };//}}}
     
     public String getTitle() {//{{{
@@ -176,6 +215,7 @@ public class XMLDocumentOptionsPanel extends OptionsPanel {
     
     private XMLDocument document;
     private JComboBox encodingComboBox;
+    private JComboBox indentComboBox;
     private JCheckBox whitespaceCheckBox;
     private final Vector supportedEncodings = new Vector(6);
     private JCheckBox formatCheckBox;
