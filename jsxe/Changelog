@@ -2,6 +2,7 @@
 
     * Added some more code for the SchemaView. jsXe will require JGraph for a
       bit, until views become plugins and are moved into their own jars.
+    * Added some code for loading plugins
 
 11/24/2004  version 0.3 pre2    Ian Lewis <IanLewis@member.fsf.org>
 

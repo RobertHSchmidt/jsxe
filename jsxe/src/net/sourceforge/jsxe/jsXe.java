@@ -133,6 +133,10 @@ public class jsXe {
         File _settingsDirectory = new File(settingsDirectory);
         if(!_settingsDirectory.exists())
 		    _settingsDirectory.mkdirs();
+        File _pluginsDirectory = new File(settingsDirectory+"/plugins");
+        if(!_pluginsDirectory.exists())
+		    _pluginsDirectory.mkdirs();
+        
         File properties = new File(settingsDirectory,"properties");
         try {
             FileInputStream filestream = new FileInputStream(properties);
@@ -186,6 +190,33 @@ public class jsXe {
                 files.add(args[i]);
            // }
         }
+        //}}}
+        
+        //{{{ load plugins
+       // try {
+       //     
+       //     JARClassLoader loader = new JARClassLoader();
+       //     ArrayList list = loader.addDirectory(settingsDirectory+"/plugins");
+       //     if (list.size() != 0) {
+       //         System.out.println("COULD NOT LOAD: "+list.get(1).toString());
+       //     } else {
+       //         Class cls = loader.loadClass("test.DOMTest");
+       //         Class cls2 = loader.loadClass("test.DOMTest2");
+       //         System.out.println(cls.getName());
+       //         System.out.println(cls.newInstance().toString());
+       //         System.out.println(cls2.getName());
+       //         System.out.println(cls2.newInstance().toString());
+       //     }
+       // } catch (ClassNotFoundException blah) {
+       //     System.out.println("NOT FOUND: "+blah.getMessage());
+       // } catch (InstantiationException e) {
+       //     System.out.println(e.getMessage());
+       // } catch (IllegalAccessException e) {
+       //     System.out.println(e.getMessage());
+       // }
+        
+        //Code to load plugins here.
+        
         //}}}
         
         //{{{ create the TabbedView
