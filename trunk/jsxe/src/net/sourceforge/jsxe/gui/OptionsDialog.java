@@ -90,7 +90,8 @@ public class OptionsDialog extends JDialog {
         
         //add components to build the dialog
         OptionsNorthPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        OptionsNorthPanel.add(formatCheckBox);
+        //formatting isn't supported right now because it doesn't work right
+       // OptionsNorthPanel.add(formatCheckBox);
         OptionsSouthPanel.add(OKButton);
         OptionsSouthPanel.add(CancelButton);
         getContentPane().add(OptionsNorthPanel, BorderLayout.NORTH);
