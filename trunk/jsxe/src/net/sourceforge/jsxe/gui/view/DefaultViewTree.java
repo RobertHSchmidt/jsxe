@@ -427,6 +427,8 @@ public class DefaultViewTree extends JTree {
         //{{{ dragDropEnd()
         
         public void dragDropEnd(DragSourceDropEvent dsde) {
+            //paint over the cue line no matter what.
+            paintImmediately(m_cueLine);
             if ( dsde.getDropSuccess() == false ) {
                 return;
             }
@@ -440,7 +442,7 @@ public class DefaultViewTree extends JTree {
         //{{{ dragExit()
         
         public void dragExit(DragSourceEvent dse) {
-            
+            paintImmediately(m_cueLine);
         }//}}}
         
         //{{{ dragOver()
@@ -514,16 +516,32 @@ public class DefaultViewTree extends JTree {
                 Rectangle bounds = getPathBounds(path);
                 if (loc.y < bounds.y + (int)(bounds.height * 0.25)) {
                     //Insert before the node dropped on
-                    AdapterNode trueParent = parentNode.getParentNode();
-                    trueParent.addAdapterNodeAt(node, trueParent.index(parentNode));
+                    if (parentNode != null) {
+                        AdapterNode trueParent = parentNode.getParentNode();
+                        if (trueParent != null) {
+                            trueParent.addAdapterNodeAt(node, trueParent.index(parentNode));
+                        } else {
+                            throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
+                        }
+                    } else {
+                        throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
+                    }
                 } else {
                     if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
                         //insert in the node
                         parentNode.addAdapterNode(node);
                     } else {
-                        //insert after the node dropped on
-                        AdapterNode trueParent = parentNode.getParentNode();
-                        trueParent.addAdapterNodeAt(node, trueParent.index(parentNode)+1);
+                        if (parentNode != null) {
+                            //insert after the node dropped on
+                            AdapterNode trueParent = parentNode.getParentNode();
+                            if (trueParent != null) {
+                                trueParent.addAdapterNodeAt(node, trueParent.index(parentNode)+1);
+                            } else {
+                                throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
+                            }
+                        } else {
+                            throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
+                        }
                     }
                 }
                 dtde.acceptDrop(m_acceptableActions);
@@ -549,7 +567,6 @@ public class DefaultViewTree extends JTree {
             TreePath path = getPathForLocation(loc.x, loc.y);
             if (path != null) {
                 Rectangle bounds = getPathBounds(path);
-                
                 //erase old cue line
                 Graphics g = getGraphics();
                 paintImmediately(m_cueLine);
@@ -567,7 +584,7 @@ public class DefaultViewTree extends JTree {
                     g.fillRect(x, y, width, height);
                 } else {
                     if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
-                        //don't paint anything right now
+                        //don't do anything right now
                         x = 0;
                         y = 0;
                         width = 0;
@@ -595,7 +612,9 @@ public class DefaultViewTree extends JTree {
         
         //{{{ dragExit
         
-        public void dragExit(DropTargetEvent dte) {}//}}}
+        public void dragExit(DropTargetEvent dte) {
+            
+        }//}}}
         
         //{{{ Private Members
         

@@ -1,3 +1,9 @@
+04/03/2004  version 0.1.61  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a couple bugs that caused null pointer exceptions when inserting
+      around the document root.
+    * Fixed it so that when you drag off the tree the cue line is erased.
+
 04/02/2004  version 0.1.60  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added much better drag and drop support. You can now rearrange nodes
