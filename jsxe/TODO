@@ -23,6 +23,8 @@ TODO:
     
 * Version 0.2 beta
     
+    * Fix the dimensions of the options dialog when it's opened up.
+    
     * Fix bug where the file is kept open by a reader or something too long.
       This doesn't allow other editors to open the document until jsXe is
       closed or the objects are garbage collected.
@@ -34,12 +36,6 @@ TODO:
       app properties for each view. Default document properties get set
       to the document each time one is loaded. Default app properties get set
       when the view is loaded.
-    
-    * Fix the options dialog and make it look better. Make options dialog
-      like jEdit with a tree thing that displays option categories. So that way
-      jsXe can have separate options for serialization and visualization and
-      etc. General options should set defaults and application level options
-      and the document options should set document/view level options.
     
     * Make the XML document declaration header non-editable in source-view
       mode. (how?) Update it when the user changes options in the options panel.

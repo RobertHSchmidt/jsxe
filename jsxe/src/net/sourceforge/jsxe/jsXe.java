@@ -846,6 +846,12 @@ public class jsXe {
             add(maxRecentFilesComboBox);
         }//}}}
         
+        //{{{ getName()
+        
+        public String getName() {
+            return "jsxeoptions";
+        }//}}}
+        
         //{{{ saveOptions()
         public void saveOptions() {
             try {
@@ -860,6 +866,12 @@ public class jsXe {
         
         public String getTitle() {
             return "jsXe Global Options";
+        }//}}}
+        
+        //{{{ toString()
+        
+        public String toString() {
+            return getTitle();
         }//}}}
         
         //{{{ Private Members

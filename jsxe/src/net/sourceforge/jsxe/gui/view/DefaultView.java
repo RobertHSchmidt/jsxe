@@ -440,6 +440,12 @@ public class DefaultView extends JPanel implements DocumentView {
             tree.updateUI();
         }//}}}
         
+        //{{{ getName()
+        
+        public String getName() {
+            return "defaultview";
+        }//}}}
+        
         //{{{ getTitle()
         
         public String getTitle() {

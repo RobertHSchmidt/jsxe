@@ -443,6 +443,12 @@ public class SourceView extends JPanel implements DocumentView {
             add(m_m_softTabsCheckBox);
         }//}}}
         
+        //{{{ getName()
+        
+        public String getName() {
+            return "sourceview";
+        }//}}}
+        
         //{{{ saveOptions()
         
         public void saveOptions() {
