@@ -2,9 +2,6 @@ TODO:
 
     * Document methods with javadoc.
     
-    * Fix the DOMSerializer class so that it writes entities when given nodes
-      with text that has < or > or something like that.
-    
     * Change the DOMSerializer class to conform to the DOM3 standard DOMWriter
       class.
     

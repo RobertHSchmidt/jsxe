@@ -41,17 +41,29 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.TabbedView;
+//}}}
+
+//{{{ DOM classes
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import javax.xml.parsers.ParserConfigurationException;
 //}}}
 
 //{{{ Swing components
 import javax.swing.Action;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
+import javax.swing.JOptionPane;
 //}}}
 
 //{{{ AWT components
 import java.awt.event.ActionEvent;
+//}}}
+
+//{{{ Java base classes
+import java.io.IOException;
 //}}}
 
 //}}}
@@ -65,7 +77,29 @@ public class FileSaveAction extends AbstractAction {
     }//}}}
     
     public void actionPerformed(ActionEvent e) {//{{{
-        view.getDocumentView().getXMLDocument().save(view);
+        XMLDocument doc = view.getDocumentView().getXMLDocument();
+        if (doc.isUntitled()) {
+            //perform a saveAs action
+            (new FileSaveAsAction(view)).actionPerformed(e);
+        } else {
+            try {
+                
+                doc.save();
+                view.update();
+                
+            } catch(SAXParseException spe) {
+                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+            }
+            catch (SAXException sxe) {
+                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
+            }
+            catch (ParserConfigurationException pce) {
+                JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
+            }
+            catch (IOException ioe) {
+                JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            }
+        }
     }//}}}
     
     //{{{ Private members

@@ -42,18 +42,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.CustomFileFilter;
 import net.sourceforge.jsxe.gui.TabbedView;
-//}}}
-
-//{{{ Swing classes
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
-//}}}
-
-//{{{ AWT classes
-import java.awt.Component;
 //}}}
 
 //{{{ DOM classes
@@ -140,20 +129,20 @@ public class DefaultXMLDocument extends XMLDocument {
     }//}}}
     
     public void setModel(File file) throws FileNotFoundException, IOException {//{{{
-        validated=false;
-        XMLFile = file;
-        source="";
-        int nextchar=0;
         if (file!=null) {
+            int nextchar=0;
+            source = "";
             name = file.getName();
             FileReader reader=new FileReader(file);
+            validated=false;
             while (nextchar != -1) {
                nextchar = reader.read();
                if (nextchar != -1)
                    source+=(char)nextchar;
-            }
+            } 
+            XMLFile = file;
         } else {
-            name = getUntitledLabel();
+            throw new FileNotFoundException("File Not Found: null");
         }
     }//}}}
     
@@ -177,103 +166,23 @@ public class DefaultXMLDocument extends XMLDocument {
         return validated;
     }//}}}
 
-    public boolean save(TabbedView view) {//{{{
-       return save(view,XMLFile);
+    public void save() throws IOException, SAXParseException, SAXException, ParserConfigurationException {//{{{
+       if (XMLFile != null) {
+           saveAs(XMLFile);
+       } else {
+           //You shouldn't call this when the document is untitled but
+           //if you do default to saving to the home directory.
+           File newFile = new File(System.getProperty("user.home") + getName());
+           setModel(newFile);
+       }
     }//}}}
     
-    public boolean save(TabbedView view, File file) {//{{{
-        if (file == null) {
-            return saveAs(view);
-        } else {
-            try {
-                validate();
-                XMLFile = file;
-                //formatting the document is disabled because it doesn't work right
-                DOMSerializer serializer = new DOMSerializer(false);
-                try {
-                    serializer.serialize(getDocument(), XMLFile);
-                    return true;
-                } catch (IOException ioe) {
-                    JOptionPane.showMessageDialog(view, ioe, "Write Error", JOptionPane.WARNING_MESSAGE);
-                    return false;
-                }
-            } catch(SAXParseException spe) {
-                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-            catch (SAXException sxe) {
-                JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-            catch (ParserConfigurationException pce) {
-                JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-            catch (IOException ioe) {
-                JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-                return false;
-            }
-        }
-    }//}}}
-    
-    public boolean saveAs(TabbedView view) {//{{{
-        try {
-            validate();
-            
-            //  if XMLFile is null, defaults to home directory
-            JFileChooser saveDialog = new JFileChooser();
-            saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
-            saveDialog.setDialogTitle("Save As");
-            
-            //Add a filter to display only XML files
-            Vector extentionList = new Vector();
-            extentionList.add(new String("xml"));
-            CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
-            saveDialog.addChoosableFileFilter(firstFilter);
-            //Add a filter to display only XSL files
-            extentionList = new Vector();
-            extentionList.add(new String("xsl"));
-            saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
-            //Add a filter to display only XSL:FO files
-            extentionList = new Vector();
-            extentionList.add(new String("fo"));
-            saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
-            //Add a filter to display all formats
-            extentionList = new Vector();
-            extentionList.add(new String("xml"));
-            extentionList.add(new String("xsl"));
-            extentionList.add(new String("fo"));
-            saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "All XML Documents"));
-            
-            //The "All Files" file filter is added to the dialog
-            //by default. Put it at the end of the list.
-            FileFilter all = saveDialog.getAcceptAllFileFilter();
-            saveDialog.removeChoosableFileFilter(all);
-            saveDialog.addChoosableFileFilter(all);
-            saveDialog.setFileFilter(firstFilter);
-            
-            int returnVal = saveDialog.showSaveDialog(view);
-            if(returnVal == JFileChooser.APPROVE_OPTION) {
-                XMLFile=saveDialog.getSelectedFile();
-                return save(view);
-            }
-            return true;
-        } catch(SAXParseException spe) {
-            JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+spe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        catch (SAXException sxe) {
-            JOptionPane.showMessageDialog(view, "Document must be well-formed XML\n"+sxe, "Parse Error", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        catch (ParserConfigurationException pce) {
-            JOptionPane.showMessageDialog(view, pce, "Parser Configuration Error", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-        catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
+    public void saveAs(File file) throws IOException, SAXParseException, SAXException, ParserConfigurationException {//{{{
+        validate();
+        //formatting the document is disabled because it doesn't work right
+        DOMSerializer serializer = new DOMSerializer(false);
+        serializer.serialize(getDocument(), file);
+        setModel(file);
     }//}}}
     
     //{{{ Private members
