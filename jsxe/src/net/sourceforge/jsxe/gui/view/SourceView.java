@@ -42,6 +42,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.dom.DOMSerializer;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -49,6 +50,7 @@ import net.sourceforge.jsxe.gui.TabbedView;
 import javax.swing.JPanel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.Action;
@@ -61,6 +63,11 @@ import java.awt.BorderLayout;
 import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+//}}}
+
+//{{{ Java base classes
+import java.io.IOException;
+import java.io.StringWriter;
 //}}}
 
 //}}}
@@ -111,7 +118,19 @@ public class SourceView extends DocumentView {
     
     public void setDocument(TabbedView view, XMLDocument document) {//{{{
         currentdoc = document;
-        textarea.setText("Current Source Here");
+        
+        StringWriter writer = new StringWriter();
+        
+        //formatting disabled because it doesn't work right
+        DOMSerializer serializer = new DOMSerializer(false);
+        try {
+            
+            serializer.serialize(document.getDocument(), writer);
+            textarea.setText(writer.toString());
+            
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+        }
     }//}}}
     
     public XMLDocument getXMLDocument() {//{{{

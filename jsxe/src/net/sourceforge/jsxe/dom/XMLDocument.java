@@ -49,6 +49,7 @@ import net.sourceforge.jsxe.gui.TabbedView;
 
 //{{{ Swing classes
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 //}}}
 
@@ -65,6 +66,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.Properties;
 import java.util.Vector;
@@ -135,25 +137,28 @@ public abstract class XMLDocument {
     }//}}}
     
     public boolean save(TabbedView view, File file) {//{{{
-       // if (file == null) {
-       //     return jsXe.saveAs(view);
-       // } else {
-       //     XMLFile = file;
-       //     DOMSerializer serializer = new DOMSerializer((Boolean.valueOf(getProperty("format.output"))).booleanValue());
-       //     try {
-       //         serializer.serialize(document, XMLFile);
-       //         return true;
-       //     } catch (IOException ioe) {
-       //         JOptionPane.showMessageDialog(view, ioe, "Write Error", JOptionPane.WARNING_MESSAGE);
-       //         return false;
-       //     }
-       // }
-       return true;
+        if (file == null) {
+            return saveAs(view);
+        } else {
+            XMLFile = file;
+            //formatting the document is disabled because it doesn't work right
+            DOMSerializer serializer = new DOMSerializer(false);
+            try {
+                serializer.serialize(getDocument(), XMLFile);
+                return true;
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(view, ioe, "Write Error", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+        }
     }//}}}
     
     public boolean saveAs(TabbedView view) {//{{{
         //  if XMLFile is null, defaults to home directory
         JFileChooser saveDialog = new JFileChooser();
+        saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
+        saveDialog.setDialogTitle("Save As");
+        
         //Add a filter to display only XML files
         Vector extentionList = new Vector();
         extentionList.add(new String("xml"));
@@ -181,7 +186,7 @@ public abstract class XMLDocument {
         saveDialog.addChoosableFileFilter(all);
         saveDialog.setFileFilter(firstFilter);
         
-        int returnVal = saveDialog.showOpenDialog(view);
+        int returnVal = saveDialog.showSaveDialog(view);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             XMLFile=saveDialog.getSelectedFile();
             return save(view);
