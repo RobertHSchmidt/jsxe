@@ -80,7 +80,7 @@ import java.io.IOException;
 
 public class SourceView extends DocumentView {
     
-    protected SourceView() {//{{{
+    public SourceView(DocumentBuffer buffer) throws IOException {//{{{
         
         panel = new JPanel();
         
@@ -95,6 +95,7 @@ public class SourceView extends DocumentView {
         setLayout(new BorderLayout());
         add(scrollPane, BorderLayout.CENTER);
         
+        setDocumentBuffer(buffer);
     }//}}}
     
     public JMenu[] getMenus() {//{{{
@@ -127,14 +128,14 @@ public class SourceView extends DocumentView {
         return null;
     }//}}}
     
-    public void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException {//{{{
+    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {//{{{
         
         if (m_buffer != null) {
             m_buffer.removeDocumentBufferListener(docListener);
         }
         
         m_buffer = buffer;
-        textarea.setDocument(new SourceViewDocument(view, m_buffer));
+        textarea.setDocument(new SourceViewDocument(m_buffer));
         textarea.setTabSize((new Integer(m_buffer.getProperty("indent", "4"))).intValue());
         m_buffer.addDocumentBufferListener(docListener);
         

@@ -99,7 +99,7 @@ public class TabbedView extends JFrame {
     /**
      * Constructs a new TabbedView
      */
-    public TabbedView() {//{{{
+    public TabbedView(DocumentBuffer buffer) throws IOException {//{{{
         
         int width = Integer.valueOf(jsXe.getProperty("tabbedview.width")).intValue();
         int height = Integer.valueOf(jsXe.getProperty("tabbedview.height")).intValue();
@@ -132,6 +132,8 @@ public class TabbedView extends JFrame {
         setIconImage(jsXe.getIcon().getImage());
         
         setBounds(new Rectangle(x, y, width, height));
+        
+        addDocumentBuffer(buffer);
     }//}}}
     
     /**
@@ -158,11 +160,14 @@ public class TabbedView extends JFrame {
             DocumentView newDocView;
             
             while (types.hasMoreElements()) {
+                
                 factory.setDocumentViewType((String)types.nextElement());
-                newDocView = factory.newDocumentView();
                 
                 try {
-                    newDocView.setDocumentBuffer(this, buffer);
+                    
+                    newDocView = factory.newDocumentView(buffer);
+                    
+                    newDocView.setDocumentBuffer(buffer);
                     
                     buffer.addDocumentBufferListener(new DocumentBufferListener() {//{{{
                 
@@ -201,7 +206,7 @@ public class TabbedView extends JFrame {
                     return;
                     
                 } catch (IOException ioe) {
-                    error += newDocView.getName() + ": "+ioe.getMessage() + "\n";
+                    error += buffer.getName() + ": "+ioe.getMessage() + "\n";
                 }
             }
             
@@ -214,26 +219,32 @@ public class TabbedView extends JFrame {
      * Sets the current buffer and makes sure it is displayed. If
      * the document is not already open then this method does nothing.
      * @param buffer The buffer to set
+     * @return true if the document was set and is visable
      */
-    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {//{{{
+    public boolean setDocumentBuffer(DocumentBuffer buffer) throws IOException {//{{{
+        boolean success = true;
         if (buffer != null) {
             DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
             for (int i=0; i < buffers.length; i++) {
                 if (buffers[i] == buffer) {
                     tabbedPane.setSelectedIndex(i);
+                    success = true;
                 }
             }
             updateTitle();
             updateMenuBar();
         }
+        return success;
     }//}}}
     
     /**
      * Removes a buffer from the view. If the buffer passed is not
      * already open this method does nothing.
      * @param buffer The document to remove
+     * @return true if the document was removed
      */
-    public void removeDocumentBuffer(DocumentBuffer buffer) {//{{{
+    public boolean removeDocumentBuffer(DocumentBuffer buffer) {//{{{
+        boolean success = false;
         if (buffer != null) {
             DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
             for (int i=0; i < buffers.length; i++) {
@@ -248,10 +259,12 @@ public class TabbedView extends JFrame {
                         //stateChanged is not called for some
                         //reason so we must update the title.
                         updateTitle();
+                        success = true;
                     }
                 }
             }
         }
+        return success;
     }//}}}
     
     /**
@@ -386,16 +399,15 @@ public class TabbedView extends JFrame {
      */
     private void setDocumentView(DocumentView newView) {//{{{
         
-        DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
         DocumentView oldView = getDocumentView();
-        int index = tabbedPane.getSelectedIndex();
         
-        DocumentBuffer currentBuffer = buffers[index];
+        DocumentBuffer currentBuffer = newView.getDocumentBuffer();
+        int index = tabbedPane.getSelectedIndex();
         
         if (oldView != null) {
             try {
                 //try to open the buffer in the new view
-                newView.setDocumentBuffer(this, currentBuffer);
+                newView.setDocumentBuffer(currentBuffer);
                 
                 //close the previous view
                 oldView.close(this);
@@ -437,9 +449,18 @@ public class TabbedView extends JFrame {
         }
         
         public void actionPerformed(ActionEvent e) {
-            DocumentViewFactory factory = DocumentViewFactory.newInstance();
-            DocumentView view = factory.newDocumentView();
-            setDocumentView(view);
+            DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+            int index = tabbedPane.getSelectedIndex();
+            
+            DocumentBuffer buffer = buffers[index];
+            
+            try {
+                DocumentViewFactory factory = DocumentViewFactory.newInstance();
+                DocumentView view = factory.newDocumentView(buffer);
+                setDocumentView(view);
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            }
         }
         
     }//}}}
@@ -453,10 +474,19 @@ public class TabbedView extends JFrame {
         }
         
         public void actionPerformed(ActionEvent e) {
-            DocumentViewFactory factory = DocumentViewFactory.newInstance();
-            factory.setDocumentViewType("documentview.sourceview");
-            DocumentView view = factory.newDocumentView();
-            setDocumentView(view);
+            DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+            int index = tabbedPane.getSelectedIndex();
+            
+            DocumentBuffer buffer = buffers[index];
+            
+            try {
+                DocumentViewFactory factory = DocumentViewFactory.newInstance();
+                factory.setDocumentViewType("documentview.sourceview");
+                DocumentView view = factory.newDocumentView(buffer);
+                setDocumentView(view);
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            }
         }
         
     }//}}}
