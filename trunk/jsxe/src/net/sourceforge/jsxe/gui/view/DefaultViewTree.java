@@ -135,7 +135,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
     //{{{ autoscroll()
     
     public void autoscroll(Point cursorLocn) {
-        int row = getRowForLocation(cursorLocn.x, cursorLocn.y);
+        int row = getClosestRowForLocation(cursorLocn.x, cursorLocn.y);
         
         if (row < 0) {
             return;
@@ -508,6 +508,13 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     setClosedIcon(m_defaultClosedIcon);
                     setToolTipText("XML Document");
                     break;
+                case Node.PROCESSING_INSTRUCTION_NODE:
+                    setIcon(m_defaultLeafIcon);
+                    setLeafIcon(m_defaultLeafIcon);
+                    setOpenIcon(m_defaultLeafIcon);
+                    setClosedIcon(m_defaultLeafIcon);
+                    setToolTipText("Processing Instruction");
+                    break;
                 default:
                     if (leaf) {
                         setIcon(m_defaultLeafIcon);
@@ -674,12 +681,11 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         //{{{ dragEnter()
         
         public void dragEnter(DropTargetDragEvent dtde) {
-            if (isDragOk(dtde) == false) {
+            if (!isDragOk(dtde)) {
                 dtde.rejectDrag();      
                 return;
             }
-            
-            dtde.acceptDrag(DnDConstants.ACTION_MOVE);
+            dtde.acceptDrag(dtde.getDropAction());
         }//}}}
         
         //{{{ drop()
@@ -783,7 +789,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         //{{{ dragOver()
         
         public void dragOver(DropTargetDragEvent dtde) {
-            if (isDragOk(dtde) == false) {
+            if (!isDragOk(dtde)) {
                 dtde.rejectDrag();      
                 return;
             }
@@ -835,7 +841,6 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 }
                 m_cueLine.setRect(x,y,width,height);
             }
-            
             dtde.acceptDrag(DnDConstants.ACTION_MOVE);      
         }//}}}
         
@@ -843,10 +848,10 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         
         public void dropActionChanged(DropTargetDragEvent dtde) {
             if(isDragOk(dtde) == false) {
-                dtde.rejectDrag();      
+                dtde.rejectDrag();
                 return;
             }
-            dtde.acceptDrag(DnDConstants.ACTION_MOVE);      
+            dtde.acceptDrag(dtde.getDropAction());
         }//}}}
         
         //{{{ dragExit()
@@ -869,9 +874,9 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             if (!dtde.isDataFlavorSupported(TransferableNode.nodeFlavor)) {
                 return false;
             }
-
+            
             // we're saying that these actions are necessary      
-            if ((dtde.getSourceActions() & m_acceptableActions) == 0) {
+            if ((dtde.getDropAction() & m_acceptableActions) == 0) {
                 return false;
             }
             return true;
