@@ -7,5 +7,4 @@ TODO:
 -allow for opening files with wellformedness errors in source view. This way users can fix wellformedness errors in the editor.
 -Add a context menu so you can add and delete nodes etc.
 -fix updating of the tree when users are changing a text node.
--fix error handling so that errors are handled better when read errors occur etc.
-
+-Add a way for jsXe to try to open a document in any of the installed views before it shows errors saying it cannot open the document. i.e. If a document is not validated try to open it in the requested view and if that fails then open it in one of the remaining installed views until it works or you run out of views.
