@@ -272,6 +272,7 @@ public class DefaultViewTree extends JTree {
             m_defaultLeafIcon = getLeafIcon();
             m_defaultOpenIcon = getOpenIcon();
             m_defaultClosedIcon = getClosedIcon();
+            m_defaultBackgroundSelectionColor = this.backgroundSelectionColor;
         }//}}}
         
         //{{{ getTreeCellRendererComponent()
@@ -289,6 +290,12 @@ public class DefaultViewTree extends JTree {
             
             setText(value.toString());
             this.selected = selected;
+            if (value != null && m_dragOverTarget == value) {
+                this.selected = true;
+                backgroundSelectionColor = m_dragSelectionColor;
+            } else {
+                backgroundSelectionColor = m_defaultBackgroundSelectionColor;
+            }
             
             switch (type) {
                 case Node.ELEMENT_NODE:
@@ -360,6 +367,7 @@ public class DefaultViewTree extends JTree {
         private Icon m_defaultLeafIcon;
         private Icon m_defaultOpenIcon;
         private Icon m_defaultClosedIcon;
+        private Color m_defaultBackgroundSelectionColor;
         //}}}
         
     }//}}}
@@ -441,6 +449,7 @@ public class DefaultViewTree extends JTree {
         public void dragDropEnd(DragSourceDropEvent dsde) {
             //paint over the cue line no matter what.
             paintImmediately(m_cueLine);
+            m_dragOverTarget = null;
             if ( dsde.getDropSuccess() == false ) {
                 return;
             }
@@ -461,6 +470,7 @@ public class DefaultViewTree extends JTree {
         
         public void dragExit(DragSourceEvent dse) {
             paintImmediately(m_cueLine);
+            m_dragOverTarget = null;
         }//}}}
         
         //{{{ dragOver()
@@ -568,6 +578,7 @@ public class DefaultViewTree extends JTree {
                 JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
             }
             
+            m_dragOverTarget = null;
             paintImmediately(m_cueLine);
             dtde.dropComplete(true);
             updateUI();
@@ -587,6 +598,7 @@ public class DefaultViewTree extends JTree {
                 Rectangle bounds = getPathBounds(path);
                 //erase old cue line
                 Graphics g = getGraphics();
+                m_dragOverTarget = null;
                 paintImmediately(m_cueLine);
                 
                 int x = bounds.x;
@@ -594,8 +606,7 @@ public class DefaultViewTree extends JTree {
                 int width = bounds.width;
                 int height = 2;
                 
-                //Use RED for now
-                g.setColor(Color.red);
+                g.setColor(m_dragSelectionColor);
                 
                 if (loc.y < bounds.y + (int)(bounds.height * 0.25)) {
                     //no change
@@ -603,10 +614,19 @@ public class DefaultViewTree extends JTree {
                 } else {
                     if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
                         //don't do anything right now
-                        x = 0;
-                        y = 0;
-                        width = 0;
-                        height = 0;
+                        //Want to highlight the node we're dragging over
+                        //in the future.
+                       // x = 0;
+                       // y = 0;
+                       // width = 0;
+                       // height = 0;
+                        height=bounds.height;
+                        /*
+                        set the node that is being dragged over so that
+                        the cell renderer knows that you are dragging over
+                        */
+                        m_dragOverTarget = path.getLastPathComponent();
+                        paintImmediately(x,y,width,height);
                     } else {
                         y += bounds.height;
                         g.fillRect(x, y, width, height);
@@ -631,7 +651,8 @@ public class DefaultViewTree extends JTree {
         //{{{ dragExit
         
         public void dragExit(DropTargetEvent dte) {
-            
+            //Set the node that is dragged over to null
+            m_dragOverTarget = null;
         }//}}}
         
         //{{{ Private Members
@@ -668,6 +689,12 @@ public class DefaultViewTree extends JTree {
     private int m_acceptableActions = DnDConstants.ACTION_MOVE;
     
     private Rectangle m_cueLine = new Rectangle();
+    
+    //the node that is being dragged over.
+    private Object m_dragOverTarget = null;
+    //the color used to highlight the drop target when dragging
+    //Use RED for now
+    private Color m_dragSelectionColor = Color.lightGray;
     //}}}
 
     //{{{ Icons

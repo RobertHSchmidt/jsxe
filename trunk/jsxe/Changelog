@@ -1,3 +1,8 @@
+04/16/2004  version 0.1.63  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added logic to highlight a node when the user is going to onto a
+      particular node.
+
 04/04/2004  version 0.1.62  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed the problem where dragging an element node that was already

@@ -24,9 +24,6 @@ TODO:
         entities
 
 * Version 0.2.0
-
-	* Highlight the node that is being dragged over when dropping would add
-      the dropped node to the drop target.
     
     * DOMSerializer needs to support the following parameters:
         cdata-sections
