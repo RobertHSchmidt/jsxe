@@ -31,19 +31,40 @@ TODO:
       loaded and error checking. Some plugins will require specific versions of
       jsXe as well.
     
-    * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
-      support for this. jsXe needs to recognize when a document has a DTD and
-      deal with serializing to it if necessary. Investigate XNI or whatever
-      that is part of the xerces distribution as a way to do this.
-    
     * Look into Marathon as a possible testing tool for jsXe. It seems to allow
       you to create unit test scripts for Java/Swing GUI apps.
       
     * Look into Junit as a tool for further testing of jsXe. This can be used
       to test data or model classes like AdapterNode and XMLDocument. It can
       also be used to test things that Marathon cannot test.
+
+* Version 0.4 beta (DTD support)
     
-* Version 0.4 beta (Actions)
+    * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
+      support for this. jsXe needs to recognize when a document has a DTD and
+      deal with serializing to it if necessary. Investigate XNI or whatever
+      that is part of the xerces distribution as a way to do this.
+    
+    * Create an interface for the main view in jsXe where the TabbedView
+      implements it. Other views can then be created to allow a more
+      customizable look.
+    
+    * Add support for DTDs and Schema and add feedback about whether the
+      current document can be validated by the DTD and what needs to be done to
+      the document before it will comply with the DTD. Create interfaces to
+      coincide with the XMLDocument interfaces that handles various Schema.
+        * Look at some projects that convert DTD to Schema. This may be useful
+          so that DTDs can be edited as Schema. Is that possible? DTDs seem to
+          have features that aren't in Schema and don't translate at all.
+        * Look at the XML plugin for jEdit for ways of finding what nodes can
+          be inserted at various locations in the document.
+    
+    * Add a feature that allows you to validate the document and moves the
+      cursor to the location of a parse/validation error in the source view.
+    
+    * Create some sort of interface to deal with editing of entity reference.
+
+* Version 0.5 beta (Actions)
     
     * Implement cut, copy, paste in the DefaultView
     
@@ -69,7 +90,10 @@ TODO:
     * Make sure all instance variables are prefixed with m_ and are named in a
       consistent manner.
     
-* Version 0.5 beta (DTD support and Threading)
+    * Begin internationalization support by storing messages, menu titles, and
+      other text in a properties file.
+    
+* Version 0.6 beta (GUI focus)
     
     * Allow Views to be split so that one DocumentView can be displayed left/top
       and one on the right/bottom. Views should be able to update automatically
@@ -85,27 +109,6 @@ TODO:
       to see more than one view of the document at the same time. How would you
       handle editing using a view that uses source and one that uses the tree
       structure at the same time?
-    
-    * Create an interface for the main view in jsXe where the TabbedView
-      implements it. Other views can then be created to allow a more
-      customizable look.
-    
-    * Add support for DTDs and Schema and add feedback about whether the
-      current document can be validated by the DTD and what needs to be done to
-      the document before it will comply with the DTD. Create interfaces to
-      coincide with the XMLDocument interfaces that handles various Schema.
-        * Look at some projects that convert DTD to Schema. This may be useful
-          so that DTDs can be edited as Schema. Is that possible? DTDs seem to
-          have features that aren't in Schema and don't translate at all.
-        * Look at the XML plugin for jEdit for ways of finding what nodes can
-          be inserted at various locations in the document.
-    
-    * Add a feature that allows you to validate the document and moves the
-      cursor to the location of a parse/validation error in the source view.
-    
-    * Create some sort of interface to deal with editing of entity reference.
-    
-* Version 0.6 beta (GUI focus)
     
     * Enhance the source view with element completion and other cool stuff. See
       the XML plugin for jEdit for ideas. How would I display well-formedness

@@ -1,3 +1,8 @@
+03/01/2005  version 0.3 pre12   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Small additions to XMLDocument to prepare for DTD support.
+      Nothing to speak of.
+
 02/16/2005  version 0.3 pre11   Ian Lewis <IanLewis@member.fsf.org>
 
     * jsXe now loads plugins from both ~/.jsxe/jars and the install
