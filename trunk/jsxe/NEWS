@@ -1,3 +1,28 @@
+03/18/2004  version 0.1.57
+
+    * jsXe now requires xerces 2.6.0.
+    * Fixed a bug where the html pane was editable after opening a new document
+      though no node was selected.
+    * Added a "Rename Node" action to the default view tree's context menu. You
+      can still rename it by clicking twice (not double clicking) on the element
+      node.
+    * Fixed a bug in the attributes table where it wasn't updated properly.
+      It now updates properly and sorts based on the order in which they will
+      be serialized (alphabetical).
+    * Changed tabs to use icons instead of appending a '*' to the tab name to
+      indicate a file is dirty.
+    * jsXe now asks you if you really want to overwrite existing files on disk.
+    * Nodes in the default view tree are now rendered as different icons for
+      different node types. (Note: used icons from XML plugin for jEdit)
+    * Added support for writing the internal part of a DOCTYPE to the XML
+      document when saving and using source view.
+    * DOCTYPE nodes are no longer visible in the tree. Some other method for
+      editing doc types will have to be added to jsXe later.
+    * Added preliminary drag n drop support for the tree in the default view.
+      You can now drag nodes from one parent to another in the tree view. You
+      can also drag a node to any thing that accepts text from a drag n drop
+      operation.
+
 11/23/2003  version 0.1.43
 
     * jsXe can now open more than one file at a time.
