@@ -360,6 +360,8 @@ public class jsXe {
         //nothing much here yet. Open documents should
         //be checked for dirty documents.
         
+        exiting = true;
+        
         //saves properties
         view.close();
         
@@ -386,6 +388,10 @@ public class jsXe {
     public static final String getProperty(String key, String defaultValue) {//{{{
 		return props.getProperty(key, defaultValue);
 	} //}}}
+    
+    public static final boolean isExiting() {//{{{
+        return exiting;
+    }//}}}
     
     // Private static members {{{
     
@@ -445,6 +451,7 @@ public class jsXe {
     private static final ImageIcon jsXeIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/jsxe.jpg"), "jsXe");
     private static final String AppTitle = "jsXe";
     private static final Properties defaultProps = new Properties();
+    private static boolean exiting=false;
     private static Properties props;
     //}}}
     

@@ -226,8 +226,10 @@ public class TabbedView extends JFrame {
         
         //{{{ Add View Specific Menus
             JMenu[] menus = docview.getMenus();
-            for (int i=0;i<menus.length;i++) {
-                menubar.add(menus[i]);
+            if (menus != null) {
+                for (int i=0;i<menus.length;i++) {
+                    menubar.add(menus[i]);
+                }
             }
         //}}}
         

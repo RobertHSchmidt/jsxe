@@ -147,28 +147,30 @@ public class DefaultView extends DocumentView {
     } //}}}
     
     public JMenu[] getMenus() {//{{{
-        JMenu[] menus = new JMenu[1];
-        //{{{ Create Edit Menu
-        JMenu editMenu = new JMenu("Edit");
-            JMenuItem menuItem = new JMenuItem("Undo");
-           // menuItem.addActionListener( new EditUndoAction() );
-            editMenu.add( menuItem );
-            menuItem = new JMenuItem("Redo");
-           // menuItem.addActionListener( new EditRedoAction() );
-            editMenu.add( menuItem );
-            editMenu.addSeparator();
-            menuItem = new JMenuItem("Cut");
-           // menuItem.addActionListener( new EditCutAction() );
-            editMenu.add( menuItem );
-            menuItem = new JMenuItem("Copy");
-           // menuItem.addActionListener( new EditCopyAction() );
-            editMenu.add( menuItem );
-            menuItem = new JMenuItem("Paste");
-           // menuItem.addActionListener( new EditPasteAction() );
-            editMenu.add( menuItem );
-        //}}}
-        menus[0] = editMenu;
-        return menus;
+        //Edit Menu doesn't work yet.
+       // JMenu[] menus = new JMenu[1];
+       // //{{{ Create Edit Menu
+       // JMenu editMenu = new JMenu("Edit");
+       //     JMenuItem menuItem = new JMenuItem("Undo");
+       //    // menuItem.addActionListener( new EditUndoAction() );
+       //     editMenu.add( menuItem );
+       //     menuItem = new JMenuItem("Redo");
+       //    // menuItem.addActionListener( new EditRedoAction() );
+       //     editMenu.add( menuItem );
+       //     editMenu.addSeparator();
+       //     menuItem = new JMenuItem("Cut");
+       //    // menuItem.addActionListener( new EditCutAction() );
+       //     editMenu.add( menuItem );
+       //     menuItem = new JMenuItem("Copy");
+       //    // menuItem.addActionListener( new EditCopyAction() );
+       //     editMenu.add( menuItem );
+       //     menuItem = new JMenuItem("Paste");
+       //    // menuItem.addActionListener( new EditPasteAction() );
+       //     editMenu.add( menuItem );
+       // //}}}
+       // menus[0] = editMenu;
+       // return menus;
+        return null;
     }//}}}
     
     public XMLDocument getXMLDocument() {//{{{
