@@ -1,5 +1,9 @@
-10/07/2004  version 0.2 pre24
+11/23/2004  version 0.2 beta
 
+    * Fixed bug that didn't update the tab width for the source view when
+      you changed it in the options
+    * Fixed bugs where the menu bar wasn't updated properly when closing files
+      and changing views
     * Fixed a bug that kept files open too long by not closing the Reader
       object used to read them.
     * Changed the layout of the options dialog by taking some jEdit code.

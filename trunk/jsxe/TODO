@@ -33,6 +33,9 @@ TODO:
         * Update the package structures to be a bit better before releasing next
           beta version
     
+    * Redo how tree nodes are displayed so we don't need the DefaultViewTreeNode
+      class
+    
     * Add an 'ignore case' option to the find dialog in the source view.
     
     * Finalize the class structure and public plugin interface as it will be

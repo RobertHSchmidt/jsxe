@@ -54,6 +54,10 @@ import java.awt.event.*;
 import java.io.IOException;
 //}}}
 
+//{{{ JGraph classes
+//import org.jgraph.JGraph;
+//}}}
+
 //}}}
 
 public class SchemaView extends JPanel implements DocumentView {
@@ -67,6 +71,12 @@ public class SchemaView extends JPanel implements DocumentView {
     //{{{ SchemaView constructor
     
     public SchemaView(DocumentBuffer document) throws IOException {
+        
+        setLayout(new BorderLayout());
+        
+       // JGraph graph = new JGraph();
+       // JScrollPane scrollPane = new JScrollPane(graph);
+       // add(scrollPane);
         setDocumentBuffer(document);
     }//}}}
     
@@ -159,6 +169,15 @@ public class SchemaView extends JPanel implements DocumentView {
      * @throws IOException if the document cannot be viewed using this view
      */
     public void setDocumentBuffer(DocumentBuffer document) throws IOException {
+        
+        try {
+            document.checkWellFormedness();
+        } catch (Exception e) {
+            String errormsg = "The tree view requires XML documents to be well-formed.\n\n"+
+            e.toString();
+            throw new IOException(errormsg);
+        }
+        
         m_document = document;
     }//}}}
 
