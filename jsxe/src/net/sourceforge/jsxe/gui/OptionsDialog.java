@@ -40,7 +40,8 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.dom.DOMAdapter;
+import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.gui.view.DocumentView;
 //}}}
 
 //{{{ Swing components
@@ -67,13 +68,13 @@ public class OptionsDialog extends JDialog {
     public OptionsDialog(TabbedView view) {//{{{
         super(view, true);
         
-        DocumentPanel panel = view.getDocumentPanel();
-        adapter = panel.getDOMAdapter();
+        DocumentView panel = view.getDocumentView();
+        document = panel.getXMLDocument();
         
         //Create components
         JPanel OptionsNorthPanel = new JPanel();
         JPanel OptionsSouthPanel = new JPanel();
-        formatCheckBox = new JCheckBox("Format XML Output", (Boolean.valueOf(adapter.getProperty("format.output"))).booleanValue());
+        formatCheckBox = new JCheckBox("Format XML Output", (Boolean.valueOf(document.getProperty("format.output"))).booleanValue());
         JButton OKButton = new JButton("OK");
         JButton CancelButton = new JButton("Cancel");
         Border border = BorderFactory.createEmptyBorder(10,10,10,10);
@@ -96,13 +97,15 @@ public class OptionsDialog extends JDialog {
         getContentPane().add(OptionsSouthPanel, BorderLayout.SOUTH);
     } //}}}
     
+    //{{{ Private members
+    
     private class OKAction implements ActionListener {//{{{
         public OKAction(Dialog p) {
             parent = p;
         }
         public void actionPerformed(ActionEvent e) {
             parent.dispose();
-            adapter.setProperty("format.output", (new Boolean(formatCheckBox.isSelected())).toString());
+            document.setProperty("format.output", (new Boolean(formatCheckBox.isSelected())).toString());
         }
         private Dialog parent;
     } //}}}
@@ -117,14 +120,9 @@ public class OptionsDialog extends JDialog {
         private Dialog parent;
     } //}}}
     
-    /*
-    *************************************************
-    Data Fields
-    *************************************************
-    *///{{{
     private int dialogWidth=200;
     private int dialogHeight=200;
     private JCheckBox formatCheckBox;
-    private DOMAdapter adapter;
+    private XMLDocument document;
     //}}}
 }
