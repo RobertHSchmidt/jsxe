@@ -1,0 +1,14 @@
+<!-- {{{ content for the links page-->
+<h3>Links</h3>
+Here are some links to web pages related to the jsXe project.
+<ul>
+  <li><a href="http://pollo.sourceforge.net/">Pollo: another XML editor
+  written in java</a></li>
+  <li><a href="http://www.jxmleditor.com">JXMLEditor: another XML editor
+  written in java</a></li>
+  <li><a href="http://jaxe.sourceforge.net/">Jaxe: another XML editor
+  written in java</a></li>
+  <li><a href="http://www.w3.org/XML/">The W3C XML
+  recommendation</a></li>
+</ul>
+<!-- }}} -->
