@@ -220,7 +220,7 @@ public class jsXe {
             if(returnVal == JFileChooser.APPROVE_OPTION) {
                 return openXMLDocument(view, loadDialog.getSelectedFile());
             }
-            return true;
+            return false;
     }//}}}
     
     /**
