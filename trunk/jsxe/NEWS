@@ -1,3 +1,19 @@
+07/24/2004  version 0.2 pre12
+
+    * Added support for a recent files list that can allow users to open
+      files they have recently used.
+    * Added an option to allow the user to specify the number of recent files
+      that jsXe remembers
+    * When jsXe opens a file now it checks if it's in the recent files list
+      and opens it with the remembered properties automatically
+    * Fixed problem where the node did not appear to be selected after drag and
+      drop but was. Needed to add the node to the selection model.
+    * Fixed a bug that caused the right hand text pane to clear when trying to
+      edit using it. When dragging and dropping a node the node stays selected
+      but is not highlighted however. This may be confusing to users.
+    * Fixed a bug that causing jsXe to not update the title properly when a
+      document was closed.
+
 06/12/2004  version 0.2 pre6
 
     * Fixed a bug that caused non-dirty, non-untitled document to save when

@@ -23,6 +23,8 @@ TODO:
     
 * Version 0.2 beta
     
+    * Implement a find dialog (for the source view at least).
+    
     * Add the ability for XMLDocuments to have a structure for non-wellformed
       documents. Should I bother? Maybe not since some views will require
       documents to be well formed.
@@ -68,13 +70,8 @@ TODO:
       Maybe make a non-editable text-panel or label above the source area and
       only show the part after the header?
     
-    * Add option to use soft tabs in the source view. Override processKeyEvent
-      in JEditorPane to accomplish this.
-    
     * Add a feature that allows the cursor to be set to the location of a
       parse error in the source view.
-    
-    * Implement a find dialog (for the source view at least).
     
     * Fix the options dialog and make it look better. Maybe split into two
       dialogs, global options and view/document specific? Maybe even three

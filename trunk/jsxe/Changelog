@@ -1,4 +1,4 @@
-07/25/2004  version 0.2 pre13   Ian Lewis <IanLewis@member.fsf.org>
+07/26/2004  version 0.2 pre13   Ian Lewis <IanLewis@member.fsf.org>
 
     * Implemented actions by putting them in ActionSets and having them be
       registered with the jsXe application. This will allow implementation of
@@ -6,6 +6,7 @@
       easier.
     * Fixed a bug that caused jsXe to not allow you to open documents that
       were not well formed.
+    * Implemented the soft-tabs feature in the source view.
 
 07/24/2004  version 0.2 pre12   Ian Lewis <IanLewis@member.fsf.org>
 
