@@ -47,6 +47,13 @@ public class PluginDependencyException extends RuntimeException {
         m_versionRequired = versionRequired;
         m_versionFound = versionFound;
     }//}}}
+    
+    //{{{ PluginDependencyException constructor
+    
+    public PluginDependencyException(String pluginName, String message) {
+        super(message);
+        m_pluginName = pluginName;
+    }//}}}
 
     //{{{ Private Members
     private String m_pluginName;

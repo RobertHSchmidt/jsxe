@@ -41,6 +41,7 @@ import net.sourceforge.jsxe.action.FileSaveAction;
 import net.sourceforge.jsxe.gui.*;
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.util.Log;
+import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
 
 //{{{ Swing classes
@@ -299,23 +300,26 @@ public class jsXe {
         }
     }//}}}
     
+    //{{{ getBuild()
+    
+    public static String getBuild() {
+        // Major.Minor.Beta.Build
+        return buildProps.getProperty("major.version")+"."+
+               buildProps.getProperty("minor.version")+"."+
+               buildProps.getProperty("beta.version")+"."+
+               buildProps.getProperty("build.version");
+    }//}}}
+    
     //{{{ getVersion()
     /**
      * Gets the current version of jsXe.
      * @return The current version of jsXe.
      */
     public static String getVersion() {
-        // Major.Minor.Build
-        String version = buildProps.getProperty("major.version") + "." +
-                         buildProps.getProperty("minor.version");
-        String buildDescription = buildProps.getProperty("build.description");
-        if (buildDescription != null && !buildDescription.equals("")) {
-            version += " " + buildDescription;
-        }
-        return version;
+        return MiscUtilities.buildToVersion(getBuild());
     }//}}}
     
-     //{{{ getIcon()
+    //{{{ getIcon()
     /**
      * Gets jsXe's icon that is displayed in the about menu,
      * taskbar and upper left hand corner (where appropriate)
@@ -541,7 +545,7 @@ public class jsXe {
         if (m_buffers.contains(buffer)) {
             
             if (buffer.close(view)) {
-                m_bufferHistory.setEntry(buffer, view.getDocumentView().getViewPlugin().getName());
+                m_bufferHistory.setEntry(buffer, getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME));
                 view.removeDocumentBuffer(buffer);
                 m_buffers.remove(buffer);
                 
@@ -882,9 +886,8 @@ public class jsXe {
         try {
             buildProps.load(inputstream);
         } catch (IOException ioe) {
-            System.err.println(getAppTitle() + ": Internal ERROR: Could not open default settings file");
-            System.err.println(getAppTitle() + ": Internal ERROR: "+ioe.toString());
-            System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
+            Log.log(Log.ERROR, jsXe.class, "**** Could not open build properties file ****");
+            Log.log(Log.ERROR, jsXe.class, "**** jsXe was probably not built correctly ****");
             exiterror(null, ioe, 1);
         }
         //}}}
