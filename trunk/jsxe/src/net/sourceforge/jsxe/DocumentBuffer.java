@@ -658,6 +658,21 @@ public class DocumentBuffer extends XMLDocument {
             layout.setConstraints(formatCheckBox, constraints);
             add(formatCheckBox);
             
+            boolean softTabs = Boolean.valueOf(getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
+        
+            m_m_softTabsCheckBox = new JCheckBox("Soft tabs (emulated with spaces)", softTabs);
+            
+            constraints.gridy      = gridY++;
+            constraints.gridx      = 0;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = GridBagConstraints.REMAINDER;
+            constraints.weightx    = 0.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
+            layout.setConstraints(m_m_softTabsCheckBox, constraints);
+            add(m_m_softTabsCheckBox);
+            
         }//}}}
         
         //{{{ saveOptions()
@@ -666,6 +681,10 @@ public class DocumentBuffer extends XMLDocument {
             if (!String.valueOf(formatCheckBox.isSelected()).equals(getProperty(XMLDocument.FORMAT_XML))) {
                 setDirty(true);
                 setProperty(XMLDocument.FORMAT_XML, String.valueOf(formatCheckBox.isSelected()));
+            }
+            if (!String.valueOf(m_m_softTabsCheckBox.isSelected()).equals(getProperty(XMLDocument.IS_USING_SOFT_TABS))) {
+                setDirty(true);
+                setProperty(XMLDocument.IS_USING_SOFT_TABS, String.valueOf(m_m_softTabsCheckBox.isSelected()));
             }
            // if (!String.valueOf(whitespaceCheckBox.isSelected()).equals(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT))) {
            //     setDirty(true);
@@ -714,6 +733,7 @@ public class DocumentBuffer extends XMLDocument {
         //{{{ Private members
         
         private DocumentBuffer m_buffer;
+        private JCheckBox m_m_softTabsCheckBox;
         private JComboBox encodingComboBox;
         private JComboBox indentComboBox;
         private JCheckBox whitespaceCheckBox;

@@ -200,12 +200,13 @@ public class JARClassLoader extends ClassLoader {
                 return (pathname.getName().endsWith(".jar"));
             }
         });//}}}
-        
-        for (int i=0; i<files.length; i++) {
-            try {
-                addJarFile(files[i]);
-            } catch (IOException e) {
-                errors.add(files[i].getPath());
+        if (files != null) {
+            for (int i=0; i<files.length; i++) {
+                try {
+                    addJarFile(files[i]);
+                } catch (IOException e) {
+                    errors.add(files[i].getPath());
+                }
             }
         }
         

@@ -192,7 +192,7 @@ public class jsXe {
         //}}}
         
         //{{{ load plugins
-       
+        
         m_pluginLoader = new JARClassLoader();
         ArrayList errors = m_pluginLoader.addDirectory(pluginsDirectory);
         if (errors.size() != 0) {
@@ -200,6 +200,33 @@ public class jsXe {
                 System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
             }
         }
+        
+        String jsXeHome = System.getProperty("jedit.home");
+        if(jsXeHome == null) {
+            String classpath = System.getProperty("java.class.path");
+            int index = classpath.toLowerCase().indexOf("jsxe.jar");
+            int start = classpath.lastIndexOf(File.pathSeparator,index) + 1;
+            // if started with java -jar jsxe.jar
+            if(classpath.equalsIgnoreCase("jedit.jar")) {
+                jsXeHome = System.getProperty("user.dir");
+            } else {
+                if(index > start) {
+                    jsXeHome = classpath.substring(start, index - 1);
+                } else {
+                    // use user.dir as last resort
+                    jsXeHome = System.getProperty("user.dir");
+                }
+            }
+        }
+        //add the jsXe home to the plugins directory
+        errors = m_pluginLoader.addDirectory(jsXeHome+"/jars");
+        if (errors.size() != 0) {
+            for (int i=0; i<errors.size(); i++) {
+                System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
+            }
+        }
+        
+        
         //}}}
         
         //{{{ start plugins
