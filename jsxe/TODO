@@ -6,14 +6,6 @@ TODO:
 
     & Slowly prefix instance variables with m_ as a naming convention.
 
-    & Think about how the XMLDocument hierarchy should be. Most XMLDocuments
-      are going to need the functionality in DefaultXMLDocument. Should
-      XMLDocument have most of that logic in it and sub-classes define their own
-      ways of determining if they are valid or something? Should
-      DefaultXMLDocument just be called XMLDocument and the current XMLDocument
-      be thrown out? Then other classes would extend XMLDocument and have
-      methods specific to their application of XML?
-    
     & DOMSerializer should support the following parameters:
         well-formed
         - Is this necessary? The DOM representation can't really be
@@ -25,12 +17,6 @@ TODO:
 
 * Version 0.2.0
     
-    * Fix problems with the JTree not expanding nodes when other nodes are added
-      via drag n drop.
-    
-    * Make it so that the document root element node is expanded after opening
-      a document.
-    
     * DOMSerializer needs to support the following parameters:
         normalize-characters
             This maybe needs to be done after I better understand and have
@@ -38,7 +24,7 @@ TODO:
         ignore-unknown-character-denormalizations
         split-cdata-sections
     
-    * Update to use the newest version of Xerces
+    * Update to use the newest version of Xerces.
     
     * Make sure jsXe can deal with all types of XML nodes.
         * Add support for creating every type of XML node.
@@ -58,6 +44,9 @@ TODO:
       Update the DefaultViewTreeModel to use a DefaultViewTreeNode class
       that defines the toString() method for how the node is displayed in the
       JTree (the AdapterNode is too coupled to the gui by defining this method).
+        Create a method in the DefaultViewTreeNode class that specifies that
+        the node is expanded or not. This will help maintain a tree that is
+        nicer to view and modify.
     
 * Version 0.3.0
     
@@ -109,7 +98,10 @@ TODO:
     
     * Redo the interface for XMLDocuments and AdapterNodes so that DOM
       implementation used in a more limited way? Implement Document editing
-      methods? Can I eventually make my own DOM implementation?
+      methods? Can I eventually make my own DOM implementation? Look at
+      extending the Xerces implementations of these interfaces. Maybe doing that
+      is more feasable. However, that approach would make the application
+      highly dependent on Xerces.
     
     * Implement undo for the DefaultView and SourceView.
     
@@ -205,4 +197,4 @@ TODO:
     
 * Version 0.8.0
     
-    * Implement some form of internationalization support. 
+    * Implement some form of internationalization support.

@@ -179,7 +179,7 @@ public class TabbedView extends JFrame {
             
             Enumeration types = factory.getAvailableViewTypes();
             
-            String error = "";
+            String error = null;
             DocumentView newDocView;
             
             while (types.hasMoreElements()) {
@@ -230,10 +230,19 @@ public class TabbedView extends JFrame {
                     
                     buffer.addDocumentBufferListener(m_bufferListener);
                     
+                    if (error != null) {
+                        String msg = "Could not open buffer in document views:\n\n"+error;
+                        JOptionPane.showMessageDialog(this, msg, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                    }
+                    
                     return;
                     
                 } catch (IOException ioe) {
-                    error += buffer.getName() + ": "+ioe.getMessage() + "\n";
+                    if (error == null) {
+                        error = buffer.getName() + ": "+ioe.getMessage() + "\n";
+                    } else {
+                        error += buffer.getName() + ": "+ioe.getMessage() + "\n";
+                    }
                 }
             }
             
