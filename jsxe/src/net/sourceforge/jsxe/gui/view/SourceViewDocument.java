@@ -84,8 +84,6 @@ public class SourceViewDocument extends DefaultStyledDocument {
         
         if (doc != null) {
             
-            //formatting disabled because it doesn't work right
-            DOMSerializer serializer = new DOMSerializer(false);
             try {
                 
                 super.insertString(0, document.getSource(), new SimpleAttributeSet());
