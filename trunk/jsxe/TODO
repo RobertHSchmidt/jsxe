@@ -23,15 +23,14 @@ TODO:
     
 * Version 0.3 beta
     
-    * Create a new file open/save dialog class that handles the file filters
-      and junk so that code isn't duplicated in the jsXe class and
-      DocumentBuffer classes.
-    
     * Add a ghosted image of the node to drag and drop cursor. Hopefully the
       whole cursor can be replaced with the image since the default drag
       cursor is dumb in linux.
     
-    * Add support for expanding nodes as you drag over them
+    * Extend the DropTarget.DropTargetAutoScroller class
+      to fix the fuctionality and make the autoscrolling smoother.
+    
+    * Create a way to show a no-drop cursor when the drop is rejected.
     
     * Store some options such as recent files and file specific options in
       an XML file with jsxe's options in the .jsxe folder in the home dir.

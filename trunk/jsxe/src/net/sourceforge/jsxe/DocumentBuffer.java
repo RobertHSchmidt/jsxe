@@ -164,11 +164,7 @@ public class DocumentBuffer {
                 return !(returnVal == JOptionPane.CANCEL_OPTION);
             }
         } else {
-            if (!isUntitled()) {
-                return save(view);
-            } else {
-                return true;
-            }
+            return true;
         }
     }//}}}
     

@@ -1,3 +1,12 @@
+05/22/2004  version 0.3 pre2    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug that caused non-dirty, non-untitled document to save when
+      they were closed.
+    * Added code for autoscrolling when doing drag and drop using the Autoscroll
+      interface and fuctionality but it's dumb.
+    * Added logic to expand tree nodes when you hover over them for a period of
+      time.
+
 05/18/2004  version 0.3 pre1    Ian Lewis <IanLewis@member.fsf.org>
 
     * Moved logic for the file chooser dialogs to a new jsxeFileDialog class
