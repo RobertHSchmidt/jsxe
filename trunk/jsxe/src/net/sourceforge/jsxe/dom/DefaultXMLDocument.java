@@ -94,6 +94,7 @@ public class DefaultXMLDocument extends XMLDocument {
     public void validate() throws SAXParseException, SAXException, ParserConfigurationException, IOException {//{{{
         if (!isValidated()) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(new InputSource(new StringReader(source)));
             doc.getDocumentElement().normalize();
@@ -134,11 +135,13 @@ public class DefaultXMLDocument extends XMLDocument {
             name = file.getName();
             FileReader reader=new FileReader(file);
             validated=false;
+            //This is _very_ inefficient
+            //Change this very soon.
             while (nextchar != -1) {
                nextchar = reader.read();
                if (nextchar != -1)
                    source+=(char)nextchar;
-            } 
+            }
             XMLFile = file;
         } else {
             throw new FileNotFoundException("File Not Found: null");

@@ -136,7 +136,6 @@ public class OptionsDialog extends JDialog {
         layout.setConstraints(sep, constraints);
         frame.add(sep);
         
-        //Configure the north panel
         if (OptionsSouthPanel != null) {
             OptionsSouthPanel.setBorder(border2);
             constraints.fill = GridBagConstraints.NONE;
@@ -145,6 +144,29 @@ public class OptionsDialog extends JDialog {
             frame.add(OptionsSouthPanel);
             constraints.weighty = 0;
         }
+        
+        //Configure the document panel
+        OptionsPanel DocumentOptionsPanel = new XMLDocumentOptionsPanel(document);
+        
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+	    constraints.weightx = 1.0f;
+		constraints.insets = new Insets(1,0,1,0);
+        
+        label = new JLabel(DocumentOptionsPanel.getTitle());
+        layout.setConstraints(label, constraints);
+        frame.add(label);
+        sep = new JSeparator(JSeparator.HORIZONTAL);
+        layout.setConstraints(sep, constraints);
+        frame.add(sep);
+        
+        DocumentOptionsPanel.setBorder(border2);
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.weighty = 1.0f;
+        layout.setConstraints(DocumentOptionsPanel, constraints);
+        frame.add(DocumentOptionsPanel);
+        constraints.weighty = 0;
         
         JPanel ButtonsPanel = new JPanel();
         ButtonsPanel.add(OKButton);

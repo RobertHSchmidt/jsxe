@@ -6,6 +6,9 @@ TODO:
       interface. For encoding use the java.io.OutputStreamWriter class. Add an
       encoding option to the option dialog.
     
+    * Work on performance problems when loading an XML document. (Hint: setModel
+      in DefaultXMLDocument.java)
+    
     * Research the EntityResolver class and see if it can be used to resolve
       DTD files.
     
@@ -44,6 +47,8 @@ TODO:
     * Allow GUI models to register change listeners with XMLDocuments and
       AdapterNodes. This will allow GUI models to be updated automatically when
       the DOM is changed.
+    
+    * Create a feature to edit source for 1 node only.
     
     * Create a way for actions to be created dynamically and then registered
       with jsXe. Much the same way that jEdit does.

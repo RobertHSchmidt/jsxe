@@ -247,7 +247,6 @@ public class jsXe {
             XMLDocument document = factory.newXMLDocument(file);
             
             if (document != null) {
-                //for now do not open the file unless it validates.
                 
                 try {
                     XMLDocuments.add(document);
@@ -595,14 +594,14 @@ public class jsXe {
         }//}}}
         
         public String getTitle() {//{{{
-            return "jsXe Options";
+            return "jsXe Global Options";
         }//}}}
         
     }//}}}
     
     private static final String MajorVersion = "0";
     private static final String MinorVersion = "1";
-    private static final String BuildVersion = "5";
+    private static final String BuildVersion = "6";
     private static final String BuildType    = "development";
    // private static final String BuildType    = "stable";
     private static Vector XMLDocuments = new Vector();
