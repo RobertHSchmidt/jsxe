@@ -117,7 +117,6 @@ public class jsXe {
         
         //{{{ get and load the configuration files
         initDefaultProps();
-        props = new Properties(defaultProps);
         
         String settingsDirectory = System.getProperty("user.home")+System.getProperty("file.separator")+".jsxe";
         File _settingsDirectory = new File(settingsDirectory);
@@ -528,7 +527,7 @@ public class jsXe {
      * @return The value associated with the key or null if the key is not found.
      */
     public static final String getProperty(String key) {
-        return props.getProperty(key);
+        return props.getProperty(key, defaultProps.getProperty(key));
     }//}}}
     
     //{{{ getProperty()
@@ -539,7 +538,7 @@ public class jsXe {
      * @return The value associated with the key or the default value if the key is not found.
      */
     public static final String getProperty(String key, String defaultValue) {
-		return props.getProperty(key, defaultValue);
+		return props.getProperty(key, defaultProps.getProperty(key, defaultValue));
 	} //}}}
     
     //{{{ getOptionsPanel()
@@ -693,10 +692,11 @@ public class jsXe {
     private static ArrayList m_buffers = new ArrayList();
     private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?>\n<default_element>default_node</default_element>";
     private static final ImageIcon jsXeIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/jsxe.jpg"), "jsXe");
-    private static final Properties defaultProps = new Properties();
+    
     private static final Properties buildProps = new Properties();
     private static boolean m_exiting=false;
-    private static Properties props;
+    private static final Properties defaultProps = new Properties();
+    private static Properties props = new Properties();
     
     private static OptionsPanel jsXeOptions;
     //}}}

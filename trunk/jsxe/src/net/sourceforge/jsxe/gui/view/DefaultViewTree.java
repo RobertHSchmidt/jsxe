@@ -614,8 +614,6 @@ public class DefaultViewTree extends JTree {
                         AdapterNode trueParent = parentNode.getParentNode();
                         if (trueParent != null) {
                             trueParent.addAdapterNodeAt(node, trueParent.index(parentNode));
-                           // setExpandedState(path.getParentPath(), true);
-                            dropPath = path;
                         } else {
                             throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
                         }
@@ -626,15 +624,12 @@ public class DefaultViewTree extends JTree {
                     if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
                         //insert in the node
                         parentNode.addAdapterNode(node);
-                        dropPath = path.pathByAddingChild(node);
                     } else {
                         if (parentNode != null) {
                             //insert after the node dropped on
                             AdapterNode trueParent = parentNode.getParentNode();
                             if (trueParent != null) {
                                 trueParent.addAdapterNodeAt(node, trueParent.index(parentNode)+1);
-                               // setExpandedState(path.getParentPath(), true);
-                                dropPath = path;
                             } else {
                                 throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
                             }
@@ -653,7 +648,6 @@ public class DefaultViewTree extends JTree {
             paintImmediately(m_cueLine);
             dtde.dropComplete(true);
             updateUI();
-           // makeVisible(dropPath);
         }//}}}
         
         //{{{ dragOver()

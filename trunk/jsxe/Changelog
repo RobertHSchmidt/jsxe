@@ -3,6 +3,9 @@
     * Made it so that element nodes can't be edited in the JTree unless
       you select 'Rename Node' from the context menu. This is done because of
       some problems with compatiblity between the editing and drag and drop.
+    * The DefaultView now uses the default options set in the
+      documentview.default.props file. Any properties used by this class should
+      have default values set in this properties file.
 
 04/20/2004  version 0.1.66  Ian Lewis <IanLewis@member.fsf.org>
 
