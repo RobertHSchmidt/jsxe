@@ -141,7 +141,7 @@ public class DefaultViewTableModel implements TableModel {
         //Do not allow editing of attribute values that have no
         //attribute defined yet.
         if (columnIndex==1 && (((String)getValueAt(rowIndex,0)).equals(""))) {
-            return false;
+            return m_addingAttribute;
         }
         return true;
     }//}}}
@@ -165,14 +165,19 @@ public class DefaultViewTableModel implements TableModel {
             //If setting a value on the last row
             if (rowIndex+1 == getRowCount()) {
                 //we must be editing an attribute name.
-                if (!aValue.equals("")) {
-                    m_currentNode.setAttribute(aValue.toString(), "");
-                   // data[columnIndex].setElementAt(aValue.toString(),rowIndex);
-                   // data[0].add("");
-                   // data[1].add("");
-                    updateTable(m_currentNode);
-                    
-                    fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
+                if (columnIndex == 0 && !aValue.equals("")) {
+                    //DefaultViewTable ensures that we will set the value of this
+                    //attribute directly after setting the attribute name
+                    m_addingAttribute = true;
+                    m_data[0].set(rowIndex, aValue.toString());
+                    //now DefaultViewTable will force edit of the attribute value
+                } else {
+                    if (m_addingAttribute) {
+                        m_currentNode.setAttribute(m_data[0].get(rowIndex).toString(), aValue.toString());
+                        m_addingAttribute = false;
+                        updateTable(m_currentNode);
+                        fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
+                    }
                 }
             
             //Otherwise we are editing an existing attribute.
@@ -186,8 +191,17 @@ public class DefaultViewTableModel implements TableModel {
                     if (!aValue.equals(getValueAt(rowIndex, columnIndex))) {
                         if (columnIndex == 0) {
                             //we are renaming the attribute, remove the old one first
-                            m_currentNode.removeAttribute((String)getValueAt(rowIndex, 0));
-                            m_currentNode.setAttribute(aValue.toString(), (String)getValueAt(rowIndex, 1));
+                            String oldAttribute = (String)getValueAt(rowIndex, 0);
+                            String oldValue     = (String)getValueAt(rowIndex, 1);
+                            m_currentNode.removeAttribute(oldAttribute);
+                            try {
+                                m_currentNode.setAttribute(aValue.toString(), (String)getValueAt(rowIndex, 1));
+                            } catch (DOMException e) {
+                                //if we fail setting the new name then we need to put the old one back.
+                                //this shouldn't throw exceptions
+                                m_currentNode.setAttribute(oldAttribute, oldValue);
+                                throw e;
+                            }
                         } else {
                             m_currentNode.setAttribute((String)getValueAt(rowIndex, 0), aValue.toString());
                         }
@@ -200,6 +214,7 @@ public class DefaultViewTableModel implements TableModel {
         //We need to catch this here unfortunately because this method is called by
         //a default table editor. Maybe this will change.
         } catch (DOMException dome) {
+            updateTable(m_currentNode);
             JOptionPane.showMessageDialog(m_view, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
@@ -213,9 +228,13 @@ public class DefaultViewTableModel implements TableModel {
      * @param row the index of the row in the table to remove
      */
     public void removeRow(int row) {
-        m_currentNode.removeAttributeAt(row);
-        updateTable(m_currentNode);
-        fireTableChanged(new TableModelEvent(this, row));
+        try {
+            m_currentNode.removeAttributeAt(row);
+            updateTable(m_currentNode);
+            fireTableChanged(new TableModelEvent(this, row));
+        } catch (DOMException e) {
+            JOptionPane.showMessageDialog(m_view, e, "XML Error", JOptionPane.WARNING_MESSAGE);
+        }
     }//}}}
     
     //{{{ setAdapterNode()
@@ -265,6 +284,8 @@ public class DefaultViewTableModel implements TableModel {
     }//}}}
     
     private Component m_view;
+    
+    private boolean m_addingAttribute = false;
     
     private AdapterNode m_currentNode;
     private ArrayList m_tableListenerList = new ArrayList();

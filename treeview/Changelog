@@ -1,7 +1,8 @@
 03/17/2005  Ian Lewis <IanLewis@member.fsf.org>
 
-    * Added better namespace support.
+    * Added much better namespace support.
         * Requires jsXe 0.3.16 now
+    * Added support for adding attributes where a value is required
 
 03/08/2005  Ian Lewis <IanLewis@member.fsf.org>
 

@@ -459,9 +459,28 @@ public class DefaultView extends JPanel implements DocumentView {
         
     }//}}}
     
+    //{{{ DefaultViewTable class
+    
+    public class DefaultViewTable extends JTable {
+    
+        //{{{ editingStopped()
+        
+        public void editingStopped(ChangeEvent e) {
+            int editRow = getEditingRow();
+            int editColumn = getEditingColumn();
+            
+            super.editingStopped(e);
+            
+            if (editRow==getRowCount()-1 && editColumn == 0) {
+                editCellAt(editRow, 1);
+            }
+        }//}}}
+        
+    }//}}}
+    
     private DefaultViewTree tree = new DefaultViewTree();
     private JEditorPane htmlPane = new JEditorPane("text/plain","");
-    private JTable attributesTable = new JTable();
+    private JTable attributesTable = new DefaultViewTable();
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
     private DocumentBuffer m_document;

@@ -13,6 +13,7 @@ provides persistent objects for editing a DOM.
 
 This file written by Ian Lewis (IanLewis@member.fsf.org)
 Copyright (C) 2002 Ian Lewis
+Copyright (C) 2003 Bilel Remmache
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -40,13 +41,18 @@ it is easy to see which package it
 belongs to.
 */
 
+import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.util.Log;
+
 //{{{ Java Base Classes
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Properties;
+import java.util.HashMap;
 //}}}
 
 //{{{ DOM classes
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -224,16 +230,64 @@ public class AdapterNode {
      */
     public void setNSPrefix(String prefix) throws DOMException {
         m_domNode.setPrefix(prefix);
+        fireNamespaceChanged(this);
     }//}}}
     
     //{{{ getNodeName()
     /**
-     * Gets the full name for this node including the local name and namespace
-     * prefix.
+     * Gets the full qualified name for this node including the local name
+     * and namespace prefix.
      * @return the full qualified name of this node
      */
     public String getNodeName() {
         return m_domNode.getNodeName();
+    }//}}}
+    
+    //{{{ setNodeName()
+    /**
+     * Sets the full qualified name of this node. This method is namespace aware
+     * @param qualifiedName the new qualified name
+     */
+    public void setNodeName(String qualifiedName) throws DOMException {
+        String oldPrefix = getNSPrefix();
+        String oldLocalName = getLocalName();
+        
+        String prefix = getNSPrefixFromQualifiedName(qualifiedName);
+        String localName = getLocalNameFromQualifiedName(qualifiedName);
+        
+        renameElementNode(prefix, localName);
+        
+        if (oldPrefix != prefix) {
+            fireNamespaceChanged(this);
+        }
+        if (oldLocalName != localName) {
+            fireLocalNameChanged(this);
+        }
+        
+       // try {
+       //     if (!(oldPrefix == null && prefix == null)) {
+       //         if ((oldPrefix != prefix) || ((oldPrefix != null) ? !oldPrefix.equals(prefix) : !prefix.equals(oldPrefix))) {
+       //             setNSPrefix(prefix);
+       //             setPrefix = true;
+       //         }
+       //     }
+       //     //oldLocalName should never be null but we'll check anyway
+       //     if (!(oldLocalName == null && localName == null)) {
+       //         if ((oldLocalName != prefix) || ((oldLocalName != null) ? !oldLocalName.equals(prefix) : !localName.equals(oldPrefix))) {
+       //             setLocalName(localName);
+       //         }
+       //     }
+       // } catch (DOMException e) {
+       //     try {
+       //         //if we set the prefix successfully but the local name fails.
+       //         if (setPrefix) {
+       //             setNSPrefix(oldPrefix);
+       //         }
+       //     } catch (DOMException e2) {
+       //         jsXe.exiterror(null, e2, 0);
+       //     }
+       //     throw e;
+       // }
     }//}}}
     
     //{{{ getLocalName()
@@ -253,53 +307,32 @@ public class AdapterNode {
      * @throws DOMException INVALID_CHARACTER_ERR: Raised if the specified name
      *                      contains an illegal character.
      */
-    public void setLocalName(String newValue) throws DOMException {
+    public void setLocalName(String localName) throws DOMException {
+        
         if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
             //Verify that this really is a change
-            if (!m_domNode.getLocalName().equals(newValue)) {
+            if (!m_domNode.getLocalName().equals(localName)) {
                 
-                //get the nodes needed
-                Node parent = m_domNode.getParentNode();
-                NodeList children = m_domNode.getChildNodes();
-                Document document = m_domNode.getOwnerDocument();
+                renameElementNode(getNSPrefix(), localName);
                 
-                //replace the changed node; maintain the namespace URI;
-                //newValue is a qualified name for now
-                Element newNode = document.createElementNS(m_domNode.getNamespaceURI(), newValue);
-                NamedNodeMap attrs = m_domNode.getAttributes();
-                int attrlength = attrs.getLength();
-                
-                for(int i = 0; i < attrlength; i++) {
-                    Node attr = attrs.item(i);
-                    newNode.setAttributeNS(attr.getNamespaceURI(), attr.getNodeName(), attr.getNodeValue());
-                }
-                
-                int length = children.getLength();
-                for (int i = 0; i < length; i++ ) {
-                    Node child = children.item(0);
-                    m_domNode.removeChild(child);
-                    newNode.appendChild(child);
-                }
-                parent.replaceChild(newNode, m_domNode);
-                m_domNode = newNode;
                 fireLocalNameChanged(this);
             }
         } else {
             if (m_domNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-                if (m_domNode.getNodeName() != newValue) {
-                    Node newNode = m_domNode.getOwnerDocument().createProcessingInstruction(newValue, m_domNode.getNodeValue());
+                if (m_domNode.getNodeName() != localName) {
+                    Node newNode = m_domNode.getOwnerDocument().createProcessingInstruction(localName, m_domNode.getNodeValue());
                     m_domNode.getParentNode().replaceChild(newNode, m_domNode);
                     m_domNode = newNode;
                 }
             } else {
                 if (m_domNode.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
-                    if (m_domNode.getNodeName() != newValue) {
-                        if (entityDeclared(newValue)) {
-                            Node newNode = m_domNode.getOwnerDocument().createEntityReference(newValue);
+                    if (m_domNode.getNodeName() != localName) {
+                        if (entityDeclared(localName)) {
+                            Node newNode = m_domNode.getOwnerDocument().createEntityReference(localName);
                             m_domNode.getParentNode().replaceChild(newNode, m_domNode);
                             m_domNode = newNode;
                         } else {
-                            throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+newValue+"\""+" is not declared in the DTD");
+                            throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+localName+"\""+" is not declared in the Schema");
                         }
                     }
                 } else {
@@ -497,7 +530,7 @@ public class AdapterNode {
     
     //{{{ entityDeclared()
     /**
-     * Determines if the entity was declared by the DTD.
+     * Determines if the entity was declared by the DTD/Schema.
      * @param entityName the name of the entity
      * @return true if the entity was declared in this document
      */
@@ -515,7 +548,7 @@ public class AdapterNode {
     /**
      * <p>Sets an attribute of this node. If the specified attribute does not
      * exist it is created.</p>
-     * @param name the name of the attribute
+     * @param name the qualified name of the attribute
      * @param value the new value of the attribute
      * @throws DOMException NOT_SUPPORTED_ERR: if this is not an element node
      * @throws DOMException INVALID_CHARACTER_ERR: Raised if the specified
@@ -527,7 +560,18 @@ public class AdapterNode {
     public void setAttribute(String name, String value) throws DOMException {
         if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)m_domNode;
-            element.setAttribute(name,value);
+            String localName = getLocalNameFromQualifiedName(name);
+            String prefix    = getNSPrefixFromQualifiedName(name);
+            
+            //check if we are setting a namespace declaration
+            if ("xmlns".equals(prefix)) {
+                //if so then make sure the value is valid
+                if (value != null && value.equals("")) {
+                    throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to create an empty namespace declaration");
+                }
+            }
+            
+            element.setAttributeNS(lookupNamespaceURI(prefix),name,value);
             fireAttributeChanged(this, name);
         } else {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
@@ -562,9 +606,9 @@ public class AdapterNode {
         if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)m_domNode;
             NamedNodeMap attrs = element.getAttributes();
-            Node attr = attrs.item(index);
-            element.removeAttribute(attr.getNodeName());
-            fireAttributeChanged(this, attr.getNodeName());
+            if (attrs != null) {
+                removeAttribute(attrs.item(index).getNodeName());
+            }
         } else {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
         }
@@ -573,7 +617,7 @@ public class AdapterNode {
     //{{{ removeAttribute()
     /**
      * <p>Removes an attribute by name.</p>
-     * @param attr the name of the attribute to remove
+     * @param attr the qualified name of the attribute to remove
      * @throws DOMException NOT_SUPPORTED_ERR: if this is not an element node
      * @throws DOMException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
      *                      readonly
@@ -581,7 +625,27 @@ public class AdapterNode {
     public void removeAttribute(String attr) throws DOMException {
         if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)m_domNode;
-            element.removeAttribute(attr);
+            String prefix = getNSPrefixFromQualifiedName(attr);
+            String localName = getLocalNameFromQualifiedName(attr);
+            
+            //check if we are removing a namespace declaration
+            //this is a somewhat expensive operation
+            if ("xmlns".equals(prefix)) {
+                //if so then check if there are nodes using the namespace
+                String uri = lookupNamespaceURI(localName);
+                //check this element's namespace
+                if (!uri.equals(element.getNamespaceURI())) {
+                    //check for decendent elements with this namespace
+                    NodeList list = element.getElementsByTagNameNS(uri, "*");
+                    if (list.getLength() != 0) {
+                        throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to remove a namespace declaration when nodes exist that use it");
+                    }
+                } else {
+                    throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to remove a namespace declaration when nodes exist that use it");
+                }
+            }
+            
+            element.removeAttributeNS(lookupNamespaceURI(prefix),localName);
             fireAttributeChanged(this, attr);
         } else {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
@@ -760,6 +824,115 @@ public class AdapterNode {
     private void ensureChildrenSize(int size) {
         while (m_children.size() < size) {
             m_children.add(null);
+        }
+    }//}}}
+    
+    //{{{ getLocalNameFromQualifiedName()
+    
+    public String getLocalNameFromQualifiedName(String qualifiedName) {
+        int index = qualifiedName.indexOf(":");
+        String localName;
+        if (index != -1) {
+            localName = qualifiedName.substring(index+1);
+        } else {
+            localName = qualifiedName;
+        }
+        return localName;
+    }//}}}
+    
+    //{{{ getNSPrefixFromQualifiedName()
+    
+    public String getNSPrefixFromQualifiedName(String qualifiedName) {
+        int index = qualifiedName.indexOf(":");
+        String prefix = null;
+        if (index != -1) {
+            prefix = qualifiedName.substring(0,index);
+        }
+        return prefix;
+    }//}}}
+    
+    //{{{ renameElementNode()
+    /**
+     * Renames this element node to the prefix and local name given. This
+     * should only be called on an element node.
+     */
+    public void renameElementNode(String prefix, String localName) throws DOMException {
+        //get the nodes needed
+        Node parent = m_domNode.getParentNode();
+        NodeList children = m_domNode.getChildNodes();
+        Document document = m_domNode.getOwnerDocument();
+        
+        //replace the changed node; maintain the namespace URI;
+        String qualifiedName = localName;
+        if (prefix != null) {
+            qualifiedName = prefix+":"+localName;
+        }
+        
+        String nsURI = lookupNamespaceURI(prefix);;
+        
+        Element newNode = document.createElementNS(nsURI, qualifiedName);
+        NamedNodeMap attrs = m_domNode.getAttributes();
+        int attrlength = attrs.getLength();
+        
+        for(int i = 0; i < attrlength; i++) {
+            Node attr = attrs.item(i);
+            newNode.setAttributeNS(attr.getNamespaceURI(), attr.getNodeName(), attr.getNodeValue());
+        }
+        
+        int length = children.getLength();
+        for (int i = 0; i < length; i++ ) {
+            Node child = children.item(0);
+            m_domNode.removeChild(child);
+            newNode.appendChild(child);
+        }
+        parent.replaceChild(newNode, m_domNode);
+        m_domNode = newNode;
+    }//}}}
+    
+   // //{{{ getBoundNamespaces()
+   // /**
+   //  * Gets the namespaces that have been bound to the document and are
+   //  * available at this node.
+   //  * @return a HashMap containing the namespace prefix as a key and URI as the value
+   //  */
+   // private HashMap getBoundNamespaces() {
+   //     Log.log(Log.DEBUG, this, "getBoundNamespaces: "+this.getNodeName());
+   //     //Get the namespaces bound above this node in the tree
+   //     HashMap map;
+   //     if (m_parentNode != null) {
+   //         map = m_parentNode.getBoundNamespaces();
+   //     } else {
+   //         map = new HashMap();
+   //     }
+        
+   //     //merge with the namespaces at this level
+   //     //Find attributes like xmlns:ns="http://some.url"
+   //     NamedNodeMap attributes = getAttributes();
+   //     if (attributes != null) {
+   //         int length = attributes.getLength();
+   //         for (int i=0; i<length; i++) {
+   //             Attr attr = (Attr)attributes.item(0);
+   //             Log.log(Log.DEBUG, this, "getBoundNamespaces: checking attr: "+attr.getNodeName());
+   //             Log.log(Log.DEBUG, this, "getBoundNamespaces: attr uri: "+attr.getNamespaceURI());
+   //             String prefix = getNSPrefixFromQualifiedName(attr.getNodeName());
+   //             String localName = getLocalNameFromQualifiedName(attr.getNodeName());
+   //             if (prefix != null && prefix.equals("xmlns")) {
+   //                 map.put(localName, attr.getNodeValue());
+   //             }
+   //         }
+   //     }
+        
+   //     return map;
+   // }//}}}
+    
+    //{{{ lookupNamespaceURI()
+    
+    public String lookupNamespaceURI(String prefix) {
+        //temporary xerces dependent solution
+        if ("xmlns".equals(prefix)) {
+            return "http://www.w3.org/2000/xmlns/";
+        } else {
+            return ((org.apache.xerces.dom.NodeImpl)m_domNode).lookupNamespaceURI(prefix);
         }
     }//}}}
     

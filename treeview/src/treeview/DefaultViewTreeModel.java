@@ -193,28 +193,12 @@ public class DefaultViewTreeModel implements TreeModel {
         String oldLocalName = node.getLocalName();
         try {
             
-            String newName = newValue.toString();
-            String prefix = null;
-            String localName = null;
-            //Parse out the namespace info
-            int index = newName.indexOf(":");
-            if (index != -1) {
-                prefix = newName.substring(0,index);
-                localName = newName.substring(index);
-            } else {
-                localName = newName;
-            }
-            node.setNSPrefix(prefix);
-            node.setLocalName(localName);
+            //set the qualified name
+            node.setNodeName(newValue.toString());
+            
             //notify the listeners that tree nodes have changed
             fireTreeNodesChanged(new TreeModelEvent(this, path));
         } catch (DOMException dome) {
-            try {
-                node.setNSPrefix(oldPrefix);
-                node.setLocalName(oldLocalName);
-            } catch (DOMException dome2) {
-                Log.log(Log.ERROR, this, "This is a bug: Previous prefix or local name is bad!");
-            }
             JOptionPane.showMessageDialog(view, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
         }
     }//}}}

@@ -17,7 +17,7 @@ compile'. To build a binary distribution you will need to run the 'bin' target
 in the build.xml file. I to this by simply typing 'ant bin'. Source
 distributions can be built using the 'src' target by typing 'ant src'.
 
-A Xerces 2.6.0 binary distribution is not included in the CVS source tree. You
+A Xerces 2.6.2 binary distribution is not included in the CVS source tree. You
 can aquire the source at http://xml.apache.org/
 
 INSTALLING jsXe
