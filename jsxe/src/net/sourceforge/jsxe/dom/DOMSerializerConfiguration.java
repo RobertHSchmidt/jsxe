@@ -250,7 +250,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         
         if (m_supportedParameters.indexOf(name) != -1) {
             
-            if (name == "infoset") {
+            if (name.equals("infoset")) {
                 boolean namespaceDeclarations = getFeature(NAMESPACE_DECLARATIONS);
                 boolean validateIfSchema      = getFeature(VALIDATE_IF_SCHEMA);
                 boolean entities              = getFeature(ENTITIES);

@@ -204,27 +204,30 @@ public class XMLDocument {
             // do this first so NullPointerExceptions are thrown
             oldValue = (String)props.setProperty(key, value);
             
-            if (key == ENCODING) {
+            if (key.equals(ENCODING)) {
                 m_syncedWithContent = false;
             }
-            if (key == FORMAT_XML) {
+            if (key.equals(FORMAT_XML)) {
                 m_syncedWithContent = false;
                 if (Boolean.valueOf(value).booleanValue()) {
                     setProperty(WS_IN_ELEMENT_CONTENT, "false");
                 }
             }
-            if (key == WS_IN_ELEMENT_CONTENT) {
+            if (key.equals(WS_IN_ELEMENT_CONTENT)) {
                 m_syncedWithContent = false;
                 if (Boolean.valueOf(value).booleanValue()) {
                     setProperty(FORMAT_XML, "false");
                 }
+            }
+            if (key.equals(IS_USING_SOFT_TABS)) {
+                m_syncedWithContent = false;
             }
             firePropertyChanged(key, oldValue);
         }
         return oldValue;
     }//}}}
     
-    //{{{ getDocument()
+    //{{{ getDocumentCopy()
     /**
      * Gets a copy of the underlying Document objects.
      * @return a deep copy of the underlying document object
@@ -626,6 +629,7 @@ public class XMLDocument {
     
     private void setDefaultProperties() {
         setProperty(FORMAT_XML, "false");
+        setProperty(IS_USING_SOFT_TABS, "false");
         setProperty(WS_IN_ELEMENT_CONTENT, "true");
         setProperty(ENCODING, "UTF-8");
         setProperty(INDENT, "4");
@@ -682,10 +686,11 @@ public class XMLDocument {
     
     private LSSerializer getSerializer() {
         DOMSerializerConfiguration config = new DOMSerializerConfiguration();
-        config.setParameter(FORMAT_XML, getProperty(FORMAT_XML));
-        config.setParameter(WS_IN_ELEMENT_CONTENT, getProperty(WS_IN_ELEMENT_CONTENT));
+        config.setFeature(FORMAT_XML, Boolean.valueOf(getProperty(FORMAT_XML)).booleanValue());
+        config.setFeature(WS_IN_ELEMENT_CONTENT, Boolean.valueOf(getProperty(WS_IN_ELEMENT_CONTENT)).booleanValue());
         config.setParameter(INDENT, new Integer(getProperty(INDENT)));
         config.setParameter(DOMSerializerConfiguration.ERROR_HANDLER, new XMLDocErrorHandler());
+        config.setFeature(IS_USING_SOFT_TABS, Boolean.valueOf(getProperty(IS_USING_SOFT_TABS)).booleanValue());
         
         return new DOMSerializer(config);
     }//}}}

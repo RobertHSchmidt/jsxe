@@ -34,7 +34,7 @@
     <property name="main.class" value="net.sourceforge.jsxe.jsXe"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="3"/>
-		<property name="build.description" value="pre10"/>
+		<property name="build.description" value="pre11"/>
 		<property name="app.version" value="${major.version}.${minor.version} ${build.description}"/>
 		<property name="app_version" value="${major.version}_${minor.version}${build.description}"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
@@ -178,10 +178,10 @@
 		
     <!-- compile default views -->
     <ant inheritAll="false" dir="../treeview/" target="compile"/>
-    <copy file="../treeview/treeview.jar" tofile="${distbin.dir}/plugins/treeview.jar"/>
+    <copy file="../treeview/treeview.jar" tofile="${distbin.dir}/jars/treeview.jar"/>
     
     <ant inheritAll="false" dir="../sourceview/" target="compile"/>
-    <copy file="../sourceview/sourceview.jar" tofile="${distbin.dir}/plugins/sourceview.jar"/>
+    <copy file="../sourceview/sourceview.jar" tofile="${distbin.dir}/jars/sourceview.jar"/>
     
     <!-- doc -->
 		<mkdir dir="${distbin.dir}/doc"/>

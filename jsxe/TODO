@@ -26,14 +26,6 @@ TODO:
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
     
-    * jsXe should have a plugin manager window to display plugin information.
-    
-    * jsXe should load plugins from both ~/.jsxe/plugins and the install
-      directory. The install directory can be located by checking the
-      System.getProperty("jsxe.home") for JSXE_HOME environment variable (i
-      think), or looking for jsXe.jar in the classpath. See jEdit.java,
-      line 2633 (4.1), for an example.
-    
     * Move the soft tabs options to the document options from the source view
       options.
     
