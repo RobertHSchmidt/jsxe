@@ -100,7 +100,7 @@ public class AdapterNode {
     
     public void setNodeName(String newValue) throws DOMException {//{{{
         //Verify that this really is a change
-        if (!domNode.getNodeValue().equals(newValue) && typeName[domNode.getNodeType()].equals("Element")) {
+        if (typeName[domNode.getNodeType()].equals("Element") && !domNode.getNodeName().equals(newValue)) {
             //get the nodes needed
             Node parent = domNode.getParentNode();
             NodeList children = domNode.getChildNodes();
