@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE family SYSTEM "entity-test.dtd" [ <!ENTITY footer 'Brought to you by Jennifer Kyrnin'> ]>
+<!DOCTYPE family SYSTEM "entity-test.dtd" [ <!ENTITY footer 'Brought to you by Jennifer Kyrnin'>
+ ]>
 <family>
 	<title>My Family</title>
 	<parent role="mother">Judy</parent>
