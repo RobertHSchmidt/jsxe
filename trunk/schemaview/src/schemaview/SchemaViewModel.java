@@ -78,7 +78,7 @@ public class SchemaViewModel extends DefaultGraphModel {
         String uri = element.getNamespaceURI();
         if (uri != null && uri.equals("http://www.w3.org/2001/XMLSchema")) {
             String schemaPrefix = element.getPrefix();
-            m_rootNames.add(schemaPrefix+":"+"simpleType");
+           // m_rootNames.add(schemaPrefix+":"+"simpleType");
             m_rootNames.add(schemaPrefix+":"+"complexType");
             m_rootNames.add(schemaPrefix+":"+"element");
             m_rootNames.add(schemaPrefix+":"+"group");
@@ -280,11 +280,32 @@ public class SchemaViewModel extends DefaultGraphModel {
        // GraphConstants.setBackground(map, Color.blue);
        // GraphConstants.setAutoSize(map, true);
         
-        String name = node.getAttribute("name");
-        if (name.equals("")) {
-            GraphConstants.setValue(map, node.toString());
-        } else {
-            GraphConstants.setValue(map, name);
+        String nodeName = node.getLocalName();
+        
+        if (nodeName.equals("element")) {
+            String name = node.getAttribute("name");
+            if (name.equals("")) {
+                GraphConstants.setValue(map, node.getAttribute("ref"));
+            } else {
+                GraphConstants.setValue(map, node.getAttribute("name"));
+            }
+        }
+        if (nodeName.equals("complexType")) {
+            GraphConstants.setValue(map, node.getAttribute("name"));
+        }
+        if (nodeName.equals("group")) {
+            String name = node.getAttribute("name");
+            if (name.equals("")) {
+                GraphConstants.setValue(map, node.getAttribute("ref"));
+            } else {
+                GraphConstants.setValue(map, node.getAttribute("name"));
+            }
+        }
+        if (nodeName.equals("sequence")) {
+            GraphConstants.setValue(map, "sequence");
+        }
+        if (nodeName.equals("choice")) {
+            GraphConstants.setValue(map, "choice");
         }
         
         return map;
