@@ -57,13 +57,17 @@ import java.awt.event.ActionEvent;
 
 public class ToolsOptionsAction extends AbstractAction {
     
-    public ToolsOptionsAction(TabbedView parent) {//{{{
+    //{{{ ToolsOptionsAction constructor
+    
+    public ToolsOptionsAction(TabbedView parent) {
         putValue(Action.NAME, "Options...");
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
         view = parent;
     }//}}}
     
-    public void actionPerformed(ActionEvent e) {//{{{
+    //{{{ actionPerformed()
+    
+    public void actionPerformed(ActionEvent e) {
         OptionsDialog options = new OptionsDialog(view);
         options.show();
     }//}}}

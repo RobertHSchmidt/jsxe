@@ -61,21 +61,31 @@ import org.xml.sax.EntityResolver;
 
 public class XMLDocumentFactory {
     
-    private XMLDocumentFactory() {}
+    //{{{ XMLDocumentFactory constructor
     
-    public static XMLDocumentFactory newInstance() {//{{{
+    private XMLDocumentFactory() {}//}}}
+    
+    //{{{ newInstance()
+    
+    public static XMLDocumentFactory newInstance() {
         return new XMLDocumentFactory();
     }//}}}
     
-    public void setXMLDocumentType(String type) {//{{{
+    //{{{ setXMLDocumentType()
+    
+    public void setXMLDocumentType(String type) {
         docType = type;
     }//}}}
     
-    public void setEntityResolver(EntityResolver resolver) {//{{{
+    //{{{ setEntityResolver()
+    
+    public void setEntityResolver(EntityResolver resolver) {
         m_entityResolver = resolver;
     }//}}}
     
-    public XMLDocument newXMLDocument(Reader reader) throws IOException, UnrecognizedDocTypeException {//{{{
+    //{{{ newXMLDocument()
+    
+    public XMLDocument newXMLDocument(Reader reader) throws IOException, UnrecognizedDocTypeException {
         //Document type validation is pretty simple right now
         if (docType == "xmldocument.default") {
             if (m_entityResolver != null) {

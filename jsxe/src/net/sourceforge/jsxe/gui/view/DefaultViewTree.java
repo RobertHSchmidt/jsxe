@@ -128,7 +128,13 @@ public class DefaultViewTree extends JTree {
         
     }//}}}
     
-    //{{{ Private members
+    //{{{ Private static members
+    private static final ImageIcon m_elementIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Element.png"), "Element");
+    private static final ImageIcon m_textIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Text.png"), "Text");
+    private static final ImageIcon m_CDATAIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/CDATA.png"), "CDATA");
+    private static final ImageIcon m_commentIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Comment.png"), "Comment");
+   // private static final ImageIcon m_externalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/ExternalEntity.png"), "External Entity");
+    private static final ImageIcon m_internalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/InternalEntity.png"), "Internal Entity");
     
     //{{{ isEditable()
     /**
@@ -144,6 +150,9 @@ public class DefaultViewTree extends JTree {
             return false;
         }
     }//}}}
+    //}}}
+    
+    //{{{ Private members
     
     //{{{ refreshExpandedStates()
    // /**
@@ -241,9 +250,8 @@ public class DefaultViewTree extends JTree {
                 }
             }
         }//}}}
+    
     }//}}}
-
-    //{{{ Actions
 
     //{{{ AddNodeAction
     
@@ -376,8 +384,6 @@ public class DefaultViewTree extends JTree {
         }//}}}
         
     }//}}}
-    
-    //}}}
     
     //{{{ DefaultViewTreeCellRenderer class
     
@@ -660,9 +666,7 @@ public class DefaultViewTree extends JTree {
                         DefaultViewTreeNode trueParent = (DefaultViewTreeNode)parentNode.getParent();
                         if (trueParent != null) {
                             trueParent.insert(node, trueParent.getIndex(parentNode));
-                            
                             makeVisible(path);
-                           // droppedPath = path.getParentPath().pathByAddingChild(node);
                             
                         } else {
                             throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
@@ -672,11 +676,14 @@ public class DefaultViewTree extends JTree {
                     }
                 } else {
                     if (loc.y < bounds.y + (int)(bounds.height * 0.75)) {
+                        
                         //insert in the node inside the parent at the end of its children
                         parentNode.insert(node, parentNode.getChildCount());
+                        
                         //Make sure the node we just dropped is viewable
-                        expandPath(path);
-                       // droppedPath = path.pathByAddingChild(node);
+                        if (isCollapsed(path)) {
+                            expandPath(path);
+                        }
                         
                     } else {
                         if (parentNode != null) {
@@ -685,7 +692,6 @@ public class DefaultViewTree extends JTree {
                             if (trueParent != null) {
                                 trueParent.insert(node, trueParent.getIndex(parentNode)+1);
                                 makeVisible(path);
-                               // droppedPath = path.getParentPath().pathByAddingChild(node);
                             } else {
                                 throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR, "HIERARCHY_REQUEST_ERR: An attempt was made to insert a node where it is not permitted");
                             }
@@ -802,8 +808,6 @@ public class DefaultViewTree extends JTree {
     
     //}}}
 
-    //{{{ Instance variables
-    
     //{{{ Drag and Drop instance variables
     private DragSource m_dragSource = DragSource.getDefaultDragSource();
     private DragGestureListener m_treeDGListener = new TreeDragGestureListener();
@@ -819,17 +823,6 @@ public class DefaultViewTree extends JTree {
     //the color used to highlight the drop target when dragging
     //Use RED for now
     private Color m_dragSelectionColor = Color.lightGray;
-    //}}}
-
-    //{{{ Icons
-    private static final ImageIcon m_elementIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Element.png"), "Element");
-    private static final ImageIcon m_textIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Text.png"), "Text");
-    private static final ImageIcon m_CDATAIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/CDATA.png"), "CDATA");
-    private static final ImageIcon m_commentIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/Comment.png"), "Comment");
-   // private static final ImageIcon m_externalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/ExternalEntity.png"), "External Entity");
-    private static final ImageIcon m_internalEntityIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/InternalEntity.png"), "Internal Entity");
-   //}}}
-
     //}}}
 
     //}}}

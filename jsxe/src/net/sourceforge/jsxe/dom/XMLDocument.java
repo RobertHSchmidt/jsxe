@@ -93,6 +93,8 @@ import javax.swing.text.Segment;
  */
 public class XMLDocument {
     
+    //{{{ XMLDocument defined properties
+    
     /**
      * The property key for the encoding of this XML document
      */
@@ -118,6 +120,8 @@ public class XMLDocument {
      * using soft tabs.
      */
     public static String IS_USING_SOFT_TABS = DOMSerializerConfiguration.SOFT_TABS;
+    
+    //}}}
     
     //{{{ XMLDocument constructor
     /**
@@ -516,6 +520,12 @@ public class XMLDocument {
             listeners.remove(listeners.indexOf(listener));
         }
     }//}}}
+    
+    //{{{ Private static members
+    private static final int READ_SIZE = 5120;
+    private static final int WRITE_SIZE = 5120;
+    private static final int IO_BUFFER_SIZE = 32768;
+    //}}}
     
     //{{{ Private members
     
@@ -970,9 +980,6 @@ public class XMLDocument {
     private EntityResolver m_entityResolver;
     private ArrayList listeners = new ArrayList();
     private Properties props = new Properties();
-    private static final int READ_SIZE = 5120;
-    private static final int WRITE_SIZE = 5120;
-    private static final int IO_BUFFER_SIZE = 32768;
     
     private XMLDocAdapterListener docAdapterListener = new XMLDocAdapterListener();
     

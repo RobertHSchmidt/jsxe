@@ -68,7 +68,9 @@ import java.util.StringTokenizer;
 
 public class DefaultViewDocument extends DefaultStyledDocument {
 
-    protected DefaultViewDocument(AdapterNode n) {//{{{
+    //{{{ DefaultViewDocument constructor
+    
+    protected DefaultViewDocument(AdapterNode n) {
         super(new GapContent(), new StyleContext());
         try {
             if (n != null) {
@@ -81,7 +83,11 @@ public class DefaultViewDocument extends DefaultStyledDocument {
         node = n;
     }//}}}
 
-    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {//{{{
+    //{{{ DefaultStyledDocument methods
+    
+    //{{{ insertString()
+    
+    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
 
         try {
             //the node needs to be updated before we call insertString
@@ -96,7 +102,9 @@ public class DefaultViewDocument extends DefaultStyledDocument {
 
     }//}}}
 
-    public void remove(int offs, int len) throws BadLocationException {//{{{
+    //{{{ remove()
+    
+    public void remove(int offs, int len) throws BadLocationException {
         
         try {
             //the node needs to be updated before we call remove
@@ -111,8 +119,10 @@ public class DefaultViewDocument extends DefaultStyledDocument {
         
     }//}}}
 
+    //}}}
+    
     //{{{ Private members
-    AdapterNode node;
+    private AdapterNode node;
     //}}}
 
 }

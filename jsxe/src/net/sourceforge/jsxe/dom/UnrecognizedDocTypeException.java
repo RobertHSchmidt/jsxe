@@ -35,7 +35,9 @@ package net.sourceforge.jsxe.dom;
 
 public class UnrecognizedDocTypeException extends RuntimeException {
 
-    public UnrecognizedDocTypeException() {//{{{
+    //{{{ UnrecognizedDocTypeException constructor
+    
+    public UnrecognizedDocTypeException() {
         super("Attempted to create an unrecognized XMLDocument type.");
     }//}}}
 

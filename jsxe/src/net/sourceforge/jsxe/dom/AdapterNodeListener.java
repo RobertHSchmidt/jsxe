@@ -57,16 +57,28 @@ import org.w3c.dom.NodeList;
 
 public interface AdapterNodeListener {
     
-    public void nodeAdded(AdapterNode source, AdapterNode added);
+    //{{{ nodeAdded()
     
-    public void nodeRemoved(AdapterNode source, AdapterNode removed);
+    public void nodeAdded(AdapterNode source, AdapterNode added);//}}}
     
-    public void localNameChanged(AdapterNode source);
+    //{{{ nodeRemoved()
     
-    public void namespaceChanged(AdapterNode source);
+    public void nodeRemoved(AdapterNode source, AdapterNode removed);//}}}
     
-    public void nodeValueChanged(AdapterNode source);
+    //{{{ localNameChanged()
     
-    public void attributeChanged(AdapterNode source, String attr);
+    public void localNameChanged(AdapterNode source);//}}}
+    
+    //{{{ namespaceChanged()
+    
+    public void namespaceChanged(AdapterNode source);//}}}
+    
+    //{{{ nodeValueChanged()
+    
+    public void nodeValueChanged(AdapterNode source);//}}}
+    
+    //{{{ attributeChanged()
+    
+    public void attributeChanged(AdapterNode source, String attr);//}}}
     
 }

@@ -1,3 +1,8 @@
+05/16/2004  version 0.1.75  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed many bugs in the DefaultViewTreeModel, DefaultViewTree,
+      DefaultViewTreeNode, and AdapterNode
+
 05/15/2004  version 0.1.74  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added xsd files to the file filters when opening a document.

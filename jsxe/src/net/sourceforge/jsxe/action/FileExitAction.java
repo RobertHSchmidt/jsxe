@@ -57,15 +57,18 @@ import java.awt.event.ActionEvent;
 
 public class FileExitAction extends AbstractAction {
     
-    public FileExitAction(TabbedView parent) {//{{{
+    //{{{ FileExitAction constructor
+    
+    public FileExitAction(TabbedView parent) {
         putValue(Action.NAME, "Exit");
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl Q"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("X").getKeyCode()));
         view = parent;
     }//}}}
     
-    public void actionPerformed(ActionEvent e) {//{{{
-        //should check for dirty open documents somewhere
+    //{{{ actionPerformed()
+    
+    public void actionPerformed(ActionEvent e) {
         jsXe.exit(view);
     }//}}}
     

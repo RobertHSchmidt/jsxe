@@ -47,54 +47,84 @@ import java.io.Writer;
 
 public class DOMOutput implements LSOutput {
     
-    public DOMOutput(OutputStream byteStream, String encoding) {//{{{
+    //{{{ DOMOutput constructor
+    
+    public DOMOutput(OutputStream byteStream, String encoding) {
         m_byteStream = byteStream;
         m_encoding = encoding;
     }//}}}
     
-    public DOMOutput(String systemId, String encoding) {//{{{
+    //{{{ DOMOutput constructor
+    
+    public DOMOutput(String systemId, String encoding) {
         m_systemId = systemId;
         m_encoding = encoding;
     }//}}}
     
-    public DOMOutput(Writer characterStream) {//{{{
+    //{{{ DOMOutput constructor
+    
+    public DOMOutput(Writer characterStream) {
         m_characterStream = characterStream;
     }//}}}
     
-    public OutputStream getByteStream() {//{{{
+    //{{{ Implemented LSOutput methods
+    
+    //{{{ getByteStream()
+    
+    public OutputStream getByteStream() {
         return m_byteStream;
     }//}}}
     
-    public Writer getCharacterStream() {//{{{
+    //{{{ getCharacterStream()
+    
+    public Writer getCharacterStream() {
         return m_characterStream;
     }//}}}
     
-    public String getEncoding() {//{{{
+    //{{{ getEncoding()
+    
+    public String getEncoding() {
         return m_encoding;
     }//}}}
     
-    public String getSystemId() {//{{{
+    //{{{ getSystemId()
+    
+    public String getSystemId() {
         return m_systemId;
     }//}}}
     
-    public void setByteStream(OutputStream byteStream) {//{{{
+    //{{{ getByteStream()
+    
+    public void setByteStream(OutputStream byteStream) {
         m_byteStream = byteStream;
     }//}}}
     
-    public void setCharacterStream(Writer characterStream) {//{{{
+    //{{{ setCharacterStream()
+    
+    public void setCharacterStream(Writer characterStream) {
         m_characterStream = characterStream;
     }//}}}
     
-    public void setEncoding(String encoding) {//{{{
+    //{{{ setEncoding()
+    
+    public void setEncoding(String encoding) {
         m_encoding = encoding;
     }//}}}
     
-    public void setSystemId(String systemId) {//{{{
+    //{{{ setSystemId()
+    
+    public void setSystemId(String systemId) {
         m_systemId = systemId;
     }//}}}
+    
+    //}}}
+    
+    //{{{ Private members
     
     private OutputStream m_byteStream;
     private Writer m_characterStream;
     private String m_systemId;
     private String m_encoding;
+    
+    //}}}
 }

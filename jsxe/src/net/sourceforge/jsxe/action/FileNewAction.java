@@ -62,14 +62,18 @@ import java.io.IOException;
 
 public class FileNewAction extends AbstractAction {
     
-    public FileNewAction(TabbedView parent) {//{{{
+    //{{{ FileNewAction constructor
+    
+    public FileNewAction(TabbedView parent) {
         putValue(Action.NAME, "New");
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl N"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("N").getKeyCode()));
         view = parent;
     }//}}}
     
-    public void actionPerformed(ActionEvent e) {//{{{
+    //{{{ actionPerformed()
+    
+    public void actionPerformed(ActionEvent e) {
         try {
             boolean success = jsXe.openXMLDocument(view, jsXe.getDefaultDocument());
             if (!success) {

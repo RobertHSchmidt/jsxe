@@ -153,13 +153,7 @@ public class DefaultViewTreeNode implements MutableTreeNode {
     //{{{ getIndex()
     
     public int getIndex(TreeNode node) {
-        try {
-            DefaultViewTreeNode dNode = (DefaultViewTreeNode)node;
-            AdapterNode aNode = dNode.getAdapterNode();
-            return m_node.index(aNode);
-        } catch (ClassCastException e) {
-            return -1;
-        }
+        return m_children.indexOf(node);
     }//}}}
     
     //{{{ getParent()
@@ -182,11 +176,13 @@ public class DefaultViewTreeNode implements MutableTreeNode {
     
     public void insert(MutableTreeNode child, int index) {
         DefaultViewTreeNode childNode = (DefaultViewTreeNode)child;
+        DefaultViewTreeNode oldParent = (DefaultViewTreeNode)child.getParent();
         AdapterNode adapter = childNode.getAdapterNode();
-        child.setParent(this);
         m_node.addAdapterNodeAt(childNode.getAdapterNode(), index);
+        oldParent.removeFromChildList(childNode);
         ensureChildrenSize(index);
-        m_children.add(index, child);
+        m_children.add(index, childNode);
+        childNode.setParentRef(this);
     }//}}}
     
     //{{{ insert()
@@ -208,22 +204,26 @@ public class DefaultViewTreeNode implements MutableTreeNode {
         DefaultViewTreeNode treeNode = (DefaultViewTreeNode)node;
         m_node.remove(treeNode.getAdapterNode());
         m_children.remove(treeNode);
+        treeNode.setParentRef(null);
     }//}}}
     
     //{{{ removeFromParent()
     
     public void removeFromParent() {
         DefaultViewTreeNode parent = (DefaultViewTreeNode)getParent();
-        parent.remove(this);
-        m_parent=null;
+        if (parent != null) {
+            parent.remove(this);
+            m_parent=null;
+        }
     }//}}}
     
     //{{{ setParent()
     
     public void setParent(MutableTreeNode newParent) {
-        m_node.setParent(((DefaultViewTreeNode)newParent).getAdapterNode());
-        removeFromParent();
-        m_parent = (DefaultViewTreeNode)newParent;
+       // m_node.setParent(((DefaultViewTreeNode)newParent).getAdapterNode());
+       // removeFromParent();
+       // m_parent = (DefaultViewTreeNode)newParent;
+        newParent.insert(this, newParent.getChildCount());
     }//}}}
     
     //{{{ setUserObject
@@ -283,6 +283,24 @@ public class DefaultViewTreeNode implements MutableTreeNode {
    //     m_expanded = expanded;
    // }//}}}
     
+    //{{{ Protected members
+    
+    //{{{ setParentRef()
+    
+    void setParentRef(DefaultViewTreeNode parent) {
+        m_parent = parent;
+    }//}}}
+    
+    //{{{ removeFromChildList()
+    
+    void removeFromChildList(DefaultViewTreeNode child) {
+        m_children.remove(child);
+    }
+    
+    //}}}
+    
+    //}}}
+    
     //{{{ Private members
     
     //{{{ ensureChildrenSize()
@@ -297,10 +315,9 @@ public class DefaultViewTreeNode implements MutableTreeNode {
         }
     }//}}}
     
-    //{{{ Instance variables
     private AdapterNode m_node;
     private DefaultViewTreeNode m_parent = null;
     private ArrayList m_children = new ArrayList();
    // private boolean m_expanded = false;
-    //}}}
+   //}}}
 }

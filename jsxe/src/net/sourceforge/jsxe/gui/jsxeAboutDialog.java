@@ -58,13 +58,17 @@ import java.awt.event.ActionEvent;
 
 public class jsxeAboutDialog extends AbstractAction {
     
-    public jsxeAboutDialog(Component parent) {//{{{
+    //{{{ jsxeAboutDialog constructor
+    
+    public jsxeAboutDialog(Component parent) {
         putValue(Action.NAME, "About jsXe...");
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("A").getKeyCode()));
         view = parent;
     }//}}}
     
-    public void actionPerformed(ActionEvent e) {//{{{
+    //{{{ actionPerformed()
+    
+    public void actionPerformed(ActionEvent e) {
         String aboutMsg = 
         jsXe.getAppTitle() + " " + jsXe.getVersion()+"\n"+
         "Java Simple XML Editor\n"+

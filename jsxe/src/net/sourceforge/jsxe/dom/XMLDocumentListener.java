@@ -41,12 +41,16 @@ package net.sourceforge.jsxe.dom;
  */
 public interface XMLDocumentListener {
     
+    //{{{ propertiesChanged()
+    
     /**
      * Called when the properties associated with the XMLDocument have changed.
      * @param source The source XMLDocument
      * @param propertyKey The key to the property that has changed.
      */
-    public void propertiesChanged(XMLDocument source, String propertyKey);
+    public void propertiesChanged(XMLDocument source, String propertyKey);//}}}
+    
+    //{{{ structureChanged()
     
     /**
      * Called when the structure of the XMLDocument has changed.
@@ -56,6 +60,6 @@ public interface XMLDocumentListener {
      *                 node that was removed. This could be null if the location
      *                 is unknown.
      */
-    public void structureChanged(XMLDocument source, AdapterNode location);
+    public void structureChanged(XMLDocument source, AdapterNode location);//}}}
     
 }

@@ -39,23 +39,6 @@ TODO:
       and junk so that code isn't duplicated in the jsXe class and
       DocumentBuffer classes.
     
-    * Modularize UI stuff so that it is easier to plugin in a different GUI API
-      down the road. Thinking mostly of using gcj and gnome-java to reduce
-      dependency on swing and sun's java runtime.
-        - Possibly create interfaces that provide for the application to use
-          the GUI without knowing which one it is.
-        - Have a GUI builder factory to get a gui builder that will get the 
-          appropriate gui objects for whatever gui is used. (Will only support
-          swing at first)
-        - Need to research gnome-java so that interfaces aren't done in such a
-          way that make gnome-java hard to implement.
-        - Need to research and play with gcj to see how to use it in the
-          future.
-    
-    * Split the package structure for the dom classes and jsxe and also split
-      the gui framework stuff into it's own package structure. They can
-      possibly be supported separately in the future.
-    
     * Add a ghosted image of the node to drag and drop cursor. Hopefully the
       whole cursor can be replaced with the image since the default drag
       cursor is dumb in linux.
@@ -68,6 +51,9 @@ TODO:
     * Add support for creating and editing Processing instructions. New
       tree cell renderer/editor for the different parts of the processing
       instruction?
+    
+    * Create some sort of interface to deal with editing of entity reference
+      nodes. Can this be done before adding more support for DTDs?
     
     * Make the XML document declaration header non-editable in source-view
       mode. (how?) Update it when the user changes options in the options panel.

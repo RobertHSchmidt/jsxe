@@ -20,13 +20,15 @@
 		<property name="build.bin" value="${build.dir}/bin"/>
 		<property name="build.javadocs" value="${build.docs}/api"/>
 		<property name="build.help" value="${build.docs}/help"/>
-		<property name="debug" value="on"/>
-		<property name="optimize" value="off"/>
-		<property name="deprecation" value="on"/>
+		<property name="javac.debug" value="on"/>
+		<property name="javac.optimize" value="off"/>
+		<property name="javac.deprecation" value="on"/>
+    <property name="javac.include.runtime" value="no"/>
+    <property name="javac.source" value="1.3"/>
 		<property name="javadoc.link" value="http://java.sun.com/j2se/1.3/docs/api/"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="1"/>
-		<property name="build.version" value="74"/>
+		<property name="build.version" value="75"/>
 		<property name="app.version" value="${major.version}.${minor.version}.${build.version}"/>
 		<property name="app_version" value="${major.version}_${minor.version}_${build.version}"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
@@ -83,7 +85,7 @@
 	<!-- {{{ ============ Compiles the program ============================= -->
 	<target depends="prepare-src" name="compile">
 		<mkdir dir="${build.dest}"/>
-		<javac debug="${debug}" deprecation="${deprecation}" destdir="${build.dest}" includeJavaRuntime="yes" optimize="${optimize}" srcdir="${build.src}">
+		<javac debug="${javac.debug}" deprecation="${javac.deprecation}" includeJavaRuntime="${javac.include.runtime}" optimize="${javac.optimize}" source="${javac.source}" destdir="${build.dest}" srcdir="${build.src}">
 			<classpath refid="classpath"/>
 			<include name="**/*.java"/>
 		</javac>

@@ -63,14 +63,18 @@ import java.io.IOException;
 
 public class FileOpenAction extends AbstractAction {
     
-    public FileOpenAction(TabbedView parent) {//{{{
+    //{{{ FileOpenAction constructor
+    
+    public FileOpenAction(TabbedView parent) {
         putValue(Action.NAME, "Open...");
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl O"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
         view = parent;
     }//}}}
     
-    public void actionPerformed(ActionEvent e) {//{{{
+    //{{{ actionPerformed()
+    
+    public void actionPerformed(ActionEvent e) {
         try {
             jsXe.showOpenFileDialog(view);
         } catch (IOException ioe) {

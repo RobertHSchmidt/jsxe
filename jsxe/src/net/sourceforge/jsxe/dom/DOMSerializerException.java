@@ -46,15 +46,21 @@ import org.apache.xerces.dom3.DOMError;
 
 public class DOMSerializerException extends Exception {
     
-    public DOMSerializerException(DOMError err) {//{{{
+    //{{{ DOMSerializerException constructor
+    
+    public DOMSerializerException(DOMError err) {
         super(((Throwable)err.getRelatedException()).getMessage());
         error = err;
     }//}}}
     
-    public DOMError getError() {//{{{
+    //{{{ getError()
+    
+    public DOMError getError() {
         return error;
     }//}}}
 
+    //{{{ Private members
     private DOMError error;
+    //}}}
 
 }

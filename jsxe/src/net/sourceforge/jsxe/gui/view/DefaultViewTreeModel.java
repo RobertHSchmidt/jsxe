@@ -83,7 +83,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.Properties;
 import java.util.Enumeration;
 //}}}
@@ -112,50 +113,22 @@ public class DefaultViewTreeModel implements TreeModel {
         view = parent;
     }//}}}
 
-    //{{{ Implemented TreeModel methods
+    //{{{ TreeModel methods
     
     //{{{ addTreeModelListener()
     
     public void addTreeModelListener( TreeModelListener listener ) {
         if ( listener != null && ! treeListenerList.contains( listener ) ) {
-            treeListenerList.addElement( listener );
+            treeListenerList.add( listener );
         }
     }//}}}
     
     //{{{ getChild()
     
     public Object getChild(Object parent, int index) {
-        DefaultViewTreeNode node = (DefaultViewTreeNode) parent;
-        
-        boolean showComments = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
-        boolean showEmpty    = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
-        
-        boolean found = false;
-        
-        //massage the index so that it points returns
-        //the correct child depending of if we are displaying
-        //comments, empty nodes etc.
-        
-        //This should be changed later to make use of a node filter
-        //or something similar.
-        for (int i=0; i<=index; i++) {
-            DefaultViewTreeNode child = (DefaultViewTreeNode)node.getChildAt(i);
-            
-            if (child != null) {
-                AdapterNode adapter = child.getAdapterNode();
-                if (!showComments && adapter.getNodeType()==Node.COMMENT_NODE) {
-                    index++;
-                }
-                if (!showEmpty && adapter.getNodeType()==Node.TEXT_NODE && adapter.getNodeValue().trim().equals("")) {
-                    index++;
-                }
-                if (adapter.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
-                    index++;
-                }
-            }
-            
-        }
-        return node.getChildAt(index);
+        DefaultViewTreeNode node = (DefaultViewTreeNode)parent;
+        javax.swing.tree.TreeNode child = node.getChildAt(calculateIndex(node, index));
+        return child;
     }//}}}
     
     //{{{ getChildCount()
@@ -174,18 +147,7 @@ public class DefaultViewTreeModel implements TreeModel {
             DefaultViewTreeNode child = (DefaultViewTreeNode)node.getChildAt(i);
             
             if (child != null) {
-                boolean displayNode = true;
-                AdapterNode adapter = child.getAdapterNode();
-                if (!showComments && adapter.getNodeType()==Node.COMMENT_NODE) {
-                    displayNode = false;
-                }
-                if (!showEmpty && adapter.getNodeType()==Node.TEXT_NODE && adapter.getNodeValue().trim().equals("")) {
-                    displayNode = false;
-                }
-                if (adapter.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
-                    displayNode = false;
-                }
-                if (displayNode) {
+                if (displayNode(child)) {
                     count++;
                 }
             }
@@ -196,18 +158,10 @@ public class DefaultViewTreeModel implements TreeModel {
     //{{{ getIndexOfChild()
     
     public int getIndexOfChild(Object parent, Object child) {
-        DefaultViewTreeNode node = (DefaultViewTreeNode) parent;
-        AdapterNode adapter = node.getAdapterNode();
-        
-        boolean showComments = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
-        boolean showEmpty    = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
-        
-        if (!showComments && adapter.getNodeType()==Node.COMMENT_NODE)
-            return -1;
-        if (!showEmpty && adapter.getNodeType()==Node.TEXT_NODE && adapter.getNodeValue().trim()=="")
-            return -1;
-        
-        return node.getIndex((DefaultViewTreeNode)child);
+        DefaultViewTreeNode node = (DefaultViewTreeNode)parent;
+        DefaultViewTreeNode node2 = (DefaultViewTreeNode)child;
+        int index = calculateIndex(node, node2);
+        return index;
     }//}}}
     
     //{{{ getRoot()
@@ -227,7 +181,7 @@ public class DefaultViewTreeModel implements TreeModel {
     
     public void removeTreeModelListener(TreeModelListener listener) {
         if ( listener != null ) {
-            treeListenerList.removeElement( listener );
+            treeListenerList.remove( listener );
         }
     }//}}}
     
@@ -249,46 +203,121 @@ public class DefaultViewTreeModel implements TreeModel {
     
     //{{{ Private members
     
-    // {{{ Event notification methods
+    //{{{ calculateIndex()
     
-    private void fireTreeNodesChanged(TreeModelEvent e) {//{{{
-        Enumeration listeners = treeListenerList.elements();
-        while ( listeners.hasMoreElements() ) {
-            TreeModelListener listener = (TreeModelListener) listeners.nextElement();
+    private int calculateIndex(DefaultViewTreeNode parent, int index) {
+        boolean found = false;
+        
+        //massage the index so that it points returns
+        //the correct child depending of if we are displaying
+        //comments, empty nodes etc.
+        
+        //This should be changed later to make use of a node filter
+        //or something similar.
+        int newIndex = -1;
+        int nodesFound = 0;
+        int size = parent.getChildCount();
+        for (int i=0; i<size && nodesFound<=index; i++) {
+            DefaultViewTreeNode child = (DefaultViewTreeNode)parent.getChildAt(i);
+            
+            if (child != null) {
+                if (displayNode(child)) {
+                    nodesFound++;
+                }
+            }
+            newIndex++;
+            
+        }
+        return newIndex;
+    }//}}}
+    
+    //{{{ calculateIndex()
+    
+    private int calculateIndex(DefaultViewTreeNode parent, DefaultViewTreeNode child) {
+        int trueIndex = parent.getIndex(child);
+        if (!displayNode(child)) {
+            trueIndex = -1;
+        }
+        if (trueIndex != -1) {
+            int index = -1;
+            for (int i=0; i<=trueIndex; i++) {
+                DefaultViewTreeNode otherChild = (DefaultViewTreeNode)parent.getChildAt(i);
+                if (displayNode(otherChild)) {
+                    index++;
+                }
+            }
+            trueIndex = index;
+        }
+        return trueIndex;
+    }//}}}
+    
+    //{{{ displayNode()
+    
+    private boolean displayNode(DefaultViewTreeNode node) {
+        boolean showComments = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
+        boolean showEmpty    = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
+        
+        boolean displayNode = false;
+        if (node != null) {
+            displayNode = true;
+            AdapterNode adapter = node.getAdapterNode();
+            if (!showComments && adapter.getNodeType()==Node.COMMENT_NODE) {
+                displayNode = false;
+            }
+            if (!showEmpty && adapter.getNodeType()==Node.TEXT_NODE && adapter.getNodeValue().trim().equals("")) {
+                displayNode = false;
+            }
+            if (adapter.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
+                displayNode = false;
+            }
+        }
+        return displayNode;
+    }//}}}
+    
+    //{{{ fireTreeNodesChanged()
+    
+    private void fireTreeNodesChanged(TreeModelEvent e) {
+        ListIterator listeners = treeListenerList.listIterator();
+        while ( listeners.hasNext() ) {
+            TreeModelListener listener = (TreeModelListener) listeners.next();
             listener.treeNodesChanged( e );
         }
     }//}}}
     
-    private void fireTreeNodesInserted(TreeModelEvent e) {//{{{
-        Enumeration listeners = treeListenerList.elements();
-        while ( listeners.hasMoreElements() ) {
-            TreeModelListener listener = (TreeModelListener) listeners.nextElement();
+    //{{{ fireTreeNodesInserted()
+    
+    private void fireTreeNodesInserted(TreeModelEvent e) {
+        ListIterator listeners = treeListenerList.listIterator();
+        while ( listeners.hasNext() ) {
+            TreeModelListener listener = (TreeModelListener) listeners.next();
             listener.treeNodesInserted( e );
         }
     }//}}}
     
-    private void fireTreeNodesRemoved(TreeModelEvent e) {//{{{
-        Enumeration listeners = treeListenerList.elements();
-        while ( listeners.hasMoreElements() ) {
-            TreeModelListener listener = (TreeModelListener) listeners.nextElement();
+    //{{{ fireTreeNodesRemoved()
+    
+    private void fireTreeNodesRemoved(TreeModelEvent e) {
+        ListIterator listeners = treeListenerList.listIterator();
+        while ( listeners.hasNext() ) {
+            TreeModelListener listener = (TreeModelListener) listeners.next();
             listener.treeNodesRemoved( e );
         }
     }//}}}
     
-    private void fireTreeStructureChanged(TreeModelEvent e) {//{{{
-        Enumeration listeners = treeListenerList.elements();
-        while ( listeners.hasMoreElements() ) {
-            TreeModelListener listener = (TreeModelListener) listeners.nextElement();
+    //{{{ fireTreeStructureChanged()
+    
+    private void fireTreeStructureChanged(TreeModelEvent e) {
+        ListIterator listeners = treeListenerList.listIterator();
+        while ( listeners.hasNext() ) {
+            TreeModelListener listener = (TreeModelListener) listeners.next();
             listener.treeStructureChanged( e );
         }
     }//}}}
 
-    // }}}
-    
     Component view;
     
     private DocumentBuffer m_buffer;
     private DefaultViewTreeNode m_rootTreeNode;
-    private Vector treeListenerList = new Vector();
+    private ArrayList treeListenerList = new ArrayList();
     //}}}
 }

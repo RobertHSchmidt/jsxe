@@ -51,13 +51,17 @@ import org.apache.xerces.dom3.DOMLocator;
 
 public class DefaultDOMLocator implements DOMLocator {
     
-    public DefaultDOMLocator() {//{{{
+    //{{{ DefaultDOMLocator constructor
+    
+    public DefaultDOMLocator() {
         m_column = -1;
         m_line   = -1;
         m_offset = -1;
     }//}}}
     
-    public DefaultDOMLocator(Node node, int lineno, int col, int byteOffset, String uri) {//{{{
+    //{{{ DefaultDOMLocator constructor
+    
+    public DefaultDOMLocator(Node node, int lineno, int col, int byteOffset, String uri) {
         m_line = lineno;
         m_column = col;
         m_errorNode = node;
@@ -65,30 +69,46 @@ public class DefaultDOMLocator implements DOMLocator {
         m_uri = uri;
     }//}}}
     
-    public int getByteOffset() {//{{{
+    //{{{ Implemented DOMLocator methods
+    
+    //{{{ getByteOffset()
+    
+    public int getByteOffset() {
         return m_offset;
     }//}}}
     
-    public int getColumnNumber() {//{{{
+    //{{{ getColumnNumber()
+    
+    public int getColumnNumber() {
         return m_column;
     }//}}}
     
-    public Node getRelatedNode() {//{{{
+    //{{{ getRelatedNode()
+    
+    public Node getRelatedNode() {
         return m_errorNode;
     }//}}}
     
-    public int getLineNumber() {//{{{
+    //{{{ getLineNumber()
+    
+    public int getLineNumber() {
         return m_line;
     }//}}}
     
-    public String getUri() {//{{{
+    //{{{ getUri()
+    
+    public String getUri() {
         return m_uri;
     }//}}}
     
-    public int getUtf16Offset() {//{{{
+    //{{{ getUtf16Offset()
+    
+    public int getUtf16Offset() {
         //not sure how to approach the byte/UTF-16 offset stuff yet.
         return -1;
     }//}}}
+    
+    //}}}
     
     //{{{ Private members
     

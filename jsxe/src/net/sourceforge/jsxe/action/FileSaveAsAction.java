@@ -76,13 +76,17 @@ import java.util.Vector;
 
 public class FileSaveAsAction extends AbstractAction {
     
-    public FileSaveAsAction(TabbedView parent) {//{{{
+    //{{{ FileSaveAsAction constructor
+    
+    public FileSaveAsAction(TabbedView parent) {
         putValue(Action.NAME, "Save As...");
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("A").getKeyCode()));
         view = parent;
     }//}}}
     
-    public void actionPerformed(ActionEvent e) {//{{{
+    //{{{ actionPerformed()
+    
+    public void actionPerformed(ActionEvent e) {
         try {
             view.getDocumentView().getDocumentBuffer().saveAs(view);
         } catch (IOException ioe) {

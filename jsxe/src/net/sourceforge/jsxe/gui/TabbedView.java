@@ -336,6 +336,18 @@ public class TabbedView extends JFrame {
         return true;
     }//}}}
     
+    //{{{ Private static members
+    
+    private static final String _WIDTH = "tabbedview.width";
+    private static final String _HEIGHT = "tabbedview.height";
+    private static final String _X = "tabbedview.x";
+    private static final String _Y = "tabbedview.y";
+    
+    private static final ImageIcon m_cleanIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/clean.png"), "clean");
+    private static final ImageIcon m_dirtyIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/dirty.png"), "dirty");
+    
+    //}}}
+    
     //{{{ Private members
     
     //{{{ createDefaultMenuItems()
@@ -555,13 +567,6 @@ public class TabbedView extends JFrame {
         
     }//}}}
     
-    //{{{ Instance variables
-    
-    private static final String _WIDTH = "tabbedview.width";
-    private static final String _HEIGHT = "tabbedview.height";
-    private static final String _X = "tabbedview.x";
-    private static final String _Y = "tabbedview.y";
-    
     private JMenu m_fileMenu;
     private JMenu m_viewMenu;
     private JMenu m_toolsMenu;
@@ -570,8 +575,6 @@ public class TabbedView extends JFrame {
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     //The current document
     private JPanel panel;
-    private static final ImageIcon m_cleanIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/clean.png"), "clean");
-    private static final ImageIcon m_dirtyIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/dirty.png"), "dirty");
     private DocumentBufferListener m_bufferListener = new DocumentBufferListener() {//{{{
         
         public void nameChanged(DocumentBuffer source, String newName) {
