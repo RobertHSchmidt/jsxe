@@ -72,20 +72,23 @@ import java.util.Vector;
 public class DefaultXMLDocument extends XMLDocument {
     
     protected DefaultXMLDocument(File file) throws FileNotFoundException, IOException {//{{{
-        setProperty("format.output", "true");
+        setProperty("format-output",                 "false");
+        setProperty("whitespace-in-element-content", "true");
         setModel(file);
         validated=false;
     }//}}}
     
     protected DefaultXMLDocument(Reader reader) throws IOException {//{{{
-        setProperty("format.output", "true");
+        setProperty("format-output",                 "false");
+        setProperty("whitespace-in-element-content", "true");
         setModel(reader);
         name = getUntitledLabel();
         validated=false;
     }//}}}
     
     protected DefaultXMLDocument(String string) throws IOException {//{{{
-        setProperty("format.output", "true");
+        setProperty("format-output", "false");
+        setProperty("whitespace-in-element-content", "true");
         setModel(string);
         name = getUntitledLabel();
         validated=false;
@@ -107,6 +110,16 @@ public class DefaultXMLDocument extends XMLDocument {
         return document;
     }//}}}
 
+    public String setProperty(String name, String value) {//{{{
+        if (name == "format-output" && Boolean.valueOf(value).booleanValue()) {
+            validated=false;
+        }
+        if (name == "whitespace-in-element-content" && Boolean.valueOf(value).booleanValue()) {
+            validated=false;
+        }
+        return super.setProperty(name, value);
+    }//}}}
+
     public String getName() {//{{{
         return name;
     }//}}}
@@ -116,7 +129,10 @@ public class DefaultXMLDocument extends XMLDocument {
         //if it's not we go by the source.
         
         if (isValidated()) {
-            DOMSerializer serializer = new DOMSerializer();
+            DOMSerializer.DOMSerializerConfiguration config = new DOMSerializer.DOMSerializerConfiguration();
+            config.setParameter("format-output", getProperty("format-output"));
+            config.setParameter("whitespace-in-element-content", getProperty("whitespace-in-element-content"));
+            DOMSerializer serializer = new DOMSerializer(config);
             return serializer.writeToString(getDocument());
         } else {
             return source;

@@ -184,7 +184,7 @@ public class DOMSerializer implements DOMWriter {
     
     //}}}
     
-    public class DOMSerializerConfiguration implements DOMConfiguration {//{{{
+    public static class DOMSerializerConfiguration implements DOMConfiguration {//{{{
         
         public DOMSerializerConfiguration() {//{{{
             
@@ -255,6 +255,7 @@ public class DOMSerializer implements DOMWriter {
         }//}}}
         
         public boolean canSetParameter(String name, Object value) {///{{{
+            
             if (value instanceof Boolean) {
                 boolean booleanValue = ((Boolean)value).booleanValue();
                 
@@ -356,6 +357,11 @@ public class DOMSerializer implements DOMWriter {
         
         public void setParameter(String name, Object value) throws DOMException {//{{{
             
+            //if a string, attempt to use it as a boolean value.
+            if (value instanceof String) {
+                value = new Boolean((String)value);
+            }
+            
             if (supportedParameters.indexOf(name) != -1) {
                 if ( value != null ) {
                     if (canSetParameter(name, value)) {
@@ -371,12 +377,19 @@ public class DOMSerializer implements DOMWriter {
                             setFeature("cdata-sections",        false);
                             
                             setFeature("whitespace-in-element-content", true);
-                            setFeature("comments",                     true);
-                            setFeature("namespaces",                   true);
-                            
-                        } else {
-                            parameters.put(name, value);
+                            setFeature("comments",                      true);
+                            setFeature("namespaces",                    true);
+                            return;
                         }
+                        if (name == "format-output" && ((Boolean)value).booleanValue()) {
+                            setFeature("whitespace-in-element-content", false);
+                        }
+                        if (name == "whitespace-in-element-content" && ((Boolean)value).booleanValue()) {
+                            setFeature("format-output", false);
+                        }
+                        
+                        parameters.put(name, value);
+                        
                     } else {
                         throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Parameter "+name+" and value "+value.toString()+" not supported.");
                     }
