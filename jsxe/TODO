@@ -12,11 +12,11 @@ TODO:
       be thrown out? Then other classes would extend XMLDocument and have
       methods specific to their application of XML?
     
-    * Update the DOM3 classes to the current version of the DOM3 interfaces.
-      (2.6.0) DOMSerializer needs to be renamed. DOMSerializerConfiguration
-      needs to be updated to support the parameters specified in DOM3 javadoc
-      for DOMSerializer.
-    
+    * Fix problem where the user tries to close a dirty document and is asked to
+      save. They hit yes. Then at the save dialog they hit cancel. The document
+      closes without them saving. The document should be left open. Basically
+      need to return false from jsXe.closeDocumentBuffer() when they do this.
+
     * Make the XML document declaration header non-editable in source-view mode.
       Update it when the user changes it in the options panel. (how?)
     
