@@ -598,7 +598,7 @@ public class TabbedView extends JFrame {
             
             //need to get the human readable name.
             m_view = view;
-            putValue(Action.NAME, m_view.getHumanReadableName());
+            putValue(Action.NAME, jsXe.getPluginLoader().getPluginProperty(m_view, JARClassLoader.PLUGIN_HUMAN_READABLE_NAME));
         }//}}}
         
         //{{{ actionPerformed()

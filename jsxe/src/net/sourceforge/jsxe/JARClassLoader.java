@@ -363,7 +363,7 @@ public class JARClassLoader extends ClassLoader {
     //{{{ getPluginProperty()
     
     public String getPluginProperty(ActionPlugin plugin, String key) {
-        return getPluginProperty(getNameForPlugin(plugin), key);
+        return m_pluginProperties.getProperty(plugin.getClass().getName()+"."+key);
     }//}}}
     
     //{{{ Private Members
@@ -374,9 +374,12 @@ public class JARClassLoader extends ClassLoader {
         String name = getManifestAttribute(file, PLUGIN_NAME);
         String dep;
         int i=0;
+        
+        Log.log(Log.DEBUG, this, "Checking dependencies for "+name);
+        
         while ((dep = m_pluginProperties.getProperty(name+".dependency."+i++)) != null) {
             //parse the dependency
-            
+            Log.log(Log.DEBUG, this, name+".dependency."+i+": "+dep);
             int index = dep.indexOf(' ');
             if(index == -1) {
                 throw new PluginDependencyException(name, name + " has an invalid dependency: " + dep);
@@ -384,13 +387,16 @@ public class JARClassLoader extends ClassLoader {
             
             String what = dep.substring(0,index);
             String arg = dep.substring(index + 1);
-            
+            Log.log(Log.DEBUG, this, "dependency is "+what);
+            Log.log(Log.DEBUG, this, "required version is");
             if(what.equals("jdk")) {
+                Log.log(Log.DEBUG, this, "dependency is jdk");
                 if (MiscUtilities.compareStrings(System.getProperty("java.version"), arg,false) < 0) {
                     throw new PluginDependencyException(name, "Java", arg, System.getProperty("java.version"));
                 }
             } else {
                 if (what.equals("jsxe") || what.equals("jsXe")) {
+                    Log.log(Log.DEBUG, this, "dependency is jsXe");
                     if(arg.length() != 11) {
                         throw new PluginDependencyException(name, "Invalid jsXe version number: " + arg);
                     }
@@ -401,6 +407,7 @@ public class JARClassLoader extends ClassLoader {
                     }
                 } else {
                     if (what.equals("plugin")) {
+                        Log.log(Log.DEBUG, this, "dependency is plugin");
                         int index2 = arg.indexOf(' ');
                         if(index2 == -1) {
                             throw new PluginDependencyException(name, name + " has an invalid dependency: " + dep + " (version is missing)");
@@ -430,6 +437,7 @@ public class JARClassLoader extends ClassLoader {
                         }
                     } else {
                         if (what.equals("class")) {
+                            Log.log(Log.DEBUG, this, "dependency is class");
                             try {
                                 loadClass(arg,false);
                             } catch(Exception e) {
@@ -546,45 +554,58 @@ public class JARClassLoader extends ClassLoader {
     //{{{ setProperties()
     
     private void setProperties(JarFile jarFile) throws IOException {
+        
+        String mainClass         = getManifestAttribute(jarFile, PLUGIN_CLASS);
         String pluginName        = getManifestAttribute(jarFile, PLUGIN_NAME);
-        if (pluginName != null) {
-            String propPrefix        = pluginName + ".";
-            String mainClass         = getManifestAttribute(jarFile, PLUGIN_CLASS);
+        if (pluginName != null && mainClass != null) {
+            String propPrefix1        = mainClass + ".";
+            String propPrefix2        = pluginName + ".";
             String implVersion       = getManifestAttribute(jarFile, PLUGIN_VERSION);
             String url               = getManifestAttribute(jarFile, PLUGIN_URL);
             String humanReadableName = getManifestAttribute(jarFile, PLUGIN_HUMAN_READABLE_NAME);
             String description       = getManifestAttribute(jarFile, PLUGIN_DESCRIPTION);
             
-            m_pluginProperties.setProperty(propPrefix+PLUGIN_NAME, pluginName);
+            //prefix with both the plugin name and class
+            m_pluginProperties.setProperty(propPrefix1+PLUGIN_NAME, pluginName);
+            m_pluginProperties.setProperty(propPrefix2+PLUGIN_NAME, pluginName);
             if (mainClass != null) {
-                m_pluginProperties.setProperty(propPrefix+PLUGIN_CLASS, mainClass);
+                //prefix the main class with the plugin name
+                m_pluginProperties.setProperty(propPrefix1+PLUGIN_CLASS, mainClass);
+                m_pluginProperties.setProperty(propPrefix2+PLUGIN_CLASS, mainClass);
             }
             if (implVersion != null) {
-                m_pluginProperties.setProperty(propPrefix+PLUGIN_VERSION, implVersion);
+                m_pluginProperties.setProperty(propPrefix1+PLUGIN_VERSION, implVersion);
+                m_pluginProperties.setProperty(propPrefix2+PLUGIN_VERSION, implVersion);
             }
             if (url != null) {
-                m_pluginProperties.setProperty(propPrefix+PLUGIN_URL, url);
+                m_pluginProperties.setProperty(propPrefix1+PLUGIN_URL, url);
+                m_pluginProperties.setProperty(propPrefix2+PLUGIN_URL, url);
             }
             if (humanReadableName != null) {
-                m_pluginProperties.setProperty(propPrefix+PLUGIN_HUMAN_READABLE_NAME, humanReadableName);
+                m_pluginProperties.setProperty(propPrefix1+PLUGIN_HUMAN_READABLE_NAME, humanReadableName);
+                m_pluginProperties.setProperty(propPrefix2+PLUGIN_HUMAN_READABLE_NAME, humanReadableName);
             }
             if (description != null) {
-                m_pluginProperties.setProperty(propPrefix+PLUGIN_DESCRIPTION, description);
+                m_pluginProperties.setProperty(propPrefix1+PLUGIN_DESCRIPTION, description);
+                m_pluginProperties.setProperty(propPrefix2+PLUGIN_DESCRIPTION, description);
             }
             
             //Set dependency properties
             ZipEntry entry = jarFile.getEntry("dependency.props");
             //If no dependency file assume no dependencies
             if (entry != null) {
-                
+                Log.log(Log.DEBUG, this, "Loading dependencies for "+pluginName);
                 InputStream stream = jarFile.getInputStream(entry);
                 Properties dependencies = new Properties();
                 dependencies.load(stream);
                 
                 String dep;
                 int i = 0;
-                while ((dep = dependencies.getProperty("dependency." + i++)) != null) {
-                    m_pluginProperties.setProperty(propPrefix + "dependency." + i++, dep);
+                while ((dep = dependencies.getProperty("dependency." + i)) != null) {
+                    Log.log(Log.DEBUG, this, "Setting dependency "+propPrefix1 + "dependency." + i + ": "+ dep);
+                    m_pluginProperties.setProperty(propPrefix1 + "dependency." + i, dep);
+                    Log.log(Log.DEBUG, this, "Setting dependency "+propPrefix2 + "dependency." + i + ": "+ dep);
+                    m_pluginProperties.setProperty(propPrefix2 + "dependency." + i++, dep);
                 }
             }
         }
