@@ -353,7 +353,15 @@ public class jsXe {
                 buffer = new DocumentBuffer(file, properties);
                 m_buffers.add(buffer);
                 if (viewName != null) {
-                    view.addDocumentBuffer(buffer, viewName);
+                    try {
+                        view.addDocumentBuffer(buffer, viewName);
+                    } catch (IOException ioe) {
+                        /*
+                        we can't open in the view we want try to open in
+                        all views
+                        */
+                        view.addDocumentBuffer(buffer);
+                    }
                 } else {
                     view.addDocumentBuffer(buffer);
                 }
