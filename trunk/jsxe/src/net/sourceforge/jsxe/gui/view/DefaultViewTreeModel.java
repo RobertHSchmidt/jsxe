@@ -122,9 +122,9 @@ public class DefaultViewTreeModel implements TreeModel {
         //or something similar.
         for (int i=0; i<=index; i++) {
             DefaultViewTreeNode child = (DefaultViewTreeNode)node.getChildAt(i);
-            AdapterNode adapter = child.getAdapterNode();
             
             if (child != null) {
+                AdapterNode adapter = child.getAdapterNode();
                 if (!showComments && adapter.getNodeType()==Node.COMMENT_NODE) {
                     index++;
                 }
@@ -137,7 +137,6 @@ public class DefaultViewTreeModel implements TreeModel {
             }
             
         }
-        
         return node.getChildAt(index);
     }//}}}
     
@@ -145,9 +144,32 @@ public class DefaultViewTreeModel implements TreeModel {
         DefaultViewTreeNode node = (DefaultViewTreeNode)parent;
         int totalcount = node.getChildCount();
         int count = 0;
+        
+        boolean showComments = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
+        boolean showEmpty    = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
+        /*
+        We need to find out how many we actually want to display.
+        */
         for (int i=0; i<totalcount; i++) {
-            if (getChild(parent, i)!=null)
-                count++;
+            DefaultViewTreeNode child = (DefaultViewTreeNode)node.getChildAt(i);
+            
+            if (child != null) {
+                System.out.println(i+".) "+child.toString());
+                boolean displayNode = true;
+                AdapterNode adapter = child.getAdapterNode();
+                if (!showComments && adapter.getNodeType()==Node.COMMENT_NODE) {
+                    displayNode = false;
+                }
+                if (!showEmpty && adapter.getNodeType()==Node.TEXT_NODE && adapter.getNodeValue().trim().equals("")) {
+                    displayNode = false;
+                }
+                if (adapter.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
+                    displayNode = false;
+                }
+                if (displayNode) {
+                    count++;
+                }
+            }
         }
         return count;
     }//}}}

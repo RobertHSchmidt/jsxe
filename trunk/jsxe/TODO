@@ -19,24 +19,22 @@ TODO:
             built methods for interacting with the DTD.
         ignore-unknown-character-denormalizations
 
+    & Serialized XML should be 100% well-formed and parsable.
+    
 * Version 0.2.0
     
     * Update to use the newest version of Xerces.
     
-    * Make sure jsXe can deal with all types of XML nodes.
-        * Add support for creating every type of XML node.
-        * Need to implement character normalization during serialization.
-          Certain characters and character sequences will need to be converted
-          to entities.
-        * Serialized XML should be 100% well-formed and parsable.
+    * Make any ease-of-use changes necessary to make jsxe act in an intuitive
+      way.
+    
+    * Add support for the expanded attribute of the DefaultViewTreeNode.
+      Use this attribute for determining if the node is expanded or not and
+      add logic to expand it. Need to overload the isExpanded() and
+      isCollapsed() methods in the DefaultViewTree so that they reflect the
+      new fuctionality.
     
     * Clean up code. Be consistent about fold marks. Alphabetize methods.
-      Update the DefaultViewTreeModel to use a DefaultViewTreeNode class
-      that defines the toString() method for how the node is displayed in the
-      JTree (the AdapterNode is too coupled to the gui by defining this method).
-        Create a method in the DefaultViewTreeNode class that specifies that
-        the node is expanded or not. This will help maintain a tree that is
-        nicer to view and modify.
     
 * Version 0.3.0
     
@@ -65,7 +63,11 @@ TODO:
     
     * Store some options such as recent files and file specific options in
       an XML file with jsxe's options in the .jsxe folder in the home dir.
-
+      
+    * Add support for creating and editing Processing instructions. New
+      tree cell renderer/editor for the different parts of the processing
+      instruction?
+    
     * Make the XML document declaration header non-editable in source-view
       mode. (how?) Update it when the user changes options in the options panel.
     
@@ -204,4 +206,17 @@ TODO:
     
 * Version 0.8.0
     
+    * Implement a JasperReports plugin that helps users view report definitions
+      for jasper reports.
+    
+    * Implement a Schema Diagram plugin that can show Shema as a flow like
+      diagram. Look at the JGraph components for this. www.jgraph.com
+    
     * Implement some form of internationalization support.
+    
+* Version 0.9.0
+    
+    * Add support in the JasperReports plugin for editing of report
+      definitions visually.
+    
+    * Add support to the schema plugin for editing schema visually.

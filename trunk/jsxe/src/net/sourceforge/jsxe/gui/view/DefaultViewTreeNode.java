@@ -146,9 +146,7 @@ public class DefaultViewTreeNode implements MutableTreeNode {
                 child = new DefaultViewTreeNode(this, childAt);
                 m_children.set(childIndex, child);
             }
-            
         }
-        
         return child;
     }//}}}
     
