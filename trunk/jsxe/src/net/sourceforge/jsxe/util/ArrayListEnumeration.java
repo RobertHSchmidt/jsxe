@@ -58,8 +58,7 @@ public class ArrayListEnumeration implements Enumeration, Iterator {
     public Object nextElement() throws NoSuchElementException {
         try {
             if (hasMoreElements()) {
-                ++m_index;
-                return m_list.get(m_index);
+                return m_list.get(m_index++);
             } else {
                 throw new NoSuchElementException("No more elements");
             }
