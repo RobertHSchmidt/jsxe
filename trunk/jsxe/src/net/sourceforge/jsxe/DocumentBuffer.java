@@ -63,6 +63,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.ListIterator;
+import java.util.Properties;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JFileChooser;
@@ -116,7 +117,7 @@ public class DocumentBuffer {
     /**
      * Creates a new DocumentBuffer for a file on disk. The name of the
      * DocumentBuffer is taken from the filename.
-     * @param file the file to read the XML document from.
+     * @param file the file to read the XML document from
      * @throws IOException if there was a problem reading the file
      */
     DocumentBuffer(File file) throws IOException {
@@ -137,6 +138,26 @@ public class DocumentBuffer {
         m_file = null;
         m_name = getUntitledLabel();
         readFile(reader);
+    }//}}}
+    
+    //{{{ DocumentBuffer constructor
+    
+    /** 
+     * Creates a new DocumentBuffer for a file and with the provided
+     * set of properties.
+     * @param file the file to read the XML document from
+     * @param properties the properties to set to this DocumentBuffer
+     * @throws IOException if the there was a problem reading the file
+     */
+    DocumentBuffer(File file, Properties properties) throws IOException {
+        this(file);
+        
+        //add properties one by one
+        Enumeration propertyNames = properties.propertyNames();
+        while (propertyNames.hasMoreElements()) {
+            String key = propertyNames.nextElement().toString();
+            m_document.setProperty(key, properties.getProperty(key));
+        }
     }//}}}
     
     //{{{ close()
@@ -232,6 +253,12 @@ public class DocumentBuffer {
      */
     public String setProperty(String key, String value) {
         return m_document.setProperty(key, value);
+    }//}}}
+    
+    //{{{ getProperties()
+    
+    public Properties getProperties() {
+        return m_document.getProperties();
     }//}}}
     
     //{{{ getProperty()
