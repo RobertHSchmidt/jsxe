@@ -7,7 +7,7 @@ jsXe is the Java Simple XML Editor
 jsXe is a gui application that creates a tree view of an XML document.
 The user can then edit this tree and the content in the tree.
 
-This file contains the code to start exiting the jsXe.
+This file contains the code to start exiting jsXe.
 
 This file written by ian Lewis (iml001@bridgewater.edu)
 Copyright (C) 2002 ian Lewis
@@ -67,11 +67,7 @@ public class FileExitAction extends AbstractAction {
         System.exit(1);
     }//}}}
     
-    /*
-    *************************************************
-    Data Fields
-    *************************************************
-    *///{{{
+    //{{{ Private members
     private TabbedView view;
     //}}}
 }

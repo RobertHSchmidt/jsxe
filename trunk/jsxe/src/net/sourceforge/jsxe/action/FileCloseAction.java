@@ -65,14 +65,10 @@ public class FileCloseAction extends AbstractAction {
     }//}}}
     
     public void actionPerformed(ActionEvent e) {//{{{
-        jsXe.closeXMLDocument(view, view.getDocumentPanel().getDOMAdapter());
+        jsXe.closeXMLDocument(view, view.getDocumentView().getXMLDocument());
     }//}}}
     
-    /*
-    *************************************************
-    Data Fields
-    *************************************************
-    *///{{{
+    //{{{ Private members
     private TabbedView view;
     //}}}
 }
