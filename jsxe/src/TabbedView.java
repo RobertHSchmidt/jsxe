@@ -38,9 +38,8 @@ belongs to.
 */
 
 //{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -48,12 +47,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.ImageIcon;
-import javax.swing.KeyStroke;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileFilter;
@@ -69,8 +65,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 //}}}
 
 //{{{ Java base classes
@@ -210,6 +204,7 @@ public class TabbedView extends JFrame {
                 tabbedPane.add(adapter.getName(), dummypanel);
             }
         tabbedPane.setSelectedIndex(adapterList.indexOf(adapter));
+        setTitle(AppTitle + " - " + docpanel.getDOMAdapter().getName());
         }
     }//}}}
     
@@ -251,134 +246,6 @@ public class TabbedView extends JFrame {
     public int getDocumentCount() {//{{{
         return adapterList.size();
     }//}}}
-    
-    private class FileNewAction extends AbstractAction {//{{{
-        public FileNewAction(TabbedView parent) {
-            putValue(Action.NAME, "New");
-            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl N"));
-            view = parent;
-        }
-        public void actionPerformed(ActionEvent e) {
-            view.setAdapter( DOMAdapter.getDOMAdapter(view, jsXe.getDefaultDocument()));
-        }
-        private TabbedView view;
-    }//}}}
-    
-    private class FileOpenAction extends AbstractAction {//{{{
-        public FileOpenAction(TabbedView parent) {
-            putValue(Action.NAME, "Open...");
-            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl O"));
-            view = parent;
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            jsXe.showOpenFileDialog(view);
-        }
-        private TabbedView view;
-    }//}}}
-    
-    private class FileSaveAction extends AbstractAction {//{{{
-        public FileSaveAction(TabbedView parent) {
-            putValue(Action.NAME, "Save");
-            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl S"));
-            view = parent;
-        }
-        public void actionPerformed(ActionEvent e) {
-            docpanel.getDOMAdapter().save();
-            setTitle(AppTitle + " " + docpanel.getDOMAdapter().getName());
-        }
-        private TabbedView view;
-    }//}}}
-    
-    private class FileSaveAsAction extends AbstractAction {//{{{
-        public FileSaveAsAction(TabbedView parent) {
-            putValue(Action.NAME, "Save As...");
-            view = parent;
-        }
-        public void actionPerformed(ActionEvent e) {
-            docpanel.getDOMAdapter().saveAs();
-            setTitle(AppTitle + " " + docpanel.getDOMAdapter().getName());
-        }
-        private TabbedView view;
-    }//}}}
-    
-    private class FileCloseAction extends AbstractAction {//{{{
-        public FileCloseAction(TabbedView parent) {
-            putValue(Action.NAME, "Close");
-            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl W"));
-            view = parent;
-        }
-        public void actionPerformed(ActionEvent e) {
-            jsXe.closeXMLDocument(view, view.getDocumentPanel().getDOMAdapter());
-        }
-        private TabbedView view;
-    }//}}}
-    
-    private class FileExitAction extends AbstractAction {//{{{
-        public FileExitAction(TabbedView parent) {
-            putValue(Action.NAME, "Exit");
-            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl Q"));
-            view = parent;
-        }
-        public void actionPerformed(ActionEvent e) {
-            //should check for dirty open documents somewhere
-            System.exit(1);
-        }
-        private TabbedView view;
-    }//}}}
-    
-    private class ToolsOptionsAction extends AbstractAction {//{{{
-        public ToolsOptionsAction(TabbedView parent) {
-            putValue(Action.NAME, "Options...");
-            view = parent;
-        }
-        public void actionPerformed(ActionEvent e) {
-            OptionsDialog options = new OptionsDialog(view);
-            options.show();
-        }
-        private TabbedView view;
-    }//}}}
-    
-    private class ToolsViewSourceAction extends AbstractAction {//{{{
-        public ToolsViewSourceAction(TabbedView parent) {
-            putValue(Action.NAME, "View Source...");
-            view = parent;
-        }
-        public void actionPerformed(ActionEvent e) {
-            SourceView viewSource = new SourceView(view, docpanel.getDOMAdapter());
-            viewSource.show();
-        }
-        private TabbedView view;
-    }//}}}
-    
-    private class jsxeAboutDialog extends AbstractAction {//{{{
-        public jsxeAboutDialog(TabbedView parent) {
-            putValue(Action.NAME, "About jsXe...");
-            view = parent;
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            String aboutMsg = 
-            "jsXe " + jsXe.getVersion()+"\n"+
-            "Java Simple XML Editor\n"+
-            "Copyright (C) 2002 ian Lewis\n\n"+
-            "jsXe is an XML editor written using swing and JAXP 1.1\n\n"+
-            "Authors: ian Lewis <iml001@bridgewater.edu>\n\n"+
-            "Released under the terms of the GNU General Public License";
-            
-            Object[] okButton = {"Ok"};
-            JOptionPane.showOptionDialog(
-                view,
-                aboutMsg,
-                "About jsXe",
-                0,
-                JOptionPane.INFORMATION_MESSAGE,
-                new ImageIcon("icons"+System.getProperty("file.separator")+"jsxe.jpg", "jsXe"),
-                okButton,
-                okButton[0]);
-        }
-        private TabbedView view;
-    } //}}}
     
     /*
     *************************************************

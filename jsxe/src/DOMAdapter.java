@@ -453,35 +453,6 @@ public class DOMAdapter implements TreeModel, TableModel {
         saveDialog.addChoosableFileFilter(all);
         saveDialog.setFileFilter(firstFilter);
         
-       // saveDialog.setFileFilter(//{{{
-       //     new FileFilter() {
-       //         public boolean accept(File f) {
-       //             if(f != null) {
-       //                 if(f.isDirectory()) {
-       //                     return true;
-       //                 }
-       //                 String extention = getExtension(f);
-       //                 if(extention!=null && extention.compareTo(new String("xml"))==0) {
-       //                     return true;
-       //                 }
-       //             }
-       //             return false;
-       //         }
-       //         public String getDescription() {
-       //             return new String("XML Documents (.xml)");
-       //         }
-       //         private String getExtension(File f) {
-       //             if(f != null) {
-       //                 String filename = f.getName();
-       //                 int i = filename.lastIndexOf('.');
-       //                 if (i>0 && i<filename.length()-1) {
-       //                     return filename.substring(i+1).toLowerCase();
-       //                 }
-       //             }
-       //             return null;
-       //         }
-       //     });//}}}
-        
         int returnVal = saveDialog.showOpenDialog(view);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             DOMSerializer serializer = new DOMSerializer((Boolean.valueOf(getProperty("format.output"))).booleanValue());
