@@ -13,11 +13,17 @@ TODO:
       methods specific to their application of XML?
     
     * DOMSerializer needs to support the following parameters:
-        well-formed
-        discard-default-content
+        entities
+        cdata-sections
         normalize-characters
-        soft-tabs
+        ignore-unknown-character-denormalizations
+    * DOMSerializer should support the following parameters:
+        well-formed
+            - Is this necessary? The DOM representation can't really be
+              non-well-formed can it? It provides error checking for invalid
+              characters.
         xml-declaration
+        check-character-normalization
     
     * Make sure jsXe can deal with all types of XML nodes.
         * Add support for creating every type of XML node.
@@ -25,8 +31,8 @@ TODO:
           Certain characters and character sequences will need to be normalized
           to entities.
     
-    * Make the XML document declaration header non-editable in source-view mode.
-      Update it when the user changes it in the options panel. (how?)
+    * Make the XML document declaration header non-editable in source-view
+      mode. (how?) Update it when the user changes options in the options panel.
     
     * Fix the options dialog and make it look better. Maybe split into two
       dialogs, global options and view/document specific? Maybe even three
