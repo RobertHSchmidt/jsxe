@@ -143,7 +143,9 @@ TODO:
     
 * Version 0.7 beta
     
-    * Implement some form of internationalization support.
+    * Implement some form of internationalization support. Maybe implement this
+      by using different properties files for error messages and menu item
+      names?
     
     * Build into the interfaces support for printing. Implement printing
       support in the Default View and SourceView
