@@ -94,7 +94,7 @@ public class SourceView extends DocumentView {
      * @param buffer the buffer to open.
      * @throws IOException if the buffer cannot be viewed using this view
      */
-    public SourceView(DocumentBuffer buffer) throws IOException {
+    public SourceView(TabbedView view, DocumentBuffer buffer) throws IOException {
         
         panel = new JPanel();
         
@@ -109,7 +109,7 @@ public class SourceView extends DocumentView {
         setLayout(new BorderLayout());
         add(scrollPane, BorderLayout.CENTER);
         
-        setDocumentBuffer(buffer);
+        setDocumentBuffer(view, buffer);
     }//}}}
     
     //{{{ getMenus()
@@ -148,7 +148,7 @@ public class SourceView extends DocumentView {
     
     //{{{ setDocumentBuffer()
     
-    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {
+    public void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException {
         
         if (m_buffer != null) {
             m_buffer.removeDocumentBufferListener(docListener);

@@ -2,5 +2,5 @@
 documentview.default.show.comment.nodes=true
 documentview.default.show.empty.nodes=false
 documentview.default.continuous.layout=false
-documentview.default.splitpane.vert.loc=200
-documentview.default.splitpane.horiz.loc=200
+documentview.default.splitpane.vert.loc=40
+documentview.default.splitpane.horiz.loc=40

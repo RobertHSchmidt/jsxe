@@ -69,10 +69,11 @@ public abstract class DocumentView extends JPanel {
     /**
      * Sets the current document buffer. This method is used when you want to
      * view another document using this view object.
+     * @param view the ownerview that made the request
      * @param buffer the new buffer to view
      * @throws IOException if the buffer cannot be viewed using this view
      */
-    public abstract void setDocumentBuffer(DocumentBuffer buffer) throws IOException;
+    public abstract void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException;
     //}}}
     
     //{{{ getMenus()

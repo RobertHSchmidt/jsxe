@@ -2,6 +2,9 @@
 
     * Updated the DOMSerializer to implement the newest version
       of the LSSerializer interface. jsXe requires Xerces 2.6.2.
+    * Updated how the splitpane locations are set up. The look better now and
+      and set themselves to a percentage of the window size as a starting
+      value.
 
 05/13/2004  version 0.1.72  Ian Lewis <IanLewis@member.fsf.org>
 

@@ -87,7 +87,7 @@ public class DefaultView extends DocumentView {
      * @param buffer the buffer owning the document that this view shows
      * @throws IOException if the buffer cannot be viewed using this view.
      */
-    public DefaultView(DocumentBuffer buffer) throws IOException {
+    public DefaultView(TabbedView view, DocumentBuffer buffer) throws IOException {
         
         setLayout(new BorderLayout());
         
@@ -118,28 +118,16 @@ public class DefaultView extends DocumentView {
         horizSplitPane.setContinuousLayout(false);
         horizSplitPane.setOneTouchExpandable(true);
         
-       // horizSplitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new java.beans.PropertyChangeListener() {
-       //     public void propertyChange(java.beans.PropertyChangeEvent evt) {
-       //         JSplitPane pane = (JSplitPane)evt.getSource();
-       //         System.out.println("Packing");
-       //         pane.resetToPreferredSizes();
-       //     }
-       // });
-        
-        //set to arbitrary size.
-        vertSplitPane.setDividerLocation(200);
-        horizSplitPane.setDividerLocation(200);
-        
         add(horizSplitPane, BorderLayout.CENTER);
         
         //}}}
         
-        setDocumentBuffer(buffer);
+        setDocumentBuffer(view, buffer);
     }//}}}
     
     //{{{ setDocumentBuffer()
 
-    public void setDocumentBuffer(DocumentBuffer buffer) throws IOException {
+    public void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException {
         
         XMLDocument document = buffer.getXMLDocument();
         
@@ -174,8 +162,16 @@ public class DefaultView extends DocumentView {
         boolean layout = Boolean.valueOf(buffer.getProperty(_CONTINUOUS_LAYOUT)).booleanValue();
         vertSplitPane.setContinuousLayout(layout);
         horizSplitPane.setContinuousLayout(layout);
-        vertSplitPane.setDividerLocation(Integer.valueOf(buffer.getProperty(_HORIZ_SPLIT_LOCATION)).intValue());
-        horizSplitPane.setDividerLocation(Integer.valueOf(buffer.getProperty(_HORIZ_SPLIT_LOCATION)).intValue());
+        
+        Dimension size = view.getSize();
+        float vertPercent = Integer.valueOf(buffer.getProperty(_VERT_SPLIT_LOCATION)).floatValue();
+        float horizPercent = Integer.valueOf(buffer.getProperty(_HORIZ_SPLIT_LOCATION)).floatValue();
+        
+        int vertLoc = (int)((vertPercent/100.0)*size.getHeight());
+        int horizLoc = (int)((horizPercent/100.0)*size.getWidth());
+        
+        vertSplitPane.setDividerLocation(vertLoc);
+        horizSplitPane.setDividerLocation(horizLoc);
         
         //update the UI so that the components
         //are redrawn.
@@ -247,8 +243,10 @@ public class DefaultView extends DocumentView {
         
         //m_buffer should only be null if setBuffer was never called.
         if (m_buffer != null) {
-            String vert = Integer.toString(vertSplitPane.getDividerLocation());
-            String horiz = Integer.toString(horizSplitPane.getDividerLocation());
+            Dimension size = view.getSize();
+            
+            String vert = Integer.toString((int)(vertSplitPane.getDividerLocation()/size.getHeight()*100));
+            String horiz = Integer.toString((int)(horizSplitPane.getDividerLocation()/size.getWidth()*100));
             
             m_buffer.setProperty(_VERT_SPLIT_LOCATION,vert);
             m_buffer.setProperty(_HORIZ_SPLIT_LOCATION,horiz);
@@ -271,7 +269,7 @@ public class DefaultView extends DocumentView {
         //get default properties from jsXe
         buffer.setProperty(_CONTINUOUS_LAYOUT, buffer.getProperty(_CONTINUOUS_LAYOUT, jsXe.getProperty(_CONTINUOUS_LAYOUT)));
         buffer.setProperty(_HORIZ_SPLIT_LOCATION, buffer.getProperty(_HORIZ_SPLIT_LOCATION, jsXe.getProperty(_HORIZ_SPLIT_LOCATION)));
-        buffer.setProperty(_HORIZ_SPLIT_LOCATION, buffer.getProperty(_HORIZ_SPLIT_LOCATION, jsXe.getProperty(_HORIZ_SPLIT_LOCATION)));
+        buffer.setProperty(_VERT_SPLIT_LOCATION, buffer.getProperty(_VERT_SPLIT_LOCATION, jsXe.getProperty(_VERT_SPLIT_LOCATION)));
         buffer.setProperty(_SHOW_COMMENTS, buffer.getProperty(_SHOW_COMMENTS, jsXe.getProperty(_SHOW_COMMENTS)));
         buffer.setProperty(_SHOW_EMPTY_NODES, buffer.getProperty(_SHOW_EMPTY_NODES, jsXe.getProperty(_SHOW_EMPTY_NODES)));
     }//}}}
