@@ -23,6 +23,10 @@ TODO:
     
 * Version 0.2 beta
     
+    * Fix bug where when documents are opened but not viewed the split pane
+      locations in the default view are set to zero so when you open it the
+      next time the panes are messed up
+    
     * Need to set up default document properties for each view and default
       app properties for each view. Default document properties get set
       to the document each time one is loaded. Default app properties get set
