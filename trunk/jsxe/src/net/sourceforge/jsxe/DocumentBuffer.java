@@ -47,6 +47,7 @@ import net.sourceforge.jsxe.dom.XMLDocumentFactory;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.dom.UnrecognizedDocTypeException;
 import net.sourceforge.jsxe.gui.OptionsPanel;
+import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
 //{{{ Java base classes
@@ -62,6 +63,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.ListIterator;
 import java.util.Vector;
+import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 //}}}
 
 //{{{ AWT components
@@ -131,6 +135,42 @@ public class DocumentBuffer {
         m_document.addXMLDocumentListener(m_bufferDocListener);
     }//}}}
     
+    //{{{ close()
+    /**
+     * Performs closing tasks. If the document is dirty then the user is
+     * prompted if they want to save.
+     * @return true if the close is requested
+     * @throws IOException if the user chooses to save and the file could not be saved
+     */
+    public boolean close(TabbedView view) throws IOException {
+        if (isDirty()) {
+            
+             //If it's dirty ask if you want to save.
+            String msg = getName()+" unsaved! Save it now?";
+            String title = "Unsaved Changes";
+            int optionType = JOptionPane.YES_NO_CANCEL_OPTION;
+            int messageType = JOptionPane.WARNING_MESSAGE;
+            
+            int returnVal = JOptionPane.showConfirmDialog(view,
+                                msg,
+                                title,
+                                optionType,
+                                messageType);
+            
+            if (returnVal == JOptionPane.YES_OPTION) {
+                return save(view);
+            } else {
+                return !(returnVal == JOptionPane.CANCEL_OPTION);
+            }
+        } else {
+            if (!isUntitled()) {
+                return save(view);
+            } else {
+                return true;
+            }
+        }
+    }//}}}
+    
     //{{{ addDocumentBufferListener()
     
     /**
@@ -159,7 +199,7 @@ public class DocumentBuffer {
         }
     }//}}}
     
-    //{{{ getName(}
+    //{{{ getName()
     
     /**
      * Gets the name of the buffer.
@@ -255,13 +295,103 @@ public class DocumentBuffer {
      * Saves the document buffer to disk in the current file. If the document
      * is untitled the user is prompted for a file to save to.
      *
+     * @param view the TabbedView that made this save request
      * @return true if the save was successful and the used did not intervene.
      *         false if the user canceled the save.
      * @throws IOException if the document could not be written due to an I/O
      *                     error.
      */
-    public boolean save() throws IOException {
-        return saveAs(getFile());
+    public boolean save(TabbedView view) throws IOException {
+        return saveAs(view, getFile());
+    }//}}}
+    
+    //{{{ saveAs()
+    
+    /**
+     * Displays a save dialog that the user uses to chose a file to save to
+     * and saves the document to it.
+     * @param view the view that made the save request.
+     * @throws IOException if the document could not be written due to an I/O
+     *                     error.
+     */
+    public boolean saveAs(TabbedView view) throws IOException {
+        
+        //  if XMLFile is null, defaults to home directory
+        JFileChooser saveDialog = new JFileChooser(getFile());
+        saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
+        saveDialog.setDialogTitle("Save As");
+        
+        //Add a filter to display only XML files
+        Vector extentionList = new Vector();
+        extentionList.add(new String("xml"));
+        CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
+        saveDialog.addChoosableFileFilter(firstFilter);
+        //Add a filter to display only XSL files
+        extentionList = new Vector();
+        extentionList.add(new String("xsl"));
+        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
+        //Add a filter to display only XSL:FO files
+        extentionList = new Vector();
+        extentionList.add(new String("fo"));
+        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
+        //Add a filter to display all formats
+        extentionList = new Vector();
+        extentionList.add(new String("xml"));
+        extentionList.add(new String("xsl"));
+        extentionList.add(new String("fo"));
+        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "All XML Documents"));
+        
+        //The "All Files" file filter is added to the dialog
+        //by default. Put it at the end of the list.
+        FileFilter all = saveDialog.getAcceptAllFileFilter();
+        saveDialog.removeChoosableFileFilter(all);
+        saveDialog.addChoosableFileFilter(all);
+        saveDialog.setFileFilter(firstFilter);
+        
+        int returnVal = saveDialog.showSaveDialog(view);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            
+            File selectedFile = saveDialog.getSelectedFile();
+            boolean reallySave = true;
+            if (selectedFile.exists()) {
+                //If it's dirty ask if you want to save.
+                String msg = "The file "+selectedFile.getName()+" already exists. Are you sure you want to overwrite it?";
+                String title = "File Exists";
+                int optionType = JOptionPane.YES_NO_OPTION;
+                int messageType = JOptionPane.WARNING_MESSAGE;
+                
+                returnVal = JOptionPane.showConfirmDialog(view,
+                                    msg,
+                                    title,
+                                    optionType,
+                                    messageType);
+                if (returnVal != JOptionPane.YES_OPTION) {
+                    reallySave = false;
+                }
+            }
+            
+            if (reallySave) {
+                
+                DocumentBuffer buffer = jsXe.getOpenBuffer(selectedFile);
+                
+                //If the document is already open and
+                //it isn't the current document
+                if (buffer != null && !equalsOnDisk(buffer)) {
+                    
+                    //If the saved-to document is already open we
+                    //need to close that tab and save this tab
+                    //as that one.
+                    
+                    jsXe.closeDocumentBuffer(view, buffer);
+                    return saveAs(view, selectedFile);
+                    
+                } else {
+                    return saveAs(view, selectedFile);
+                }
+                
+            }
+        }
+        return false;
     }//}}}
     
     //{{{ saveAs()
@@ -270,13 +400,14 @@ public class DocumentBuffer {
      * Saves the document to the given file. If the file is null then the user
      * is prompted for a file to save to.
      * 
+     * @param view the TabbedView that requested this save
      * @param file the file to save the document to.
      * @return true if the document was saved successfully the user did not
      *         intervene
      * @throws IOException if the document could not be written due to an I/O
      *                     error.
      */
-    public boolean saveAs(File file) throws IOException {
+    public boolean saveAs(TabbedView view, File file) throws IOException {
         if (file != null) {
             try {
                 FileOutputStream out = new FileOutputStream(file);
@@ -298,7 +429,7 @@ public class DocumentBuffer {
                 throw new IOException(se.getMessage());
             }
         } else {
-            throw new IOException("Cannot save: no file specified");
+            return saveAs(view);
         }
     }//}}}
     

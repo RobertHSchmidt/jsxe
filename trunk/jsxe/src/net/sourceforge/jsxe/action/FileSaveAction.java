@@ -71,26 +71,23 @@ import java.io.IOException;
 
 public class FileSaveAction extends AbstractAction {
     
-    public FileSaveAction(TabbedView parent) {//{{{
+    //{{{ FileSaveAction constructor
+    
+    public FileSaveAction(TabbedView parent) {
         putValue(Action.NAME, "Save");
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl S"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("S").getKeyCode()));
         view = parent;
     }//}}}
     
-    public void actionPerformed(ActionEvent e) {//{{{
+    //{{{ actionPerformed()
+    
+    public void actionPerformed(ActionEvent e) {
         DocumentBuffer buffer = view.getDocumentView().getDocumentBuffer();
-        if (buffer.isUntitled()) {
-            //perform a saveAs action
-            (new FileSaveAsAction(view)).actionPerformed(e);
-        } else {
-            try {
-                
-                buffer.save();
-                
-            } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-            }
+        try {
+            buffer.save(view);
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
     
