@@ -1,3 +1,8 @@
+8/30/2003   version 0.1.11  Ian Lewis  <IanLewis@member.fsf.org>
+
+    * Added an indent width option to the options dialog. Currently only used
+      when formatting a document.
+
 8/29/2003   version 0.1.10  Ian Lewis  <IanLewis@member.fsf.org>
 
     * Fixed indentation when serializing a document.
