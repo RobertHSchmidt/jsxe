@@ -620,7 +620,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             if ((myaction & DnDConstants.ACTION_MOVE) != 0) {
                 context.setCursor(DragSource.DefaultMoveDrop);   
             } else {
-                context.setCursor(DragSource.DefaultMoveNoDrop);   
+                context.setCursor(DragSource.DefaultMoveNoDrop);
             }
         }//}}}
         
@@ -645,6 +645,8 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         
         public void dragExit(DragSourceEvent dse) {
             paintImmediately(m_cueLine);
+            DragSourceContext context = dse.getDragSourceContext();
+            context.setCursor(DragSource.DefaultMoveNoDrop);
             m_dragOverTarget = null;
         }//}}}
         
@@ -690,7 +692,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         
         public void dragEnter(DropTargetDragEvent dtde) {
             if (!isDragOk(dtde)) {
-                dtde.rejectDrag();      
+                dtde.rejectDrag();
                 return;
             }
             dtde.acceptDrag(dtde.getDropAction());
