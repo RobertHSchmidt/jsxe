@@ -49,8 +49,8 @@ import javax.swing.event.TableModelListener;
 
 //{{{ AWT classes
 import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.awt.Container;
+import java.awt.event.*;
 //}}}
 
 //{{{ Java classes
@@ -68,12 +68,12 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         setLocationRelativeTo(parent);
         
         final JTable table = new JTable(new PluginManagerTableModel());
-        JScrollPane tableView = new JScrollPane(table);
+        final JScrollPane tableView = new JScrollPane(table);
         
         final JTextArea descArea = new JTextArea();
-        JScrollPane textView = new JScrollPane(descArea);
+        final JScrollPane textView = new JScrollPane(descArea);
         
-        JSplitPane centerPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, table, descArea);
+        final JSplitPane centerPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, table, descArea);
         
         JPanel content = new JPanel(new BorderLayout(12,12));
         content.setBorder(new EmptyBorder(12,12,12,12));
@@ -100,6 +100,26 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
             public void valueChanged(ListSelectionEvent e) {
                 descArea.setText(((ActionPlugin)m_plugins.get(e.getLastIndex())).getDescription());
             }
+        });//}}}
+        
+        //resize the splitpane the first time shown
+        addComponentListener(new ComponentListener() {//{{{
+            
+            public void componentHidden(ComponentEvent e) {}
+            
+            public void componentMoved(ComponentEvent e) {}
+            
+            public void componentResized(ComponentEvent e) {}
+            
+            public void componentShown(ComponentEvent e) {
+                Container parent = getParent();
+                if (parent != null) {
+                    double splitLoc = 0.75;
+                    centerPane.setDividerLocation(splitLoc);
+                    removeComponentListener(this);
+                }
+            }
+            
         });//}}}
         
         content.add(centerPane, BorderLayout.CENTER);

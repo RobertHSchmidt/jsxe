@@ -162,7 +162,7 @@ public abstract class EnhancedDialog extends JDialog
 		}
 	}
     
-        //{{{ loadGeometry()
+    //{{{ loadGeometry()
     /**
      * Loads a windows's geometry from the properties.
      * The geometry is loaded from the <code><i>name</i>.x</code>,
