@@ -141,44 +141,49 @@ public abstract class XMLDocument {
     }//}}}
     
     public boolean saveAs(TabbedView view) {//{{{
-        //  if XMLFile is null, defaults to home directory
-        JFileChooser saveDialog = new JFileChooser();
-        saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
-        saveDialog.setDialogTitle("Save As");
         
-        //Add a filter to display only XML files
-        Vector extentionList = new Vector();
-        extentionList.add(new String("xml"));
-        CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
-        saveDialog.addChoosableFileFilter(firstFilter);
-        //Add a filter to display only XSL files
-        extentionList = new Vector();
-        extentionList.add(new String("xsl"));
-        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
-        //Add a filter to display only XSL:FO files
-        extentionList = new Vector();
-        extentionList.add(new String("fo"));
-        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
-        //Add a filter to display all formats
-        extentionList = new Vector();
-        extentionList.add(new String("xml"));
-        extentionList.add(new String("xsl"));
-        extentionList.add(new String("fo"));
-        saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "All XML Documents"));
+        if (validate(view)) {
         
-        //The "All Files" file filter is added to the dialog
-        //by default. Put it at the end of the list.
-        FileFilter all = saveDialog.getAcceptAllFileFilter();
-        saveDialog.removeChoosableFileFilter(all);
-        saveDialog.addChoosableFileFilter(all);
-        saveDialog.setFileFilter(firstFilter);
-        
-        int returnVal = saveDialog.showSaveDialog(view);
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-            XMLFile=saveDialog.getSelectedFile();
-            return save(view);
+            //  if XMLFile is null, defaults to home directory
+            JFileChooser saveDialog = new JFileChooser();
+            saveDialog.setDialogType(JFileChooser.SAVE_DIALOG);
+            saveDialog.setDialogTitle("Save As");
+            
+            //Add a filter to display only XML files
+            Vector extentionList = new Vector();
+            extentionList.add(new String("xml"));
+            CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
+            saveDialog.addChoosableFileFilter(firstFilter);
+            //Add a filter to display only XSL files
+            extentionList = new Vector();
+            extentionList.add(new String("xsl"));
+            saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
+            //Add a filter to display only XSL:FO files
+            extentionList = new Vector();
+            extentionList.add(new String("fo"));
+            saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
+            //Add a filter to display all formats
+            extentionList = new Vector();
+            extentionList.add(new String("xml"));
+            extentionList.add(new String("xsl"));
+            extentionList.add(new String("fo"));
+            saveDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "All XML Documents"));
+            
+            //The "All Files" file filter is added to the dialog
+            //by default. Put it at the end of the list.
+            FileFilter all = saveDialog.getAcceptAllFileFilter();
+            saveDialog.removeChoosableFileFilter(all);
+            saveDialog.addChoosableFileFilter(all);
+            saveDialog.setFileFilter(firstFilter);
+            
+            int returnVal = saveDialog.showSaveDialog(view);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                XMLFile=saveDialog.getSelectedFile();
+                return save(view);
+            }
+            return true;
         }
-        return true;
+        return false;
     }//}}}
     
     public void setModel(File file) {//{{{

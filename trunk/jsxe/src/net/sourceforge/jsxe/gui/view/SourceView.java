@@ -64,11 +64,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 //}}}
 
-//{{{ Java base classes
-import java.io.IOException;
-import java.io.StringWriter;
-//}}}
-
 //}}}
 
 public class SourceView extends DocumentView {
@@ -116,20 +111,10 @@ public class SourceView extends DocumentView {
     }//}}}
     
     public void setDocument(TabbedView view, XMLDocument document) {//{{{
+        
         currentdoc = document;
+        textarea.setDocument(new SourceViewDocument(view, document));
         
-        StringWriter writer = new StringWriter();
-        
-        //formatting disabled because it doesn't work right
-        DOMSerializer serializer = new DOMSerializer(false);
-        try {
-            
-            serializer.serialize(document.getDocument(), writer);
-            textarea.setText(writer.toString());
-            
-        } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
-        }
     }//}}}
     
     public XMLDocument getXMLDocument() {//{{{
