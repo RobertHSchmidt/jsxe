@@ -66,6 +66,25 @@ public class DocumentViewFactory {
         return new DocumentViewFactory();
     }//}}}
     
+    //{{{ getHumanReadableName()
+    
+    public static String getHumanReadableName(String viewType) throws UnrecognizedDocViewException {
+        //Document type validation is pretty simple right now
+        if (viewType.equals("tree")) {
+            return DefaultView.getHumanReadableName();
+        } else {
+            if (viewType.equals("source")) {
+                return SourceView.getHumanReadableName();
+            } else {
+                if (viewType.equals("schema")) {
+                    return SchemaView.getHumanReadableName();
+                } else {
+                    throw new UnrecognizedDocViewException(viewType);
+                }
+            }
+        }
+    }//}}}
+    
     //{{{ setDocumentViewType()
     
     public void setDocumentViewType(String type) {

@@ -155,6 +155,12 @@ public class SourceView extends JPanel implements DocumentView {
         return textarea;
     }//}}}
     
+    //{{{ getHumanReadableName()
+    
+    public static String getHumanReadableName() {
+        return "Source View";
+    }//}}}
+    
     //{{{ DocumentView methods
     
     //{{{ close()
@@ -180,12 +186,6 @@ public class SourceView extends JPanel implements DocumentView {
         return this;
     }//}}}
 
-    //{{{ getHumanReadableName()
-    
-    public String getHumanReadableName() {
-        return "Source View";
-    }//}}}
-    
     //{{{ getMenus()
     
     public JMenu[] getMenus() {

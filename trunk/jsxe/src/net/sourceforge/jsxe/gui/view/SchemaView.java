@@ -70,6 +70,17 @@ public class SchemaView extends JPanel implements DocumentView {
         setDocumentBuffer(document);
     }//}}}
     
+    //{{{ getHumanReadableName()
+    /**
+     * The human readable name that is displayed on menus and user visible
+     * things
+     * @return the human readable name of this view
+     */
+    public static String getHumanReadableName() {
+        return "Schema View";
+    }
+    //}}}
+    
     //{{{ DocumentView methods
     
     //{{{ close
@@ -95,17 +106,6 @@ public class SchemaView extends JPanel implements DocumentView {
      public Component getDocumentViewComponent() {
          return this;
      }//}}}
-    
-    //{{{ getHumanReadableName()
-    /**
-     * The human readable name that is displayed on menus and user visible
-     * things
-     * @return the human readable name of this view
-     */
-    public String getHumanReadableName() {
-        return "Schema View";
-    }
-    //}}}
     
     //{{{ getMenus()
     /**
@@ -163,4 +163,5 @@ public class SchemaView extends JPanel implements DocumentView {
     }//}}}
 
     //}}}
+
 }
