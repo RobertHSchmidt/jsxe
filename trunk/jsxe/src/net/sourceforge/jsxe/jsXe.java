@@ -78,9 +78,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.Vector;
 //}}}
 
 //}}}
@@ -188,20 +188,20 @@ public class jsXe {
             File docFile = doc.getFile();
             JFileChooser loadDialog = new JFileChooser(docFile);
             //Add a filter to display only XML files
-            Vector extentionList = new Vector();
+            ArrayList extentionList = new ArrayList();
             extentionList.add(new String("xml"));
             CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
             loadDialog.addChoosableFileFilter(firstFilter);
             //Add a filter to display only XSL files
-            extentionList = new Vector();
+            extentionList = new ArrayList();
             extentionList.add(new String("xsl"));
             loadDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
             //Add a filter to display only XSL:FO files
-            extentionList = new Vector();
+            extentionList = new ArrayList();
             extentionList.add(new String("fo"));
             loadDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
             //Add a filter to display all formats
-            extentionList = new Vector();
+            extentionList = new ArrayList();
             extentionList.add(new String("xml"));
             extentionList.add(new String("xsl"));
             extentionList.add(new String("fo"));
@@ -601,10 +601,10 @@ public class jsXe {
     
     private static final String MajorVersion = "0";
     private static final String MinorVersion = "1";
-    private static final String BuildVersion = "14";
+    private static final String BuildVersion = "15";
     private static final String BuildType    = "development";
    // private static final String BuildType    = "stable";
-    private static Vector XMLDocuments = new Vector();
+    private static ArrayList XMLDocuments = new ArrayList();
     private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?>\n<default_element>default_node</default_element>";
     private static final ImageIcon jsXeIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/jsxe.jpg"), "jsXe");
     private static final String AppTitle = "jsXe";

@@ -39,6 +39,10 @@ it is easy to see which package it
 belongs to.
 */
 
+//{{{ Java Base Classes
+import java.util.ArrayList;
+//}}}
+
 //{{{ DOM classes
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
@@ -215,6 +219,10 @@ public class AdapterNode {
         return node.getNode() == domNode;
     }//}}}
     
+    public void addAdapterNodeListener(AdapterNodeListener listener) {//{{{
+        listeners.add(listener);
+    }//}}}
+    
     //{{{ Protected members
     
     protected Node getNode() {//{{{
@@ -224,6 +232,54 @@ public class AdapterNode {
     //}}}
     
     //{{{ Private members
+    
+   // private void fireNodeAdded(AdapterNode source, AdapterNode child) {//{{{
+   //     ListIterator iterator = listeners.listIterator();
+   //     while (iterator.hasNext()) {
+   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+   //         listener.nodeAdded(source, child);
+   //     }
+   // }//}}}
+   // 
+   // private void fireNodeRemoved(AdapterNode source, AdapterNode child) {//{{{
+   //     ListIterator iterator = listeners.listIterator();
+   //     while (iterator.hasNext()) {
+   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+   //         listener.nodeRemoved(source, child);
+   //     }
+   // }//}}}
+   // 
+   // private void fireLocalNameChanged(AdapterNode source) {//{{{
+   //     ListIterator iterator = listeners.listIterator();
+   //     while (iterator.hasNext()) {
+   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+   //         listener.localNameChanged(source);
+   //     }
+   // }//}}}
+   // 
+   // private void fireNamespaceChanged(AdapterNode source) {//{{{
+   //     ListIterator iterator = listeners.listIterator();
+   //     while (iterator.hasNext()) {
+   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+   //         listener.namespaceChanged(source);
+   //     }
+   // }//}}}
+   // 
+   // private void fireNodeValueChanged(AdapterNode source) {//{{{
+   //     ListIterator iterator = listeners.listIterator();
+   //     while (iterator.hasNext()) {
+   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+   //         listener.nodeValueChanged(source);
+   //     }
+   // }//}}}
+   // 
+   // private void fireAttributeChanged(AdapterNode source) {//{{{
+   //     ListIterator iterator = listeners.listIterator();
+   //     while (iterator.hasNext()) {
+   //         AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
+   //         listener.attributeChanged(source);
+   //     }
+   // }//}}}
     
     private final String[] typeName = {
         "none",
@@ -241,5 +297,6 @@ public class AdapterNode {
         "Notation",
     };
     private Node domNode;
+    private ArrayList listeners;
     //}}}
 }

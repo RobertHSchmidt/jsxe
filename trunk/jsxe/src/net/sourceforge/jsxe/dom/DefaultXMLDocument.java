@@ -66,7 +66,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.ListIterator;
+import java.util.Properties;
 //}}}
 
 //}}}
@@ -109,6 +111,26 @@ public class DefaultXMLDocument extends XMLDocument {
         return document;
     }//}}}
 
+    public String setProperty(String key, String value) {//{{{
+        if (key == "format-output" && Boolean.valueOf(value).booleanValue()) {
+            setProperty("whitespace-in-element-content", "false");
+        }
+        if (key == "whitespace-in-element-content" && Boolean.valueOf(value).booleanValue()) {
+            setProperty("format-output", "false");
+        }
+        String returnValue = (String)props.setProperty(key, value);
+        firePropertiesChanged(returnValue);
+        return returnValue;
+    }//}}}
+    
+    public String getProperty(String key) {//{{{
+        return props.getProperty(key);
+    }//}}}
+    
+    public String getProperty(String key, String defaultValue) {//{{{
+        return props.getProperty(key, defaultValue);
+    }//}}}
+    
     public String getName() {//{{{
         return name;
     }//}}}
@@ -154,6 +176,7 @@ public class DefaultXMLDocument extends XMLDocument {
             while (bytesRead != -1);
             source = text.toString();
             XMLFile = file;
+            fireFileChanged();
         } else {
             throw new FileNotFoundException("File Not Found: null");
         }
@@ -219,44 +242,8 @@ public class DefaultXMLDocument extends XMLDocument {
         setModel(file);
     }//}}}
     
-    public boolean equals(Object o) throws ClassCastException {//{{{
-        if (getFile() != null && o != null) {
-            boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
-                || File.separatorChar == ':' /* Windows or MacOS */);
-    
-            File file;
-    
-            try {
-                XMLDocument doc = (XMLDocument)o;
-                file = doc.getFile();
-            } catch (ClassCastException cce) {
-                try {
-                    file = (File)o;
-                } catch (ClassCastException cce2) {
-                    throw new ClassCastException("Could not cast to XMLDocument or File.");
-                }
-            }
-            if (file != null) {
-                try {
-                    if (caseInsensitiveFilesystem) {
-                        
-                        if (file.getCanonicalPath().equalsIgnoreCase(getFile().getCanonicalPath())) {
-                            return true;
-                        }
-                        
-                    } else {
-                        
-                        if (file.getCanonicalPath().equals(getFile().getCanonicalPath())) {
-                            return true;
-                        }
-                    }
-                } catch (IOException ioe) {
-                    jsXe.exiterror(null, ioe.getMessage(), 1);
-                }
-            }
-        }
-        
-        return false;
+    public void addXMLDocumentListener(XMLDocumentListener listener) {//{{{
+        listeners.add(listener);
     }//}}}
     
     //{{{ Private members
@@ -283,11 +270,37 @@ public class DefaultXMLDocument extends XMLDocument {
         setProperty("indent", "4");
     }//}}}
     
+    private void firePropertiesChanged(String key) {//{{{
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
+            listener.propertiesChanged(this, key);
+        }
+    }//}}}
+    
+    private void fireStructureChanged(AdapterNode location) {//{{{
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
+            listener.structureChanged(this, location);
+        }
+    }//}}}
+    
+    private void fireFileChanged() {//{{{
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
+            listener.fileChanged(this);
+        }
+    }//}}}
+    
     private Document document;
     private File XMLFile;
     private String name;
     private String source=new String();
     private boolean wellFormed;
+    private ArrayList listeners = new ArrayList();
+    private Properties props = new Properties();
     private static final int READ_SIZE = 5120;
     //}}}
 }

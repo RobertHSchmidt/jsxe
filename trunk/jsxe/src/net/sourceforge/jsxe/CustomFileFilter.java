@@ -41,7 +41,8 @@ belongs to.
 
 //{{{ Java Base classes
 import java.io.File;
-import java.util.Vector;
+import java.util.Collection;
+import java.util.Iterator;
 //}}}
 
 //{{{ Swing Classes
@@ -59,15 +60,15 @@ import javax.swing.filechooser.FileFilter;
 public class CustomFileFilter extends FileFilter {
     
     /**
-     * Creates a CustomFileFilter given a Vector containing the file extensions
-     * that the file filter accepts. If the Vector does not contain strings
+     * Creates a CustomFileFilter given a Collection containing the file extensions
+     * that the file filter accepts. If the Collection does not contain strings
      * then the file filter will not accept any files.
-     * @param exts A vector of String objects containing the file
+     * @param exts A Collection of String objects containing the file
      *             extensions that this file filter accepts.
      * @param desc The description for this file filter.
      */
-    public CustomFileFilter(Vector exts, String desc) {//{{{
-        extentions = exts;
+    public CustomFileFilter(Collection exts, String desc) {//{{{
+        extensions = exts;
         description = desc;
     }//}}}
     
@@ -77,8 +78,9 @@ public class CustomFileFilter extends FileFilter {
                 return true;
             }
             String ext = getExtension(f);
-            for (int i=0;i<extentions.size();i++) {
-                if(ext!=null && ext.compareTo(extentions.get(i))==0) {
+            Iterator iterator = extensions.iterator();
+            while (iterator.hasNext()) {
+                if(ext!=null && ext.compareTo(iterator.next())==0) {
                     return true;
                 }
             }
@@ -103,7 +105,7 @@ public class CustomFileFilter extends FileFilter {
         return null;
     }//}}}
     
-    private Vector extentions;
+    private Collection extensions;
     private String description;
     
     //}}}

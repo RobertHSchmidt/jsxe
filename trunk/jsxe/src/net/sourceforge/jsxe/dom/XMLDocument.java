@@ -59,8 +59,6 @@ import java.io.Reader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Properties;
-import java.util.Vector;
 //}}}
 
 //}}}
@@ -81,23 +79,11 @@ public abstract class XMLDocument {
     
     public abstract Document getDocument();
     
-    public String setProperty(String key, String value) {//{{{
-        if (key == "format-output" && Boolean.valueOf(value).booleanValue()) {
-            setProperty("whitespace-in-element-content", "false");
-        }
-        if (key == "whitespace-in-element-content" && Boolean.valueOf(value).booleanValue()) {
-            setProperty("format-output", "false");
-        }
-        return (String)props.setProperty(key, value);
-    }//}}}
+    public abstract String setProperty(String key, String value);
     
-    public String getProperty(String key) {//{{{
-        return props.getProperty(key);
-    }//}}}
+    public abstract String getProperty(String key);
     
-    public String getProperty(String key, String defaultValue) {//{{{
-        return props.getProperty(key, defaultValue);
-    }//}}}
+    public abstract String getProperty(String key, String defaultValue);
     
     public abstract void save() throws IOException, SAXParseException, SAXException, ParserConfigurationException;
     
@@ -111,10 +97,46 @@ public abstract class XMLDocument {
     
     public abstract boolean isWellFormed();
     
-    public abstract boolean equals(Object o) throws ClassCastException;
+    public boolean equals(Object o) throws ClassCastException {//{{{
+        if (getFile() != null && o != null) {
+            boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
+                || File.separatorChar == ':' /* Windows or MacOS */);
     
-    //{{{ Private members
-    private Properties props = new Properties();
-    //}}}
+            File file;
+    
+            try {
+                XMLDocument doc = (XMLDocument)o;
+                file = doc.getFile();
+            } catch (ClassCastException cce) {
+                try {
+                    file = (File)o;
+                } catch (ClassCastException cce2) {
+                    throw new ClassCastException("Could not cast to XMLDocument or File.");
+                }
+            }
+            if (file != null) {
+                try {
+                    if (caseInsensitiveFilesystem) {
+                        
+                        if (file.getCanonicalPath().equalsIgnoreCase(getFile().getCanonicalPath())) {
+                            return true;
+                        }
+                        
+                    } else {
+                        
+                        if (file.getCanonicalPath().equals(getFile().getCanonicalPath())) {
+                            return true;
+                        }
+                    }
+                } catch (IOException ioe) {
+                    jsXe.exiterror(null, ioe.getMessage(), 1);
+                }
+            }
+        }
+        
+        return false;
+    }//}}}
+    
+    public abstract void addXMLDocumentListener(XMLDocumentListener listener);
     
 }
