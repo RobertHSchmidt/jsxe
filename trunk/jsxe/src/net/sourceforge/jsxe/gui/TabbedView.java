@@ -392,26 +392,13 @@ public class TabbedView extends JFrame {
         
         //{{{ load global properties
         
-        //Make sure user defined properties don't cause unwanted exceptions.
-        int width = Integer.valueOf(jsXe.getDefaultProperty(_WIDTH)).intValue();
-        try {
-            width = Integer.valueOf(jsXe.getProperty(_WIDTH)).intValue();
-        } catch (NumberFormatException e) {}
+        int width = jsXe.getIntegerProperty(_WIDTH, -1);
         
-        int height = Integer.valueOf(jsXe.getDefaultProperty(_HEIGHT)).intValue();
-        try {
-            height = Integer.valueOf(jsXe.getProperty(_HEIGHT)).intValue();
-        } catch (NumberFormatException e) {}
+        int height = jsXe.getIntegerProperty(_HEIGHT, -1);
         
-        int x = Integer.valueOf(jsXe.getDefaultProperty(_X)).intValue();
-        try {
-            x = Integer.valueOf(jsXe.getProperty(_X)).intValue();
-        } catch (NumberFormatException e) {}
+        int x = jsXe.getIntegerProperty(_X, -1);
         
-        int y = Integer.valueOf(jsXe.getDefaultProperty(_Y)).intValue();
-        try {
-            y = Integer.valueOf(jsXe.getProperty(_Y)).intValue();
-        } catch (NumberFormatException e) {}
+        int y = jsXe.getIntegerProperty(_Y, -1);
         
         //}}}
         
