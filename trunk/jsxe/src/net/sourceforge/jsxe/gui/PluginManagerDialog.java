@@ -35,6 +35,7 @@ package net.sourceforge.jsxe.gui;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.JARClassLoader;
 import net.sourceforge.jsxe.ActionPlugin;
 //}}}
 
@@ -98,7 +99,7 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         model.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         model.addListSelectionListener(new ListSelectionListener() {//{{{
             public void valueChanged(ListSelectionEvent e) {
-                descArea.setText(((ActionPlugin)m_plugins.get(e.getLastIndex())).getDescription());
+                descArea.setText(jsXe.getPluginLoader().getPlugin(m_pluginNames.get(e.getLastIndex()).toString()).getDescription());
             }
         });//}}}
         
@@ -192,18 +193,19 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         //{{{ getRowCount()
         
         public int getRowCount() {
-            return m_plugins.size();
+            return m_pluginNames.size();
         }//}}}
         
         //{{{ getValueAt()
         
         public Object getValueAt(int rowIndex, int columnIndex) {
             String value = null;
+            JARClassLoader loader = jsXe.getPluginLoader();
             if (columnIndex == 0) {
-                value = ((ActionPlugin)m_plugins.get(rowIndex)).getHumanReadableName();
+                value = loader.getPluginProperty(m_pluginNames.get(rowIndex).toString(), JARClassLoader.PLUGIN_HUMAN_READABLE_NAME);
             }
             if (columnIndex == 1) {
-                value = ((ActionPlugin)m_plugins.get(rowIndex)).getVersion();
+                value = loader.getPluginProperty(m_pluginNames.get(rowIndex).toString(), JARClassLoader.PLUGIN_VERSION);
             }
             return value;
         }//}}}
@@ -231,6 +233,6 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
     //{{{ Private Members
     private JButton m_ok;
     private JButton m_cancel;
-    private ArrayList m_plugins = jsXe.getPluginLoader().getAllPlugins();
+    private ArrayList m_pluginNames = jsXe.getPluginLoader().getAllPluginNames();
     //}}}
 }

@@ -194,7 +194,7 @@ public class TabbedView extends JFrame {
     public void addDocumentBuffer(DocumentBuffer buffer) throws IOException {
         if (buffer != null) {
             
-            Iterator types = jsXe.getPluginLoader().getViewPluginNames();
+            Iterator types = jsXe.getPluginLoader().getViewPluginNames().iterator();
             
             String error = null;
             

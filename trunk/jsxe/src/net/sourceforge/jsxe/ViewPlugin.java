@@ -49,24 +49,6 @@ import java.io.IOException;
  */
 public abstract class ViewPlugin extends ActionPlugin {
     
-    //{{{ ViewPlugin constructor
-    
-    public ViewPlugin(String name, String humanReadableName) {
-        this(name, humanReadableName, "1.0");
-    }//}}}
-    
-    //{{{ ViewPlugin constructor
-    
-    public ViewPlugin(String name, String humanReadableName, String version) {
-        super(name, humanReadableName, version);
-    }//}}}
-    
-    //{{{ ViewPlugin constructor
-    
-    public ViewPlugin(String name, String humanReadableName, String version, String description) {
-        super(name, humanReadableName, version, description);
-    }//}}}
-    
     //{{{ newDocumentView()
     /**
      * Creates a new DocumentView for the given document. The DocumentView can
