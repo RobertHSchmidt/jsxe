@@ -87,15 +87,13 @@ public class SourceViewDocument extends DefaultStyledDocument {
 
     //{{{ SourceViewDocument constructor
     
-    protected SourceViewDocument(DocumentBuffer buffer) throws IOException {
+    protected SourceViewDocument(XMLDocument document) throws IOException {
         super(new GapContent(), new StyleContext());
-        m_buffer = buffer;
+        m_document = document;
         
        // document.addXMLDocumentListener(new SourceViewDocumentXMLDocumentListener());
         
-        if (buffer != null) {
-            
-            XMLDocument document = buffer.getXMLDocument();
+        if (document != null) {
             
             try {
                 
@@ -119,11 +117,9 @@ public class SourceViewDocument extends DefaultStyledDocument {
     
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
         
-        XMLDocument document = m_buffer.getXMLDocument();
-        
         try {
             super.insertString(offs, str, a);
-            document.insertText(offs, str);
+            m_document.insertText(offs, str);
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
         } catch (IOException ioe) {
@@ -138,11 +134,9 @@ public class SourceViewDocument extends DefaultStyledDocument {
     
     public void remove(int offs, int len) throws BadLocationException {
         
-        XMLDocument document = m_buffer.getXMLDocument();
-        
         try {
             super.remove(offs, len);
-            document.removeText(offs, len);
+            m_document.removeText(offs, len);
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
         } catch (IOException ioe) {
@@ -179,7 +173,7 @@ public class SourceViewDocument extends DefaultStyledDocument {
    // }//}}}
 
     //{{{ Private members
-    DocumentBuffer m_buffer;
+    private XMLDocument m_document;
     //}}}
 
 }

@@ -204,10 +204,9 @@ public class jsXe {
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
     public static boolean showOpenFileDialog(TabbedView view) throws IOException {
-            // if current file is null, defaults to home directory
-            DocumentView docView = view.getDocumentView();
-            DocumentBuffer buffer = docView.getDocumentBuffer();
+            DocumentBuffer buffer = view.getDocumentBuffer();
             File docFile = buffer.getFile();
+            // if current file is null, defaults to home directory
             JFileChooser loadDialog = new jsxeFileDialog(docFile);
             loadDialog.setMultiSelectionEnabled(true);
             
@@ -389,6 +388,7 @@ public class jsXe {
         for (int i=0; i < m_buffers.size(); i++) {
             buffers[i] = (DocumentBuffer)m_buffers.get(i);
         }
+        System.out.println("getDocumentBuffers() : "+buffers.length);
         return buffers;
     }//}}}
     

@@ -45,7 +45,6 @@ import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.DocumentBuffer;
 //}}}
 
 //{{{ Swing components
@@ -109,9 +108,9 @@ public class DefaultViewTreeModel implements TreeModel {
      *               when necessary.
      * @param doc the document that this tree model models
      */
-    protected DefaultViewTreeModel(Component parent, DocumentBuffer doc) {
-        m_buffer = doc;
-        m_rootTreeNode = new DefaultViewTreeNode(m_buffer.getXMLDocument());
+    protected DefaultViewTreeModel(Component parent, XMLDocument doc) {
+        m_document = doc;
+        m_rootTreeNode = new DefaultViewTreeNode(m_document);
         view = parent;
     }//}}}
 
@@ -129,7 +128,8 @@ public class DefaultViewTreeModel implements TreeModel {
     
     public Object getChild(Object parent, int index) {
         DefaultViewTreeNode node = (DefaultViewTreeNode)parent;
-        javax.swing.tree.TreeNode child = node.getChildAt(calculateIndex(node, index));
+        int trueIndex = calculateIndex(node, index);
+        javax.swing.tree.TreeNode child = node.getChildAt(trueIndex);
         return child;
     }//}}}
     
@@ -140,8 +140,6 @@ public class DefaultViewTreeModel implements TreeModel {
         int totalcount = node.getChildCount();
         int count = 0;
         
-        boolean showComments = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
-        boolean showEmpty    = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
         /*
         We need to find out how many we actually want to display.
         */
@@ -256,8 +254,8 @@ public class DefaultViewTreeModel implements TreeModel {
     //{{{ displayNode()
     
     private boolean displayNode(DefaultViewTreeNode node) {
-        boolean showComments = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
-        boolean showEmpty    = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
+        boolean showComments = Boolean.valueOf(m_document.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
+        boolean showEmpty    = Boolean.valueOf(m_document.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
         
         boolean displayNode = false;
         if (node != null) {
@@ -318,7 +316,7 @@ public class DefaultViewTreeModel implements TreeModel {
 
     Component view;
     
-    private DocumentBuffer m_buffer;
+    private XMLDocument m_document;
     private DefaultViewTreeNode m_rootTreeNode;
     private ArrayList treeListenerList = new ArrayList();
     //}}}

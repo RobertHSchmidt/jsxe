@@ -197,7 +197,7 @@ public class DefaultViewTreeNode implements MutableTreeNode {
     //{{{ insert()
     
     public void insert(String name, String value, short type, int index) {
-        m_children.add(new DefaultViewTreeNode(this, m_node.addAdapterNode(name, value, type, index)));
+        m_children.add(index, new DefaultViewTreeNode(this, m_node.addAdapterNode(name, value, type, index)));
     }//}}}
     
     //{{{ remove()

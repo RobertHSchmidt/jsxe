@@ -82,7 +82,7 @@ public class OptionsDialog extends JDialog {
         getContentPane().add(frame,BorderLayout.CENTER);
         
         DocumentView panel = view.getDocumentView();
-        m_buffer = panel.getDocumentBuffer();
+        m_buffer = view.getDocumentBuffer();
         
         JButton OKButton = new JButton("OK");
         JButton CancelButton = new JButton("Cancel");

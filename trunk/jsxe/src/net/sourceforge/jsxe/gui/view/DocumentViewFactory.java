@@ -76,13 +76,13 @@ public class DocumentViewFactory {
     
     //{{{ newDocumentView()
     
-    public DocumentView newDocumentView(TabbedView view, DocumentBuffer buffer) throws IOException, UnrecognizedDocViewException {
+    public DocumentView newDocumentView(TabbedView view, XMLDocument document) throws IOException, UnrecognizedDocViewException {
         //Document type validation is pretty simple right now
         if (viewType == "documentview.default") {
-            return new DefaultView(view, buffer);
+            return new DefaultView(view, document);
         } else {
             if (viewType == "documentview.sourceview") {
-                return new SourceView(view, buffer);
+                return new SourceView(view, document);
             } else {
                 throw new UnrecognizedDocViewException();
             }

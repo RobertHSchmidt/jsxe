@@ -40,12 +40,11 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.DocumentBufferListener;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.dom.XMLDocumentListener;
 //}}}
 
 //{{{ Swing components
@@ -90,11 +89,11 @@ public class SourceView extends DocumentView {
     
     //{{{ SourceView constructor
     /**
-     * Creates a new SourceView for the DocumentBuffer specified.
-     * @param buffer the buffer to open.
-     * @throws IOException if the buffer cannot be viewed using this view
+     * Creates a new SourceView for the XMLDocument specified.
+     * @param document the document to open.
+     * @throws IOException if the document cannot be viewed using this view
      */
-    public SourceView(TabbedView view, DocumentBuffer buffer) throws IOException {
+    public SourceView(TabbedView view, XMLDocument document) throws IOException {
         
         panel = new JPanel();
         
@@ -109,7 +108,7 @@ public class SourceView extends DocumentView {
         setLayout(new BorderLayout());
         add(scrollPane, BorderLayout.CENTER);
         
-        setDocumentBuffer(view, buffer);
+        setXMLDocument(view, document);
     }//}}}
     
     //{{{ DocumentView methods
@@ -148,25 +147,25 @@ public class SourceView extends DocumentView {
         return null;
     }//}}}
     
-    //{{{ setDocumentBuffer()
+    //{{{ setXMLDocument()
     
-    public void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException {
+    public void setXMLDocument(TabbedView view, XMLDocument document) throws IOException {
         
-        if (m_buffer != null) {
-            m_buffer.removeDocumentBufferListener(docListener);
+        if (m_document != null) {
+            m_document.removeXMLDocumentListener(docListener);
         }
         
-        m_buffer = buffer;
-        textarea.setDocument(new SourceViewDocument(m_buffer));
-        textarea.setTabSize((new Integer(m_buffer.getProperty(XMLDocument.INDENT, "4"))).intValue());
-        m_buffer.addDocumentBufferListener(docListener);
+        m_document = document;
+        textarea.setDocument(new SourceViewDocument(m_document));
+        textarea.setTabSize((new Integer(m_document.getProperty(XMLDocument.INDENT, "4"))).intValue());
+        m_document.addXMLDocumentListener(docListener);
         
     }//}}}
     
-    //{{{ getDocumentBuffer()
+    //{{{ getXMLDocument()
     
-    public DocumentBuffer getDocumentBuffer() {
-        return m_buffer;
+    public XMLDocument getXMLDocument() {
+        return m_document;
     }//}}}
     
     //{{{ getName()
@@ -178,7 +177,7 @@ public class SourceView extends DocumentView {
     //{{{ close()
     
     public boolean close(TabbedView view) {
-        m_buffer.removeDocumentBufferListener(docListener);
+        m_document.removeXMLDocumentListener(docListener);
         return true;
     }//}}}
     
@@ -267,34 +266,28 @@ public class SourceView extends DocumentView {
         
     }//}}}
     
-    //{{{ SourceViewBufferListener class
+    //{{{ SourceViewXMLDocumentListener class
     
-    private class SourceViewBufferListener implements DocumentBufferListener {
+    private class SourceViewXMLDocumentListener implements XMLDocumentListener {
         
         //{{{ propertiesChanged()
         
-        public void propertiesChanged(DocumentBuffer source, String key) {
+        public void propertiesChanged(XMLDocument source, String key) {
             if (key.equals(XMLDocument.INDENT)) {
                 textarea.setTabSize((new Integer(source.getProperty(XMLDocument.INDENT, "4"))).intValue());
                 textarea.updateUI();
             }
         }//}}}
         
-        //{{{ nameChanged()
+        //{{{ structureChanged()
         
-        public void nameChanged(DocumentBuffer source, String newName) {}
-        //}}}
-        
-        //{{{ bufferSaved()
-        
-        public void bufferSaved(DocumentBuffer source) {}
-        //}}}
+        public void structureChanged(XMLDocument source, AdapterNode location) {}//}}}
         
     }//}}}
     
-    private SourceViewBufferListener docListener = new SourceViewBufferListener();
+    private SourceViewXMLDocumentListener docListener = new SourceViewXMLDocumentListener();
     
-    private DocumentBuffer m_buffer;
+    private XMLDocument m_document;
     private JTextArea textarea;
     private JPanel panel;
     //}}}

@@ -150,6 +150,12 @@ public class TabbedView extends JFrame {
         addDocumentBuffer(buffer);
     }//}}}
     
+    //{{{ getDocumentBuffer()
+    
+    public DocumentBuffer getDocumentBuffer() {
+        return jsXe.getDocumentBuffers()[tabbedPane.getSelectedIndex()];
+    }//}}}
+    
     //{{{ getDocumentView()
     /**
      * Gets the current DocumentView that is being displayed
@@ -181,7 +187,7 @@ public class TabbedView extends JFrame {
                 
                 try {
                     
-                    newDocView = factory.newDocumentView(this, buffer);
+                    newDocView = factory.newDocumentView(this, buffer.getXMLDocument());
                     
                    // newDocView.setDocumentBuffer(this, buffer);
                     
@@ -412,7 +418,7 @@ public class TabbedView extends JFrame {
     private void updateTitle() {
         DocumentView currentDocView = getDocumentView();
         if (currentDocView != null) {
-            DocumentBuffer buffer = currentDocView.getDocumentBuffer();
+            DocumentBuffer buffer = getDocumentBuffer();
             String name = "";
             if (buffer != null) {
                 name = buffer.getName();
@@ -472,7 +478,7 @@ public class TabbedView extends JFrame {
             //close the previous view
             oldView.close(this);
             
-            DocumentBuffer currentBuffer = newView.getDocumentBuffer();
+            DocumentBuffer currentBuffer = getDocumentBuffer();
             
             //no exceptions? cool. register the new view
             tabbedPane.remove(oldView);
@@ -511,14 +517,12 @@ public class TabbedView extends JFrame {
         //{{{ actionPerformed()
         
         public void actionPerformed(ActionEvent e) {
-            DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
-            int index = tabbedPane.getSelectedIndex();
             
-            DocumentBuffer buffer = buffers[index];
+            DocumentBuffer buffer = getDocumentBuffer();
             
             try {
                 DocumentViewFactory factory = DocumentViewFactory.newInstance();
-                DocumentView view = factory.newDocumentView(TabbedView.this, buffer);
+                DocumentView view = factory.newDocumentView(TabbedView.this, buffer.getXMLDocument());
                 setDocumentView(view);
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
@@ -542,15 +546,13 @@ public class TabbedView extends JFrame {
         //{{{ actionPerformed()
         
         public void actionPerformed(ActionEvent e) {
-            DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
-            int index = tabbedPane.getSelectedIndex();
             
-            DocumentBuffer buffer = buffers[index];
+            DocumentBuffer buffer = getDocumentBuffer();
             
             try {
                 DocumentViewFactory factory = DocumentViewFactory.newInstance();
                 factory.setDocumentViewType("documentview.sourceview");
-                DocumentView view = factory.newDocumentView(TabbedView.this, buffer);
+                DocumentView view = factory.newDocumentView(TabbedView.this, buffer.getXMLDocument());
                 setDocumentView(view);
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);

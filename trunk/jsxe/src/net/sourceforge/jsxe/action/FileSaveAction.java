@@ -83,7 +83,7 @@ public class FileSaveAction extends AbstractAction {
     //{{{ actionPerformed()
     
     public void actionPerformed(ActionEvent e) {
-        DocumentBuffer buffer = view.getDocumentView().getDocumentBuffer();
+        DocumentBuffer buffer = view.getDocumentBuffer();
         try {
             buffer.save(view);
         } catch (IOException ioe) {

@@ -33,11 +33,6 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.gui.view;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.*;
@@ -82,11 +77,11 @@ public class DefaultView extends DocumentView {
     
     //{{{ DefaultView constructor
     /**
-     * Constructs a new DefaultView for the provided document buffer.
-     * @param buffer the buffer owning the document that this view shows
-     * @throws IOException if the buffer cannot be viewed using this view.
+     * Constructs a new DefaultView for the provided document.
+     * @param document the document that this view shows
+     * @throws IOException if the document cannot be viewed using this view.
      */
-    public DefaultView(TabbedView view, DocumentBuffer buffer) throws IOException {
+    public DefaultView(TabbedView view, XMLDocument document) throws IOException {
         
         setLayout(new BorderLayout());
         
@@ -121,7 +116,7 @@ public class DefaultView extends DocumentView {
         
         //}}}
         
-        setDocumentBuffer(view, buffer);
+        setXMLDocument(view, document);
     }//}}}
     
     //{{{ setVisible()
@@ -134,8 +129,8 @@ public class DefaultView extends DocumentView {
             Container parent = getParent();
             if (parent != null) {
                 Dimension size = parent.getSize();
-                float vertPercent = Integer.valueOf(m_buffer.getProperty(_VERT_SPLIT_LOCATION)).floatValue();
-                float horizPercent = Integer.valueOf(m_buffer.getProperty(_HORIZ_SPLIT_LOCATION)).floatValue();
+                float vertPercent = Integer.valueOf(m_document.getProperty(_VERT_SPLIT_LOCATION)).floatValue();
+                float horizPercent = Integer.valueOf(m_document.getProperty(_HORIZ_SPLIT_LOCATION)).floatValue();
                 
                 int vertLoc = (int)((vertPercent/100.0)*size.getHeight());
                 int horizLoc = (int)((horizPercent/100.0)*size.getWidth());
@@ -150,10 +145,8 @@ public class DefaultView extends DocumentView {
     //{{{ DocumentView methods
     
     //{{{ setXMLDocument()
-
-    public void setDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException {
-        
-        XMLDocument document = buffer.getXMLDocument();
+    
+    public void setXMLDocument(TabbedView view, XMLDocument document) throws IOException {
         
         try {
             document.checkWellFormedness();
@@ -163,11 +156,11 @@ public class DefaultView extends DocumentView {
             throw new IOException(errormsg);
         }
         
-        ensureDefaultProps(buffer);
+        ensureDefaultProps(document);
         
         AdapterNode adapter = document.getAdapterNode();
         
-        DefaultViewTreeModel treeModel = new DefaultViewTreeModel(this, buffer);
+        DefaultViewTreeModel treeModel = new DefaultViewTreeModel(this, document);
         DefaultViewTableModel tableModel = new DefaultViewTableModel(this, adapter);
         DefaultViewDocument styledDoc = new DefaultViewDocument(adapter);
         
@@ -183,7 +176,7 @@ public class DefaultView extends DocumentView {
         styledDoc.addDocumentListener(docListener);
         
         //get the splitpane layout options
-        boolean layout = Boolean.valueOf(buffer.getProperty(_CONTINUOUS_LAYOUT)).booleanValue();
+        boolean layout = Boolean.valueOf(document.getProperty(_CONTINUOUS_LAYOUT)).booleanValue();
         vertSplitPane.setContinuousLayout(layout);
         horizSplitPane.setContinuousLayout(layout);
         
@@ -197,11 +190,11 @@ public class DefaultView extends DocumentView {
        // TreePath path = new TreePath(new Object[] { , document.getRootElementNode() });
        // tree.expandPath(path);
         
-        if (m_buffer != null) {
-            m_buffer.removeDocumentBufferListener(m_bufferListener);
+        if (m_document != null) {
+            m_document.removeXMLDocumentListener(m_documentListener);
         }
-        m_buffer = buffer;
-        m_buffer.addDocumentBufferListener(m_bufferListener);
+        m_document = document;
+        m_document.addXMLDocumentListener(m_documentListener);
     } //}}}
     
     //{{{ getMenus()
@@ -239,10 +232,10 @@ public class DefaultView extends DocumentView {
         return new DefaultViewOptionsPanel();
     }//}}}
     
-    //{{{ getDocumentBuffer()
+    //{{{ getXMLDocument()
     
-    public DocumentBuffer getDocumentBuffer() {
-        return m_buffer;
+    public XMLDocument getXMLDocument() {
+        return m_document;
     }//}}}
     
     //{{{ getName()
@@ -255,15 +248,15 @@ public class DefaultView extends DocumentView {
     
     public boolean close(TabbedView view) {
         
-        //m_buffer should only be null if setBuffer was never called.
-        if (m_buffer != null) {
+        //m_document should only be null if setXMLDocument was never called.
+        if (m_document != null) {
             Dimension size = getSize();
             
             String vert = Integer.toString((int)(vertSplitPane.getDividerLocation()/size.getHeight()*100));
             String horiz = Integer.toString((int)(horizSplitPane.getDividerLocation()/size.getWidth()*100));
             
-            m_buffer.setProperty(_VERT_SPLIT_LOCATION,vert);
-            m_buffer.setProperty(_HORIZ_SPLIT_LOCATION,horiz);
+            m_document.setProperty(_VERT_SPLIT_LOCATION,vert);
+            m_document.setProperty(_HORIZ_SPLIT_LOCATION,horiz);
         }
         
         return true;
@@ -290,13 +283,13 @@ public class DefaultView extends DocumentView {
     
     //{{{ ensureDefaultProps()
     
-    private void ensureDefaultProps(DocumentBuffer buffer) {
+    private void ensureDefaultProps(XMLDocument document) {
         //get default properties from jsXe
-        buffer.setProperty(_CONTINUOUS_LAYOUT, buffer.getProperty(_CONTINUOUS_LAYOUT, jsXe.getProperty(_CONTINUOUS_LAYOUT)));
-        buffer.setProperty(_HORIZ_SPLIT_LOCATION, buffer.getProperty(_HORIZ_SPLIT_LOCATION, jsXe.getProperty(_HORIZ_SPLIT_LOCATION)));
-        buffer.setProperty(_VERT_SPLIT_LOCATION, buffer.getProperty(_VERT_SPLIT_LOCATION, jsXe.getProperty(_VERT_SPLIT_LOCATION)));
-        buffer.setProperty(_SHOW_COMMENTS, buffer.getProperty(_SHOW_COMMENTS, jsXe.getProperty(_SHOW_COMMENTS)));
-        buffer.setProperty(_SHOW_EMPTY_NODES, buffer.getProperty(_SHOW_EMPTY_NODES, jsXe.getProperty(_SHOW_EMPTY_NODES)));
+        document.setProperty(_CONTINUOUS_LAYOUT, document.getProperty(_CONTINUOUS_LAYOUT, jsXe.getProperty(_CONTINUOUS_LAYOUT)));
+        document.setProperty(_HORIZ_SPLIT_LOCATION, document.getProperty(_HORIZ_SPLIT_LOCATION, jsXe.getProperty(_HORIZ_SPLIT_LOCATION)));
+        document.setProperty(_VERT_SPLIT_LOCATION, document.getProperty(_VERT_SPLIT_LOCATION, jsXe.getProperty(_VERT_SPLIT_LOCATION)));
+        document.setProperty(_SHOW_COMMENTS, document.getProperty(_SHOW_COMMENTS, jsXe.getProperty(_SHOW_COMMENTS)));
+        document.setProperty(_SHOW_EMPTY_NODES, document.getProperty(_SHOW_EMPTY_NODES, jsXe.getProperty(_SHOW_EMPTY_NODES)));
     }//}}}
     
     //{{{ DefaultViewOptionsPanel class
@@ -314,9 +307,9 @@ public class DefaultView extends DocumentView {
             
             int gridY = 0;
             
-            boolean showCommentNodes = Boolean.valueOf(m_buffer.getProperty(_SHOW_COMMENTS, "false")).booleanValue();
-            boolean showEmptyNodes = Boolean.valueOf(m_buffer.getProperty(_SHOW_EMPTY_NODES, "false")).booleanValue();
-            boolean continuousLayout = Boolean.valueOf(m_buffer.getProperty(_CONTINUOUS_LAYOUT, "false")).booleanValue();
+            boolean showCommentNodes = Boolean.valueOf(m_document.getProperty(_SHOW_COMMENTS, "false")).booleanValue();
+            boolean showEmptyNodes = Boolean.valueOf(m_document.getProperty(_SHOW_EMPTY_NODES, "false")).booleanValue();
+            boolean continuousLayout = Boolean.valueOf(m_document.getProperty(_CONTINUOUS_LAYOUT, "false")).booleanValue();
             
             showCommentsCheckBox = new JCheckBox("Show comment nodes",showCommentNodes);
             showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
@@ -359,11 +352,11 @@ public class DefaultView extends DocumentView {
         //{{{ saveOptions()
         
         public void saveOptions() {
-            m_buffer.setProperty(_SHOW_COMMENTS,(new Boolean(showCommentsCheckBox.isSelected())).toString());
-            m_buffer.setProperty(_SHOW_EMPTY_NODES,(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
+            m_document.setProperty(_SHOW_COMMENTS,(new Boolean(showCommentsCheckBox.isSelected())).toString());
+            m_document.setProperty(_SHOW_EMPTY_NODES,(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
             
             boolean layout = ContinuousLayoutCheckBox.isSelected();
-            m_buffer.setProperty(_CONTINUOUS_LAYOUT,(new Boolean(layout)).toString());
+            m_document.setProperty(_CONTINUOUS_LAYOUT,(new Boolean(layout)).toString());
             vertSplitPane.setContinuousLayout(layout);
             horizSplitPane.setContinuousLayout(layout);
             tree.updateUI();
@@ -514,7 +507,7 @@ public class DefaultView extends DocumentView {
     private JTable attributesTable = new JTable();
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
-    private DocumentBuffer m_buffer;
+    private XMLDocument m_document;
     
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {
@@ -555,31 +548,28 @@ public class DefaultView extends DocumentView {
         };
         
     };//}}}
-    private DocumentBufferListener m_bufferListener = new DocumentBufferListener() {///{{{
-        
-        //{{{ nameChanged
-        
-        public void nameChanged(DocumentBuffer source, String newName) {}//}}}
+    private XMLDocumentListener m_documentListener = new XMLDocumentListener() {///{{{
         
         //{{{ propertiesChanged
         
-        public void propertiesChanged(DocumentBuffer source, String key) {}//}}}
+        public void propertiesChanged(XMLDocument source, String key) {}//}}}
         
-        //{{{ bufferSaved()
+        //{{{ structureChanged()
         
-        public void bufferSaved(DocumentBuffer source) {
+        public void structureChanged(XMLDocument source, AdapterNode location) {
             /*
             need to reload since saving can change the structure,
             like when splitting cdata sections
             */
             
             tree.updateUI();
+            
             //Make root element node expanded.
            // TreePath path = new TreePath(new Object[] { m_buffer.getXMLDocument().getAdapterNode(), m_buffer.getXMLDocument().getRootElementNode() });
            // tree.expandPath(path);
             
             //clear the html pane
-            htmlPane.setDocument(new DefaultViewDocument(m_buffer.getXMLDocument().getAdapterNode()));
+            htmlPane.setDocument(new DefaultViewDocument(m_document.getAdapterNode()));
             htmlPane.setEditable(false);
         }//}}}
         
