@@ -1,3 +1,8 @@
+12/08/2004  version 0.3 pre5    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated the ant build document.
+    * jsXe now loads a plugin's properties
+
 12/07/2004  version 0.3 pre4    Ian Lewis <IanLewis@member.fsf.org>
 
     * Added view plugin support. Branched off the views into their own

@@ -26,8 +26,6 @@ TODO:
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
     
-    * jsXe should load the properties from a plugin into jsXe's properties.
-    
     * jsXe needs to support ActionPlugins
     
     * Update the options dialog to show options from all installed views
