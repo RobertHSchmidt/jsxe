@@ -9,7 +9,7 @@ The user can then edit this tree and the content in the tree.
 
 This contains the 
 
-Copyright (C) 2002 Ian Lewis
+Copyright (C) 2004 Ian Lewis
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

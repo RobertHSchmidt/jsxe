@@ -193,12 +193,7 @@ public class jsXe {
         //{{{ load plugins
         
         m_pluginLoader = new JARClassLoader();
-        ArrayList errors = m_pluginLoader.addDirectory(pluginsDirectory);
-        if (errors.size() != 0) {
-            for (int i=0; i<errors.size(); i++) {
-                Log.log(Log.WARNING, jsXe.class, "COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
-            }
-        }
+        ArrayList pluginErrors = m_pluginLoader.addDirectory(pluginsDirectory);
         
         String jsXeHome = System.getProperty("jsxe.home");
         if(jsXeHome == null) {
@@ -218,22 +213,25 @@ public class jsXe {
             }
         }
         //add the jsXe home to the plugins directory
-        errors = m_pluginLoader.addDirectory(jsXeHome+"/jars");
-        if (errors.size() != 0) {
-            for (int i=0; i<errors.size(); i++) {
-                Log.log(Log.WARNING, jsXe.class, "COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
-            }
-        }
-        
-        
+        pluginErrors.addAll(m_pluginLoader.addDirectory(jsXeHome+"/jars"));
         //}}}
         
         //{{{ start plugins
         
-        errors = m_pluginLoader.startPlugins();
-        if (errors.size() != 0) {
-            for (int i=0; i<errors.size(); i++) {
-                Log.log(Log.WARNING, jsXe.class, "COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
+        pluginErrors.addAll(m_pluginLoader.startPlugins());
+        
+        if (pluginErrors.size() != 0) {
+            for (int i=0; i<pluginErrors.size(); i++) {
+                Object error = pluginErrors.get(i);
+                if ((error instanceof IOException) || (error instanceof PluginDependencyException)) {
+                    Log.log(Log.ERROR, jsXe.class, ((Exception)error).getMessage());
+                } else {
+                    if (error instanceof PluginLoadException) {
+                        Log.log(Log.WARNING, jsXe.class, ((PluginLoadException)error).getMessage());
+                    } else {
+                        Log.log(Log.WARNING, jsXe.class, error.toString());
+                    }
+                }
             }
         }
         
