@@ -592,7 +592,7 @@ public class DefaultViewTree extends JTree {
                         //insert in the node
                         parentNode.addAdapterNode(node);
                         
-                        makeVisible(path.pathByAddingChild(node));
+                       // makeVisible(path.pathByAddingChild(node));
                     } else {
                         if (parentNode != null) {
                             //insert after the node dropped on
