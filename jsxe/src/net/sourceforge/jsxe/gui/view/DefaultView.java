@@ -127,7 +127,6 @@ public class DefaultView extends DocumentView {
         
         //{{{ Create and set up the Context menu
             popup = new JPopupMenu();
-            
         //}}}
     } //}}}
     
@@ -190,7 +189,7 @@ public class DefaultView extends DocumentView {
     }//}}}
     
     public void close(TabbedView view) {//{{{
-        //do nothing if there are no documents open
+        //do nothing if there is no current document.
         if (currentdoc != null) {
             String vert = Integer.toString(vertSplitPane.getDividerLocation());
             String horiz = Integer.toString(horizSplitPane.getDividerLocation());

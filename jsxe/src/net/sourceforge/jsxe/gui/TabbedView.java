@@ -63,6 +63,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
@@ -73,9 +74,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 //}}}
 
 //{{{ Java base classes
+import java.io.IOException;
 import java.util.Vector;
 //}}}
 
@@ -104,21 +108,27 @@ public class TabbedView extends JFrame {
                     //do this stuff.
                     if (tabbedPane.getTabCount() > 1) {
                         XMLDocument[] docs = jsXe.getXMLDocuments();
-                        setDocument(docs[tabbedPane.getSelectedIndex()]);
-                        ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
-                        updateTitle();
+                        try {
+                            setDocument(docs[tabbedPane.getSelectedIndex()]);
+                            ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
+                            updateTitle();
+                        } catch (IOException ioe) {
+                            //Some sort of error occured
+                            //try to recover by closing the document.
+                            JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                            jsXe.closeXMLDocument(TabbedView.this, docs[tabbedPane.getSelectedIndex()]);
+                        }
                     }
                 }
            });//}}}
-        
-       // tabbedPane.setPreferredSize(new Dimension(width, height));
         
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(tabbedPane, BorderLayout.CENTER);
         pack();
         
         //Set window options
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowHandler());
         
         setIconImage(jsXe.getIcon().getImage());
         
@@ -129,7 +139,7 @@ public class TabbedView extends JFrame {
         return docview;
     }//}}}
     
-    public void addDocument(XMLDocument doc) {//{{{
+    public void addDocument(XMLDocument doc) throws IOException {//{{{
         Rectangle bounds = getBounds();
         if (doc != null) {
             docview.close(this);
@@ -142,7 +152,7 @@ public class TabbedView extends JFrame {
         }
     }//}}}
     
-    public void setDocument(XMLDocument doc) {//{{{
+    public void setDocument(XMLDocument doc) throws IOException {//{{{
         if (doc != null) {
             XMLDocument[] docs = jsXe.getXMLDocuments();
             for (int i=0; i < docs.length; i++) {
@@ -166,10 +176,17 @@ public class TabbedView extends JFrame {
                     //stateChanged is not called for some
                     //reason.
                     if (i != tabbedPane.getTabCount()) {
-                        docview.setDocument(this,docs[tabbedPane.getSelectedIndex()+1]);
-                        tabbedPane.setSelectedIndex(i);
-                        ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
-                        updateTitle();
+                        try {
+                            docview.setDocument(this,docs[tabbedPane.getSelectedIndex()+1]);
+                            tabbedPane.setSelectedIndex(i);
+                            ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
+                            updateTitle();
+                        } catch (IOException ioe) {
+                            //Some sort of error occured
+                            //try to recover by closing the document.
+                            JOptionPane.showMessageDialog(this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                            jsXe.closeXMLDocument(this, docs[tabbedPane.getSelectedIndex()]);
+                        }
                     }
                 }
             }
@@ -263,20 +280,27 @@ public class TabbedView extends JFrame {
     }//}}}
     
     private void setDocumentView(DocumentView view) {//{{{
-        //close the previous view
-        docview.close(this);
-        ((JPanel)tabbedPane.getSelectedComponent()).remove(docview);
         
-        //register the new view
-        docview = view;
         XMLDocument[] docs = jsXe.getXMLDocuments();
-        setDocument(docs[tabbedPane.getSelectedIndex()]);
-        ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
-        updateMenuBar();
+        try {
+            //close the previous view
+            docview.close(this);
+            ((JPanel)tabbedPane.getSelectedComponent()).remove(docview);
+            //register the new view
+            docview = view;
+            setDocument(docs[tabbedPane.getSelectedIndex()]);
+            ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
+            updateMenuBar();
+        } catch (IOException ioe) {
+            //Some sort of error occured
+            //try to recover by closing the document.
+            JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            jsXe.closeXMLDocument(TabbedView.this, docs[tabbedPane.getSelectedIndex()]);
+        }
     }//}}}
     
     //temporary classes to change views.
-    public class SetDefaultViewAction extends AbstractAction {//{{{
+    private class SetDefaultViewAction extends AbstractAction {//{{{
         
         public SetDefaultViewAction() {
             putValue(Action.NAME, "Tree View");
@@ -290,7 +314,7 @@ public class TabbedView extends JFrame {
         
     }//}}}
     
-    public class SetSourceViewAction extends AbstractAction {//{{{
+    private class SetSourceViewAction extends AbstractAction {//{{{
         
         public SetSourceViewAction() {
             putValue(Action.NAME, "Source View");
@@ -303,6 +327,12 @@ public class TabbedView extends JFrame {
             setDocumentView(view);
         }
         
+    }//}}}
+    
+    private class WindowHandler extends WindowAdapter {//{{{
+        public void windowClosing(WindowEvent e) {
+			jsXe.exit(TabbedView.this);
+		}
     }//}}}
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
