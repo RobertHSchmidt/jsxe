@@ -102,10 +102,30 @@ public class TabbedView extends JFrame {
      */
     public TabbedView(DocumentBuffer buffer) throws IOException {
         
-        int width = Integer.valueOf(jsXe.getProperty("tabbedview.width")).intValue();
-        int height = Integer.valueOf(jsXe.getProperty("tabbedview.height")).intValue();
-        int x = Integer.valueOf(jsXe.getProperty("tabbedview.x")).intValue();
-        int y = Integer.valueOf(jsXe.getProperty("tabbedview.y")).intValue();
+        //{{{ load global properties
+        
+        //Make sure user defined properties don't cause unwanted exceptions.
+        int width = Integer.valueOf(jsXe.getDefaultProperty(_WIDTH)).intValue();
+        try {
+            width = Integer.valueOf(jsXe.getProperty(_WIDTH)).intValue();
+        } catch (NumberFormatException e) {}
+        
+        int height = Integer.valueOf(jsXe.getDefaultProperty(_HEIGHT)).intValue();
+        try {
+            height = Integer.valueOf(jsXe.getProperty(_HEIGHT)).intValue();
+        } catch (NumberFormatException e) {}
+        
+        int x = Integer.valueOf(jsXe.getDefaultProperty(_X)).intValue();
+        try {
+            x = Integer.valueOf(jsXe.getProperty(_X)).intValue();
+        } catch (NumberFormatException e) {}
+        
+        int y = Integer.valueOf(jsXe.getDefaultProperty(_Y)).intValue();
+        try {
+            y = Integer.valueOf(jsXe.getProperty(_Y)).intValue();
+        } catch (NumberFormatException e) {}
+        
+        //}}}
         
         DocumentViewFactory factory = DocumentViewFactory.newInstance();
        // docView = factory.newDocumentView();
@@ -526,6 +546,13 @@ public class TabbedView extends JFrame {
         
     }//}}}
     
+    //{{{ Instance variables
+    
+    private static final String _WIDTH = "tabbedview.width";
+    private static final String _HEIGHT = "tabbedview.height";
+    private static final String _X = "tabbedview.x";
+    private static final String _Y = "tabbedview.y";
+    
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
     //The current document
     private JPanel panel;
@@ -543,6 +570,8 @@ public class TabbedView extends JFrame {
         public void bufferSaved(DocumentBuffer source) {}
         
     };//}}}
+    
+    //}}}
     
     //}}}
 }
