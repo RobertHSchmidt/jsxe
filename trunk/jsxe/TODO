@@ -23,6 +23,15 @@ TODO:
     
 * Version 0.2 beta
     
+    * Revamp the DOM objects.
+        * Create Adapter... objects (AdapterDocument, AdapterNode,
+          AdapterElement, etc.) that wraps around the objects created when
+          parsing. They add the fuctionality needed like ability to change the
+          name, support for change listeners etc.
+        * Create a parser class that manages parsing a document and creating
+          the Adapter objects.
+        * 
+    
     * Fix bug where the document is saved with formating checked but not
       formatted, then closed and reopened. This formats the document without
       marking it dirty. If opened in source view the document should look
@@ -39,7 +48,7 @@ TODO:
       close() is called. Not doing this causes a memory leak since view objects
       are not garbage collected.
     
-    * Do something with formatting. Should there be a formatting button that
+    * Do something with formatting. Should there be a formatting action that
       formats the document for you? Other options may apply here, like
       whitespace in element content. Maybe the options should be applied
       immediately to the document when the options change. Doing this would
@@ -50,14 +59,16 @@ TODO:
       to the document each time one is loaded. Default app properties get set
       when the view is loaded.
     
+    * Fix the options dialog and make it look better. Make options dialog
+      like jEdit with a tree thing that displays option categories. So that way
+      jsXe can have separate options for serialization and visualization and
+      etc. General options should set defaults and application level options
+      and the document options should set document/view level options.
+    
     * Make the XML document declaration header non-editable in source-view
       mode. (how?) Update it when the user changes options in the options panel.
       Maybe make a non-editable text-panel or label above the source area and
       only show the part after the header?
-    
-    * Add a feature that allows the cursor to be set to the location of a
-      parse error in the source view. Maybe add this later when a side-kick
-      like feature is implemented.
     
     * Need some way of editing DOCTYPE nodes. DOM level 2 seems to not have
       support for this. jsXe needs to recognize when a document has a DTD and
@@ -127,8 +138,10 @@ TODO:
         * Look at the XML plugin for jEdit for ways of finding what nodes can
           be inserted at various locations in the document.
     
-    * Create some sort of interface to deal with editing of entity reference
-      nodes. Can this be done before adding more support for DTDs?
+    * Add a feature that allows you to validate the document and moves the
+      cursor to the location of a parse/validation error in the source view.
+    
+    * Create some sort of interface to deal with editing of entity reference.
     
 * Version 0.5 beta (GUI focus)
     
@@ -141,15 +154,6 @@ TODO:
           the first one and then quit.
     
     * Implement syntax highlighting for the SourceView.
-    
-    * Fix the options dialog and make it look better. Maybe split into two
-      dialogs, global options and view/document specific? Maybe even three
-      dialogs, one for global options, one for view options, one for document
-      options. Maybe make it like jEdit with a tree thing that displays
-      option categories. So that way jsXe can have separate options for
-      serialization and visualization and etc. General options should set
-      defaults and application level options and the document options should
-      set document/view level options.
     
     * Create a dialog that displays all dirty DocumentBuffers and allows you to
       save the selected ones, like jEdit.
