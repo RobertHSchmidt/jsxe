@@ -168,7 +168,7 @@ public class XMLDocument {
             factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", new Boolean(false));
             factory.setAttribute("http://xml.org/sax/features/external-general-entities", new Boolean(false));
             factory.setAttribute("http://xml.org/sax/features/external-parameter-entities", new Boolean(false));
-           // factory.setAttribute("http://xml.org/sax/features/namespaces",new Boolean(true));
+            factory.setAttribute("http://xml.org/sax/features/namespaces",new Boolean(true));
             DocumentBuilder builder = factory.newDocumentBuilder();
             
             builder.setErrorHandler(new org.xml.sax.ErrorHandler() {
