@@ -31,9 +31,10 @@
     <property name="main.class" value="sourceview.SourceViewPlugin"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="3"/>
-		<property name="build.description" value="pre11"/>
-		<property name="app.version" value="${major.version}.${minor.version} ${build.description}"/>
-		<property name="app_version" value="${major.version}_${minor.version}${build.description}"/>
+		<property name="build.version" value="15"/>
+		<property name="app.version" value="${major.version}.${minor.version} pre${build.version}"/>
+		<property name="app_version" value="${major.version}_${minor.version}pre${build.version}"/>
+        <property name="implementation.version" value="${major.version}.${minor.version}.${build.version}"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
 		<property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>
 		<path id="classpath">
@@ -110,7 +111,7 @@
 			<entry key="build.time" pattern="dd/MM/yyyy HH:mm" type="date" value="now"/>
 			<entry key="major.version" value="${major.version}"/>
 			<entry key="minor.version" value="${minor.version}"/>
-			<entry key="build.description" value="${build.description}"/>
+			<entry key="build.version" value="${build.version}"/>
 		</propertyfile>
     
     <!-- create jar manifest -->
@@ -119,7 +120,7 @@
       <attribute name="Main-Class" value="${main.class}"/>
       <section name="common">
         <attribute name="Implementation-Title" value="${app.name}"/>
-        <attribute name="Implementation-Version" value="${app.version} ${TODAY}"/>
+        <attribute name="Implementation-Version" value="${implementation.version}"/>
       </section>
     </manifest>
     

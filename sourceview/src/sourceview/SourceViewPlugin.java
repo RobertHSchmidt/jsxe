@@ -64,7 +64,7 @@ public class SourceViewPlugin extends ViewPlugin {
             buildProps.load(propsStream);
         } catch (IOException ioe) {}
         
-        VERSION = buildProps.getProperty("major.version")+"."+buildProps.getProperty("minor.version")+" "+buildProps.getProperty("build.description");
+        VERSION = buildProps.getProperty("major.version")+"."+buildProps.getProperty("minor.version")+" pre"+buildProps.getProperty("build.version");
     }
     
     //{{{ SourceViewPlugin
