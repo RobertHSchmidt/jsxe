@@ -46,6 +46,7 @@ import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentFactory;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.dom.UnrecognizedDocTypeException;
+import net.sourceforge.jsxe.options.OptionPane;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.jsxeFileDialog;
@@ -488,9 +489,8 @@ public class DocumentBuffer extends XMLDocument {
     //{{{ getOptionsPanel()
     
     /**
-     * Gets the panel for editing options for this DocumentBuffer.
-     * @return the options panel used to edit options specific to this
-     *         DocumentBuffer
+     * Gets the pane for editing options for this DocumentBuffer.
+     * @return the option pane specific to this DocumentBuffer
      */
     public OptionsPanel getOptionsPanel() {
         return new DocumentBufferOptionsPanel();
@@ -532,7 +532,7 @@ public class DocumentBuffer extends XMLDocument {
         return "Untitled-" + Integer.toString(untitledNo+1);
     }//}}}
     
-    //{{{ DocumentBufferOptionsPanel class
+    //{{{ DocumentBufferOptionsPane class
     
     private class DocumentBufferOptionsPanel extends OptionsPanel {
     
@@ -679,6 +679,12 @@ public class DocumentBuffer extends XMLDocument {
                 //Bad input, don't save.
             }
         };//}}}
+        
+        //{{{ getName()
+        
+        public String getName() {
+            return "documentbuffer";
+        }//}}}
         
         //{{{ getTitle()
         

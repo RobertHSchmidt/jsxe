@@ -39,7 +39,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.gui.OptionsDialog;
+import net.sourceforge.jsxe.gui.GlobalOptionsDialog;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -68,8 +68,8 @@ public class ToolsOptionsAction extends AbstractAction {
     //{{{ actionPerformed()
     
     public void actionPerformed(ActionEvent e) {
-        OptionsDialog options = new OptionsDialog(view);
-        options.show();
+        GlobalOptionsDialog options = new GlobalOptionsDialog(view);
+       // options.show();
     }//}}}
     
     //{{{ Private members

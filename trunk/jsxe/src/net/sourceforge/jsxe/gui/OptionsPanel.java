@@ -39,8 +39,11 @@ it is easy to see which package it
 belongs to.
 */
 
+import net.sourceforge.jsxe.options.OptionPane;
+
 //{{{ Swing components
 import javax.swing.JPanel;
+import java.awt.Component;
 //}}}
 
 //}}}
@@ -52,7 +55,18 @@ import javax.swing.JPanel;
  * @version $Id$
  * @see OptionsDialog
  */
-public abstract class OptionsPanel extends JPanel {
+public abstract class OptionsPanel extends JPanel implements OptionPane {
+    
+    //{{{ saveOptions()
+    public void save() {
+        saveOptions();
+    }//}}}
+    
+    //{{{ getComponent()
+    
+    public Component getComponent() {
+        return this;
+    }//}}}
     
     //{{{ saveOptions()
     
@@ -62,4 +76,9 @@ public abstract class OptionsPanel extends JPanel {
     
     public abstract String getTitle();//}}}
     
+    //{{{ init()
+        
+    public void init() {
+        //default implementation
+    }//}}}
 }

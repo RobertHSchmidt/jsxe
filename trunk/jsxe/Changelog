@@ -1,3 +1,9 @@
+9/24/2004   version 0.2 pre23   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Changed the layout of the options dialog by taking some jEdit code.
+      Should be more flexable for adding different options categories etc. Not
+      to mention that it would look better.
+
 9/21/2004   version 0.2 pre22   Ian Lewis <IanLewis@member.fsf.org>
 
     * Documents loaded directly into the source view are not formatted
