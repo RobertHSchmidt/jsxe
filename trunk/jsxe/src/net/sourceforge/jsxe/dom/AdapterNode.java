@@ -78,7 +78,7 @@ public class AdapterNode {
         int count = childCount();
         for (int i=0; i<count; i++) {
             AdapterNode n = this.child(i);
-            if (child == n) return i;
+            if (child.equals(n)) return i;
         }
         //Returns here when child not in tree
         return -1;
@@ -125,6 +125,8 @@ public class AdapterNode {
             }
             parent.replaceChild(newNode, domNode);
             domNode = newNode;
+        } else {
+            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element can be renamed at this time.");
         }
     }//}}}
     
@@ -144,31 +146,50 @@ public class AdapterNode {
         return domNode.getAttributes();
     }//}}}
     
-   // public void addNode(String name, String value, short type) throws DOMException {//{{{
-   //     switch(type) {
-   //         case Node.ELEMENT_NODE:
-   //             
-   //             break;
-   //         case Node.TEXT_NODE:
-   //             
-   //             break;
-   //         case Node.CDATA_SECTION_NODE:
-   //             
-   //             break;
-   //         case Node.COMMENT_NODE:
-   //             
-   //             break;
-   //         case Node.PROCESSING_INSTRUCTION_NODE:
-   //             
-   //             break;
-   //         case Node.ENTITY_REFERENCE_NODE:
-   //             
-   //             break;
-   //         case Node.DOCUMENT_TYPE_NODE:
-   //             
-   //             break;
-   //     }
-   // }//}}}
+    public AdapterNode addNode(String name, String value, short type) throws DOMException {//{{{
+        
+        Node newNode = null;
+        Document document = domNode.getOwnerDocument();
+        
+        switch(type) {
+            case Node.ELEMENT_NODE:
+                newNode = document.createElement(name);
+                domNode.appendChild(newNode);
+                break;
+            case Node.TEXT_NODE:
+                newNode = document.createTextNode(value);
+                domNode.appendChild(newNode);
+                break;
+           // case Node.CDATA_SECTION_NODE:
+           //     
+           //     break;
+           // case Node.COMMENT_NODE:
+           //     
+           //     break;
+           // case Node.PROCESSING_INSTRUCTION_NODE:
+           //     
+           //     break;
+           // case Node.ENTITY_REFERENCE_NODE:
+           //     
+           //     break;
+           // case Node.DOCUMENT_TYPE_NODE:
+           //     
+           //     break;
+            default:
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element and Text Nodes can be added at this time.");
+        }
+        
+        return new AdapterNode(newNode);
+    }//}}}
+    
+    public void remove() throws DOMException {//{{{
+        Node parent = domNode.getParentNode();
+        parent.removeChild(domNode);
+    }//}}}
+    
+    public void remove(AdapterNode child) throws DOMException {//{{{
+        domNode.removeChild(child.getNode());
+    }//}}}
     
     public void addAttribute(String name, String value) throws DOMException {//{{{
         if (typeName[domNode.getNodeType()].equals("Element")) {
@@ -186,7 +207,20 @@ public class AdapterNode {
         }
     }//}}}
     
+    public boolean equals(AdapterNode node) {//{{{
+        return node.getNode() == domNode;
+    }//}}}
+    
+    //{{{ Protected members
+    
+    protected Node getNode() {//{{{
+        return domNode;
+    }//}}}
+    
+    //}}}
+    
     //{{{ Private members
+    
     private final String[] typeName = {
         "none",
         "Element",

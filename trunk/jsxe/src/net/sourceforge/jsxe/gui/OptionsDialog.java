@@ -47,16 +47,22 @@ import net.sourceforge.jsxe.gui.view.DocumentView;
 //{{{ Swing components
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.border.Border;
 //}}}
 
 //{{{ AWT components
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Container;
 import java.awt.Dialog;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 //}}}
@@ -68,6 +74,9 @@ public class OptionsDialog extends JDialog {
     public OptionsDialog(TabbedView view) {//{{{
         super(view, true);
         
+        JPanel frame = new JPanel();
+        getContentPane().add(frame,BorderLayout.CENTER);
+        
         DocumentView panel = view.getDocumentView();
         document = panel.getXMLDocument();
         
@@ -76,25 +85,67 @@ public class OptionsDialog extends JDialog {
         OKButton.addActionListener(new OKAction(this));
         CancelButton.addActionListener(new CancelAction(this));
         
-        Border border = BorderFactory.createEmptyBorder(10,10,10,10);
-        
-        //Configure the north panel
-        OptionsNorthPanel = panel.getOptionsPanel();
-        if (OptionsNorthPanel != null) {
-            OptionsNorthPanel.setBorder(border);
-            getContentPane().add(OptionsNorthPanel, BorderLayout.CENTER);
-        }
-        
-        //Configure south panel
-        OptionsSouthPanel = new JPanel();
-        OptionsSouthPanel.setBorder(border);
-        OptionsSouthPanel.add(OKButton);
-        OptionsSouthPanel.add(CancelButton);
-        getContentPane().add(OptionsSouthPanel, BorderLayout.SOUTH);
+        Border border1 = BorderFactory.createEmptyBorder(10,10,10,10);
+        Border border2 = BorderFactory.createEmptyBorder(0,10,0,10);
+        frame.setBorder(border1);
         
         setTitle("Options");
         setSize(dialogWidth,dialogHeight);
         setLocationRelativeTo(view);
+        
+        GridBagLayout layout = new GridBagLayout();
+        GridBagConstraints constraints = new GridBagConstraints();
+        frame.setLayout(layout);
+        
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridwidth = GridBagConstraints.REMAINDER;
+        constraints.anchor = GridBagConstraints.NORTHWEST;
+	    constraints.weightx = 1.0f;
+		constraints.insets = new Insets(1,0,1,0);
+        
+        JLabel label = new JLabel("View Options");
+        layout.setConstraints(label, constraints);
+        frame.add(label);
+        JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+        layout.setConstraints(sep, constraints);
+        frame.add(sep);
+        
+        //Configure the north panel
+        OptionsNorthPanel = panel.getOptionsPanel();
+        if (OptionsNorthPanel != null) {
+            OptionsNorthPanel.setBorder(border2);
+            constraints.fill = GridBagConstraints.NONE;
+            constraints.weighty = 1.0f;
+            layout.setConstraints(OptionsNorthPanel, constraints);
+            frame.add(OptionsNorthPanel);
+            constraints.weighty = 0;
+        }
+        
+        constraints.fill = GridBagConstraints.BOTH;
+        label = new JLabel("jsXe Options");
+        layout.setConstraints(label, constraints);
+        frame.add(label);
+        sep = new JSeparator(JSeparator.HORIZONTAL);
+        layout.setConstraints(sep, constraints);
+        frame.add(sep);
+        
+        //Configure south panel
+       // OptionsSouthPanel = new JPanel();
+       // OptionsSouthPanel.setBorder(border);
+       // layout.setConstraints(OptionsSouthPanel, constraints);
+       // frame.add(OptionsSouthPanel);
+        
+        //add dummy panel for now.
+        JPanel dummypanel = new JPanel();
+        constraints.weighty = 1.0;
+        layout.setConstraints(dummypanel, constraints);
+        frame.add(dummypanel);
+        
+        JPanel ButtonsPanel = new JPanel();
+        ButtonsPanel.add(OKButton);
+        ButtonsPanel.add(CancelButton);
+        
+        getContentPane().add(ButtonsPanel, BorderLayout.SOUTH);
         
     } //}}}
     
@@ -107,6 +158,8 @@ public class OptionsDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             if (OptionsNorthPanel != null)
                 OptionsNorthPanel.saveOptions();
+            if (OptionsSouthPanel != null)
+                OptionsSouthPanel.saveOptions();
             parent.dispose();
         }
         private Dialog parent;
@@ -122,11 +175,11 @@ public class OptionsDialog extends JDialog {
         private Dialog parent;
     } //}}}
     
-    private int dialogWidth=400;
-    private int dialogHeight=400;
+    private int dialogWidth=450;
+    private int dialogHeight=450;
     private XMLDocument document;
     private OptionsPanel OptionsNorthPanel;
-    private JPanel OptionsSouthPanel;
+    private OptionsPanel OptionsSouthPanel;
     //}}}
     
 }

@@ -52,13 +52,14 @@ import net.sourceforge.jsxe.gui.TabbedView;
 
 //{{{ Swing components
 import javax.swing.JCheckBox;
+import javax.swing.JEditorPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
-import javax.swing.JEditorPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.event.DocumentListener;
@@ -75,14 +76,19 @@ import javax.swing.tree.TreePath;
 
 //{{{ AWT components
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 //}}}
 
 //{{{ DOM classes
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 //}}}
 
@@ -96,7 +102,7 @@ import java.util.Vector;
 
 public class DefaultView extends DocumentView {
     
-    public DefaultView() {//{{{
+    protected DefaultView() {//{{{
         
         setLayout(new BorderLayout());
         
@@ -127,9 +133,8 @@ public class DefaultView extends DocumentView {
         
         //}}}
         
-        //{{{ Create and set up the Context menu
-            popup = new JPopupMenu();
-        //}}}
+        tree.addMouseListener(new PopupListener());
+
     } //}}}
     
     public void setDocument(TabbedView view, XMLDocument document) throws IOException {//{{{
@@ -163,9 +168,11 @@ public class DefaultView extends DocumentView {
         htmlPane.setText("");
         
         //get the splitpane layout options
-        boolean layout = Boolean.valueOf(document.getProperty("default.view.continuous.layout", "false")).booleanValue();
+        boolean layout = Boolean.valueOf(document.getProperty(viewname+".continuous.layout", "false")).booleanValue();
         vertSplitPane.setContinuousLayout(layout);
         horizSplitPane.setContinuousLayout(layout);
+        vertSplitPane.setDividerLocation(Integer.valueOf(document.getProperty(viewname+".splitpane.vert.loc", "200")).intValue());
+        horizSplitPane.setDividerLocation(Integer.valueOf(document.getProperty(viewname+".splitpane.horiz.loc", "200")).intValue());
         
         //update the UI so that the components
         //are redrawn.
@@ -211,15 +218,13 @@ public class DefaultView extends DocumentView {
     }//}}}
     
     public void close(TabbedView view) {//{{{
-        //this isn't really applicable since the splitpane locations
-        //are different for each file now.
-       // if (currentDoc != null) {
-       //     String vert = Integer.toString(vertSplitPane.getDividerLocation());
-       //     String horiz = Integer.toString(horizSplitPane.getDividerLocation());
-       //     
-       //     jsXe.setProperty(viewname+".splitpane.vert.loc",vert);
-       //     jsXe.setProperty(viewname+".splitpane.horiz.loc",horiz);
-       // }
+        if (currentDoc != null) {
+            String vert = Integer.toString(vertSplitPane.getDividerLocation());
+            String horiz = Integer.toString(horizSplitPane.getDividerLocation());
+            
+            currentDoc.setProperty(viewname+".splitpane.vert.loc",vert);
+            currentDoc.setProperty(viewname+".splitpane.horiz.loc",horiz);
+        }
     }//}}}
     
     //{{{ Private Members
@@ -245,32 +250,48 @@ public class DefaultView extends DocumentView {
     
     private class DefaultViewOptionsPanel extends OptionsPanel {//{{{
         
-        public DefaultViewOptionsPanel() {
-            boolean showCommentNodes = Boolean.valueOf(currentDoc.getProperty("default.view.show.comment.nodes", "false")).booleanValue();
-            boolean showEmptyNodes = Boolean.valueOf(currentDoc.getProperty("default.view.show.empty.nodes", "false")).booleanValue();
-            boolean continuousLayout = Boolean.valueOf(currentDoc.getProperty("default.view.continuous.layout", "false")).booleanValue();
+        public DefaultViewOptionsPanel() {//{{{
+            
+            GridBagLayout layout = new GridBagLayout();
+            GridBagConstraints constraints = new GridBagConstraints();
+            
+            setLayout(layout);
+            
+            constraints.fill = GridBagConstraints.NORTHWEST;
+            constraints.gridwidth = GridBagConstraints.REMAINDER;
+            constraints.anchor = GridBagConstraints.NORTHWEST;
+           // constraints.insets = new Insets(1,0,1,0);
+            
+            boolean showCommentNodes = Boolean.valueOf(currentDoc.getProperty(viewname+".show.comment.nodes", "false")).booleanValue();
+            boolean showEmptyNodes = Boolean.valueOf(currentDoc.getProperty(viewname+".show.empty.nodes", "false")).booleanValue();
+            boolean continuousLayout = Boolean.valueOf(currentDoc.getProperty(viewname+".continuous.layout", "false")).booleanValue();
             
             showCommentsCheckBox = new JCheckBox("Show comment nodes",showCommentNodes);
             showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
             ContinuousLayoutCheckBox = new JCheckBox("Continuous layout for split-panes",continuousLayout);
             
-            setLayout(new FlowLayout(FlowLayout.LEFT));
-            
+            layout.setConstraints(showCommentsCheckBox, constraints);
             add(showCommentsCheckBox);
+            layout.setConstraints(showEmptyNodesCheckBox, constraints);
             add(showEmptyNodesCheckBox);
+            layout.setConstraints(ContinuousLayoutCheckBox, constraints);
             add(ContinuousLayoutCheckBox);
-        }
+        }//}}}
         
-        public void saveOptions() {
-            currentDoc.setProperty("default.view.show.comment.nodes",Boolean.toString(showCommentsCheckBox.isSelected()));
-            currentDoc.setProperty("default.view.show.empty.nodes",Boolean.toString(showEmptyNodesCheckBox.isSelected()));
+        public void saveOptions() {//{{{
+            currentDoc.setProperty(viewname+".show.comment.nodes",Boolean.toString(showCommentsCheckBox.isSelected()));
+            currentDoc.setProperty(viewname+".show.empty.nodes",Boolean.toString(showEmptyNodesCheckBox.isSelected()));
             
             boolean layout = ContinuousLayoutCheckBox.isSelected();
-            currentDoc.setProperty("default.view.continuous.layout",Boolean.toString(layout));
+            currentDoc.setProperty(viewname+".continuous.layout",Boolean.toString(layout));
             vertSplitPane.setContinuousLayout(layout);
             horizSplitPane.setContinuousLayout(layout);
             tree.updateUI();
-        }
+        }//}}}
+        
+        public String getTitle() {//{{{
+            return "Tree View Options";
+        }//}}}
         
         private JCheckBox showCommentsCheckBox;
         private JCheckBox showEmptyNodesCheckBox;
@@ -325,11 +346,78 @@ public class DefaultView extends DocumentView {
         }
 
         private void maybeShowPopup(MouseEvent e) {
-            if (e.isPopupTrigger()) {
-                popup.show(e.getComponent(),
-                           e.getX(), e.getY());
+            TreePath selPath = tree.getLeadSelectionPath();
+            if (e.isPopupTrigger() && selPath != null) {
+                
+                AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+                JMenuItem popupMenuItem;
+                JPopupMenu popup = new JPopupMenu();
+                
+                if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
+                    popupMenuItem = new JMenuItem("Add Element Node");
+                    popupMenuItem.addActionListener(new AddElementNodeAction());
+                    popup.add(popupMenuItem);
+                    popupMenuItem = new JMenuItem("Add Text Node");
+                    popupMenuItem.addActionListener(new AddTextNodeAction());
+                    popup.add(popupMenuItem);
+                }
+                popupMenuItem = new JMenuItem("Remove Node");
+                popupMenuItem.addActionListener(new RemoveNodeAction());
+                popup.add(popupMenuItem);
+                popup.show(e.getComponent(), e.getX(), e.getY());
             }
         }
+    }//}}}
+    
+    private class AddElementNodeAction implements ActionListener {//{{{
+        
+        public void actionPerformed(ActionEvent e) {
+            try {
+                TreePath selPath = tree.getLeadSelectionPath();
+                if (selPath != null) {
+                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+                    AdapterNode newNode = selectedNode.addNode("New_Element", "", Node.ELEMENT_NODE);
+                    tree.updateUI();
+                }
+            } catch (DOMException dome) {
+                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        
+    }//}}}
+    
+    private class AddTextNodeAction implements ActionListener {//{{{
+        
+        public void actionPerformed(ActionEvent e) {
+            try {
+                TreePath selPath = tree.getLeadSelectionPath();
+                if (selPath != null) {
+                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+                    selectedNode.addNode("", "New Text Node", Node.TEXT_NODE);
+                    tree.updateUI();
+                }
+            } catch (DOMException dome) {
+                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        
+    }//}}}
+    
+    private class RemoveNodeAction implements ActionListener {//{{{
+        
+        public void actionPerformed(ActionEvent e) {
+            try {
+                TreePath selPath = tree.getLeadSelectionPath();
+                if (selPath != null) {
+                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
+                    selectedNode.remove();
+                    tree.updateUI();
+                }
+            } catch (DOMException dome) {
+                JOptionPane.showMessageDialog(DefaultView.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        
     }//}}}
     
     private JTree tree = new JTree();
@@ -337,7 +425,6 @@ public class DefaultView extends DocumentView {
     private JTable attributesTable = new JTable();
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
-    private JPopupMenu popup;
     private XMLDocument currentDoc;
     
     private static final String viewname="documentview.default";

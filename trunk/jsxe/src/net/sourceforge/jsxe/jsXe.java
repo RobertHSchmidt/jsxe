@@ -146,7 +146,10 @@ public class jsXe {
     }//}}}
     
     public static String getVersion() {//{{{
-        return MajorVersion + "." + MinorVersion + "." + BuildVersion + " " + BuildType;
+        String version = MajorVersion + "." + MinorVersion;
+        if (BuildType == "development")
+            version += "." + BuildVersion;
+        return version;
     }//}}}
     
     public static boolean showOpenFileDialog(TabbedView view) throws IOException {//{{{
@@ -440,10 +443,11 @@ public class jsXe {
         
     }//}}}
     
-    private static final String MajorVersion = "00";
-    private static final String MinorVersion = "01";
-    private static final String BuildVersion = "01";
-    private static final String BuildType    = "alpha";
+    private static final String MajorVersion = "0";
+    private static final String MinorVersion = "1";
+    private static final String BuildVersion = "1";
+    private static final String BuildType    = "development";
+   // private static final String BuildType    = "stable";
     private static Vector XMLDocuments = new Vector();
     private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?>\n<default_element>default_node</default_element>";
     private static final ImageIcon jsXeIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/jsxe.jpg"), "jsXe");
