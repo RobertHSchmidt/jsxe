@@ -200,7 +200,7 @@ public class jsXe {
                 System.out.println("COULD NOT LOAD PLUGIN: "+errors.get(i).toString());
             }
         }
-       
+        
         errors = m_pluginLoader.startPlugins();
         if (errors.size() != 0) {
             for (int i=0; i<errors.size(); i++) {
@@ -208,9 +208,11 @@ public class jsXe {
             }
         }
         
-        //load properties into jsXe's properties
+        
         Iterator viewItr = m_pluginLoader.getViewPlugins().iterator();
         while (viewItr.hasNext()) {
+            
+            //load properties into jsXe's properties
             ActionPlugin plugin = (ActionPlugin)viewItr.next();
             Properties props = plugin.getProperties();
             Enumeration names = props.propertyNames();
@@ -218,6 +220,8 @@ public class jsXe {
                 String name = names.nextElement().toString();
                 setProperty(name, props.getProperty(name));
             }
+            
+            addActionSet(plugin.getActionSet());
         }
         
         // do the same for action plugins
@@ -230,6 +234,8 @@ public class jsXe {
                 String name = names.nextElement().toString();
                 setProperty(name, props.getProperty(name));
             }
+            
+            addActionSet(plugin.getActionSet());
         }
         
         //}}}

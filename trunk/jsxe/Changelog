@@ -2,6 +2,7 @@
 
     * Updated the ant build document.
     * jsXe now loads a plugin's properties
+    * Added support for ActionPlugins
 
 12/07/2004  version 0.3 pre4    Ian Lewis <IanLewis@member.fsf.org>
 
