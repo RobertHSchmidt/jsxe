@@ -101,6 +101,10 @@ public abstract class XMLDocument {
         return props.getProperty(key);
     }//}}}
     
+    public String getProperty(String key, String defaultValue) {//{{{
+        return props.getProperty(key, defaultValue);
+    }//}}}
+    
     public abstract boolean save(TabbedView view);
     
     public abstract boolean save(TabbedView view, File file);
