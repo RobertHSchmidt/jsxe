@@ -1,6 +1,7 @@
 03/04/2005  version 0.4 pre15   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added better error checking when loading plugins.
+    * Updated the plugin manager to look nicer. Needs a bit more work though.
 
 03/03/2005  version 0.4 pre14   Ian Lewis <IanLewis@member.fsf.org>
 
