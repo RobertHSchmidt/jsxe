@@ -154,7 +154,7 @@ public class DefaultView extends DocumentView {
         
         AdapterNode adapter = document.getAdapterNode();
         
-        DefaultViewTreeModel treeModel = new DefaultViewTreeModel(this, document);
+        DefaultViewTreeModel treeModel = new DefaultViewTreeModel(this, buffer);
         DefaultViewTableModel tableModel = new DefaultViewTableModel(this, adapter);
         DefaultViewDocument styledDoc = new DefaultViewDocument(adapter);
         
@@ -170,7 +170,7 @@ public class DefaultView extends DocumentView {
         styledDoc.addDocumentListener(docListener);
         
         //get the splitpane layout options
-        boolean layout = Boolean.valueOf(document.getProperty(_CONTINUOUS_LAYOUT)).booleanValue();
+        boolean layout = Boolean.valueOf(buffer.getProperty(_CONTINUOUS_LAYOUT)).booleanValue();
         vertSplitPane.setContinuousLayout(layout);
         horizSplitPane.setContinuousLayout(layout);
         vertSplitPane.setDividerLocation(Integer.valueOf(buffer.getProperty(_HORIZ_SPLIT_LOCATION)).intValue());
@@ -186,7 +186,11 @@ public class DefaultView extends DocumentView {
         TreePath path = new TreePath(new Object[] { document.getAdapterNode(), document.getRootElementNode() });
         tree.expandPath(path);
         
+        if (m_buffer != null) {
+            m_buffer.removeDocumentBufferListener(m_bufferListener);
+        }
         m_buffer = buffer;
+        m_buffer.addDocumentBufferListener(m_bufferListener);
     } //}}}
     
     //{{{ getMenus()
@@ -437,7 +441,9 @@ public class DefaultView extends DocumentView {
                 htmlPane.updateUI();
                 
             } else {
-                htmlPane.setDocument(null);
+                AdapterNode node = m_buffer.getXMLDocument().getAdapterNode();
+                htmlPane.setDocument(new DefaultViewDocument(node));
+                htmlPane.setEditable(canEditInJEditorPane(node));
             }
         }//}}}
         
@@ -540,6 +546,35 @@ public class DefaultView extends DocumentView {
         public void removeUpdate(DocumentEvent e) {
            // updateTree();
         };
+        
+    };//}}}
+    private DocumentBufferListener m_bufferListener = new DocumentBufferListener() {///{{{
+        
+        //{{{ nameChanged
+        
+        public void nameChanged(DocumentBuffer source, String newName) {}//}}}
+        
+        //{{{ propertiesChanged
+        
+        public void propertiesChanged(DocumentBuffer source, String key) {}//}}}
+        
+        //{{{ bufferSaved()
+        
+        public void bufferSaved(DocumentBuffer source) {
+            /*
+            need to reload since saving can change the structure,
+            like when splitting cdata sections
+            */
+            
+            tree.updateUI();
+            //Make root element node expanded.
+            TreePath path = new TreePath(new Object[] { m_buffer.getXMLDocument().getAdapterNode(), m_buffer.getXMLDocument().getRootElementNode() });
+            tree.expandPath(path);
+            
+            //clear the html pane
+            htmlPane.setDocument(new DefaultViewDocument(m_buffer.getXMLDocument().getAdapterNode()));
+            htmlPane.setEditable(false);
+        }//}}}
         
     };//}}}
     //}}}

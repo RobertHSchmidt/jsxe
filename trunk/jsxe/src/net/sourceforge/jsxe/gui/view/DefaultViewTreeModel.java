@@ -45,6 +45,7 @@ import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.DocumentBuffer;
 //}}}
 
 //{{{ Swing components
@@ -91,8 +92,8 @@ import java.util.Enumeration;
 
 public class DefaultViewTreeModel implements TreeModel {
     
-    protected DefaultViewTreeModel(Component parent, XMLDocument doc) {//{{{
-        document = doc;
+    protected DefaultViewTreeModel(Component parent, DocumentBuffer doc) {//{{{
+        m_buffer = doc;
         view = parent;
     }//}}}
 
@@ -107,8 +108,8 @@ public class DefaultViewTreeModel implements TreeModel {
     public Object getChild(Object parent, int index) {//{{{
         AdapterNode node = (AdapterNode) parent;
         
-        boolean showComments = Boolean.valueOf(document.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
-        boolean showEmpty    = Boolean.valueOf(document.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
+        boolean showComments = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
+        boolean showEmpty    = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
         
         boolean found = false;
         
@@ -152,8 +153,8 @@ public class DefaultViewTreeModel implements TreeModel {
     public int getIndexOfChild(Object parent, Object child) {//{{{
         AdapterNode node = (AdapterNode) parent;
         
-        boolean showComments = Boolean.valueOf(document.getProperty("show.comment.nodes", "false")).booleanValue();
-        boolean showEmpty    = Boolean.valueOf(document.getProperty("show.empty.nodes", "false")).booleanValue();
+        boolean showComments = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.comment.nodes", "false")).booleanValue();
+        boolean showEmpty    = Boolean.valueOf(m_buffer.getProperty("documentview.default.show.empty.nodes", "false")).booleanValue();
         
         if (!showComments && node.getNodeType()==Node.COMMENT_NODE)
             return -1;
@@ -164,7 +165,7 @@ public class DefaultViewTreeModel implements TreeModel {
     }//}}}
     
     public Object getRoot() {//{{{
-        return document.getAdapterNode();
+        return m_buffer.getXMLDocument().getAdapterNode();
     }//}}}
     
     public boolean isLeaf(Object aNode) {//{{{
@@ -233,7 +234,7 @@ public class DefaultViewTreeModel implements TreeModel {
     
     Component view;
     
-    private XMLDocument document;
+    private DocumentBuffer m_buffer;
     private Vector treeListenerList = new Vector();
     //}}}
 }
