@@ -10,8 +10,8 @@ The user can then edit this tree and the content in the tree.
 This file contains the filter class that filters what file types the
 file dialogs display.
 
-This file written by ian Lewis (iml001@bridgewater.edu)
-Copyright (C) 2002 ian Lewis
+This file written by Ian Lewis (IanLewis@member.fsf.org)
+Copyright (C) 2002 Ian Lewis
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -50,8 +50,22 @@ import javax.swing.filechooser.FileFilter;
 
 //}}}
 
+/**
+ * A custom class that implements the FileFilter interface. It simplifies
+ * creating a file filter.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class CustomFileFilter extends FileFilter {
     
+    /**
+     * Creates a CustomFileFilter given a Vector containing the file extensions
+     * that the file filter accepts. If the Vector does not contain strings
+     * then the file filter will not accept any files.
+     * @param exts A vector of String objects containing the file
+     *             extensions that this file filter accepts.
+     * @param desc The description for this file filter.
+     */
     public CustomFileFilter(Vector exts, String desc) {//{{{
         extentions = exts;
         description = desc;
