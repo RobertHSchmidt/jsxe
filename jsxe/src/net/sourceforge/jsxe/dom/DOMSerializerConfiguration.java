@@ -318,17 +318,25 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
                     }
                     if (name.equals(FORMAT_XML) && ((Boolean)value).booleanValue()) {
                         /*
-                        setting element-content-whitespaces to false
-                        because I'm not sure how to pretty print the document
-                        and preserve whitespace in element content at the same
-                        time.
+                        The element-content-whitespace parameter is ignored
+                        when serializing since the parameter only makes sense
+                        when the document is validated by DTD or Schema that
+                        specifies that an element MUST have only child elements
+                        (element-content).
+                        
+                        Also if the DOM validates this info when being edited
+                        then the serializer could never write out whitespace
+                        in element content without invalidating the document.
+                        See
+                        http://xml.apache.org/xerces2-j/javadocs/dom3-api/index.html
+                        Section 2.10
                         */
-                        setFeature(WS_IN_ELEMENT_CONTENT, false);
+                       // setFeature(WS_IN_ELEMENT_CONTENT, false);
                         setFeature(CANONICAL_FORM, false);
                     }
-                    if (name.equals(WS_IN_ELEMENT_CONTENT) && ((Boolean)value).booleanValue()) {
-                        setFeature(FORMAT_XML, false);
-                    }
+                   // if (name.equals(WS_IN_ELEMENT_CONTENT) && ((Boolean)value).booleanValue()) {
+                   //     setFeature(FORMAT_XML, false);
+                   // }
                     
                     m_parameters.put(name, value);
                     
