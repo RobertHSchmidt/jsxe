@@ -197,6 +197,7 @@ TODO:
     
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
+      Build into the interfaces support for printing.
     
     * Implement plugin support with BeanShell. Make DocumentViews into plugins
       that are loaded at runtime. DefaultView and SourceView will be distributed
@@ -209,6 +210,8 @@ TODO:
 * Version 0.7 beta
     
     * Implement some form of internationalization support.
+    
+    * Implement printing support in the Default View and SourceView
     
 * Version 0.8 beta
 
