@@ -491,7 +491,7 @@ public class AdapterNode {
      * <p>Gets the underlying Node object that this AdapterNode wraps.</p>
      * @return the underlying Node object for this AdapterNode object
      */
-    protected Node getNode() {//{{{
+    Node getNode() {//{{{
         return domNode;
     }//}}}
     
@@ -499,7 +499,7 @@ public class AdapterNode {
      * <p>Sets the parent node of this AdapterNode.</p>
      * @param parent the new parent for this AdapterNode
      */
-    protected void setParent(AdapterNode parent) {//{{{
+    void setParent(AdapterNode parent) {//{{{
         parentNode = parent;
     }//}}}
     
