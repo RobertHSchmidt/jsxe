@@ -43,6 +43,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ DOM classes
@@ -190,7 +191,6 @@ public class XMLDocument {
             Document doc = builder.parse(new ContentManagerInputStream(m_content));
             doc.getDocumentElement().normalize();
             setDocument(doc);
-            
             m_parsedMode=true;
         }
         return m_parsedMode;
@@ -560,13 +560,15 @@ public class XMLDocument {
     
     //{{{ setModel()
     /**
-     * Sets up the DefaultXMLDocument given a Reader.
+     * Sets up the XMLDocument given a Reader. The existing content is
+     * thrown out and the document read in through the reader is
+     * used.
      */
     public void setModel(Reader reader) throws IOException {
         
         char[] buffer = new char[READ_SIZE];
         
-        m_content = new ContentManager();
+        ContentManager content = new ContentManager();
         
         //Read the document the content manager
         int bytesRead;
@@ -574,13 +576,14 @@ public class XMLDocument {
         do {
             bytesRead = reader.read(buffer, 0, READ_SIZE);
             if (bytesRead != -1) {
-                m_content.insert(index, new String(buffer, 0, bytesRead));
+                content.insert(index, new String(buffer, 0, bytesRead));
                 index+=bytesRead;
             }
         }
         while (bytesRead != -1);
         
-        //check the wellformedness
+        m_content = content;
+        
         m_parsedMode = false;
         
        // try {

@@ -21,9 +21,16 @@ TODO:
 
     & Serialized XML should be 100% well-formed and parsable.
 
-* Version 0.3 beta (Plugin Support)
+* Version 0.3 beta (Plugin + Namespace Support)
 
-    * Make any changes necessary for the Schema View.
+    * Make any changes necessary for an early version of the Schema View.
+    * Add full namespace support. When renaming nodes the setPrefix() method
+      should be used. setNodeName() allows you to change a node prefix and thus
+      alter the well-formedness of the document.
+    * Address the ability to change a namespace definition after it has been
+      bound to a parsed document. The DOM classes allow you to change a bound
+      namespace. Should jsXe's tree view prevent it? Give you a warning when
+      saving?
 
 * Version 0.4 beta (DTD support)
     
