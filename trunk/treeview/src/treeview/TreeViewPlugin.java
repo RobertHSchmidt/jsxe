@@ -51,8 +51,18 @@ public class TreeViewPlugin extends ViewPlugin {
     
     public static final String PLUGIN_NAME = "tree";
     private static final String HUMAN_READABLE_NAME = "Tree View";
-    private static final String VERSION = "0.1";
+    private static final String VERSION;
     private static final String DESCRIPTION = "";
+    
+    static {
+        InputStream propsStream = DefaultView.class.getResourceAsStream("/treeview/build.properties");
+        Properties buildProps = new Properties();
+        try {
+            buildProps.load(viewinputstream);
+        } catch (IOException ioe) {}
+        
+        VERSION = buildProps.get("build.version");
+    }
     
     //{{{ TreeViewPlugin
     
