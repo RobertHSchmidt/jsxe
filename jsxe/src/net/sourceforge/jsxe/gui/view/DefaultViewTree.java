@@ -483,7 +483,8 @@ public class DefaultViewTree extends JTree {
                     m_dragSource.startDrag(dge, DragSource.DefaultCopyNoDrop, transferable, m_treeDSListener);
                     
                     //Don't want to start editing if we are doing a drag
-                    setEditable(false);
+                   // setEditable(false);
+                   // m_isInDragDrop = true;
                 }
             } catch( InvalidDnDOperationException idoe) {
                 jsXe.exiterror(null, idoe.getMessage(), 1);
@@ -525,10 +526,11 @@ public class DefaultViewTree extends JTree {
             }
             
             //Set the editing stuff back to normal since drag is done.
-            AdapterNode selectedNode = (AdapterNode)getLastSelectedPathComponent();
-            if ( selectedNode != null ) {
-                setEditable(isEditable(selectedNode));
-            }
+           // AdapterNode selectedNode = (AdapterNode)getLastSelectedPathComponent();
+           // if ( selectedNode != null ) {
+           //     setEditable(isEditable(selectedNode));
+           // }
+           // m_isInDragDrop = false;
         }//}}}
         
         //{{{ dragExit()
@@ -754,6 +756,7 @@ public class DefaultViewTree extends JTree {
     private DropTarget m_dropTarget;
     private DropTargetListener m_treeDTListener = new TreeDropTargetListener();
     private int m_acceptableActions = DnDConstants.ACTION_MOVE;
+   // private boolean m_isInDragDrop = false;
     
     private Rectangle m_cueLine = new Rectangle();
     

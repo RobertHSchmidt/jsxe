@@ -1,3 +1,7 @@
+04/22/2004  version 0.1.68  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a build problem that was introduced into cvs.
+
 04/21/2004  version 0.1.67  Ian Lewis <IanLewis@member.fsf.org>
 
     * Made it so that element nodes can't be edited in the JTree unless
