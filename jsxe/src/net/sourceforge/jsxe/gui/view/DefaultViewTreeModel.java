@@ -121,7 +121,7 @@ public class DefaultViewTreeModel implements TreeModel {
                 if (!showComments && child.getNodeType()==Node.COMMENT_NODE) {
                     index++;
                 }
-                if (!showEmpty && child.getNodeType()==Node.TEXT_NODE && child.getNodeValue().trim()=="") {
+                if (!showEmpty && child.getNodeType()==Node.TEXT_NODE && child.getNodeValue().trim().equals("")) {
                     index++;
                 }
             }
