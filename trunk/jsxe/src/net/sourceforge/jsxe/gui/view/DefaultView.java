@@ -175,6 +175,14 @@ public class DefaultView extends DocumentView {
         return currentdoc;
     }//}}}
     
+    public void close() {//{{{
+        String vert = Integer.toString(vertSplitPane.getDividerLocation());
+        String horiz = Integer.toString(horizSplitPane.getDividerLocation());
+        
+        jsXe.setProperty(viewname+".splitpane.vert.loc",vert);
+        jsXe.setProperty(viewname+".splitpane.horiz.loc",horiz);
+    }//}}}
+    
     //{{{ Private Members
     
     private boolean canEditInJTree(AdapterNode node) {//{{{

@@ -118,6 +118,8 @@ public class SourceView extends DocumentView {
         return currentdoc;
     }//}}}
     
+    public void close() {}
+    
     //{{{ Private members
     
     private class EditUndoAction implements ActionListener {//{{{
