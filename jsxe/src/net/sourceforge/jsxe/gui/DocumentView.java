@@ -37,6 +37,7 @@ package net.sourceforge.jsxe.gui;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.DocumentBuffer;
+import net.sourceforge.jsxe.ViewPlugin;
 //}}}
 
 //{{{ AWT classes
@@ -46,7 +47,6 @@ import java.awt.Component;
 //{{{ Swing classes
 import javax.swing.*;
 //}}}
-
 
 //{{{ Java base classes
 import java.io.IOException;
@@ -90,11 +90,10 @@ public interface DocumentView {
     public JMenu[] getMenus();
     //}}}
     
-    //{{{ getViewName()
+    //{{{ getViewPlugin()
     /**
-     * Gets the name of the view used when the DocumentViewFactory selects
-     * a view to create.
-     * @return the name of the view
+     * Gets view plugin that created this view.
+     * @return the view plugin
      */
     public ViewPlugin getViewPlugin();
     //}}}

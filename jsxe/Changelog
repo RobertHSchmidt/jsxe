@@ -1,3 +1,7 @@
+01/05/2005  version 0.3 pre7    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Tweaked the plugin interface to eliminate some redundant methods.
+
 12/10/2004  version 0.3 pre6    Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed bug that tried to create a new instance of a main class
