@@ -226,6 +226,8 @@ public class DefaultView extends JPanel implements DocumentView {
                 
                 m_document.setProperty(VERT_SPLIT_LOCATION,vert);
                 m_document.setProperty(HORIZ_SPLIT_LOCATION,horiz);
+                
+                m_document.removeXMLDocumentListener(m_documentListener);
             }
         }
         

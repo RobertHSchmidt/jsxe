@@ -4,6 +4,7 @@
       automatically even if the format-pretty-print property is true. This
       prevents loading documents where whitespace is matters without marking
       them dirty.
+    * Views now remove listeners that they add to the DocumentBuffer
 
 8/25/2004   version 0.2 pre21   Ian Lewis <IanLewis@member.fsf.org>
 

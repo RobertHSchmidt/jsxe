@@ -164,6 +164,7 @@ public class SourceView extends JPanel implements DocumentView {
         if (dialog != null) {
             dialog.dispose();
         }
+        m_document.removeDocumentBufferListener(docListener);
         return true;
     }//}}}
     
