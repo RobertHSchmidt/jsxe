@@ -8,9 +8,5 @@
       implementation of the Document interface without having to write a
       DOMBuilder?
     
-    * In Windows the CPU usage goes up to 100% and hangs if you try to browse
-      a drive root. Not sure why this is because I'm using the standard swing
-      file browser.
-    
     * CVS in Cygwin seeems to be corrupting jar files and jpg files when
       checking out. Not sure why this is but it didn't used to do this.

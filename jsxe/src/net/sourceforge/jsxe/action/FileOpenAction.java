@@ -71,10 +71,7 @@ public class FileOpenAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {//{{{
         try {
-            boolean success = jsXe.showOpenFileDialog(view);
-            if (!success) {
-                JOptionPane.showMessageDialog(view, "Could not open file.", "I/O Error", JOptionPane.WARNING_MESSAGE);
-            }
+            jsXe.showOpenFileDialog(view);
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(view, ioe, "IO Error", JOptionPane.WARNING_MESSAGE);
         }
