@@ -283,7 +283,7 @@ public class jsXe {
         System.exit(0);
     }//}}}
     
-    // Private static members {{{    
+    // Private static members {{{
     private static final String MajorVersion = "00";
     private static final String MinorVersion = "01";
     private static final String BuildVersion = "01";
@@ -293,4 +293,5 @@ public class jsXe {
     private static final ImageIcon jsXeIcon = new ImageIcon("net/sourceforge/jsxe/icons/jsxe.jpg", "jsXe");
     private static final String AppTitle = "jsXe";
     //}}}
+    
 }

@@ -91,8 +91,10 @@ public class TabbedView extends JFrame {
             new ChangeListener() {
                 public void stateChanged(ChangeEvent e) {
                     //This could be called after removing the only tab
-                    XMLDocument[] docs = jsXe.getXMLDocuments();
-                    if (docs.length != 0) {
+                    //if there is only 1 or 0 tabs then we don't need to
+                    //do this stuff.
+                    if (tabbedPane.getTabCount() > 1) {
+                        XMLDocument[] docs = jsXe.getXMLDocuments();
                         setDocument(docs[tabbedPane.getSelectedIndex()]);
                         ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
                         updateTitle();
@@ -149,8 +151,9 @@ public class TabbedView extends JFrame {
                     //if the tab removed is not the rightmost tab
                     //stateChanged is not called for some
                     //reason.
-                    if (i != docs.length-1) {
-                        setDocument(docs[tabbedPane.getSelectedIndex()]);
+                    if (i != tabbedPane.getTabCount()) {
+                        docview.setDocument(this,docs[tabbedPane.getSelectedIndex()+1]);
+                        tabbedPane.setSelectedIndex(i);
                         ((JPanel)tabbedPane.getSelectedComponent()).add(docview);
                         updateTitle();
                     }
