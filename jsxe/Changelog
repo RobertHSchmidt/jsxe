@@ -2,6 +2,10 @@
 
     * Fixed a bug that caused a null pointer exception when reloading an
       untitled document.
+    * Changed the DocumentView interface to return a Component via a
+      method call instead of having it extend JPanel
+    * Fixed a bug that caused ArrayOutOfBounds exceptions to be thrown
+      sometimes when adding nodes via the JTree in DefaultView
 
 05/30/2004  version 0.2 pre5    Ian Lewis <IanLewis@member.fsf.org>
 
