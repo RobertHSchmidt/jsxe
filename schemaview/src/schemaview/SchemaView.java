@@ -81,32 +81,7 @@ public class SchemaView extends JPanel implements DocumentView {
         
         m_plugin = plugin;
         
-        final JGraph graph = new JGraph();
-        
-        graph.setModel(new SchemaViewModel(document));
-        
-       // org.jgraph.graph.GraphModel model = graph.getModel();
-       // 
-       // int rootcount = model.getRootCount();
-       // for (int j=0; j<rootcount; j++) {
-       //     Object root = model.getRootAt(j);
-       //     Log.log(Log.DEBUG,this,"root: "+root.getClass().toString()+" : "+root.toString());
-       //     int count = model.getChildCount(root);
-       //     boolean children = false;
-       //     for (int i=0;i<count;i++) {
-       //         children = true;
-       //         Object child = model.getChild(root, i);
-       //         Log.log(Log.DEBUG,this,child.getClass().toString()+" : "+child.toString());
-       //         int count2 = model.getChildCount(child);
-       //         for (int k=0;k<count2;k++) {
-       //             Object child2 = model.getChild(child, k);
-       //             Log.log(Log.DEBUG,this,"   "+child2.getClass().toString()+" : "+child2.toString());
-       //         }
-       //     }
-       //     if (!children) {
-       //         Log.log(Log.DEBUG,this,"NO CHILDREN!");
-       //     }
-       // }
+        m_graph = new JGraph();
         
        // addComponentListener(new ComponentListener() {//{{{
        //     
@@ -117,19 +92,19 @@ public class SchemaView extends JPanel implements DocumentView {
        //     public void componentResized(ComponentEvent e) {}
        //     
        //     public void componentShown(ComponentEvent e) {
-       //         ((SchemaViewGraphModel)graph.getModel()).layout();
+       //         ((SchemaViewGraphModel)m_graph.getModel()).layout();
        //         updateUI();
        //     }
        //     
        // });//}}}
         
-        graph.setMoveable(false);
-        graph.setConnectable(false);
-        graph.setDisconnectable(false);
-        graph.setBendable(false);
-        graph.setSizeable(false);
+        m_graph.setMoveable(false);
+        m_graph.setConnectable(false);
+        m_graph.setDisconnectable(false);
+        m_graph.setBendable(false);
+        m_graph.setSizeable(false);
         
-        JScrollPane scrollPane = new JScrollPane(graph);
+        JScrollPane scrollPane = new JScrollPane(m_graph);
         add(scrollPane);
         setDocumentBuffer(document);
     }//}}}
@@ -187,14 +162,16 @@ public class SchemaView extends JPanel implements DocumentView {
         try {
             document.checkWellFormedness();
         } catch (Exception e) {
-            String errormsg = "The tree view requires XML documents to be well-formed.\n\n"+
-            e.toString();
+            String errormsg = "The tree view requires XML documents to be well-formed.\n\n"+e.toString();
             throw new IOException(errormsg);
         }
         
         m_document = document;
+        m_graph.setModel(new SchemaViewModel(document));
     }//}}}
 
+    private JGraph m_graph;
+    
     //}}}
 
 }

@@ -4,6 +4,10 @@
       a schema tree model within the graph model. This should make it easier
       to perform edits and such.
     * Improved parsing time a bit.
+    * The view now figures out what namespace prefix you gave the schema
+      namespace.
+    * Fixed bug that caused null pointer exceptions when trying to open
+      schema that were not well formed.
 
 03/15/2005  Ian Lewis <IanLewis@member.fsf.org>
 
