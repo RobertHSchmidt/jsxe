@@ -191,20 +191,6 @@ public class DefaultView extends JPanel implements DocumentView {
         setDocumentBuffer(document);
     }//}}}
     
-   // //{{{ setVisible()
-   // /**
-   //  * Initializes the size of the split panes and shows the component. The
-   //  * divider locations cannot be set before the split pane is added to a
-   //  * component for some reason.
-   //  * @param b If true, shows this component; otherwise, hides this component.
-   //  */
-   // public void setVisible(boolean b) {
-   //     if (b && m_firstShow) {
-            
-   //     }
-   //     super.setVisible(b);
-   // }//}}}
-    
     //{{{ getHumanReadableName()
     
     public static String getHumanReadableName() {
@@ -236,12 +222,6 @@ public class DefaultView extends JPanel implements DocumentView {
         return true;
     }//}}}
 
-    //{{{ getDescription()
-    
-    public String getDescription() {
-        return m_plugin.getDescription();
-    }//}}}
-    
     //{{{ getDocumentViewComponent
     
     public Component getDocumentViewComponent() {
