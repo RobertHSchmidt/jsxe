@@ -8,10 +8,13 @@
       values and relied on the user to initialize them with a document. Now an
       initial document is required to construct them. This should be better for
       reuse.
+    * Added a "Rename Node" action to the default view tree's context menu. You
+      can still rename it by clicking twice (not double clicking) on the element
+      node.
 
 12/14/2003  version 0.1.44  Ian Lewis <IanLewis@member.fsf.org>
 
-    * Updated the DOMSerializer and related classes to be complient with the
+    * Updated the DOMSerializer and related classes to be compliant with the
       latest version of the DOM3. So now jsXe requires Xerces 2.6.0.
     * Fixed a bug where the html pane was editable after opening a new document
       though no node was selected.
