@@ -44,6 +44,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
 //{{{ Java base classes
@@ -67,13 +68,13 @@ public class DocumentViewFactory {
         viewType = type;
     }//}}}
     
-    public DocumentView newDocumentView(DocumentBuffer buffer) throws IOException, UnrecognizedDocViewException {//{{{
+    public DocumentView newDocumentView(TabbedView view, DocumentBuffer buffer) throws IOException, UnrecognizedDocViewException {//{{{
         //Document type validation is pretty simple right now
         if (viewType == "documentview.default") {
-            return new DefaultView(buffer);
+            return new DefaultView(view, buffer);
         } else {
             if (viewType == "documentview.sourceview") {
-                return new SourceView(buffer);
+                return new SourceView(view, buffer);
             } else {
                 throw new UnrecognizedDocViewException();
             }
