@@ -115,6 +115,8 @@ public abstract class XMLDocument {
     
     public abstract boolean isValidated();
     
+    public abstract void DocumentHasChanged();
+    
     //{{{ Private members
     private Properties props = new Properties();
     //}}}

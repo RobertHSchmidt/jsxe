@@ -77,17 +77,19 @@ public class DefaultViewDocument extends DefaultStyledDocument {
                    super.insertString(0, value, new SimpleAttributeSet());
                 }
             }
-        } catch (BadLocationException ble) {
-            Toolkit.getDefaultToolkit().beep();
-        }
+        } catch (BadLocationException ble) {}
         node = n;
     }//}}}
 
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {//{{{
 
         try {
+            //the node needs to be updated before we call insertString
+            //so that the listeners are invoked after all changes have
+            //been made.
+            String newNodeValue = super.getText(0,offs) + str + super.getText(offs,super.getLength()-offs);
+            node.setNodeValue(newNodeValue);
             super.insertString(offs, str, a);
-            node.setNodeValue(super.getText(0,super.getLength()));
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
         }
@@ -97,8 +99,12 @@ public class DefaultViewDocument extends DefaultStyledDocument {
     public void remove(int offs, int len) throws BadLocationException {//{{{
         
         try {
+            //the node needs to be updated before we call remove
+            //so that the listeners are invoked after all changes have
+            //been made.
+            String newNodeValue = super.getText(0,offs) + super.getText(offs+len,super.getLength()-offs-len);
+            node.setNodeValue(newNodeValue);
             super.remove(offs, len);
-            node.setNodeValue(super.getText(0,super.getLength()));
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
         }
