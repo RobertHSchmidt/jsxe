@@ -74,15 +74,6 @@ public interface DocumentView {
     public boolean close();
     //}}}
     
-    //{{{ getDescription()
-    /**
-     * Gets a short, one line, description of this view.
-     * @deprecated use {@link net.sourceforge.jsxe.ActionPlugin#getDescription()} instead
-     * @return a short description of the view
-     */
-    public String getDescription();
-    //}}}
-    
     //{{{ getDocumentViewComponent()
     /**
      * Gets the the Component used to render this view.

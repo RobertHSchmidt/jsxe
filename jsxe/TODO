@@ -26,8 +26,6 @@ TODO:
     * Finalize the class structure and public plugin interface as it will be
       harder to remove/deprecate methods after the introduction of plugins.
     
-    * Update the options dialog to show options from all installed views
-    
     * jsXe should have a plugin manager window to display plugin information.
     
     * jsXe should load plugins from both ~/.jsxe/plugins and the install
