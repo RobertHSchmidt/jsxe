@@ -3,10 +3,16 @@ TODO:
     * Document methods with javadoc.
     
     * Change the DOMSerializer class to conform to the DOM3 standard DOMWriter
-      interface. For encoding use the java.io.OutputStreamWriter class.
+      interface. For encoding use the java.io.OutputStreamWriter class. Add an
+      encoding option to the option dialog.
+    
+    * Build an adapter for DocumentBuilder so that it implements the DOM3
+      standard DOMBuilder interface?
     
     * Use the Nodefilter interface with the DefaultView to determine which types
       of nodes to show.
+    
+    * Add funtionality for dirty files.
     
     * Allow for selecting multiple files when opening.
     
@@ -54,6 +60,8 @@ TODO:
       document is not validated try to open it in the requested view and if that
       fails then open it in one of the remaining installed views until it works
       or you run out of views.
+    
+    * Create an install program for jsXe.
     
     * Create a view that uses the view from pollo and implements the
       DocumentView interface.
