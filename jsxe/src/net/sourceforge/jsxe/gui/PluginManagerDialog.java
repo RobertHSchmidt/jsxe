@@ -40,8 +40,10 @@ import net.sourceforge.jsxe.ActionPlugin;
 
 //{{{ Swing classes
 import javax.swing.*;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.TableModel;
+import javax.swing.table.*;
 import javax.swing.event.TableModelListener;
 //}}}
 
@@ -65,8 +67,13 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         super(parent, "Plugin Manager", true);
         setLocationRelativeTo(parent);
         
-        JTable table = new JTable(new PluginManagerTableModel());
+        final JTable table = new JTable(new PluginManagerTableModel());
         JScrollPane tableView = new JScrollPane(table);
+        
+        final JTextArea descArea = new JTextArea();
+        JScrollPane textView = new JScrollPane(descArea);
+        
+        JSplitPane centerPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, table, descArea);
         
         JPanel content = new JPanel(new BorderLayout(12,12));
         content.setBorder(new EmptyBorder(12,12,12,12));
@@ -86,7 +93,16 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         
         buttons.add(Box.createGlue());
         
-        content.add(tableView, BorderLayout.CENTER);
+        //set up the plugin table
+        ListSelectionModel model = table.getSelectionModel();
+        model.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        model.addListSelectionListener(new ListSelectionListener() {//{{{
+            public void valueChanged(ListSelectionEvent e) {
+                descArea.setText(((ActionPlugin)m_plugins.get(e.getLastIndex())).getDescription());
+            }
+        });//}}}
+        
+        content.add(centerPane, BorderLayout.CENTER);
         content.add(buttons, BorderLayout.SOUTH);
         
         loadGeometry(this, "pluginmgr");
@@ -122,12 +138,6 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
     
     private class PluginManagerTableModel implements TableModel {
         
-        //{{{ PluginManagerTableModel constructor
-        
-        public PluginManagerTableModel() {
-            m_m_plugins = jsXe.getPluginLoader().getAllPlugins();
-        }//}}}
-        
         //{{{ addTableModelListener()
         
         public void addTableModelListener(TableModelListener l) {
@@ -143,7 +153,7 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         //{{{ getColumnCount()
         
         public int getColumnCount() {
-            return 3;
+            return 2;
         }//}}}
         
         //{{{ getColumnName()
@@ -154,9 +164,6 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
                 name = "Name";
             }
             if (columnIndex == 1) {
-                name = "Description";
-            }
-            if (columnIndex == 2) {
                 name = "Version";
             }
             return name;
@@ -165,7 +172,7 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         //{{{ getRowCount()
         
         public int getRowCount() {
-            return m_m_plugins.size();
+            return m_plugins.size();
         }//}}}
         
         //{{{ getValueAt()
@@ -173,13 +180,10 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         public Object getValueAt(int rowIndex, int columnIndex) {
             String value = null;
             if (columnIndex == 0) {
-                value = ((ActionPlugin)m_m_plugins.get(rowIndex)).getHumanReadableName();
+                value = ((ActionPlugin)m_plugins.get(rowIndex)).getHumanReadableName();
             }
             if (columnIndex == 1) {
-                value = ((ActionPlugin)m_m_plugins.get(rowIndex)).getDescription();
-            }
-            if (columnIndex == 2) {
-                value = ((ActionPlugin)m_m_plugins.get(rowIndex)).getVersion();
+                value = ((ActionPlugin)m_plugins.get(rowIndex)).getVersion();
             }
             return value;
         }//}}}
@@ -202,14 +206,11 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
             // nothing. not supported.
         }//}}}
         
-        //{{{ Private instance variables
-        ArrayList m_m_plugins;
-        //}}}
-        
     }//}}}
     
     //{{{ Private Members
-    JButton m_ok;
-    JButton m_cancel;
+    private JButton m_ok;
+    private JButton m_cancel;
+    private ArrayList m_plugins = jsXe.getPluginLoader().getAllPlugins();
     //}}}
 }
