@@ -5,7 +5,9 @@ TODO:
     * Allow GUI models to register change listeners with XMLDocuments and
       AdapterNodes. This will allow GUI models to be updated automatically when
       the DOM is changed. Also add property change listeners so that views can
-      be updated when properties (options) change.
+      be updated when properties (options) change. Update the views to register
+      listeners with the XMLDocuments and AdapterNodes so they update themselves
+      when they change.
     
     * Currently AdapterNodes only wrap the Node interface and create new
       instances of itself when queried. Have AdapterNode implement the TreeNode

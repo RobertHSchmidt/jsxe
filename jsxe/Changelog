@@ -1,3 +1,11 @@
+09/07/2003  version 0.1.15  Ian Lewis  <IanLewis@member.fsf.org>
+
+    * Added functionality to the XMLDocument interface for adding listeners
+      so objects can be notified when the XML document changes.
+      Added an interface XMLDocumentListener. Documented it with javadoc.
+    * Fixed a bug that caused problems when saving as a file that was already
+      open. This was fixed earlier but the bug was reintroduced somewhere.
+
 9/01/2003   version 0.1.14  Ian Lewis  <IanLewis@member.fsf.org>
 
     * Changed the XMLDocument validate() method to be checkWellFormedness().
