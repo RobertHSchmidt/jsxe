@@ -49,26 +49,34 @@ import net.sourceforge.jsxe.gui.TabbedView;
 
 //{{{ Java base classes
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
-import java.util.Vector;
 //}}}
 
 //}}}
 
 public class DocumentViewFactory {
 
-    private DocumentViewFactory() {}
+    //{{{ DocumentViewFactory constructor
     
-    public static DocumentViewFactory newInstance() {//{{{
+    private DocumentViewFactory() {}//}}}
+    
+    //{{{ newInstance()
+    
+    public static DocumentViewFactory newInstance() {
         return new DocumentViewFactory();
     }//}}}
     
-    public void setDocumentViewType(String type) {//{{{
+    //{{{ setDocumentViewType()
+    
+    public void setDocumentViewType(String type) {
         viewType = type;
     }//}}}
     
-    public DocumentView newDocumentView(TabbedView view, DocumentBuffer buffer) throws IOException, UnrecognizedDocViewException {//{{{
+    //{{{ newDocumentView()
+    
+    public DocumentView newDocumentView(TabbedView view, DocumentBuffer buffer) throws IOException, UnrecognizedDocViewException {
         //Document type validation is pretty simple right now
         if (viewType == "documentview.default") {
             return new DefaultView(view, buffer);
@@ -81,31 +89,48 @@ public class DocumentViewFactory {
         }
     }//}}}
 
-    public static Enumeration getAvailableViewTypes() {//{{{
+    //{{{ getAvailableViewTypes()
+    
+    public static Enumeration getAvailableViewTypes() {
         return new DocumentViews();
     }//}}}
 
     //{{{ Private members
     
-    private static class DocumentViews implements Enumeration {//{{{
+    //{{{ DocumentViews class
+    
+    private static class DocumentViews implements Enumeration {
+        
+        //{{{ DocumentViews constructor
         
         DocumentViews() {
             elements.add("documentview.default");
             elements.add("documentview.sourceview");
-        }
+        }//}}}
+        
+        //{{{ Enumeration methods
+        
+        //{{{ hasMoreElements()
         
         public boolean hasMoreElements() {
             return (elements.size() != 0);
-        }
+        }//}}}
+        
+        //{{{ nextElement()
         
         public Object nextElement() throws NoSuchElementException {
             if (elements.size() != 0)
                 return elements.remove(0);
             else
                 throw new NoSuchElementException();
-        }
+        }//}}}
         
-        private Vector elements = new Vector(2);
+        //}}}
+        
+        //{{{ Private members
+        
+        private ArrayList elements = new ArrayList(2);
+        //}}}
     }//}}}
     
     private String viewType = "documentview.default";

@@ -65,7 +65,6 @@ import org.w3c.dom.Node;
 //{{{ Java base classes
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Vector;
 //}}}
 
 //}}}
@@ -124,6 +123,8 @@ public class DefaultView extends DocumentView {
         
         setDocumentBuffer(view, buffer);
     }//}}}
+    
+    //{{{ DocumentView methods
     
     //{{{ setDocumentBuffer()
 
@@ -254,6 +255,17 @@ public class DefaultView extends DocumentView {
         
         return true;
     }//}}}
+    
+    //}}}
+    
+    //{{{ Private static members
+    private static final String _VIEWNAME="documentview.default";
+    private static final String _CONTINUOUS_LAYOUT = _VIEWNAME+".continuous.layout";
+    private static final String _VERT_SPLIT_LOCATION = _VIEWNAME+".splitpane.vert.loc";
+    private static final String _HORIZ_SPLIT_LOCATION = _VIEWNAME+".splitpane.horiz.loc";
+    private static final String _SHOW_COMMENTS = _VIEWNAME+".show.comment.nodes";
+    private static final String _SHOW_EMPTY_NODES = _VIEWNAME+".show.empty.nodes";
+    //}}}
     
     //{{{ Private Members
     
@@ -451,8 +463,6 @@ public class DefaultView extends DocumentView {
         
     }//}}}
     
-    //{{{ Actions
-    
     //{{{ RemoveAttributeAction class
     
     private class RemoveAttributeAction implements ActionListener {
@@ -489,23 +499,12 @@ public class DefaultView extends DocumentView {
         
     }//}}}
     
-    //}}}
-
-    //{{{ Instance variables
-    
     private DefaultViewTree tree = new DefaultViewTree();
     private JEditorPane htmlPane = new JEditorPane("text/plain","");
     private JTable attributesTable = new JTable();
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
     private DocumentBuffer m_buffer;
-    
-    private static final String _VIEWNAME="documentview.default";
-    private static final String _CONTINUOUS_LAYOUT = _VIEWNAME+".continuous.layout";
-    private static final String _VERT_SPLIT_LOCATION = _VIEWNAME+".splitpane.vert.loc";
-    private static final String _HORIZ_SPLIT_LOCATION = _VIEWNAME+".splitpane.horiz.loc";
-    private static final String _SHOW_COMMENTS = _VIEWNAME+".show.comment.nodes";
-    private static final String _SHOW_EMPTY_NODES = _VIEWNAME+".show.empty.nodes";
     
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {

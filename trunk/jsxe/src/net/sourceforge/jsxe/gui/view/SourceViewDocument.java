@@ -78,7 +78,9 @@ import java.util.StringTokenizer;
 
 public class SourceViewDocument extends DefaultStyledDocument {
 
-    protected SourceViewDocument(DocumentBuffer buffer) throws IOException {//{{{
+    //{{{ SourceViewDocument constructor
+    
+    protected SourceViewDocument(DocumentBuffer buffer) throws IOException {
         super(new GapContent(), new StyleContext());
         m_buffer = buffer;
         
@@ -104,7 +106,11 @@ public class SourceViewDocument extends DefaultStyledDocument {
         }
     }//}}}
 
-    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {//{{{
+    //{{{ DefaultStyledDocument methods
+    
+    //{{{ insertString()
+    
+    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
         
         XMLDocument document = m_buffer.getXMLDocument();
         
@@ -121,7 +127,9 @@ public class SourceViewDocument extends DefaultStyledDocument {
 
     }//}}}
 
-    public void remove(int offs, int len) throws BadLocationException {//{{{
+    //{{{ remove()
+    
+    public void remove(int offs, int len) throws BadLocationException {
         
         XMLDocument document = m_buffer.getXMLDocument();
         
@@ -138,6 +146,8 @@ public class SourceViewDocument extends DefaultStyledDocument {
         
     }//}}}
 
+    //}}}
+    
    // private class SourceViewDocumentXMLDocumentListener implements XMLDocumentListener {//{{{
    //     
    //     public void propertiesChanged(XMLDocument source, String propertyKey) {

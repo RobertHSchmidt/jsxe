@@ -75,7 +75,7 @@ import java.util.Iterator;
  */
 public class DOMSerializerConfiguration implements DOMConfiguration {
     
-    //DOMConfiguration defined parameters
+    //{{{ DOMConfiguration defined parameters
     public static String CANONICAL_FORM         = "canonical-form";
     public static String CDATA_SECTIONS         = "cdata-sections";
     public static String CHAR_NORMALIZATION     = "check-character-normalization";
@@ -92,18 +92,23 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
     public static String VALIDATE_IF_SCHEMA     = "validate-if-schema";
     public static String WELL_FORMED            = "well-formed";
     public static String WS_IN_ELEMENT_CONTENT  = "element-content-whitespace";
+    //}}}
     
-    //LSSerializer defined parameters
+    //{{{ LSSerializer defined parameters
     public static String DISCARD_DEFAULT_CONTENT    = "discard-default-content";
     public static String FORMAT_XML                 = "format-pretty-print";
     public static String IGNORE_UNKNOWN_CHAR_DENORM = "ignore-unknown-character-denormalizations";
     public static String XML_DECLARATION            = "xml-declaration";
+    //}}}
     
-    //Additional parameters supported by DOMSerializerConfiguration
+    //{{{ Additional parameters supported by DOMSerializerConfiguration
     public static String SOFT_TABS = "soft-tabs";
     public static String INDENT    = "indent";
+    //}}}
     
-    public DOMSerializerConfiguration() {//{{{
+    //{{{ DOMSerializerConfiguration constructor
+    
+    public DOMSerializerConfiguration() {
         
         //set the default boolean parameters for a DOMConfiguration
         setFeature(CANONICAL_FORM,              false);
@@ -134,7 +139,9 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         setParameter(INDENT,                    new Integer(4));
     }//}}}
     
-    public DOMSerializerConfiguration(DOMConfiguration config) throws DOMException {//{{{
+    //{{{ DOMSerializerConfiguration constructor
+    
+    public DOMSerializerConfiguration(DOMConfiguration config) throws DOMException {
         Iterator iterator = m_supportedParameters.iterator();
         while (iterator.hasNext()) {
             String param = iterator.next().toString();
@@ -142,7 +149,11 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         }
     }//}}}
     
-    public boolean canSetParameter(String name, Object value) {///{{{
+    //{{{ Implemented DOMConfiguration methods
+    
+    //{{{ canSetParameter()
+    
+    public boolean canSetParameter(String name, Object value) {
         
         if (value == null) {
             return (m_supportedParameters.indexOf(name) != -1);
@@ -232,7 +243,9 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         return false;
     }//}}}
     
-    public Object getParameter(String name) throws DOMException {//{{{
+    //{{{ getParameter()
+    
+    public Object getParameter(String name) throws DOMException {
         
         if (m_supportedParameters.indexOf(name) != -1) {
             
@@ -266,11 +279,15 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         }
     }//}}}
     
-    public DOMStringList getParameterNames() {//{{{
+    //{{{ getParameterNames()
+    
+    public DOMStringList getParameterNames() {
         return new DOMStringListImpl(m_supportedParameters);
     }//}}}
     
-    public void setParameter(String name, Object value) throws DOMException {//{{{
+    //{{{ setParameter()
+    
+    public void setParameter(String name, Object value) throws DOMException {
         
         //if a string, attempt to use it as a boolean value.
         if (value instanceof String) {
@@ -325,13 +342,17 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         }
     }//}}}
     
+    //}}}
+    
+    //{{{ getFeature()
+    
     /**
      * <p>A convenience method to retrieve the value that a boolean
      * parameter (feature) is set to.</p>
      * @param name The name of the feature to get the value of
      * @return The current setting for the given feature
      */
-    public boolean getFeature(String name) throws DOMException {//{{{
+    public boolean getFeature(String name) throws DOMException {
         Object parameter = getParameter(name);
         
         if (name.equals("error-handler") || name.equals("indent") || !(parameter instanceof Boolean)) {
@@ -341,50 +362,22 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         
     }//}}}
     
+    //{{{ setFeature()
+    
     /**
      * <p>A convenience method to set the value of a boolean parameter (feature)</p>
      * @param name The feature to set the value of
      * @param value The boolean value to set to the feature
      */
-    public void setFeature(String name, boolean value) throws DOMException {//{{{
+    public void setFeature(String name, boolean value) throws DOMException {
         setParameter(name, new Boolean(value));
     }//}}}
     
-    //{{{ private members
-    
-    private class DOMStringListImpl implements DOMStringList {//{{{
-        
-        public DOMStringListImpl(ArrayList list) {//{{{
-            m_list = list;
-        }//}}}
-        
-        public boolean contains(String str) {//{{{
-            for (int i=0; i<m_list.size(); i++) {
-                if (m_list.get(i).toString().equals(str)) {
-                    return true;
-                }
-            }
-            return false;
-        }//}}}
-        
-        public int getLength() {//{{{
-            return m_list.size();
-        }//}}}
-        
-        public String item(int index) {//{{{
-            return m_list.get(index).toString();
-        }//}}}
-        
-        private ArrayList m_list;
-        
-    }//}}}
+    //{{{ Private static members
     
     private static ArrayList m_supportedParameters = null;
-    private Hashtable m_parameters = new Hashtable(16);
     
-    //}}}
-
-    static {//{{{
+    static {
         //create a vector of the supported parameters
         m_supportedParameters = new ArrayList(22);
         
@@ -416,4 +409,49 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         m_supportedParameters.add(SOFT_TABS);
         m_supportedParameters.add(INDENT);
     }//}}}
+    
+    //{{{ Private members
+    
+    //{{{ DOMStringListImpl class
+    
+    private class DOMStringListImpl implements DOMStringList {
+        
+        //{{{ DOMStringListImpl constructor
+        
+        public DOMStringListImpl(ArrayList list) {
+            m_list = list;
+        }//}}}
+        
+        //{{{ contains()
+        
+        public boolean contains(String str) {
+            for (int i=0; i<m_list.size(); i++) {
+                if (m_list.get(i).toString().equals(str)) {
+                    return true;
+                }
+            }
+            return false;
+        }//}}}
+        
+        //{{{ getLength()
+        
+        public int getLength() {
+            return m_list.size();
+        }//}}}
+        
+        //{{{ item()
+        
+        public String item(int index) {
+            return m_list.get(index).toString();
+        }//}}}
+        
+        //{{{ Private members
+        private ArrayList m_list;
+        //}}}
+        
+    }//}}}
+    
+    private Hashtable m_parameters = new Hashtable(16);
+    
+    //}}}
 }

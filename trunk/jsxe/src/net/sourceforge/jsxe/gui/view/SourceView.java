@@ -112,6 +112,8 @@ public class SourceView extends DocumentView {
         setDocumentBuffer(view, buffer);
     }//}}}
     
+    //{{{ DocumentView methods
+    
     //{{{ getMenus()
     
     public JMenu[] getMenus() {
@@ -179,6 +181,8 @@ public class SourceView extends DocumentView {
         m_buffer.removeDocumentBufferListener(docListener);
         return true;
     }//}}}
+    
+    //}}}
     
     //{{{ Private members
     

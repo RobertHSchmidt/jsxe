@@ -47,8 +47,12 @@ import javax.swing.JPanel;
 
 public abstract class OptionsPanel extends JPanel {
     
-    public abstract void saveOptions();
+    //{{{ saveOptions()
     
-    public abstract String getTitle();
+    public abstract void saveOptions();//}}}
+    
+    //{{{ getTitle()
+    
+    public abstract String getTitle();//}}}
     
 }

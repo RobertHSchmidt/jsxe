@@ -65,55 +65,72 @@ import org.w3c.dom.NodeList;
 //}}}
 
 //{{{ Java base classes
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.ListIterator;
 //}}}
 
 //}}}
 
 public class DefaultViewTableModel implements TableModel {
     
-    protected DefaultViewTableModel(Component parent, AdapterNode adapterNode) {//{{{
+    //{{{ DefaultViewTableModel constructor
+    
+    protected DefaultViewTableModel(Component parent, AdapterNode adapterNode) {
         m_currentNode = adapterNode;
         m_view = parent;
         updateTable(m_currentNode);
     }//}}}
 
-    // {{{ Implemented TableModel methods
+    //{{{ TableModel methods
     
-    public void addTableModelListener(TableModelListener l) {//{{{
+    //{{{ addTableModelListener()
+    
+    public void addTableModelListener(TableModelListener l) {
         if (l != null && !m_tableListenerList.contains(l) ) {
-            m_tableListenerList.addElement(l);
+            m_tableListenerList.add(l);
         }
     }//}}}
     
-    public Class getColumnClass(int columnIndex) {//{{{
+    //{{{ getColumnClass()
+    
+    public Class getColumnClass(int columnIndex) {
         //the attributes table should contain strings only
         return (new String()).getClass();
     }//}}}
     
-    public int getColumnCount() {//{{{
+    //{{{ getColumnCount()
+    
+    public int getColumnCount() {
         //the attributes table will always contain 2 columns
         //an attribute and value
         return 2;
     }//}}}
     
-    public String getColumnName(int columnIndex) {//{{{
+    //{{{ getColumnName()
+    
+    public String getColumnName(int columnIndex) {
         if (columnIndex==0)
             return "Attribute";
         else
             return "Value";
     }//}}}
     
-    public int getRowCount() {//{{{
+    //{{{ getRowCount()
+    
+    public int getRowCount() {
         return m_data[0].size();
     }//}}}
 
-    public Object getValueAt(int rowIndex, int columnIndex) {//{{{
+    //{{{ getValueAt()
+    
+    public Object getValueAt(int rowIndex, int columnIndex) {
         return m_data[columnIndex].get(rowIndex);
     }//}}}
     
-    public boolean isCellEditable(int rowIndex, int columnIndex) {//{{{
+    //{{{ isCellEditable()
+    
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
         //Do not allow editing of attribute values that have no
         //attribute defined yet.
         if (columnIndex==1 && (((String)getValueAt(rowIndex,0)).equals(""))) {
@@ -122,13 +139,17 @@ public class DefaultViewTableModel implements TableModel {
         return true;
     }//}}}
     
-    public void removeTableModelListener(TableModelListener listener) {//{{{
+    //{{{ removeTableModelListener()
+    
+    public void removeTableModelListener(TableModelListener listener) {
         if (listener!=null) {
-            m_tableListenerList.removeElement(listener);
+            m_tableListenerList.remove(listener);
         }
     }//}}}
     
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {//{{{
+    //{{{ setValueAt()
+    
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         //pad with empty values if necessary (this shouldn't really happen)
         while (rowIndex+1 > getRowCount()) {
             m_data[columnIndex].add("");
@@ -178,7 +199,9 @@ public class DefaultViewTableModel implements TableModel {
     
     //}}}
     
-    public void removeRow(int row) {//{{{
+    //{{{ removeRow()
+    
+    public void removeRow(int row) {
         m_currentNode.removeAttributeAt(row);
         updateTable(m_currentNode);
         fireTableChanged(new TableModelEvent(this, row));
@@ -186,20 +209,22 @@ public class DefaultViewTableModel implements TableModel {
     
     //{{{ Private members
     
-    // {{{ Event notification methods
-    private void fireTableChanged(TableModelEvent e) {//{{{
-        Enumeration listeners = m_tableListenerList.elements();
-        while (listeners.hasMoreElements()) {
-            TableModelListener listener = (TableModelListener)listeners.nextElement();
+    //{{{ fireTableChanged()
+    
+    private void fireTableChanged(TableModelEvent e) {
+        ListIterator listeners = m_tableListenerList.listIterator();
+        while (listeners.hasNext()) {
+            TableModelListener listener = (TableModelListener)listeners.next();
             listener.tableChanged(e);
         }
     }//}}}
-    // }}}
     
-    private void updateTable(AdapterNode selectedNode) {//{{{
+    //{{{ updateTable()
+    
+    private void updateTable(AdapterNode selectedNode) {
         m_currentNode = selectedNode;
-        m_data[0].removeAllElements();
-        m_data[1].removeAllElements();
+        m_data[0].removeAll(m_data[0]);
+        m_data[1].removeAll(m_data[1]);
         if (selectedNode!=null) {
             NamedNodeMap attrs = selectedNode.getAttributes();
             if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -219,10 +244,10 @@ public class DefaultViewTableModel implements TableModel {
     private Component m_view;
     
     private AdapterNode m_currentNode;
-    private Vector m_tableListenerList = new Vector();
-    private Vector[] m_data={
-        new Vector(),
-        new Vector()
+    private ArrayList m_tableListenerList = new ArrayList();
+    private ArrayList[] m_data={
+        new ArrayList(),
+        new ArrayList()
     };
     //}}}
 

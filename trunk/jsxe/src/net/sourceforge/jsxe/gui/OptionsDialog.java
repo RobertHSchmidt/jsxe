@@ -73,7 +73,9 @@ import java.awt.event.ActionEvent;
 
 public class OptionsDialog extends JDialog {
     
-    public OptionsDialog(TabbedView view) {//{{{
+    //{{{ OptionsDialog constructor
+    
+    public OptionsDialog(TabbedView view) {
         super(view, true);
         
         JPanel frame = new JPanel();
@@ -188,10 +190,18 @@ public class OptionsDialog extends JDialog {
     
     //{{{ Private members
     
-    private class OKAction implements ActionListener {//{{{
+    //{{{ OKAction class
+    
+    private class OKAction implements ActionListener {
+        
+        //{{{ OKAction constructor
+        
         public OKAction(Dialog p) {
             parent = p;
-        }
+        }//}}}
+        
+        //{{{ actionPerformed()
+        
         public void actionPerformed(ActionEvent e) {
             if (OptionsNorthPanel != null)
                 OptionsNorthPanel.saveOptions();
@@ -200,18 +210,35 @@ public class OptionsDialog extends JDialog {
             if (bufferOptionsPanel != null)
                 bufferOptionsPanel.saveOptions();
             parent.dispose();
-        }
+        }//}}}
+        
+        //{{{ Private members
         private Dialog parent;
+        //}}}
+        
     } //}}}
     
-    private class CancelAction implements ActionListener {//{{{
+    //{{{ CancelAction class
+    
+    private class CancelAction implements ActionListener {
+        
+        //{{{ CancelAction constructor
+        
         public CancelAction(Dialog p) {
             parent = p;
-        }
+        }//}}}
+        
+        //{{{ actionPerformed()
+        
         public void actionPerformed(ActionEvent e) {
             parent.dispose();
-        }
+        }//}}}
+        
+        //{{{ Private members
+        
         private Dialog parent;
+        //}}}
+        
     } //}}}
     
     private int dialogWidth=450;

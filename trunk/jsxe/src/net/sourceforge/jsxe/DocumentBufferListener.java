@@ -33,12 +33,37 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package net.sourceforge.jsxe;
 
+/**
+ * Defines an interface for objects that are notified when DocumentBuffers have changed.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public interface DocumentBufferListener {
     
-    public void nameChanged(DocumentBuffer source, String newName);
+    //{{{ nameChanged()
     
-    public void propertiesChanged(DocumentBuffer source, String key);
+    /**
+     * Called whenever the buffers name has changed
+     * @param source the source DocumentBuffer whose name has changed
+     * @param newName the new name of the buffer
+     */
+    public void nameChanged(DocumentBuffer source, String newName);//}}}
     
-    public void bufferSaved(DocumentBuffer source);
+    //{{{ propertiesChanged()
+    
+    /**
+     * Called whenever a property of the DocumentBuffer has changed.
+     * @param source the source buffer whose property has changed
+     * @param the key to the property value that has changed
+     */
+    public void propertiesChanged(DocumentBuffer source, String key);//}}}
+    
+    //{{{ bufferSaved()
+    
+    /**
+     * Called whenever the buffer is saved.
+     * @param source source buffer that was saved
+     */
+    public void bufferSaved(DocumentBuffer source);//}}}
     
 }

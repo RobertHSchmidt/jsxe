@@ -35,7 +35,9 @@ package net.sourceforge.jsxe.gui.view;
 
 public class UnrecognizedDocViewException extends RuntimeException {
 
-    public UnrecognizedDocViewException() {//{{{
+    //{{{ UnrecognizedDocViewException constructor
+    
+    public UnrecognizedDocViewException() {
         super("Attempted to create an unrecognized DocumentView type.");
     }//}}}
 

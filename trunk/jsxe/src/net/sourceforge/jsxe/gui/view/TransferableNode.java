@@ -61,6 +61,9 @@ import java.util.*;
  */
 public class TransferableNode implements Transferable {
     
+    public static final DataFlavor stringFlavor = DataFlavor.stringFlavor;
+    public static final DataFlavor nodeFlavor;
+    
     //{{{ TransferableNode constructor
     /**
      * Creates a new TransferableNode to handle the AdapterNode given.
@@ -69,6 +72,8 @@ public class TransferableNode implements Transferable {
     public TransferableNode(DefaultViewTreeNode node) {
         m_node = node;
     }//}}}
+    
+    //{{{ Transferable methods
     
     //{{{ getTransferDataFlavors()
     public synchronized DataFlavor[] getTransferDataFlavors() {
@@ -95,10 +100,9 @@ public class TransferableNode implements Transferable {
         }
     }//}}}
     
-    //{{{ Private Members
-    public static final DataFlavor stringFlavor = DataFlavor.stringFlavor;
-    public static final DataFlavor nodeFlavor;
+    //}}}
     
+    //{{{ Private static members
     static {
         DataFlavor flav = null;
         try {
@@ -113,9 +117,12 @@ public class TransferableNode implements Transferable {
         stringFlavor,
         nodeFlavor
     };
-
+    
     private static final List flavorList = Arrays.asList( flavors );
-    private DefaultViewTreeNode m_node;
+    
     //}}}
     
+    //{{{ Private members
+    private DefaultViewTreeNode m_node;
+    //}}}    
 }

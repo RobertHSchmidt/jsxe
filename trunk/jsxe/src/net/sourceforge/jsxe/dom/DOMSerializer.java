@@ -271,6 +271,10 @@ public class DOMSerializer implements LSSerializer {
     
     //}}}
     
+    //{{{ Private static members
+    private static final int IO_BUFFER_SIZE = 32768;
+    //}}}
+    
     //{{{ Private members
     
     //{{{ DOMSerializerError class
@@ -785,8 +789,6 @@ public class DOMSerializer implements LSSerializer {
         }
         return newText.toString();
     }//}}}
-    
-    private static final int IO_BUFFER_SIZE = 32768;
     
     private DOMSerializerConfiguration config;
     private LSSerializerFilter m_filter;
