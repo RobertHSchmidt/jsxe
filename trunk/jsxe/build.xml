@@ -26,7 +26,7 @@
   <target name="dist" depends="compile">
     <!-- For concurrency of the build version you need to do a cvs update
          of the build.properties when you begin work and commit it when
-         you are finished. Even still the bulid version won't be perfect.-->
+         you are finished. Even still the build version won't be perfect.-->
     <propertyfile file="net/sourceforge/jsxe/build.properties" comment="jsXe's build properties">
       <entry key="application.name" value="jsXe"/>
       <entry key="build.time" type="date" value="now" pattern="dd/MM/yyyy HH:mm"/>
