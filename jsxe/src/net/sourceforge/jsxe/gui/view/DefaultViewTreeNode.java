@@ -90,11 +90,11 @@ public class DefaultViewTreeNode implements MutableTreeNode {
         return new Enumeration() {//{{{
             
             public boolean hasMoreElements() {
-                return (m_index < m_node.childCount());
+                return (m_index < getChildCount());
             }
             
             public Object nextElement() {
-                return m_node.child(m_index++);
+                return getChildAt(m_index++);
             }
             
             private int m_index = 0;
@@ -136,13 +136,7 @@ public class DefaultViewTreeNode implements MutableTreeNode {
                     }
                 } catch (IndexOutOfBoundsException ioobe) {}
             } else {
-                /*
-                Populate the other elements with null until we
-                have the correct size.
-                */
-                while (m_children.size() < childIndex + 1) {
-                    m_children.add(null);
-                }
+                ensureChildrenSize(childIndex + 1);
                 child = new DefaultViewTreeNode(this, childAt);
                 m_children.set(childIndex, child);
             }
@@ -191,6 +185,7 @@ public class DefaultViewTreeNode implements MutableTreeNode {
         AdapterNode adapter = childNode.getAdapterNode();
         child.setParent(this);
         m_node.addAdapterNodeAt(childNode.getAdapterNode(), index);
+        ensureChildrenSize(index);
         m_children.add(index, child);
     }//}}}
     
@@ -286,6 +281,20 @@ public class DefaultViewTreeNode implements MutableTreeNode {
      */
     public void setExpanded(boolean expanded) {
         m_expanded = expanded;
+    }//}}}
+    
+    //{{{ Private members
+    
+    //{{{ ensureChildrenSize()
+    
+    public void ensureChildrenSize(int size) {
+        /*
+        Populate the other elements with null until we
+        have the correct size.
+        */
+        while (m_children.size() < size) {
+            m_children.add(null);
+        }
     }//}}}
     
     //{{{ Instance variables
