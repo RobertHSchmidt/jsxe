@@ -42,6 +42,7 @@ import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.view.DocumentView;
 import net.sourceforge.jsxe.gui.view.DocumentViewFactory;
+import net.sourceforge.jsxe.gui.jsxeFileDialog;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentFactory;
@@ -186,8 +187,11 @@ public class jsXe {
     public static String getVersion() {
         // Major.Minor.Build
         String version = buildProps.getProperty("major.version") + "." +
-                         buildProps.getProperty("minor.version") + "." +
-                         buildProps.getProperty("build.version");
+                         buildProps.getProperty("minor.version");
+        String buildDescription = buildProps.getProperty("build.description");
+        if (buildDescription != null && !buildDescription.equals("")) {
+            version += " " + buildDescription;
+        }
         return version;
     }//}}}
     
@@ -204,39 +208,8 @@ public class jsXe {
             DocumentView docView = view.getDocumentView();
             DocumentBuffer buffer = docView.getDocumentBuffer();
             File docFile = buffer.getFile();
-            JFileChooser loadDialog = new JFileChooser(docFile);
+            JFileChooser loadDialog = new jsxeFileDialog(docFile);
             loadDialog.setMultiSelectionEnabled(true);
-            //Add a filter to display only XML files
-            ArrayList extentionList = new ArrayList();
-            extentionList.add(new String("xml"));
-            CustomFileFilter firstFilter = new CustomFileFilter(extentionList, "XML Documents");
-            loadDialog.addChoosableFileFilter(firstFilter);
-            //Add a filter to display only XSL files
-            extentionList = new ArrayList();
-            extentionList.add(new String("xsl"));
-            loadDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
-            //Add a filter to display only XSL:FO files
-            extentionList = new ArrayList();
-            extentionList.add(new String("fo"));
-            loadDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
-            //Add a filter to display only Schema files
-            extentionList = new ArrayList();
-            extentionList.add(new String("xsd"));
-            loadDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "XML Schema"));
-            //Add a filter to display all formats
-            extentionList = new ArrayList();
-            extentionList.add(new String("xml"));
-            extentionList.add(new String("xsl"));
-            extentionList.add(new String("fo"));
-            extentionList.add(new String("xsd"));
-            loadDialog.addChoosableFileFilter(new CustomFileFilter(extentionList, "All XML Documents"));
-            
-            //The "All Files" file filter is added to the dialog
-            //by default. Put it at the end of the list.
-            FileFilter all = loadDialog.getAcceptAllFileFilter();
-            loadDialog.removeChoosableFileFilter(all);
-            loadDialog.addChoosableFileFilter(all);
-            loadDialog.setFileFilter(firstFilter);
             
             int returnVal = loadDialog.showOpenDialog(view);
             if(returnVal == JFileChooser.APPROVE_OPTION) {

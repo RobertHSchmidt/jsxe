@@ -1,3 +1,15 @@
+05/18/2004  version 0.3 pre1    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Moved logic for the file chooser dialogs to a new jsxeFileDialog class
+
+05/17/2004  version 0.2 beta    Ian Lewis <IanLewis@member.fsf.org>
+
+    * Code fixed for version 0.2 beta
+    * changed version naming scheme. Development versions are now the next
+      major.minor version with a preXX at the end (eg. 0.2 pre75). Mostly done
+      so it's easier to put the version in the build file and have it make
+      sense for beta/stable releases.
+
 05/16/2004  version 0.1.75  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed many bugs in the DefaultViewTreeModel, DefaultViewTree,
