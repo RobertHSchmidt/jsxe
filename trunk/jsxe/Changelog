@@ -5,6 +5,9 @@
     * Fixed bug where when documents are opened but not viewed the split pane
       locations in the default view are set to zero so when you open it the
       next time the panes are messed up
+    * Added logic to start editing in the tree if the user starts typing while
+      one of the nodes is selected. It moves focus to the right hand pane
+      if necessary. It does, however, lose the first key when you start typing.
 
 8/11/2004   version 0.2 pre17   Ian Lewis <IanLewis@member.fsf.org>
 

@@ -91,6 +91,16 @@ public class DefaultViewTreeNode implements MutableTreeNode {
         m_parent = null;
     }//}}}
     
+    //{{{ getAdapterNode()
+    
+    /**
+     * Gets the AdapterNode that this DefaultViewTreeNode wraps.
+     * @return the AdapterNode that this node wraps.
+     */
+    public AdapterNode getAdapterNode() {
+        return m_node;
+    }//}}}
+    
     //{{{ TreeNode methods
     
     //{{{ children()
@@ -109,16 +119,6 @@ public class DefaultViewTreeNode implements MutableTreeNode {
             private int m_index = 0;
             
         };//}}}
-    }//}}}
-    
-    //{{{ getAdapterNode()
-    
-    /**
-     * Gets the AdapterNode that this DefaultViewTreeNode wraps.
-     * @return the AdapterNode that this node wraps.
-     */
-    public AdapterNode getAdapterNode() {
-        return m_node;
     }//}}}
     
     //{{{ getAllowsChildren()
