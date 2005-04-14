@@ -41,8 +41,13 @@ it is easy to see which package it
 belongs to.
 */
 
+//{{{ jsXe classes
+
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.util.Log;
+import net.sourceforge.jsxe.util.MiscUtilities;
+
+//}}}
 
 //{{{ Java Base Classes
 import java.util.ArrayList;
@@ -252,8 +257,8 @@ public class AdapterNode {
         String oldPrefix = getNSPrefix();
         String oldLocalName = getLocalName();
         
-        String prefix = getNSPrefixFromQualifiedName(qualifiedName);
-        String localName = getLocalNameFromQualifiedName(qualifiedName);
+        String prefix = MiscUtilities.getNSPrefixFromQualifiedName(qualifiedName);
+        String localName = MiscUtilities.getLocalNameFromQualifiedName(qualifiedName);
         
         renameElementNode(prefix, localName);
         
@@ -536,8 +541,8 @@ public class AdapterNode {
     public void setAttribute(String name, String value) throws DOMException {
         if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)m_domNode;
-            String localName = getLocalNameFromQualifiedName(name);
-            String prefix    = getNSPrefixFromQualifiedName(name);
+            String localName = MiscUtilities.getLocalNameFromQualifiedName(name);
+            String prefix    = MiscUtilities.getNSPrefixFromQualifiedName(name);
             
             //check if we are setting a namespace declaration
             if ("xmlns".equals(prefix)) {
@@ -601,8 +606,8 @@ public class AdapterNode {
     public void removeAttribute(String attr) throws DOMException {
         if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
             Element element = (Element)m_domNode;
-            String prefix = getNSPrefixFromQualifiedName(attr);
-            String localName = getLocalNameFromQualifiedName(attr);
+            String prefix = MiscUtilities.getNSPrefixFromQualifiedName(attr);
+            String localName = MiscUtilities.getLocalNameFromQualifiedName(attr);
             
             //Check if we are removing a namespace declaration
             //This is a somewhat expensive operation, may need to
@@ -814,30 +819,6 @@ public class AdapterNode {
         while (m_children.size() < size) {
             m_children.add(null);
         }
-    }//}}}
-    
-    //{{{ getLocalNameFromQualifiedName()
-    
-    private String getLocalNameFromQualifiedName(String qualifiedName) {
-        int index = qualifiedName.indexOf(":");
-        String localName;
-        if (index != -1) {
-            localName = qualifiedName.substring(index+1);
-        } else {
-            localName = qualifiedName;
-        }
-        return localName;
-    }//}}}
-    
-    //{{{ getNSPrefixFromQualifiedName()
-    
-    private String getNSPrefixFromQualifiedName(String qualifiedName) {
-        int index = qualifiedName.indexOf(":");
-        String prefix = null;
-        if (index != -1) {
-            prefix = qualifiedName.substring(0,index);
-        }
-        return prefix;
     }//}}}
     
     //{{{ renameElementNode()

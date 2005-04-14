@@ -1203,6 +1203,38 @@ loop:       for(int i = 0; i < str.length(); i++)
         return permissions;
     } //}}}
 
+    //{{{ getLocalNameFromQualifiedName()
+    /**
+     * Extracts the XML local name from a qualified name
+     * @param qualifiedName the qualified name
+     * @return the local name
+     */
+    public static String getLocalNameFromQualifiedName(String qualifiedName) {
+        int index = qualifiedName.indexOf(":");
+        String localName;
+        if (index != -1) {
+            localName = qualifiedName.substring(index+1);
+        } else {
+            localName = qualifiedName;
+        }
+        return localName;
+    }//}}}
+    
+    //{{{ getNSPrefixFromQualifiedName()
+    /**
+     * Extracts an XML namespace prefix from a qualified name
+     * @param qualifiedName the qualified name
+     * @return the namespace prefix
+     */
+    public static String getNSPrefixFromQualifiedName(String qualifiedName) {
+        int index = qualifiedName.indexOf(":");
+        String prefix = null;
+        if (index != -1) {
+            prefix = qualifiedName.substring(0,index);
+        }
+        return prefix;
+    }//}}}
+    
     //{{{ Private members
     private MiscUtilities() {}
 

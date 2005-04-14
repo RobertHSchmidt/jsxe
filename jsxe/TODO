@@ -20,6 +20,10 @@ TODO:
         ignore-unknown-character-denormalizations
 
     & Serialized XML should be 100% well-formed and parsable.
+    
+    & Will need to eventually re-factor code in net.sourceforge.jsxe.dom
+      This will be required to more easily go from text locations to nodes
+      and vice versa as well as allow for a more clean data model.
 
 * Version 0.4 beta (DTD/Schema support)
     
