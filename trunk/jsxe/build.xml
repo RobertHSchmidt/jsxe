@@ -103,7 +103,6 @@
 		<javac debug="${javac.debug}" deprecation="${javac.deprecation}" includeJavaRuntime="${javac.include.runtime}" optimize="${javac.optimize}" source="${javac.source}" destdir="${build.dest}" srcdir="${build.src}">
 			<classpath refid="classpath"/>
 			<include name="**/*.java"/>
-      <exclude name="net/sourceforge/jsxe/dom/completion/**/*.java"/>
 		</javac>
 		<copy todir="${build.dest}">
 			<fileset dir="${build.src}">

@@ -1,3 +1,8 @@
+04/14/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added inactive code for storing completion info that is
+      retrieved from a DTD or Schema.
+
 03/30/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Released 0.3 beta

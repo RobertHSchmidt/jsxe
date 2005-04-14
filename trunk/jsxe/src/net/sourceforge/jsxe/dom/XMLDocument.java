@@ -44,6 +44,8 @@ belongs to.
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.util.Log;
+import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.dom.completion.*;
 //}}}
 
 //{{{ DOM classes
@@ -58,6 +60,8 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.helpers.DefaultHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.xerces.dom3.DOMError;
 import org.apache.xerces.dom3.DOMErrorHandler;
@@ -66,10 +70,7 @@ import org.apache.xerces.dom3.DOMErrorHandler;
 //{{{ Java base classes
 import java.io.*;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.ListIterator;
-import java.util.Properties;
+import java.util.*;
 import javax.swing.text.Segment;
 //}}}
 
@@ -730,6 +731,36 @@ public class XMLDocument {
         return new DOMSerializer(config);
     }//}}}
     
+    //{{{ getNoNamespaceCompletionInfo() method
+    private CompletionInfo getNoNamespaceCompletionInfo() {
+        CompletionInfo info = (CompletionInfo)m_mappings.get("");
+        if(info == null) {
+            info = new CompletionInfo();
+            m_mappings.put("",info);
+        }
+        return info;
+    } //}}}
+    
+    //{{{ getElementDecl()
+    private ElementDecl getElementDecl(String name) {
+        
+        String prefix = MiscUtilities.getNSPrefixFromQualifiedName(name);
+        CompletionInfo info = (CompletionInfo)m_mappings.get(prefix);
+        
+        if(info == null) {
+            return null;
+        } else {
+            String lName = MiscUtilities.getLocalNameFromQualifiedName(name);
+
+            ElementDecl decl = (ElementDecl)info.elementHash.get(lName);
+            if(decl == null) {
+                return null;
+            } else {
+                return decl.withPrefix(prefix);
+            }
+        }
+    } //}}}
+    
     //{{{ ContentManager class
     /**
      * Text content manager based off of jEdit's ContentManager class.
@@ -1045,6 +1076,73 @@ public class XMLDocument {
         
     }//}}}
     
+    //{{{ SchemaHandler class
+    
+    private class SchemaHandler extends DefaultHandler implements DeclHandler {
+
+        //{{{ elementDecl() method
+        public void elementDecl(String name, String model) {
+            ElementDecl element = getElementDecl(name);
+            if(element == null) {
+                CompletionInfo info = getNoNamespaceCompletionInfo();
+                element = new ElementDecl(info,name,model);
+                info.addElement(element);
+            } else {
+                element.setContent(model);
+            }
+        } //}}}
+
+        //{{{ attributeDecl() method
+        public void attributeDecl(String eName, String aName, String type, String valueDefault, String value) {
+            ElementDecl element = getElementDecl(eName);
+            if (element == null) {
+                CompletionInfo info = getNoNamespaceCompletionInfo();
+                element = new ElementDecl(info,eName,null);
+                info.addElement(element);
+            }
+
+            // as per the XML spec
+            if (element.getAttribute(aName) != null)
+                return;
+
+            ArrayList values;
+
+            if (type.startsWith("(")) {
+                values = new ArrayList();
+
+                StringTokenizer st = new StringTokenizer(type.substring(1,type.length() - 1),"|");
+                while(st.hasMoreTokens()) {
+                    values.add(st.nextToken());
+                }
+            } else {
+                values = null;
+            }
+
+            boolean required = "#REQUIRED".equals(valueDefault);
+
+            element.addAttribute(new ElementDecl.AttributeDecl(aName,value,values,type,required));
+        } //}}}
+
+        //{{{ internalEntityDecl() method
+        public void internalEntityDecl(String name, String value) {
+            // this is a bit of a hack
+            if (name.startsWith("%")) {
+                return;
+            }
+            getNoNamespaceCompletionInfo().addEntity(EntityDecl.INTERNAL, name, value);
+        } //}}}
+
+        //{{{ externalEntityDecl() method
+        public void externalEntityDecl(String name, String publicId, String systemId) {
+            if (name.startsWith("%")) {
+                return;
+            }
+
+            getNoNamespaceCompletionInfo() .addEntity(EntityDecl.EXTERNAL,name, publicId, systemId);
+        } //}}}
+    
+    } //}}}
+    
     private Document m_document;
     private AdapterNode m_adapterNode;
     private ContentManager m_content;
@@ -1068,6 +1166,12 @@ public class XMLDocument {
     private EntityResolver m_entityResolver;
     private ArrayList listeners = new ArrayList();
     private Properties props = new Properties();
+    
+    /**
+     * A namespace uri to CompletionInfo map used to hold completion info
+     * for active namespaces
+     */
+    private HashMap m_mappings = new HashMap();
     
     private XMLDocAdapterListener docAdapterListener = new XMLDocAdapterListener();
     
