@@ -1,21 +1,27 @@
 /*
- * Log.java - A class for logging events
- * Copyright (C) 1999, 2000 Slava Pestov
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
+Log.java
+:tabSize=4:indentSize=4:noTabs=true:
+:folding=explicit:collapseFolds=1:
+
+Copyright (C) 1999, 2000 Slava Pestov
+Portions Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Optionally, you may find a copy of the GNU General Public License
+from http://www.fsf.org/copyleft/gpl.txt
+*/
 
 package net.sourceforge.jsxe.util;
 
@@ -35,10 +41,14 @@ import java.util.StringTokenizer;
  * This class can also optionally redirect standard output and error to the log.
  *
  * @author Slava Pestov
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @since jsXe 0.4 beta
  * @version $Id$
  */
-public class Log
-{
+public class Log {
+   
+   //{{{ Public static properties
+   
    /**
     * The maximum number of log messages that will be kept in memory.
     * @since jEdit 2.6pre5
@@ -80,6 +90,9 @@ public class Log
     */
    public static final int ERROR = 9;
 
+   //}}}
+   
+   //{{{ init()
    /**
     * Initializes the log.
     * @param stdio If true, standard output and error will be
@@ -87,14 +100,10 @@ public class Log
     * @param level Messages with this log level or higher will
     * be printed to the system console
     * @param debug If true, debug will be printed to the log.
-    * @since jEdit 3.2pre4
     */
-   public static void init(boolean stdio, int level, boolean debug)
-   {
-      if(stdio)
-      {
-         if(System.out == realOut && System.err == realErr)
-         {
+   public static void init(boolean stdio, int level, boolean debug) {
+      if (stdio) {
+         if (System.out == realOut && System.err == realErr) {
             System.setOut(createPrintStream(NOTICE,null));
             System.setErr(createPrintStream(ERROR,null));
          }
@@ -112,90 +121,74 @@ public class Log
          "os.arch", "user.home", "java.home",
          "java.class.path",
          };
-      for(int i = 0; i < props.length; i++)
-      {
-         log(MESSAGE,Log.class,
-            props[i] + "=" + System.getProperty(props[i]));
+      for (int i = 0; i < props.length; i++) {
+         log(MESSAGE,Log.class, props[i] + "=" + System.getProperty(props[i]));
       }
-   }
+   }//}}}
 
+   //{{{ setLogWriter()
    /**
     * Writes all currently logged messages to this stream if there was no
     * stream set previously, and sets the stream to write future log
     * messages to.
     * @param stream The writer
-    * @since jEdit 3.2pre4
     */
-   public static void setLogWriter(Writer stream)
-   {
-      if(Log.stream == null && stream != null)
-      {
-         try
-         {
+   public static void setLogWriter(Writer stream) {
+      if(Log.stream == null && stream != null) {
+         try {
             stream.write(logDocument.getText(0,
                logDocument.getLength()));
 
             stream.flush();
-         }
-         catch(Exception e)
-         {
+         } catch(Exception e) {
             // do nothing, who cares
          }
       }
 
       Log.stream = stream;
-   }
+   }//}}}
 
+   //{{{ getLogDocument()
    /**
     * Returns the document where the most recent messages are stored.
     * The document of a Swing text area can be set to this to graphically
     * view log messages.
     * @since jEdit 2.2pre2
     */
-   public static Document getLogDocument()
-   {
+   public static Document getLogDocument() {
       return logDocument;
-   }
+   }//}}}
 
+   //{{{ flushStream()
    /**
     * Flushes the log stream.
-    * @since jEdit 2.6pre5
     */
-   public static void flushStream()
-   {
-      if(stream != null)
-      {
-         try
-         {
+   public static void flushStream() {
+      if (stream != null) {
+         try {
             stream.flush();
-         }
-         catch(IOException io)
-         {
+         } catch(IOException io) {
             io.printStackTrace(realErr);
          }
       }
-   }
+   }//}}}
 
+   //{{{ closeStream()
    /**
     * Closes the log stream. Should be done before your program exits.
-    * @since jEdit 2.6pre5
     */
-   public static void closeStream()
-   {
-      if(stream != null)
-      {
-         try
-         {
+   public static void closeStream() {
+      if (stream != null) {
+         try {
             stream.close();
             stream = null;
-         }
-         catch(IOException io)
-         {
+         } catch(IOException io) {
             io.printStackTrace(realErr);
          }
       }
-   }
+   }//}}}
 
+   //{{{ log()
    /**
     * Logs a message. This method is thread-safe.<p>
     *
@@ -215,49 +208,43 @@ public class Log
     * @param message The message. This can either be a string or
     * an exception
     *
-    * @since jEdit 2.2pre2
     */
-   public static void log(int urgency, Object source, Object message)
-   {
+   public static void log(int urgency, Object source, Object message) {
       String _source;
-      if(source == null)
-      {
+      if (source == null) {
          _source = Thread.currentThread().getName();
-         if(_source == null)
-         {
+         if (_source == null) {
             _source = Thread.currentThread().getClass().getName();
          }
+      } else {
+          if(source instanceof Class) {
+              _source = ((Class)source).getName();
+          } else {
+              _source = source.getClass().getName();
+          }
       }
-      else if(source instanceof Class)
-         _source = ((Class)source).getName();
-      else
-         _source = source.getClass().getName();
       int index = _source.lastIndexOf('.');
-      if(index != -1)
+      if(index != -1) {
          _source = _source.substring(index+1);
-
-      if(message instanceof Throwable)
-      {
-         _logException(urgency,source,(Throwable)message);
       }
-      else
-      {
+
+      if(message instanceof Throwable) {
+         _logException(urgency,source,(Throwable)message);
+      } else {
          String _message = String.valueOf(message);
          // If multiple threads log stuff, we don't want
          // the output to get mixed up
-         synchronized(LOCK)
-         {
+         synchronized(LOCK) {
             StringTokenizer st = new StringTokenizer(
                _message,"\r\n");
-            while(st.hasMoreTokens())
-            {
+            while(st.hasMoreTokens()) {
                _log(urgency,_source,st.nextToken());
             }
          }
       }
-   }
+   }//}}}
 
-   // private members
+   //{{{ Private members
    private static Object LOCK = new Object();
    private static Document logDocument;
    private static int level = WARNING;
@@ -266,9 +253,10 @@ public class Log
    private static String lineSep;
    private static PrintStream realOut;
    private static PrintStream realErr;
+   //}}}
 
-   static
-   {
+   //{{{ class initializer
+   static {
       level = WARNING;
 
       realOut = System.out;
@@ -276,46 +264,42 @@ public class Log
 
       logDocument = new PlainDocument();
       lineSep = System.getProperty("line.separator");
-   }
-
-   private static PrintStream createPrintStream(final int urgency,
-      final Object source)
-   {
+   }//}}}
+   
+   //{{{ createPrintStream()
+   
+   private static PrintStream createPrintStream(final int urgency, final Object source) {
       return new PrintStream(new OutputStream() {
-         public void write(int b)
-         {
+         public void write(int b) {
             byte[] barray = { (byte)b };
             write(barray,0,1);
          }
 
-         public void write(byte[] b, int off, int len)
-         {
+         public void write(byte[] b, int off, int len) {
             String str = new String(b,off,len);
             log(urgency,source,str);
          }
       });
-   }
+   }//}}}
 
-   private static void _logException(final int urgency,
-      final Object source,
-      final Throwable message)
-   {
+   //{{{ _logException()
+   
+   private static void _logException(final int urgency, final Object source, final Throwable message) {
       PrintStream out = createPrintStream(urgency,source);
 
-      synchronized(LOCK)
-      {
+      synchronized(LOCK) {
          message.printStackTrace(out);
       }
-   }
+   }//}}}
 
-   private static void _log(int urgency, String source, String message)
-   {
+   //{{{ _log()
+   
+   private static void _log(int urgency, String source, String message) {
       String urgencyString = "[" + urgencyToString(urgency) + "] ";
 
       String fullMessage = urgencyString + source + ": " + message;
 
-      try
-      {
+      try {
          logDocument.insertString(logDocument.getLength(),
             fullMessage,null);
          logDocument.insertString(logDocument.getLength(),
@@ -323,22 +307,18 @@ public class Log
 
          Element map = logDocument.getDefaultRootElement();
          int lines = map.getElementCount();
-         if(lines > MAXLINES)
-         {
+         if (lines > MAXLINES) {
             Element first = map.getElement(0);
             Element last = map.getElement(lines - MAXLINES);
             logDocument.remove(first.getStartOffset(),
                last.getEndOffset());
          }
 
-         if(stream != null && (urgency != DEBUG || (urgency == DEBUG && debug)))
-         {
+         if (stream != null && (urgency != DEBUG || (urgency == DEBUG && debug))) {
             stream.write(fullMessage);
             stream.write(lineSep);
          }
-      }
-      catch(Exception e)
-      {
+      } catch(Exception e) {
          e.printStackTrace(realErr);
       }
 
@@ -355,24 +335,24 @@ public class Log
              }
           }
       }
-   }
+   }//}}}
 
-   private static String urgencyToString(int urgency)
-   {
-      switch(urgency)
-      {
-      case DEBUG:
-         return "debug";
-      case MESSAGE:
-         return "message";
-      case NOTICE:
-         return "notice";
-      case WARNING:
-         return "warning";
-      case ERROR:
-         return "error";
+   //{{{ urgencyToString()
+   
+   private static String urgencyToString(int urgency) {
+      switch(urgency) {
+          case DEBUG:
+             return "debug";
+          case MESSAGE:
+             return "message";
+          case NOTICE:
+             return "notice";
+          case WARNING:
+             return "warning";
+          case ERROR:
+             return "error";
       }
 
       throw new IllegalArgumentException("Invalid urgency: " + urgency);
-   }
+   }//}}}
 }

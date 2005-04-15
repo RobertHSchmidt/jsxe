@@ -1,15 +1,16 @@
 /*
-OptionsDialog.java - Tree options dialog
+OptionsDialog.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
 Copyright (C) 1998, 2003 Slava Pestov
-Portions copyright (C) 1999 mike dillon
+Portions Copyright (C) 1999 Mike Dillon
+Portions Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 2
-of the License, or any later version.
+of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,6 +20,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Optionally, you may find a copy of the GNU General Public License
+from http://www.fsf.org/copyleft/gpl.txt
 */
 
 package net.sourceforge.jsxe.gui;
@@ -39,12 +42,11 @@ import net.sourceforge.jsxe.OperatingSystem;
 /**
  * An abstract tabbed options dialog box.
  * @author Slava Pestov
- * @author Ian Lewis
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public abstract class OptionsDialog extends EnhancedDialog
-    implements ActionListener, TreeSelectionListener
-{
+public abstract class OptionsDialog extends EnhancedDialog implements ActionListener, TreeSelectionListener {
+
     //{{{ OptionsDialog constructor
     public OptionsDialog(Frame frame, String name, String title, String pane)
     {
@@ -240,8 +242,7 @@ public abstract class OptionsDialog extends EnhancedDialog
     //}}}
 
     //{{{ init() method
-    private void init(String name, String pane)
-    {
+    private void init(String name, String pane) {
         this.name = name;
 
         JPanel content = new JPanel(new BorderLayout(12,12));
@@ -300,8 +301,7 @@ public abstract class OptionsDialog extends EnhancedDialog
         paneTree.getSelectionModel().addTreeSelectionListener(this);
 
         OptionGroup rootNode = (OptionGroup)paneTree.getModel().getRoot();
-        for(int i = 0; i < rootNode.getMemberCount(); i++)
-        {
+        for(int i = 0; i < rootNode.getMemberCount(); i++) {
             paneTree.expandPath(new TreePath(
             new Object[] { rootNode, rootNode.getMember(i) }));
         }
@@ -311,8 +311,9 @@ public abstract class OptionsDialog extends EnhancedDialog
 
         loadGeometry(this, name);
         int dividerLocation = jsXe.getIntegerProperty(name + ".splitter",300);
-        if(dividerLocation != -1)
+        if (dividerLocation != -1) {
             splitter.setDividerLocation(dividerLocation);
+        }
 
         // in case saved geometry is too small
         updateSize();

@@ -3,15 +3,7 @@ JARClassLoader.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editor
-jsXe is a gui application that can edit an XML document and create a tree view.
-The user can then edit this tree and the content in the tree and save the
-document.
-
-Loads classes from a directory of jars.
-
-This file written by Ian Lewis (IanLewis@member.fsf.org)
-Copyright (C) 2002 Ian Lewis
+Copyright (C) 2004 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -51,6 +43,7 @@ import net.sourceforge.jsxe.util.MiscUtilities;
  * getting files from plugin JARs.
  * @author Ian Lewis
  * @version $Id$
+ * @since jsXe 0.4 beta
  */
 public class JARClassLoader extends ClassLoader {
     

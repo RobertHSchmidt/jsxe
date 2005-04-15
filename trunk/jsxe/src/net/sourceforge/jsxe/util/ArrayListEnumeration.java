@@ -1,13 +1,9 @@
 /*
-JARClassLoader.java
+ArrayListEnumeration.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-A simple class that implements enumeration and iterator
-using a simple arraylist
-
-This file written by Ian Lewis (IanLewis@member.fsf.org)
-Copyright (C) 2002 Ian Lewis
+Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -34,7 +30,15 @@ import java.util.*;
 
 //}}}
 
-public class ArrayListEnumeration implements Enumeration, Iterator {
+/**
+ * A utility class that allows enumaration or iteration over
+ * an ArrayList. One can use ArrayList.iterator() or ArrayList.ListIterator()
+ * but this class allows passing a single object around as an Enumaration or
+ * Iterator.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
+public class ArrayListEnumeration implements Enumeration, ListIterator {
     
     private ArrayList m_list;
     private int m_index = 0;
@@ -70,25 +74,62 @@ public class ArrayListEnumeration implements Enumeration, Iterator {
     
     //}}}
     
-    //{{{ Iterator methods
+    //{{{ ListIterator methods
+    
+    //{{{ add()
+    public void add(Object o) {
+        m_list.add(o);
+    }//}}}
     
     //{{{ hasNext()
-    
     public boolean hasNext() {
         return hasMoreElements();
     }//}}}
     
-    //{{{ next()
+    //{{{ hasPrevious()
+    public boolean hasPrevious() {
+        return m_index != 0;
+    }//}}}
     
+    //{{{ next()
     public Object next() throws NoSuchElementException {
         return nextElement();
     }//}}}
     
-    //{{{ remove()
+    //{{{ nextIndex()
+    public int nextIndex() {
+        return m_index;
+    }//}}}
     
+    //{{{ previous()
+    public Object previous() {
+        try {
+            if (hasPrevious()) {
+                return m_list.get(--m_index);
+            } else {
+                throw new NoSuchElementException("No previous elements");
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //shouldn't happen
+            throw new NoSuchElementException(e.getMessage());
+        }
+    }//}}}
+    
+    //{{{ previousIndex()
+    public int previousIndex() {
+        return nextIndex() - 1;
+    }//}}}
+    
+    //{{{ remove()
     public void remove() throws UnsupportedOperationException {
         //optional operation
         throw new UnsupportedOperationException("cannot call remove on this Iterator");
+    }//}}}
+    
+    //{{{ set()
+    public void set(Object o) throws UnsupportedOperationException {
+        //optional operation
+        throw new UnsupportedOperationException("cannot call set on this Iterator");
     }//}}}
     
     //}}}

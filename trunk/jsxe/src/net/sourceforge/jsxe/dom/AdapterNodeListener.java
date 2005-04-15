@@ -3,16 +3,7 @@ AdapterNodeListener.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editor
-jsXe is a gui application that creates a tree view of an XML document.
-The user can then edit this tree and the content in the tree.
-
-This file contains the interface that defines listeners used with
-the AdapterNode class. Listeners allow other components to be
-notified when something pertaining to the AdapterNode changes.
-
-This file written by Ian Lewis (IanLewis@member.fsf.org)
-Copyright (C) 2002 Ian Lewis
+Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

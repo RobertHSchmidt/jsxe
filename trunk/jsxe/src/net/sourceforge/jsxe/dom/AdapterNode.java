@@ -3,17 +3,8 @@ AdapterNode.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editor
-jsXe is a gui application that creates a tree view of an XML document.
-The user can then edit this tree and the content in the tree.
-
-This file contains the Node class that will be used by jsXe
-to adapt a DOM into the model for a viewable JTree. This class also
-provides persistent objects for editing a DOM.
-
-This file written by Ian Lewis (IanLewis@member.fsf.org)
-Copyright (C) 2002 Ian Lewis
-Copyright (C) 2003 Bilel Remmache
+Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
+Portions Copyright (C) 2003 Bilel Remmache
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

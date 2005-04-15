@@ -1,17 +1,27 @@
 /*
- * CompletionInfo.java
- * :tabSize=4:indentSize=4:noTabs=true:
- * :folding=explicit:collapseFolds=1:
- *
- * Copyright (C) 2001, 2003 Slava Pestov
- *
- * The XML plugin is licensed under the GNU General Public License, with
- * the following exception:
- *
- * "Permission is granted to link this code with software released under
- * the Apache license version 1.1, for example used by the Xerces XML
- * parser package."
- */
+CompletionInfo.java
+:tabSize=4:indentSize=4:noTabs=true:
+:folding=explicit:collapseFolds=1:
+
+Copyright (C) 2001, 2003 Slava Pestov
+Portions Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Optionally, you may find a copy of the GNU General Public License
+from http://www.fsf.org/copyleft/gpl.txt
+*/
 
 package net.sourceforge.jsxe.dom.completion;
 
@@ -23,8 +33,15 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 //}}}
 
-public class CompletionInfo
-{
+/**
+ * Encapsulates information about an XML document structure obtained
+ * from a DTD or Schema document.
+ * @author Slava Pestov
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @since jsXe 0.4 pre1
+ * @version $Id$
+ */
+public class CompletionInfo {
         public ArrayList elements;
         public HashMap elementHash;
         public ArrayList entities;
