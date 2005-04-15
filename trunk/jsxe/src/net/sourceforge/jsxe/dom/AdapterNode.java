@@ -50,10 +50,7 @@ import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
 
 //{{{ Java Base Classes
-import java.util.ArrayList;
-import java.util.ListIterator;
-import java.util.Properties;
-import java.util.HashMap;
+import java.util.*;
 //}}}
 
 //{{{ DOM classes
@@ -754,6 +751,35 @@ public class AdapterNode {
      */
     void setParent(AdapterNode parent) {
         m_parentNode = parent;
+    }//}}}
+    
+    //{{{ updateNode()
+    /**
+     * Sets the node that this AdapterNode wraps. And
+     * updates the AdapterNode children. This should only
+     * be used when no change in document structure has
+     * been made. Only a change that requires reparsing.
+     */
+    protected void updateNode(Node node) {
+        Iterator itr = m_children.iterator();
+        int index = 0;
+        Log.log(Log.DEBUG, this, "updating Node: "+getNodeName()+" to "+node.getNodeName());
+        while (itr.hasNext()) {
+            AdapterNode child = (AdapterNode)itr.next();
+            
+            //node could be null if we haven't needed it yet.
+            //It's ok to do nothing in this case since the
+            //AdapterNode object will be created when it is
+            //needed.
+            if (child != null) {
+                Log.log(Log.DEBUG, this, "   updating child: "+child.getNodeName());
+                child.updateNode(node.getChildNodes().item(index));
+            } else {
+                Log.log(Log.DEBUG, this, "   child is null: "+node.getNodeName());
+            }
+            ++index;
+        }
+        m_domNode = node;
     }//}}}
     
     //}}}

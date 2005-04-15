@@ -692,6 +692,9 @@ public class DocumentBuffer extends XMLDocument {
                 setDirty(true);
                 setProperty(XMLDocument.IS_USING_SOFT_TABS, String.valueOf(m_m_softTabsCheckBox.isSelected()));
             }
+            if (!String.valueOf(m_m_validatingCheckBox.isSelected()).equals(getProperty(XMLDocument.IS_VALIDATING))) {
+                setProperty(XMLDocument.IS_VALIDATING, String.valueOf(m_m_validatingCheckBox.isSelected()));
+            }
            // if (!String.valueOf(whitespaceCheckBox.isSelected()).equals(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT))) {
            //     setDirty(true);
            //     m_document.setProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, String.valueOf(whitespaceCheckBox.isSelected()));
@@ -807,9 +810,8 @@ public class DocumentBuffer extends XMLDocument {
                     
                     //create the path to the entity relative to the document
                     filePathURI += entity;
-                    Log.log(Log.DEBUG, this, filePathURI);
-                    
                     source = new InputSource((new URL(filePathURI)).openStream());
+                    Log.log(Log.DEBUG, this, filePathURI);
                     
                 } catch (MalformedURLException e) {
                     //Do nothing and try to open this entity normally

@@ -27,6 +27,7 @@ import java.io.File;
 /**
  * Operating system detection routines.
  * @author Slava Pestov
+ * @author Ian Lewis
  * @version $Id$
  * @since jEdit 4.0pre4
  */
@@ -188,8 +189,7 @@ public class OperatingSystem
 			}
 		}
 
-		if(System.getProperty("java.version").compareTo("1.4") >= 0
-			&& System.getProperty("jedit.nojava14") == null)
+		if(System.getProperty("java.version").compareTo("1.4") >= 0)
 			java14 = true;
 	} //}}}
 
