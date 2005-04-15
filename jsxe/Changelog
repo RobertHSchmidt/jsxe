@@ -1,3 +1,9 @@
+04/15/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Did some spring cleaning. Updated documentation in many classes. Updated
+      headers to correctly display copyrights and javadoc to correctly contain
+      authors.
+
 04/14/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added inactive code for storing completion info that is

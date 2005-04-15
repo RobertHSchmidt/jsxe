@@ -10,8 +10,7 @@ The user can then edit this tree and the content in the tree.
 This file contains the action taken when a user selects
 Save As... from the file menu.
 
-This file written by Ian Lewis (IanLewis@member.fsf.org)
-Copyright (C) 2002 Ian Lewis
+Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -74,6 +73,11 @@ import java.util.Vector;
 
 //}}}
 
+/**
+ * The action that is executed when the user selects 'save as' in the file menu.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class FileSaveAsAction extends AbstractAction {
     
     //{{{ FileSaveAsAction constructor

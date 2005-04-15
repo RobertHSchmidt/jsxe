@@ -3,18 +3,7 @@ DefaultDOMLocator.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editor
-jsXe is a gui application that can edit an XML document and create a tree view.
-The user can then edit this tree and the content in the tree and save the
-document.
-
-This file contains the source for a default DOMLocator that is used to
-contain information about a location within an XML document.
-
-This attempts to conform to the DOM3 implementation in Xerces. It conforms
-to DOM3 as of Xerces 2.3.0
-
-This file written by Ian Lewis (IanLewis@member.fsf.org)
+Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

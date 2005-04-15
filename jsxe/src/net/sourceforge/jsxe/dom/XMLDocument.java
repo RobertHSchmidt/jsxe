@@ -1,18 +1,9 @@
 /*
-DefaultXMLDocument.java
+XMLDocument.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editor
-jsXe is a gui application that can edit an XML document and create a tree view.
-The user can then edit this tree and the content in the tree and save the
-document.
-
-This file contains the default implementation of the XMLDocument abstract class.
-It represents a generic XML document.
-
-This file written by Ian Lewis (IanLewis@member.fsf.org)
-Copyright (C) 2002 Ian Lewis
+Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -456,6 +447,7 @@ public class XMLDocument {
      * is well-formed and conforms to a DTD/Schema.
      * @return true if the IS_VALIDATING property is true and the document is valid. false otherwise.
      * @throws IOException if there was a problem checking the validity of the document
+     * @since jsXe 0.4 pre1
      */
     public boolean isValid() throws IOException {
         if (Boolean.valueOf(getProperty(IS_VALIDATING)).booleanValue()) {
@@ -737,6 +729,7 @@ public class XMLDocument {
     /**
      * Parses the document with the current options. After this is called m_adapterNode must
      * be updated.
+     * @since jsXe 0.4 pre1
      */
     public void parseDocument() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
         Log.log(Log.DEBUG, this, "parsing document with validation: "+getProperty(IS_VALIDATING));
@@ -801,6 +794,10 @@ public class XMLDocument {
     }//}}}
     
     //{{{ getNoNamespaceCompletionInfo() method
+    /**
+     * Gets the completion info for the null namespace.
+     * @since jsXe 0.4 pre1
+     */
     private CompletionInfo getNoNamespaceCompletionInfo() {
         CompletionInfo info = (CompletionInfo)m_mappings.get("");
         if(info == null) {
@@ -811,6 +808,11 @@ public class XMLDocument {
     } //}}}
     
     //{{{ getElementDecl()
+    /**
+     * Gets an element declaration for a qualified name.
+     * @param the qualified name
+     * @since jsXe 0.4 pre1
+     */
     private ElementDecl getElementDecl(String name) {
         
         String prefix = MiscUtilities.getNSPrefixFromQualifiedName(name);
@@ -831,6 +833,11 @@ public class XMLDocument {
     } //}}}
     
     //{{{ xsElementToElementDecl() method
+    /**
+     * Converts an XSElementDeclaration into an internal ElementDecl object and
+     * adds it to a CompletionInfo object
+     * @since jsXe 0.4 pre1
+     */
     private void xsElementToElementDecl(CompletionInfo info, XSElementDeclaration element, ElementDecl parent) {
         String name = element.getName();
 
@@ -881,6 +888,11 @@ public class XMLDocument {
     } //}}}
 
     //{{{ xsTermToElementDecl() method
+    /**
+     * Converts an XSTerm object to internal ElementDecl objects and adds them
+     * to a CompletionInfo object
+     * @since jsXe 0.4 pre1
+     */
     private void xsTermToElementDecl(CompletionInfo info, XSTerm term, ElementDecl parent) {
         if(term instanceof XSElementDeclaration) {
             xsElementToElementDecl(info, (XSElementDeclaration)term, parent);
@@ -1210,7 +1222,10 @@ public class XMLDocument {
     }//}}}
     
     //{{{ ParseErrorHandler class
-    
+    /**
+     * Handles capturing of validation errors.
+     * @since jsXe 0.4 pre1
+     */
     private class ParseErrorHandler implements ErrorHandler {
         
         //{{{ error
@@ -1231,7 +1246,13 @@ public class XMLDocument {
     }//}}}
     
     //{{{ SchemaHandler class
-    
+    /**
+     * Handles building of CompletionInfo Objects to obtain schema
+     * introspection.
+     * @author Slava Pestov
+     * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+     * @since jsXe 0.4 pre1
+     */
     private class SchemaHandler extends DefaultHandler implements DeclHandler {
         
         //{{{ SchemaHandler constructor

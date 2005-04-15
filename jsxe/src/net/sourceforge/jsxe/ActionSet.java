@@ -3,16 +3,8 @@ ActionSet.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editor
-jsXe is a gui application that creates a tree view of an XML document.
-The user can then edit this tree and the content in the tree.
-
-This file contains the class that manages the storing of actions. This file
-was originally written by Slava Pestov for use with jEdit but
-was modified for use with jsXe.
-
 Copyright (C) 2001 Slava Pestov
-Copyright (C) 2002 Ian Lewis
+Portions Copyright (C) 2004 Ian Lewis
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -42,6 +34,7 @@ import javax.swing.Action;
  * @author Slava Pestov
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @since jsXe 0.4 beta
  */
 public class ActionSet {
    

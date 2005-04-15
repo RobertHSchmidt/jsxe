@@ -3,22 +3,12 @@ DOMSerializerConfiguration.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editor
-jsXe is a gui application that can edit an XML document and create a tree view.
-The user can then edit this tree and the content in the tree and save the
-document.
-
-This file contains the code for the DOMSerializerConfiguration class that is
-used to specify options to the DOMSerializer class.
-
 This attempts to conform to the DOM3 implementation in Xerces. It conforms
 to DOM3 as of Xerces 2.3.0. I'm not one to stay on the bleeding edge but
 there is as close to a standard interface for load & save as you can get and I
 didn't want to work around the fact that current serializers aren't very good.
-This class name will have to changed because DOMWriter was changed to
-DOMSerializer among other changes.
 
-This file written by Ian Lewis (IanLewis@member.fsf.org)
+Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
