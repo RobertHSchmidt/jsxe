@@ -49,22 +49,28 @@ import net.sourceforge.jsxe.dom.completion.*;
 //}}}
 
 //{{{ DOM classes
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.DOMException;
+import org.w3c.dom.*;
 import org.w3c.dom.ls.LSSerializer;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.*;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.helpers.DefaultHandler;
-import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.helpers.DefaultHandler;
+//}}}
+
+//{{{ Xerces classes
 import org.apache.xerces.dom3.DOMError;
 import org.apache.xerces.dom3.DOMErrorHandler;
+import org.apache.xerces.impl.xs.XSDDescription;
+import org.apache.xerces.impl.xs.XSParticleDecl;
+import org.apache.xerces.xs.*;
+import org.apache.xerces.util.SymbolTable;
+import org.apache.xerces.util.XMLGrammarPoolImpl;
+import org.apache.xerces.xni.grammars.Grammar;
+import org.apache.xerces.xni.grammars.XSGrammar;
 //}}}
 
 //{{{ Java base classes
@@ -163,40 +169,11 @@ public class XMLDocument {
      * @throws IOException if there was a problem reading the document
      */
     public boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
-        
         if (!m_parsedMode) {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setNamespaceAware(true);
-            factory.setExpandEntityReferences(false);
-            factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", new Boolean(false));
-            factory.setAttribute("http://xml.org/sax/features/external-general-entities", new Boolean(false));
-            factory.setAttribute("http://xml.org/sax/features/external-parameter-entities", new Boolean(false));
-            factory.setAttribute("http://xml.org/sax/features/namespaces",new Boolean(true));
-           // factory.setAttribute("http://apache.org/xml/features/validation/dynamic",new Boolean(true));
-            factory.setAttribute("http://xml.org/sax/features/validation",new Boolean(getProperty(IS_VALIDATING)));
-            factory.setAttribute("http://apache.org/xml/features/validation/schema",new Boolean(getProperty(IS_VALIDATING)));
-            
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            
-            builder.setErrorHandler(new org.xml.sax.ErrorHandler() {
-                public void error(SAXParseException exception) {
-                   // System.out.println(exception.getLineNumber());
-                }
-                public void fatalError(SAXParseException exception) {
-                   // System.out.println(exception.getLineNumber());
-                }
-                public void warning(SAXParseException exception) {
-                   // System.out.println(exception.getLineNumber());
-                }
-            });
-            
-            if (m_entityResolver != null) {
-                builder.setEntityResolver(m_entityResolver);
-            }
-            
-            Document doc = builder.parse(new ContentManagerInputStream(m_content));
-            doc.getDocumentElement().normalize();
-            setDocument(doc);
+            parseDocument();
+            m_adapterNode = new AdapterNode(this, m_document);
+            m_adapterNode.addAdapterNodeListener(docAdapterListener);
+            m_syncedWithContent = false;
             m_parsedMode=true;
         }
         return m_parsedMode;
@@ -233,6 +210,20 @@ public class XMLDocument {
             }
             if (key.equals(IS_USING_SOFT_TABS)) {
                 m_syncedWithContent = false;
+            }
+            if (key.equals(IS_VALIDATING)) {
+                syncContentWithDOM();
+                //if we were in parsed mode we must make sure
+                //the AdapterNodes in the tree have the correct
+                //nodes internally.
+                if (m_parsedMode) {
+                    try {
+                        parseDocument();
+                        m_adapterNode.updateNode(m_document);
+                    } catch (Exception e) {
+                        jsXe.exiterror(this, e, 1);
+                    }
+                }
             }
             firePropertyChanged(key, oldValue);
         }
@@ -447,18 +438,38 @@ public class XMLDocument {
      */
     public boolean isWellFormed() throws IOException {
         
-        if (!m_parsedMode) {
-            try {
-                checkWellFormedness();
-            } catch (SAXException saxe) {
-                //nothing wrong here.
-                //document is just not well-formed.
-            } catch (ParserConfigurationException pce) {
-                throw new IOException(pce.getMessage());
-            }
+        try {
+            checkWellFormedness();
+        } catch (SAXException saxe) {
+            //nothing wrong here.
+            //document is just not well-formed.
+        } catch (ParserConfigurationException pce) {
+            throw new IOException(pce.getMessage());
         }
         
         return m_parsedMode;
+    }//}}}
+    
+    //{{{ isValid()
+    /**
+     * Returns true if the document is valid i.e. The document structure
+     * is well-formed and conforms to a DTD/Schema.
+     * @return true if the IS_VALIDATING property is true and the document is valid. false otherwise.
+     * @throws IOException if there was a problem checking the validity of the document
+     */
+    public boolean isValid() throws IOException {
+        if (Boolean.valueOf(getProperty(IS_VALIDATING)).booleanValue()) {
+            try {
+                checkWellFormedness();
+            } catch (SAXException e) {
+            } catch (ParserConfigurationException e) {
+                throw new IOException(e.getMessage());
+            }
+            
+            return (m_parseErrors.size() == 0 && m_parseFatalErrors.size() == 0);
+        } else {
+            return false;
+        }
     }//}}}
     
     //{{{ serialize()
@@ -681,15 +692,6 @@ public class XMLDocument {
         }
     }//}}}
     
-    //{{{ setDocument()
-    
-    private void setDocument(Document doc) {
-        m_document=doc;
-        m_adapterNode = new AdapterNode(this, m_document);
-        m_adapterNode.addAdapterNodeListener(docAdapterListener);
-        m_syncedWithContent = false;
-    }//}}}
-    
     //{{{ syncContentWithDOM()
     /**
      * Write the DOM to the content manager given the current serialization and
@@ -711,7 +713,7 @@ public class XMLDocument {
                     }
                     m_content = content;
                 } catch (IOException ioe) {
-                    System.err.println("jsXe: "+ioe.getMessage());
+                    jsXe.exiterror(this, ioe, 1);
                 }
             }
         }
@@ -725,10 +727,77 @@ public class XMLDocument {
         config.setFeature(FORMAT_XML, Boolean.valueOf(getProperty(FORMAT_XML)).booleanValue());
         config.setFeature(WS_IN_ELEMENT_CONTENT, Boolean.valueOf(getProperty(WS_IN_ELEMENT_CONTENT)).booleanValue());
         config.setParameter(INDENT, new Integer(getProperty(INDENT)));
-        config.setParameter(DOMSerializerConfiguration.ERROR_HANDLER, new XMLDocErrorHandler());
+        config.setParameter(DOMSerializerConfiguration.ERROR_HANDLER, new SerializeErrorHandler());
         config.setFeature(IS_USING_SOFT_TABS, Boolean.valueOf(getProperty(IS_USING_SOFT_TABS)).booleanValue());
         
         return new DOMSerializer(config);
+    }//}}}
+    
+    //{{{ parseDocument()
+    /**
+     * Parses the document with the current options. After this is called m_adapterNode must
+     * be updated.
+     */
+    public void parseDocument() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
+        Log.log(Log.DEBUG, this, "parsing document with validation: "+getProperty(IS_VALIDATING));
+        Boolean validating = new Boolean(getProperty(IS_VALIDATING));
+        
+        //{{{ Parse using DocumentBuilder
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        factory.setExpandEntityReferences(false);
+        factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", new Boolean(false));
+        factory.setAttribute("http://xml.org/sax/features/external-general-entities", new Boolean(false));
+        factory.setAttribute("http://xml.org/sax/features/external-parameter-entities", new Boolean(false));
+        factory.setAttribute("http://xml.org/sax/features/namespaces",new Boolean(true));
+       // factory.setAttribute("http://apache.org/xml/features/validation/dynamic",new Boolean(true));
+        factory.setAttribute("http://xml.org/sax/features/validation",validating);
+        factory.setAttribute("http://apache.org/xml/features/validation/schema",validating);
+        
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        
+        builder.setErrorHandler(new ParseErrorHandler());
+        
+        if (m_entityResolver != null) {
+            builder.setEntityResolver(m_entityResolver);
+        }
+        
+        Document doc = builder.parse(new ContentManagerInputStream(m_content));
+        doc.getDocumentElement().normalize();
+        //}}}
+        
+        /*
+        Parsing the document twice stinks.
+        Need to fix this in the somewhat near future.
+        */
+        
+        //{{{ Parse using SAXParser to get Completion Info
+        SymbolTable symbolTable = new SymbolTable();
+        XMLGrammarPoolImpl grammarPool = new XMLGrammarPoolImpl();
+
+        SchemaHandler handler = new SchemaHandler(grammarPool);
+
+        org.apache.xerces.parsers.SAXParser reader = new org.apache.xerces.parsers.SAXParser(symbolTable,grammarPool);
+        try {
+            reader.setFeature("http://xml.org/sax/features/validation",validating.booleanValue());
+            reader.setFeature("http://apache.org/xml/features/validation/schema",validating.booleanValue());
+            reader.setFeature("http://xml.org/sax/features/namespaces",true);
+            reader.setErrorHandler(handler);
+            reader.setEntityResolver(handler);
+            reader.setContentHandler(handler);
+            reader.setProperty("http://xml.org/sax/properties/declaration-handler",handler);
+        } catch(SAXException se) {
+            Log.log(Log.ERROR,this,se);
+        }
+        
+        if (m_entityResolver != null) {
+            reader.setEntityResolver(m_entityResolver);
+        }
+        
+        reader.parse(new InputSource(new ContentManagerInputStream(m_content)));
+        //}}}
+        
+        m_document=doc;
     }//}}}
     
     //{{{ getNoNamespaceCompletionInfo() method
@@ -760,6 +829,72 @@ public class XMLDocument {
             }
         }
     } //}}}
+    
+    //{{{ xsElementToElementDecl() method
+    private void xsElementToElementDecl(CompletionInfo info, XSElementDeclaration element, ElementDecl parent) {
+        String name = element.getName();
+
+        if (parent != null) {
+            if (parent.content == null) {
+                parent.content = new HashSet();
+            }
+            parent.content.add(name);
+        }
+
+        if (info.elementHash.get(name) != null) {
+            return;
+        }
+
+        ElementDecl elementDecl = new ElementDecl(info,name,null);
+        info.addElement(elementDecl);
+
+        XSTypeDefinition typedef = element.getTypeDefinition();
+
+        if (typedef.getTypeCategory() == XSTypeDefinition.COMPLEX_TYPE) {
+            XSComplexTypeDefinition complex = (XSComplexTypeDefinition)typedef;
+
+            XSParticle particle = complex.getParticle();
+            if (particle != null) {
+                XSTerm particleTerm = particle.getTerm();
+                if(particleTerm instanceof XSWildcard) {
+                    elementDecl.any = true;
+                } else {
+                    xsTermToElementDecl(info,particleTerm,elementDecl);
+                }
+            }
+
+            XSObjectList attributes = complex.getAttributeUses();
+            for (int i = 0; i < attributes.getLength(); i++) {
+                XSAttributeUse attr = (XSAttributeUse)attributes.item(i);
+                boolean required = attr.getRequired();
+                XSAttributeDeclaration decl = attr.getAttrDeclaration();
+                String attrName = decl.getName();
+                String value = decl.getConstraintValue();
+                // TODO: possible values
+                String type = decl.getTypeDefinition().getName();
+                if(type == null) {
+                    type = "CDATA";
+                }
+                elementDecl.addAttribute(new ElementDecl.AttributeDecl(attrName,value,null,type,required));
+            }
+        }
+    } //}}}
+
+    //{{{ xsTermToElementDecl() method
+    private void xsTermToElementDecl(CompletionInfo info, XSTerm term, ElementDecl parent) {
+        if(term instanceof XSElementDeclaration) {
+            xsElementToElementDecl(info, (XSElementDeclaration)term, parent);
+        } else {
+            if (term instanceof XSModelGroup) {
+                XSObjectList content = ((XSModelGroup)term).getParticles();
+                for(int i = 0; i < content.getLength(); i++) {
+                    XSTerm childTerm = ((XSParticleDecl)content.item(i)).getTerm();
+                    xsTermToElementDecl(info,childTerm,parent);
+                }
+            }
+        }
+    }
+    //}}}
     
     //{{{ ContentManager class
     /**
@@ -1051,14 +1186,13 @@ public class XMLDocument {
         
     }//}}}
     
-    //{{{ XMLDocErrorHandler class
+    //{{{ SerializeErrorHandler class
     
-    private class XMLDocErrorHandler implements DOMErrorHandler {
+    private class SerializeErrorHandler implements DOMErrorHandler {
         
         //{{{ handleError()
         
         public boolean handleError(DOMError error) {
-            
             if (error.getType() == "cdata-sections-splitted") {
                 /*
                 make the source the valid model and
@@ -1070,8 +1204,28 @@ public class XMLDocument {
                 fireStructureChanged(null);
                 return true;
             }
-            
             return false;
+        }//}}}
+        
+    }//}}}
+    
+    //{{{ ParseErrorHandler class
+    
+    private class ParseErrorHandler implements ErrorHandler {
+        
+        //{{{ error
+        public void error(SAXParseException exception) {
+            Log.log(Log.DEBUG, this, "error: "+exception.getMessage());
+        }//}}}
+        
+        //{{{ fatalError
+        public void fatalError(SAXParseException exception) {
+            Log.log(Log.DEBUG, this, "fatalError: "+exception.getMessage());
+        }//}}}
+        
+        //{{{ warning
+        public void warning(SAXParseException exception) {
+            Log.log(Log.DEBUG, this, "warning: "+exception.getMessage());
         }//}}}
         
     }//}}}
@@ -1079,9 +1233,55 @@ public class XMLDocument {
     //{{{ SchemaHandler class
     
     private class SchemaHandler extends DefaultHandler implements DeclHandler {
+        
+        //{{{ SchemaHandler constructor
+        public SchemaHandler(XMLGrammarPoolImpl grammarPool) {
+            m_m_grammarPool = grammarPool;
+        }//}}}
+        
+        //{{{ endDocument()
+        public void endDocument() throws SAXException {
+            Grammar grammar = getGrammarForNamespace(null);
 
+            if (grammar != null) {
+                CompletionInfo info = grammarToCompletionInfo(grammar);
+                if (info != null) {
+                    m_mappings.put("",info);
+                }
+            }
+        } //}}}
+        
+        //{{{ startPrefixMapping() method
+        public void startPrefixMapping(String prefix, String uri) {
+            m_m_activePrefixes.put(prefix,uri);
+        } //}}}
+
+        //{{{ endPrefixMapping() method
+        public void endPrefixMapping(String prefix) {
+            String uri = (String)m_m_activePrefixes.get(prefix);
+            // check for built-in completion info for this URI
+            // (eg, XSL, XSD, XHTML has this).
+            if (uri != null) {
+                CompletionInfo info = CompletionInfo.getCompletionInfoForNamespace(uri);
+                if (info != null) {
+                    m_mappings.put(prefix,info);
+                    return;
+                }
+            }
+
+            Grammar grammar = getGrammarForNamespace(uri);
+
+            if (grammar != null) {
+                CompletionInfo info = grammarToCompletionInfo(grammar);
+                if (info != null) {
+                    m_mappings.put(prefix,info);
+                }
+            }
+        } //}}}
+        
         //{{{ elementDecl() method
         public void elementDecl(String name, String model) {
+            Log.log(Log.DEBUG, this, "elementDecl: "+name+", "+model);
             ElementDecl element = getElementDecl(name);
             if(element == null) {
                 CompletionInfo info = getNoNamespaceCompletionInfo();
@@ -1094,6 +1294,7 @@ public class XMLDocument {
 
         //{{{ attributeDecl() method
         public void attributeDecl(String eName, String aName, String type, String valueDefault, String value) {
+            Log.log(Log.DEBUG, this, "attributeDecl: "+eName+", "+aName+", "+type+", "+valueDefault+", "+value);
             ElementDecl element = getElementDecl(eName);
             if (element == null) {
                 CompletionInfo info = getNoNamespaceCompletionInfo();
@@ -1123,8 +1324,9 @@ public class XMLDocument {
             element.addAttribute(new ElementDecl.AttributeDecl(aName,value,values,type,required));
         } //}}}
 
-        //{{{ internalEntityDecl() method
+        //{{{ internalEntityDecl()
         public void internalEntityDecl(String name, String value) {
+            Log.log(Log.DEBUG, this, "elementDecl: "+name+", "+value);
             // this is a bit of a hack
             if (name.startsWith("%")) {
                 return;
@@ -1132,8 +1334,9 @@ public class XMLDocument {
             getNoNamespaceCompletionInfo().addEntity(EntityDecl.INTERNAL, name, value);
         } //}}}
 
-        //{{{ externalEntityDecl() method
+        //{{{ externalEntityDecl()
         public void externalEntityDecl(String name, String publicId, String systemId) {
+            Log.log(Log.DEBUG, this, "elementDecl: "+name+", "+publicId+", "+systemId);
             if (name.startsWith("%")) {
                 return;
             }
@@ -1141,6 +1344,58 @@ public class XMLDocument {
             getNoNamespaceCompletionInfo() .addEntity(EntityDecl.EXTERNAL,name, publicId, systemId);
         } //}}}
     
+        //{{{ Private members
+        
+        //{{{ grammarToCompletionInfo()
+        private CompletionInfo grammarToCompletionInfo(Grammar grammar) {
+            if (!(grammar instanceof XSGrammar)) {
+                return null;
+            }
+
+            CompletionInfo info = new CompletionInfo();
+
+            XSModel model = ((XSGrammar)grammar).toXSModel();
+
+            XSNamedMap elements = model.getComponents(XSConstants.ELEMENT_DECLARATION);
+            
+            for(int i = 0; i < elements.getLength(); i++) {
+                XSElementDeclaration element = (XSElementDeclaration)
+                    elements.item(i);
+
+                xsElementToElementDecl(info,element,null);
+            }
+
+            XSNamedMap attributes = model.getComponents(XSConstants.ATTRIBUTE_DECLARATION);
+            
+            for(int i = 0; i < attributes.getLength(); i++) {
+                XSObject attribute = attributes.item(i);
+                System.err.println("look! " + attribute);
+                /* String name = element.getName();
+                boolean empty = true;
+                boolean any = true;
+                List attributes = new ArrayList();
+                Map attributeHash = new HashMap();
+                Set content = new HashSet();
+                info.addElement(new ElementDecl(info,name,empty,any,
+                    attributes,attributeHash,content)); */
+            }
+
+            return info;
+        } //}}}
+        
+        //{{{ getGrammarForNamespace()
+        private Grammar getGrammarForNamespace(String uri) {
+            XSDDescription schemaDesc = new XSDDescription();
+            schemaDesc.setTargetNamespace(uri);
+            Grammar grammar = m_m_grammarPool.getGrammar(schemaDesc);
+            return grammar;
+        } //}}}
+        
+        private XMLGrammarPoolImpl m_m_grammarPool;
+        private HashMap m_m_activePrefixes = new HashMap();
+        
+        //}}}
+        
     } //}}}
     
     private Document m_document;
@@ -1163,6 +1418,11 @@ public class XMLDocument {
      * such a way that they become out of sync.
      */
     private boolean m_syncedWithContent = false;
+    
+    private ArrayList m_parseErrors = new ArrayList();
+    private ArrayList m_parseFatalErrors = new ArrayList();
+    private ArrayList m_parseWarnings = new ArrayList();
+    
     private EntityResolver m_entityResolver;
     private ArrayList listeners = new ArrayList();
     private Properties props = new Properties();

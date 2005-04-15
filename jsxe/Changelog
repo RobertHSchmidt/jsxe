@@ -2,6 +2,8 @@
 
     * Added inactive code for storing completion info that is
       retrieved from a DTD or Schema.
+    * XMLDocument now creates CompletionInfo objects to describe document
+      structures but jsXe doesn't use it yet.
 
 03/30/2005  Ian Lewis <IanLewis@member.fsf.org>
 

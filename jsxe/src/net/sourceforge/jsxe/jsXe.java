@@ -45,23 +45,12 @@ import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
 
 //{{{ Swing classes
-import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 //}}}
 
 //{{{ AWT Components
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 //}}}
 
@@ -706,17 +695,17 @@ public class jsXe {
      * @param error The error. Either a string or Exception.
      * @param errorcode The errorcode to exit with.
      */
-    public static void exiterror(TabbedView view, Object error, int errorcode) {
+    public static void exiterror(Object source, Object error, int errorcode) {
         String errorhdr = "jsXe has encountered a fatal error and is unable to continue.\n";
         errorhdr        +="This is most likely a bug and should be reported to the jsXe\n";
         errorhdr        +="developers. Please fill out a full bug report at\n";
         errorhdr        +="http://www.sourceforge.net/projects/jsxe/\n\n";
         
-        Log.log(Log.ERROR, jsXe.class, errorhdr);
-        Log.log(Log.ERROR, jsXe.class, error);
+        Log.log(Log.ERROR, source, errorhdr);
+        Log.log(Log.ERROR, source, error);
         
-        if (view != null) {
-            JOptionPane.showMessageDialog(view, errorhdr + error, "Fatal Error", JOptionPane.WARNING_MESSAGE);
+        if (source != null && source instanceof Component) {
+            JOptionPane.showMessageDialog((Component)source, errorhdr + error, "Fatal Error", JOptionPane.WARNING_MESSAGE);
         }
         
         //stop logging
