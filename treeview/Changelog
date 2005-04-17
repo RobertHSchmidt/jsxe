@@ -1,3 +1,8 @@
+04/17/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated the context menu to add elements to show elements that are
+      allowed as children based on the DTD/Schema
+
 03/30/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed problem with entering new attributes after you reverse the order

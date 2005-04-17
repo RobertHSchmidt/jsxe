@@ -36,6 +36,7 @@ package treeview;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.*;
+import net.sourceforge.jsxe.dom.completion.*;
 //}}}
 
 //{{{ Swing components
@@ -313,8 +314,21 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 boolean addNodeShown = false;
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
+                    
+                    JMenu addElement = new JMenu("Element");
+                    
                     popupMenuItem = new JMenuItem(new AddNodeAction("New_Element", "", Node.ELEMENT_NODE));
-                    addNodeItem.add(popupMenuItem);
+                    addElement.add(popupMenuItem);
+                    
+                    Iterator allowedElements = selectedNode.getAllowedElements().iterator();
+                    while (allowedElements.hasNext()) {
+                        ElementDecl decl = (ElementDecl)allowedElements.next();
+                        popupMenuItem = new JMenuItem(new AddNodeAction(decl.name, "", decl.name, Node.ELEMENT_NODE));
+                        addElement.add(popupMenuItem);
+                    }
+                    
+                    addNodeItem.add(addElement);
+                    
                     popupMenuItem = new JMenuItem(new AddNodeAction("", "New Text Node", Node.TEXT_NODE));
                     addNodeItem.add(popupMenuItem);
                     popupMenuItem = new JMenuItem(new AddNodeAction("", "New CDATA Node", Node.CDATA_SECTION_NODE));
@@ -360,11 +374,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         //{{{ AddNodeAction constructor
         
         public AddNodeAction(String name, String value, short nodeType) {
-            m_name     = name;
-            m_value    = value;
-            m_nodeType = nodeType;
             String actionName;
-            //{{{ set the Action.NAME
             switch (nodeType) {
                 case Node.CDATA_SECTION_NODE:
                     actionName = "CDATA Section";
@@ -393,7 +403,13 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 default:
                     actionName = "XML Node";
             }
-            putValue(Action.NAME, actionName);//}}}
+            init(name, value, actionName, nodeType);
+        }//}}}
+        
+        //{{{ AddNodeAction constructor
+        
+        public AddNodeAction(String qualifiedName, String value,  String actionTitle, short nodeType) {
+            init(qualifiedName, value, actionTitle, nodeType);
         }//}}}
         
         //{{{ actionPerformed()
@@ -417,6 +433,17 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         }//}}}
         
         //{{{ Private members
+        
+        //{{{ init()
+        
+        private void init(String qualifiedName, String value,  String actionTitle, short nodeType) {
+            m_name     = qualifiedName;
+            m_value    = value;
+            m_nodeType = nodeType;
+            putValue(Action.NAME, actionTitle);
+        }//}}}
+        
+        
         private short m_nodeType;
         private String m_name;
         private String m_value;
