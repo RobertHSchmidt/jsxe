@@ -33,11 +33,10 @@ belongs to.
 */
 
 //{{{ jsXe classes
-
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
-
+import net.sourceforge.jsxe.dom.completion.*;
 //}}}
 
 //{{{ Java Base Classes
@@ -650,6 +649,40 @@ public class AdapterNode {
         } else {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
         }
+    }//}}}
+    
+    //{{{ getAllowedElements()
+    /**
+     * Gets the all the elements (ElementDecl objects) allowed as children of this
+     * node.
+     * @return a list of ElementDecl objects
+     * @since jsXe 0.4 pre1
+     */
+    public List getAllowedElements() {
+        
+        ArrayList allowedElements = new ArrayList();
+        
+        HashMap mappings = m_rootDocument.getCompletionInfoMappings();
+        ElementDecl thisDecl = m_rootDocument.getElementDecl(getNodeName());
+        
+        if (thisDecl != null) {
+            allowedElements.addAll(thisDecl.getChildElements(getNSPrefix()));
+        }
+         
+        // add everything but the parent's prefix now
+        Iterator iter = mappings.keySet().iterator();
+        while(iter.hasNext()) {
+            String prefix = (String)iter.next();
+            String myprefix = getNSPrefix();
+            if (myprefix == null) {
+                myprefix = "";
+            }
+            if (!prefix.equals(myprefix)) {
+                CompletionInfo info = (CompletionInfo)mappings.get(prefix);
+                info.getAllElements(prefix, allowedElements);
+            }
+        }
+        return allowedElements;
     }//}}}
     
     //{{{ equals()

@@ -107,12 +107,10 @@ public class CompletionInfo {
         } //}}}
 
         //{{{ getAllElements() method
-        public void getAllElements(String prefix, List out)
-        {
-                for(int i = 0; i < elements.size(); i++)
-                {
-                        out.add(((ElementDecl)elements.get(i)).withPrefix(prefix));
-                }
+        public void getAllElements(String prefix, List out) {
+            for(int i = 0; i < elements.size(); i++) {
+                out.add(((ElementDecl)elements.get(i)).withPrefix(prefix));
+            }
         } //}}}
 
         //{{{ toString() method
