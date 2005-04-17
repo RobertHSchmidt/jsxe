@@ -655,6 +655,44 @@ public class XMLDocument {
         m_syncedWithContent = false;
     }//}}}
     
+    //{{{ Protected members
+    
+    //{{{ getElementDecl()
+    /**
+     * Gets an element declaration for a qualified name.
+     * @param the qualified name
+     * @since jsXe 0.4 pre1
+     */
+    protected ElementDecl getElementDecl(String name) {
+        String prefix = MiscUtilities.getNSPrefixFromQualifiedName(name);
+        if (prefix == null) {
+            prefix = "";
+        }
+        CompletionInfo info = (CompletionInfo)m_mappings.get(prefix);
+        
+        if(info == null) {
+            return null;
+        } else {
+            String lName = MiscUtilities.getLocalNameFromQualifiedName(name);
+            ElementDecl decl = (ElementDecl)info.elementHash.get(lName);
+            if(decl == null) {
+                return null;
+            } else {
+                return decl.withPrefix(prefix);
+            }
+        }
+    } //}}}
+    
+    //{{{ getCompletionInfoMappings()
+    /**
+     * Gets the namespace uri to CompletionInfo Mappings for this document.
+     */
+    protected HashMap getCompletionInfoMappings() {
+        return m_mappings;
+    }//}}}
+    
+    //}}}
+    
     //{{{ Private static members
     private static final int READ_SIZE = 5120;
     private static final int WRITE_SIZE = 5120;
@@ -805,31 +843,6 @@ public class XMLDocument {
             m_mappings.put("",info);
         }
         return info;
-    } //}}}
-    
-    //{{{ getElementDecl()
-    /**
-     * Gets an element declaration for a qualified name.
-     * @param the qualified name
-     * @since jsXe 0.4 pre1
-     */
-    private ElementDecl getElementDecl(String name) {
-        
-        String prefix = MiscUtilities.getNSPrefixFromQualifiedName(name);
-        CompletionInfo info = (CompletionInfo)m_mappings.get(prefix);
-        
-        if(info == null) {
-            return null;
-        } else {
-            String lName = MiscUtilities.getLocalNameFromQualifiedName(name);
-
-            ElementDecl decl = (ElementDecl)info.elementHash.get(lName);
-            if(decl == null) {
-                return null;
-            } else {
-                return decl.withPrefix(prefix);
-            }
-        }
     } //}}}
     
     //{{{ xsElementToElementDecl() method

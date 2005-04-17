@@ -94,53 +94,40 @@ public class ElementDecl
         } //}}}
 
         //{{{ withPrefix()
-        public ElementDecl withPrefix(String prefix)
-        {
-                if(prefix.equals(""))
-                        return this;
-                else
-                {
-                        return new ElementDecl(completionInfo,prefix + ':' + name,
-                                empty,any,attributes,attributeHash,content);
-                }
+        public ElementDecl withPrefix(String prefix) {
+            if (prefix == null || prefix.equals("")) {
+                return this;
+            } else {
+                return new ElementDecl(completionInfo,prefix + ':' + name, empty,any,attributes,attributeHash,content);
+            }
         } //}}}
 
         //{{{ getChildElements() method
-        public List getChildElements(String prefix)
-        {
-                ArrayList children = new ArrayList(100);
+        public List getChildElements(String prefix) {
+            
+            ArrayList children = new ArrayList(100);
 
-                if(any)
-                {
-                        for(int i = 0; i < completionInfo.elements.size(); i++)
-                        {
-                                children.add(((ElementDecl)completionInfo.elements.get(i))
-                                        .withPrefix(prefix));
-                        }
+            if (any) {
+                for(int i = 0; i < completionInfo.elements.size(); i++) {
+                    children.add(((ElementDecl)completionInfo.elements.get(i)).withPrefix(prefix));
                 }
-                else
-                {
-                        for(int i = 0; i < completionInfo.elementsAllowedAnywhere.size(); i++)
-                        {
-                                children.add(((ElementDecl)completionInfo
-                                        .elementsAllowedAnywhere.get(i))
-                                        .withPrefix(prefix));
-                        }
-
-                        if(content != null)
-                        {
-                                Iterator iter = content.iterator();
-                                while(iter.hasNext())
-                                {
-                                        ElementDecl decl = (ElementDecl)completionInfo
-                                                .elementHash.get(iter.next());
-                                        if(decl != null)
-                                                children.add(decl.withPrefix(prefix));
-                                }
-                        }
+            } else {
+                for (int i = 0; i < completionInfo.elementsAllowedAnywhere.size(); i++) {
+                    children.add(((ElementDecl)completionInfo.elementsAllowedAnywhere.get(i)).withPrefix(prefix));
                 }
 
-                return children;
+                if (content != null) {
+                    Iterator iter = content.iterator();
+                    while(iter.hasNext()) {
+                        ElementDecl decl = (ElementDecl)completionInfo.elementHash.get(iter.next());
+                        if (decl != null) {
+                            children.add(decl.withPrefix(prefix));
+                        }
+                    }
+                }
+            }
+
+            return children;
         } //}}}
 
         //{{{ getAttribute() method

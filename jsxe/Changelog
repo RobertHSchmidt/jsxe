@@ -1,3 +1,8 @@
+04/17/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * AdapterNodes can now report what nodes can be added to them as children
+      based on a DTD or schema.
+
 04/15/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Did some spring cleaning. Updated documentation in many classes. Updated
