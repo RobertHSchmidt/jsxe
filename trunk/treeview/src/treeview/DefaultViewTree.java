@@ -315,19 +315,19 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     
-                    JMenu addElement = new JMenu("Element");
-                    
-                    popupMenuItem = new JMenuItem(new AddNodeAction("New_Element", "", Node.ELEMENT_NODE));
-                    addElement.add(popupMenuItem);
-                    
-                    Iterator allowedElements = selectedNode.getAllowedElements().iterator();
-                    while (allowedElements.hasNext()) {
-                        ElementDecl decl = (ElementDecl)allowedElements.next();
-                        popupMenuItem = new JMenuItem(new AddNodeAction(decl.name, "", decl.name, Node.ELEMENT_NODE));
-                        addElement.add(popupMenuItem);
+                    if (selectedNode.getOwnerDocument().hasCompletionInfo()) {
+                        JMenu addElement = new JMenu("Element");
+                        Iterator allowedElements = selectedNode.getAllowedElements().iterator();
+                        while (allowedElements.hasNext()) {
+                            ElementDecl decl = (ElementDecl)allowedElements.next();
+                            popupMenuItem = new JMenuItem(new AddNodeAction(decl.name, "", decl.name, Node.ELEMENT_NODE));
+                            addElement.add(popupMenuItem);
+                        }
+                        addNodeItem.add(addElement);
+                    } else {
+                        popupMenuItem = new JMenuItem(new AddNodeAction("New_Element", "", Node.ELEMENT_NODE));
+                        addNodeItem.add(popupMenuItem);
                     }
-                    
-                    addNodeItem.add(addElement);
                     
                     popupMenuItem = new JMenuItem(new AddNodeAction("", "New Text Node", Node.TEXT_NODE));
                     addNodeItem.add(popupMenuItem);
