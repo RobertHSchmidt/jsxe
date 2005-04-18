@@ -1,3 +1,8 @@
+04/18/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated the context menu for the tree to not allow you to invalidate
+      a document by adding a new node that isn't in the completion info.
+
 04/17/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated the context menu to add elements to show elements that are
