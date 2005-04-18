@@ -38,16 +38,7 @@ import java.util.*;
 /**
  * Path name manipulation, string manipulation, and more.<p>
  *
- * The most frequently used members of this class are:<p>
- *
- * <b>Some path name methods:</b><p>
- * <ul>
- * <li>{@link #getFileName(String)}</li>
- * <li>{@link #getParentOfPath(String)}</li>
- * <li>{@link #constructPath(String,String)}</li>
- * </ul>
  * <b>String comparison:</b><p>
- 
  * A {@link #compareStrings(String,String,boolean)} method that unlike
  * <function>String.compareTo()</function>, correctly recognizes and handles
  * embedded numbers.<p>
@@ -81,7 +72,6 @@ public class MiscUtilities {
      * only expands a leading <code>~</code>. <b>For local path names
      * only.</b>
      * @param path The path name
-     * @since jEdit 4.0pre2
      */
     public static String canonPath(String path)
     {
@@ -110,7 +100,6 @@ public class MiscUtilities {
     //{{{ isPathAbsolute() method
     /**
      * Returns if the specified path name is an absolute path or URL.
-     * @since jEdit 4.1pre11
      */
     public static boolean isAbsolutePath(String path)
     {
@@ -268,15 +257,6 @@ public class MiscUtilities {
    //         return name.substring(0,index);
    // } //}}}
 
-   // //{{{ getFileParent() method
-   // /**
-   //  * @deprecated Call getParentOfPath() instead
-   //  */
-   // public static String getFileParent(String path)
-   // {
-   //     return getParentOfPath(path);
-   // } //}}}
-
    // //{{{ getParentOfPath() method
    // /**
    //  * Returns the parent of the specified path. This method is VFS-aware.
@@ -288,20 +268,10 @@ public class MiscUtilities {
    //     return VFSManager.getVFSForPath(path).getParentOfPath(path);
    // } //}}}
 
-    //{{{ getFileProtocol() method
-    /**
-     * @deprecated Call getProtocolOfURL() instead
-     */
-    public static String getFileProtocol(String url)
-    {
-        return getProtocolOfURL(url);
-    } //}}}
-
     //{{{ getProtocolOfURL() method
     /**
      * Returns the protocol specified by a URL.
      * @param url The URL
-     * @since jEdit 2.6pre5
      */
     public static String getProtocolOfURL(String url)
     {
@@ -342,7 +312,6 @@ public class MiscUtilities {
      * @param backupSuffix The backup file name suffix
      * @param backupDirectory The directory where to save backups; if null,
      * they will be saved in the same directory as the file itself.
-     * @since jEdit 4.0pre1
      */
     public static void saveBackup(File file, int backups,
         String backupPrefix, String backupSuffix,
@@ -423,18 +392,15 @@ public class MiscUtilities {
      * specified string.
      * @param str The string
      */
-    public static int getLeadingWhiteSpace(String str)
-    {
+    public static int getLeadingWhiteSpace(String str) {
         int whitespace = 0;
-loop:       for(;whitespace < str.length();)
-        {
-            switch(str.charAt(whitespace))
-            {
-            case ' ': case '\t':
-                whitespace++;
-                break;
-            default:
-                break loop;
+loop:   for(;whitespace < str.length();) {
+            switch(str.charAt(whitespace)) {
+                case ' ': case '\t':
+                    whitespace++;
+                    break;
+                default:
+                    break loop;
             }
         }
         return whitespace;
@@ -445,20 +411,16 @@ loop:       for(;whitespace < str.length();)
      * Returns the number of trailing whitespace characters in the
      * specified string.
      * @param str The string
-     * @since jEdit 2.5pre5
      */
-    public static int getTrailingWhiteSpace(String str)
-    {
+    public static int getTrailingWhiteSpace(String str) {
         int whitespace = 0;
-loop:       for(int i = str.length() - 1; i >= 0; i--)
-        {
-            switch(str.charAt(i))
-            {
-            case ' ': case '\t':
-                whitespace++;
-                break;
-            default:
-                break loop;
+loop:   for(int i = str.length() - 1; i >= 0; i--) {
+            switch(str.charAt(i)) {
+                case ' ': case '\t':
+                    whitespace++;
+                    break;
+                default:
+                    break loop;
             }
         }
         return whitespace;
@@ -498,7 +460,6 @@ loop:       for(int i = 0; i < str.length(); i++)
      *
      * @param seg The segment
      * @param tabSize The tab size
-     * @since jEdit 4.1pre1
      */
     public static int getVirtualWidth(Segment seg, int tabSize)
     {
@@ -535,8 +496,6 @@ loop:       for(int i = 0; i < str.length(); i++)
      * returns -1.
      *
      * @return -1 if the column is out of bounds
-     *
-     * @since jEdit 4.1pre1
      */
     public static int getOffsetOfVirtualColumn(Segment seg, int tabSize,
         int column, int[] totalVirtualWidth)
@@ -693,7 +652,6 @@ loop:       for(int i = 0; i < str.length(); i++)
      * Converts "\n" and "\t" escapes in the specified string to
      * newlines and tabs.
      * @param str The string
-     * @since jEdit 2.3pre1
      */
     public static String escapesToChars(String str)
     {
@@ -735,7 +693,6 @@ loop:       for(int i = 0; i < str.length(); i++)
      * Escapes newlines, tabs, backslashes, and quotes in the specified
      * string.
      * @param str The string
-     * @since jEdit 2.3pre1
      */
     public static String charsToEscapes(String str)
     {
@@ -747,7 +704,6 @@ loop:       for(int i = 0; i < str.length(); i++)
      * Escapes the specified characters in the specified string.
      * @param str The string
      * @param extra Any characters that require escaping
-     * @since jEdit 4.1pre3
      */
     public static String charsToEscapes(String str, String toEscape)
     {
@@ -773,15 +729,6 @@ loop:       for(int i = 0; i < str.length(); i++)
         return buf.toString();
     } //}}}
 
-    //{{{ compareVersions() method
-    /**
-     * @deprecated Call <code>compareStrings()</code> instead
-     */
-    public static int compareVersions(String v1, String v2)
-    {
-        return compareStrings(v1,v2,false);
-    } //}}}
-
     //{{{ compareStrings() method
     /**
      * Compares two strings.<p>
@@ -795,38 +742,29 @@ loop:       for(int i = 0; i < str.length(); i++)
      * @param ignoreCase If true, case will be ignored
      * @return negative If str1 &lt; str2, 0 if both are the same,
      * positive if str1 &gt; str2
-     * @since jEdit 4.0pre1
      */
-    public static int compareStrings(String str1, String str2, boolean ignoreCase)
-    {
+    public static int compareStrings(String str1, String str2, boolean ignoreCase) {
         char[] char1 = str1.toCharArray();
         char[] char2 = str2.toCharArray();
 
         int len = Math.min(char1.length,char2.length);
 
-        for(int i = 0, j = 0; i < len && j < len; i++, j++)
-        {
+        for (int i = 0, j = 0; i < len && j < len; i++, j++) {
             char ch1 = char1[i];
             char ch2 = char2[j];
-            if(Character.isDigit(ch1) && Character.isDigit(ch2)
-                && ch1 != '0' && ch2 != '0')
-            {
+            if (Character.isDigit(ch1) && Character.isDigit(ch2) && ch1 != '0' && ch2 != '0') {
                 int _i = i + 1;
                 int _j = j + 1;
 
-                for(; _i < char1.length; _i++)
-                {
-                    if(!Character.isDigit(char1[_i]))
-                    {
+                for (; _i < char1.length; _i++) {
+                    if(!Character.isDigit(char1[_i])) {
                         //_i--;
                         break;
                     }
                 }
 
-                for(; _j < char2.length; _j++)
-                {
-                    if(!Character.isDigit(char2[_j]))
-                    {
+                for (; _j < char2.length; _j++) {
+                    if(!Character.isDigit(char2[_j])) {
                         //_j--;
                         break;
                     }
@@ -834,34 +772,33 @@ loop:       for(int i = 0; i < str.length(); i++)
 
                 int len1 = _i - i;
                 int len2 = _j - j;
-                if(len1 > len2)
+                if (len1 > len2) {
                     return 1;
-                else if(len1 < len2)
-                    return -1;
-                else
-                {
-                    for(int k = 0; k < len1; k++)
-                    {
-                        ch1 = char1[i + k];
-                        ch2 = char2[j + k];
-                        if(ch1 != ch2)
-                            return ch1 - ch2;
+                } else {
+                    if(len1 < len2) {
+                        return -1;
+                    } else {
+                        for (int k = 0; k < len1; k++) {
+                            ch1 = char1[i + k];
+                            ch2 = char2[j + k];
+                            if (ch1 != ch2) {
+                                return ch1 - ch2;
+                            }
+                        }
                     }
                 }
 
                 i = _i - 1;
                 j = _j - 1;
-            }
-            else
-            {
-                if(ignoreCase)
-                {
+            } else {
+                if (ignoreCase) {
                     ch1 = Character.toLowerCase(ch1);
                     ch2 = Character.toLowerCase(ch2);
                 }
 
-                if(ch1 != ch2)
+                if(ch1 != ch2) {
                     return ch1 - ch2;
+                }
             }
         }
 
@@ -872,7 +809,6 @@ loop:       for(int i = 0; i < str.length(); i++)
     /**
      * Returns if two strings are equal. This correctly handles null pointers,
      * as opposed to calling <code>s1.equals(s2)</code>.
-     * @since jEdit 4.1pre5
      */
     public static boolean stringsEqual(String s1, String s2)
     {
@@ -899,7 +835,6 @@ loop:       for(int i = 0; i < str.length(); i++)
      * <code>Arrays.sort()</code>.
      * @param obj The array
      * @param compare Compares the objects
-     * @since jEdit 4.0pre4
      */
     public static void quicksort(Object[] obj, Comparator compare)
     {
@@ -911,10 +846,8 @@ loop:       for(int i = 0; i < str.length(); i++)
      * Sorts the specified vector.
      * @param vector The vector
      * @param compare Compares the objects
-     * @since jEdit 4.0pre4
      */
-    public static void quicksort(Vector vector, Comparator compare)
-    {
+    public static void quicksort(Vector vector, Comparator compare) {
         Collections.sort(vector,compare);
     } //}}}
 
@@ -923,58 +856,18 @@ loop:       for(int i = 0; i < str.length(); i++)
      * Sorts the specified list.
      * @param list The list
      * @param compare Compares the objects
-     * @since jEdit 4.0pre4
      */
-    public static void quicksort(List list, Comparator compare)
-    {
+    public static void quicksort(List list, Comparator compare) {
         Collections.sort(list,compare);
-    } //}}}
-
-    //{{{ quicksort() method
-    /**
-     * Sorts the specified array. Equivalent to calling
-     * <code>Arrays.sort()</code>.
-     * @param obj The array
-     * @param compare Compares the objects
-     */
-    public static void quicksort(Object[] obj, Compare compare)
-    {
-        Arrays.sort(obj,compare);
-    } //}}}
-
-    //{{{ quicksort() method
-    /**
-     * Sorts the specified vector.
-     * @param vector The vector
-     * @param compare Compares the objects
-     */
-    public static void quicksort(Vector vector, Compare compare)
-    {
-        Collections.sort(vector,compare);
-    } //}}}
-
-    //{{{ Compare interface
-    /**
-     * An interface for comparing objects. This is a hold-over from
-     * they days when jEdit had its own sorting API due to JDK 1.1
-     * compatibility requirements. Use <code>java.util.Comparable</code>
-     * instead.
-     */
-    public interface Compare extends Comparator
-    {
-        int compare(Object obj1, Object obj2);
     } //}}}
 
     //{{{ StringCompare class
     /**
      * Compares strings.
      */
-    public static class StringCompare implements Compare
-    {
-        public int compare(Object obj1, Object obj2)
-        {
-            return compareStrings(obj1.toString(),
-                obj2.toString(),false);
+    public static class StringCompare implements Comparator {
+        public int compare(Object obj1, Object obj2) {
+            return compareStrings(obj1.toString(), obj2.toString(),false);
         }
     } //}}}
 
@@ -982,12 +875,9 @@ loop:       for(int i = 0; i < str.length(); i++)
     /**
      * Compares strings ignoring case.
      */
-    public static class StringICaseCompare implements Compare
-    {
-        public int compare(Object obj1, Object obj2)
-        {
-            return compareStrings(obj1.toString(),
-                obj2.toString(),true);
+    public static class StringICaseCompare implements Comparator {
+        public int compare(Object obj1, Object obj2) {
+            return compareStrings(obj1.toString(), obj2.toString(),true);
         }
     } //}}}
 
@@ -995,12 +885,9 @@ loop:       for(int i = 0; i < str.length(); i++)
     /**
      * Compares menu item labels.
      */
-    public static class MenuItemCompare implements Compare
-    {
-        public int compare(Object obj1, Object obj2)
-        {
-            return compareStrings(((JMenuItem)obj1).getText(),
-                ((JMenuItem)obj2).getText(),true);
+    public static class MenuItemCompare implements Comparator {
+        public int compare(Object obj1, Object obj2) {
+            return compareStrings(((JMenuItem)obj1).getText(), ((JMenuItem)obj2).getText(),true);
         }
     } //}}}
 
@@ -1164,7 +1051,6 @@ loop:       for(int i = 0; i < str.length(); i++)
     /**
      * Parse a Unix-style permission string (rwxrwxrwx).
      * @param str The string (must be 9 characters long).
-     * @since jEdit 4.1pre8
      */
     public static int parsePermissions(String s)
     {
@@ -1207,6 +1093,8 @@ loop:       for(int i = 0; i < str.length(); i++)
         return permissions;
     } //}}}
 
+    //{{{ XML Methods
+    
     //{{{ getLocalNameFromQualifiedName()
     /**
      * Extracts the XML local name from a qualified name
@@ -1227,9 +1115,10 @@ loop:       for(int i = 0; i < str.length(); i++)
     
     //{{{ getNSPrefixFromQualifiedName()
     /**
-     * Extracts an XML namespace prefix from a qualified name
+     * Extracts an XML namespace prefix from a qualified name. If there is no
+     * namespace prefix this method returns null.
      * @param qualifiedName the qualified name
-     * @return the namespace prefix
+     * @return the namespace prefix. null if no namespace
      * @since jsXe 0.4 pre1
      */
     public static String getNSPrefixFromQualifiedName(String qualifiedName) {
@@ -1240,6 +1129,8 @@ loop:       for(int i = 0; i < str.length(); i++)
         }
         return prefix;
     }//}}}
+    
+    //}}}
     
     //{{{ Private members
     private MiscUtilities() {}

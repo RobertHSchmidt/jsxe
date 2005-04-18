@@ -28,6 +28,7 @@ package net.sourceforge.jsxe.dom.completion;
 //{{{ Imports
 import javax.swing.text.Position;
 import net.sourceforge.jsxe.util.MiscUtilities;
+import java.util.Comparator;
 //}}}
 
 public class IDDecl
@@ -55,16 +56,12 @@ public class IDDecl
         } //}}}
 
         //{{{ Compare class
-        public static class Compare implements MiscUtilities.Compare
-        {
-                public int compare(Object obj1, Object obj2)
-                {
-                        IDDecl id1 = (IDDecl)obj1;
-                        IDDecl id2 = (IDDecl)obj2;
+        public static class Compare implements Comparator {
+            public int compare(Object obj1, Object obj2) {
+                IDDecl id1 = (IDDecl)obj1;
+                IDDecl id2 = (IDDecl)obj2;
 
-                        return MiscUtilities.compareStrings(
-                                id1.id,
-                                id2.id,true);
-                }
+                return MiscUtilities.compareStrings(id1.id, id2.id,true);
+            }
         } //}}}
 }

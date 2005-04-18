@@ -26,9 +26,9 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.dom.completion;
 
 import net.sourceforge.jsxe.util.MiscUtilities;
+import java.util.Comparator;
 
-public class EntityDecl
-{
+public class EntityDecl {
         public static final int INTERNAL = 0;
         public static final int EXTERNAL = 1;
 
@@ -69,7 +69,7 @@ public class EntityDecl
         } //}}}
 
         //{{{ Compare class
-        public static class Compare implements MiscUtilities.Compare
+        public static class Compare implements Comparator
         {
                 public int compare(Object obj1, Object obj2)
                 {

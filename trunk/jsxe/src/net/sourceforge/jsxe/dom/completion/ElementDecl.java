@@ -267,10 +267,9 @@ public class ElementDecl
         } //}}}
 
         //{{{ Compare class
-        public static class Compare implements MiscUtilities.Compare
+        public static class Compare implements Comparator
         {
-                public int compare(Object obj1, Object obj2)
-                {
+                public int compare(Object obj1, Object obj2) {
                         return MiscUtilities.compareStrings(
                                 ((ElementDecl)obj1).name,
                                 ((ElementDecl)obj2).name,true);

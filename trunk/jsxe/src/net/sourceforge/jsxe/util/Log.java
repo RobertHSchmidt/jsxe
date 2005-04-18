@@ -51,42 +51,36 @@ public class Log {
    
    /**
     * The maximum number of log messages that will be kept in memory.
-    * @since jEdit 2.6pre5
     */
    public static final int MAXLINES = 500;
 
    /**
     * Debugging message urgency. Should be used for messages only
     * useful when debugging a problem.
-    * @since jEdit 2.2pre2
     */
    public static final int DEBUG = 1;
 
    /**
     * Message urgency. Should be used for messages which give more
     * detail than notices.
-    * @since jEdit 2.2pre2
     */
    public static final int MESSAGE = 3;
 
    /**
     * Notice urgency. Should be used for messages that directly
     * affect the user.
-    * @since jEdit 2.2pre2
     */
    public static final int NOTICE = 5;
 
    /**
     * Warning urgency. Should be used for messages that warrant
     * attention.
-    * @since jEdit 2.2pre2
     */
    public static final int WARNING = 7;
 
    /**
     * Error urgency. Should be used for messages that signal a
     * failure.
-    * @since jEdit 2.2pre2
     */
    public static final int ERROR = 9;
 
@@ -153,7 +147,6 @@ public class Log {
     * Returns the document where the most recent messages are stored.
     * The document of a Swing text area can be set to this to graphically
     * view log messages.
-    * @since jEdit 2.2pre2
     */
    public static Document getLogDocument() {
       return logDocument;
