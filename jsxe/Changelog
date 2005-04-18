@@ -1,3 +1,13 @@
+04/18/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated documentation.
+    * Removed a number of methods from MiscUtilities that were not needed or
+      were jEdit specific.
+    * Added a method to the AdapterNode class to allow you to get the document
+      that owns it.
+    * Added a method to XMLDocument to let you know if it has completion info
+      aquired from a DTD/Schema
+
 04/17/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * AdapterNodes can now report what nodes can be added to them as children

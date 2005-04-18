@@ -85,14 +85,6 @@ public class ErrorListDialog extends EnhancedDialog {
             ok = new JButton("OK");
             ok.addActionListener(new ActionHandler());
 
-           // if(pluginError)
-           // {
-           //         pluginMgr = new JButton(jEdit.getProperty("error-list.plugin-manager"));
-           //         pluginMgr.addActionListener(new ActionHandler());
-           //         buttons.add(pluginMgr);
-           //         buttons.add(Box.createHorizontalStrut(6));
-           // }
-
             buttons.add(ok);
 
             buttons.add(Box.createGlue());
@@ -126,13 +118,6 @@ public class ErrorListDialog extends EnhancedDialog {
                 if (evt.getSource() == ok) {
                     dispose();
                 }
-               // else if(evt.getSource() == pluginMgr)
-               // {
-               //         org.gjt.sp.jedit.pluginmgr.PluginManager
-               //                 .showPluginManager(JOptionPane
-               //                 .getFrameForComponent(
-               //                 ErrorListDialog.this));
-               // }
             } //}}}
         } //}}}
 }

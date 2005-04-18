@@ -212,6 +212,7 @@ public class XMLDocument {
                         parseDocument();
                         m_adapterNode.updateNode(m_document);
                     } catch (Exception e) {
+                        //If an error occurs then we're in trouble
                         jsXe.exiterror(this, e, 1);
                     }
                 }
@@ -223,7 +224,7 @@ public class XMLDocument {
     
     //{{{ getDocumentCopy()
     /**
-     * Gets a copy of the underlying Document objects.
+     * Gets a copy of the underlying Document object.
      * @return a deep copy of the underlying document object
      */
     public Document getDocumentCopy() {
@@ -233,7 +234,10 @@ public class XMLDocument {
         } catch (SAXParseException e) {
         } catch (SAXException e) {
         } catch (ParserConfigurationException e) {
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            //If an error occurs then we're in trouble
+            jsXe.exiterror(this, e, 1);
+        }
         if (m_document != null) {
             return (Document)m_document.cloneNode(true);
         } else {
@@ -462,6 +466,17 @@ public class XMLDocument {
         } else {
             return false;
         }
+    }//}}}
+    
+    //{{{ isValidated()
+    /**
+     * Gets whether this document has completion info obtained from a
+     * DTD/Schema. This effectively lets you know if the document has a valid
+     * DTD/Schema declaration or not.
+     * @return true if the document has completion info.
+     */
+    public boolean hasCompletionInfo() {
+        return (m_mappings.size() != 0);
     }//}}}
     
     //{{{ serialize()
@@ -743,6 +758,7 @@ public class XMLDocument {
                     }
                     m_content = content;
                 } catch (IOException ioe) {
+                    //If an error occurs then we're in trouble
                     jsXe.exiterror(this, ioe, 1);
                 }
             }

@@ -67,6 +67,7 @@ import org.w3c.dom.NodeList;
  * @author Bilel Remmache (<a href="mailto:rbilel@users.sourceforge.net">rbilel@users.sourceforge.net</a>)
  * @version $Id$
  * @see XMLDocument
+ * @see XMLDocument#addAdapterNode(AdapterNode, String, String, short)
  */
 public class AdapterNode {
     
@@ -99,6 +100,15 @@ public class AdapterNode {
         m_domNode = node;
         setParent(parent);
         m_rootDocument = xmlDocument;
+    }//}}}
+    
+    //{{{ getOwnerDocument()
+    /**
+     * Gets the XMLDocument that owns this AdapterNode
+     * @return The owning XMLDocument
+     */
+    public XMLDocument getOwnerDocument() {
+        return m_rootDocument;
     }//}}}
     
     //{{{ getProperty()
@@ -204,8 +214,9 @@ public class AdapterNode {
     
     //{{{ getNSPrefix()
     /**
-     * Gets the namespace prefix for this node.
-     * @return the namespace prefix for this node.
+     * Gets the namespace prefix for this node. If this node is not a member
+     * of a namespace then this method returns null.
+     * @return the namespace prefix for this node. null if no namespace
      */
     public String getNSPrefix() {
         return m_domNode.getPrefix();
@@ -213,7 +224,8 @@ public class AdapterNode {
     
     //{{{ setNSPrefix()
     /**
-     * Sets the namespace prefix for this node.
+     * Sets the namespace prefix for this node. To remove this node from a
+     * namespace this method should be passed null.
      * @param prefix The new prefix for this node
      * @throws DOMException if this namespace prefix is not valid.
      * INVALID_CHARACTER_ERR: Raised if the specified prefix contains an illegal character, per the XML 1.0 specification .
@@ -655,15 +667,15 @@ public class AdapterNode {
     /**
      * Gets the all the elements (ElementDecl objects) allowed as children of this
      * node.
-     * @return a list of ElementDecl objects
+     * @return a list of ElementDecl objects.
      * @since jsXe 0.4 pre1
      */
     public List getAllowedElements() {
         
-        ArrayList allowedElements = new ArrayList();
-        
         HashMap mappings = m_rootDocument.getCompletionInfoMappings();
         ElementDecl thisDecl = m_rootDocument.getElementDecl(getNodeName());
+        
+        ArrayList allowedElements = new ArrayList();
         
         if (thisDecl != null) {
             allowedElements.addAll(thisDecl.getChildElements(getNSPrefix()));
