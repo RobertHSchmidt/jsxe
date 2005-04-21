@@ -103,13 +103,14 @@ public class XMLDocument {
     public static final String FORMAT_XML = DOMSerializerConfiguration.FORMAT_XML;
     /**
      * The property key for the property defining the size of a tab when the
-     * document is displayed as text or otherwise.
+     * document is displayed as text or otherwise. Used when serializing the
+     * document using soft-tabs.
      */
     public static final String INDENT = DOMSerializerConfiguration.INDENT;
     /**
      * The property key for the property defining whether to serialize
-     * using soft tabs (tabs replaced by spaces). Has a value of "true" if
-     * using soft tabs.
+     * using soft tabs (tabs replaced by the number of spaces specified in the
+     * INDENT property). Has a value of "true" if using soft tabs.
      */
     public static final String IS_USING_SOFT_TABS = DOMSerializerConfiguration.SOFT_TABS;
     /**
@@ -246,7 +247,10 @@ public class XMLDocument {
     }//}}}
     
     //{{{ getProperties()
-    
+    /**
+     * Gets all properties associated with this document.
+     * @return the document's properties
+     */
     public Properties getProperties() {
         return props;
     }//}}}
@@ -274,7 +278,10 @@ public class XMLDocument {
     }//}}}
     
     //{{{ getRootElementNode()
-    
+    /**
+     * A convenience method that returns the root element node of the document.
+     * @return the root element node.
+     */
     public AdapterNode getRootElementNode() {
         int childCount = m_adapterNode.childCount();
         AdapterNode rootElement = m_adapterNode.child(0);
@@ -660,7 +667,12 @@ public class XMLDocument {
     }//}}}
     
     //{{{ fireStructureChanged()
-    
+    /**
+     * Called when the structure of the document has changed. This may be called
+     * in the event that specs that will alter how the document is serialized or
+     * parsed are changed.
+     * @param location the location of the change. null if unknown
+     */
     protected void fireStructureChanged(AdapterNode location) {
         ListIterator iterator = listeners.listIterator();
         while (iterator.hasNext()) {
@@ -953,7 +965,24 @@ public class XMLDocument {
         public final int getLength() {
             return length;
         } //}}}
-    
+        
+        //{{{ getCharAt()
+        public char getCharAt(int start) {
+            if(start >= gapStart) {
+                return text[start + gapEnd - gapStart];
+            } else {
+                if(start + 1 <= gapStart) {
+                    return text[start];
+                } else {
+                    if (gapStart - start > 0) {
+                        return text[start];
+                    } else {
+                        return text[gapEnd + start - 1];
+                    }
+                }
+            }
+        }//}}}
+        
         //{{{ getText()
         public String getText(int start, int len) {
             if(start >= gapStart) {
@@ -1173,6 +1202,7 @@ public class XMLDocument {
                     
                 } catch (UnsupportedEncodingException uee) {
                     //UTF-8 is guaranteed to be supported.
+                    Log.log(Log.ERROR, this, uee);
                 }
             }
             
@@ -1193,6 +1223,10 @@ public class XMLDocument {
     }//}}}
     
     //{{{ XMLDocAdapterListener class
+    /**
+     * An AdapterNodeListener is added to each AdapterNode in the tree so that
+     * the XMLDocument is notified when the structure changes.
+     */
     private class XMLDocAdapterListener implements AdapterNodeListener {
         
         // {{{ nodeAdded()
@@ -1228,7 +1262,11 @@ public class XMLDocument {
     }//}}}
     
     //{{{ SerializeErrorHandler class
-    
+    /**
+     * Handles when parsing causes changes to the structure of the document.
+     * Sounds like that should never happen doesn't it? Read the source.
+     * Splitting CDATA sections is an example.
+     */
     private class SerializeErrorHandler implements DOMErrorHandler {
         
         //{{{ handleError()
