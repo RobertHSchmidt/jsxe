@@ -1,3 +1,9 @@
+04/20/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added a getActiveView() method to the jsXe class so that you can get
+      the active view for the program. This will be needed by plugins and
+      various other parts of jsXe.
+
 04/18/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated documentation.
