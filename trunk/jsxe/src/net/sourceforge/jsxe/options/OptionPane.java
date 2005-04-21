@@ -32,10 +32,10 @@ import java.awt.Component;
  *
  * The <i>name</i> of an option pane is returned by the <code>getName()</code>
  * method. The label displayed in the option pane's tab is obtained from the
- * <code>options.<i>name</i>.label</code> property.<p>
+ * <code>getTitle()</code> method.
  *
- * Note that in most cases it is much easier to extend
- * {@link AbstractOptionPane} instead.
+ * Note that you should extend the {@link net.sourceforge.jsxe.gui.OptionPanel}
+ * if creating an OptionPane for use with jsXe.
  *
  * @see OptionGroup
  * @see net.sourceforge.jsxe.gui.OptionsDialog#addOptionPane(OptionPane)

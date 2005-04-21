@@ -868,6 +868,13 @@ public class jsXe {
         return m_exiting;
     }//}}}
     
+    //{{{ jsXe constructor
+    /**
+     * This class cannot be instantiated.
+     */
+    private jsXe() {}
+    //}}}
+    
     // Private static members {{{
 
     //{{{ openXMLDocuments()

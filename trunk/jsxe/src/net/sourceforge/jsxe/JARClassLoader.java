@@ -41,7 +41,7 @@ import net.sourceforge.jsxe.util.MiscUtilities;
 /**
  * A class loader implementation that loads classes from JAR files. Also manages
  * getting files from plugin JARs.
- * @author Ian Lewis
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @since jsXe 0.4 beta
  */
