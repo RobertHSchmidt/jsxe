@@ -1,10 +1,12 @@
-04/20/2005  Ian Lewis <IanLewis@member.fsf.org>
+04/21/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added a getActiveView() method to the jsXe class so that you can get
       the active view for the program. This will be needed by plugins and
       various other parts of jsXe.
     * Updated some doc and cleaned up the API a bit (made jsXe and Log
       constructors private)
+    * Added a getCharAt() method to the ContentManager in the XMLDocument. Will
+      use later.
 
 04/18/2005  Ian Lewis <IanLewis@member.fsf.org>
 
