@@ -28,8 +28,8 @@ package net.sourceforge.jsxe.dom.completion;
 import java.util.*;
 import net.sourceforge.jsxe.util.MiscUtilities;
 
-public class ElementDecl
-{
+public class ElementDecl {
+
         public CompletionInfo completionInfo;
 
         public String name;
@@ -42,31 +42,30 @@ public class ElementDecl
         public Set content;
 
         //{{{ ElementDecl constructor
-        public ElementDecl(CompletionInfo completionInfo, String name, String content)
-        {
-                this.completionInfo = completionInfo;
+        public ElementDecl(CompletionInfo completionInfo, String name, String content) {
+            this.completionInfo = completionInfo;
 
-                this.name = name;
+            this.name = name;
 
-                if(content != null)
-                        setContent(content);
+            if(content != null)
+                    setContent(content);
 
-                attributes = new ArrayList();
-                attributeHash = new HashMap();
+            attributes = new ArrayList();
+            attributeHash = new HashMap();
         } //}}}
 
         //{{{ ElementDecl constructor
         public ElementDecl(CompletionInfo completionInfo, String name,
-                boolean empty, boolean any, List attributes, Map attributeHash,
-                Set content)
+            boolean empty, boolean any, List attributes, Map attributeHash,
+            Set content)
         {
-                this.completionInfo = completionInfo;
-                this.name = name;
-                this.empty = empty;
-                this.any = any;
-                this.attributes = attributes;
-                this.attributeHash = attributeHash;
-                this.content = content;
+            this.completionInfo = completionInfo;
+            this.name = name;
+            this.empty = empty;
+            this.any = any;
+            this.attributes = attributes;
+            this.attributeHash = attributeHash;
+            this.content = content;
         } //}}}
 
         //{{{ setContent() method
@@ -131,27 +130,23 @@ public class ElementDecl
         } //}}}
 
         //{{{ getAttribute() method
-        public AttributeDecl getAttribute(String name)
-        {
-                return (AttributeDecl)attributeHash.get(name);
+        public AttributeDecl getAttribute(String name) {
+            return (AttributeDecl)attributeHash.get(name);
         } //}}}
 
         //{{{ addAttribute() method
-        public void addAttribute(AttributeDecl attribute)
-        {
-                attributeHash.put(attribute.name,attribute);
+        public void addAttribute(AttributeDecl attribute) {
+            attributeHash.put(attribute.name,attribute);
 
-                for(int i = 0; i < attributes.size(); i++)
-                {
-                        AttributeDecl attr = (AttributeDecl)attributes.get(i);
-                        if(attr.name.compareTo(attribute.name) > 0)
-                        {
-                                attributes.add(i,attribute);
-                                return;
-                        }
+            for (int i = 0; i < attributes.size(); i++) {
+                AttributeDecl attr = (AttributeDecl)attributes.get(i);
+                if (attr.name.compareTo(attribute.name) > 0) {
+                    attributes.add(i,attribute);
+                    return;
                 }
+            }
 
-                attributes.add(attribute);
+            attributes.add(attribute);
         } //}}}
 
         //{{{ getRequiredAttributesString()

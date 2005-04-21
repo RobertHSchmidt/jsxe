@@ -268,7 +268,7 @@ public class jsXe {
                     try {
                         tabbedview = new TabbedView(defaultBuffer, viewname);
                     } catch (UnrecognizedPluginException e) {
-                        Log.log(Log.ERROR, jsXe.class, e);
+                        Log.log(Log.ERROR, jsXe.class, e.getMessage());
                         System.exit(1);
                     }
                 }
@@ -276,8 +276,10 @@ public class jsXe {
             } catch (IOException ioe) {
                 Log.log(Log.ERROR, jsXe.class, ioe);
                 JOptionPane.showMessageDialog(null, ioe.getMessage()+".", "I/O Error", JOptionPane.WARNING_MESSAGE);
-                System.exit(0);
+                System.exit(1);
             }
+            
+            m_activeView = tabbedview;
             //}}}
             
             //{{{ Parse files to open on the command line
@@ -360,6 +362,20 @@ public class jsXe {
      */
     public static String getAppTitle() {
         return buildProps.getProperty("application.name");
+    }//}}}
+    
+    //{{{ getActiveView()
+    /**
+     * Gets the currently active view.
+     * @return the currently active view.
+     * @since jsXe 0.4 pre1
+     */
+    public TabbedView getActiveView() {
+        /*
+        there is only one view per instance of jsXe currently.
+        Eventually there may be more.
+        */
+        return m_activeView;
     }//}}}
     
     //{{{ showOpenFileDialog()
@@ -1064,7 +1080,7 @@ public class jsXe {
     private static BufferHistory m_bufferHistory;
     private static ArrayList m_actionSets = new ArrayList();
     private static JARClassLoader m_pluginLoader;
-    private static TabbedView m_tabbedview;
+    private static TabbedView m_activeView;
     
     private static OptionsPanel jsXeOptions;
     //}}}
