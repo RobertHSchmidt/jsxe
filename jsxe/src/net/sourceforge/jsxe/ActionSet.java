@@ -152,9 +152,12 @@ public class ActionSet {
    }//}}}
 
    //{{{ toString()
-   
+   /**
+    * Returns getLabel()
+    * @see ActionSet#getLabel()
+    */
    public String toString() {
-      return label;
+      return getLabel();
    }//}}}
 
    // package-private members

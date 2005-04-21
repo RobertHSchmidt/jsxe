@@ -442,7 +442,7 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
 
                 if (label == null)
                 {
-                    setText("NO LABEL PROPERTY: " + name);
+                    setText("NO TITLE: " + name);
                 }
                 else
                 {

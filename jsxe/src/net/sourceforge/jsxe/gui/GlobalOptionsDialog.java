@@ -93,5 +93,4 @@ public class GlobalOptionsDialog extends OptionsDialog {
         return m_defaultGroup;
     }//}}}
     
-    
 }
