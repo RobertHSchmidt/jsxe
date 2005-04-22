@@ -98,7 +98,8 @@ public class Log {
      * sent to the log
      * @param level Messages with this log level or higher will
      * be printed to the system console
-     * @param debug If true, debug will be printed to the log.
+     * @param debug If true, debug will be printed to the log even if it is not
+     *              at or higher than the level (second arg)
      */
     public static void init(boolean stdio, int level, boolean debug) {
         if (stdio) {

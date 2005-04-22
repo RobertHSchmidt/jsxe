@@ -522,7 +522,7 @@ public class jsXe {
     //{{{ openXMLDocument()
     /**
      * Attempts to open an XML document in the form of a Reader object as an
-     * untitled document..
+     * untitled document.
      * @param view The view to open the document in.
      * @param reader The Reader document to open.
      * @return true if the file is opened successfully.
@@ -713,7 +713,7 @@ public class jsXe {
     public static void exiterror(Object source, Object error, int errorcode) {
         String errorhdr = "jsXe has encountered a fatal error and is unable to continue.\n";
         errorhdr        +="This is most likely a bug and should be reported to the jsXe\n";
-        errorhdr        +="developers. Please fill out a full bug report at\n";
+        errorhdr        +="developers. Please include your jsXe.log in a bug report at\n";
         errorhdr        +="http://www.sourceforge.net/projects/jsxe/\n\n";
         
         Log.log(Log.ERROR, source, errorhdr);
