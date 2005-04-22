@@ -92,10 +92,7 @@ public class DocumentBuffer extends XMLDocument {
      * @throws IOException if there was a problem reading the document
      */
     DocumentBuffer() throws IOException {
-        super(new StringReader(jsXe.getDefaultDocument()));
-        setEntityResolver(new DocumentBufferResolver());
-        m_file = null;
-        m_name = getUntitledLabel();
+        this(new StringReader(jsXe.getDefaultDocument()));
     }//}}}
     
     //{{{ DocumentBuffer constructor
