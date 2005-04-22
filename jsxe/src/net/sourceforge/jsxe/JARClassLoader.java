@@ -136,7 +136,7 @@ public class JARClassLoader extends ClassLoader {
                     return new URL("jar:"+file.toURL().toString()+"!/"+name);
                 }
             } catch (IOException ioe) {
-                jsXe.exiterror(null, "findResource:IOException: "+ioe.getMessage(), 1);
+                jsXe.exiterror(this, ioe, 1);
             }
         }
         
