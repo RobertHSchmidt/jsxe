@@ -33,7 +33,6 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.dom.completion.*;
@@ -131,7 +130,6 @@ public class XMLDocument {
     public XMLDocument(Reader reader) throws IOException {
         setDefaultProperties();
         setModel(reader);
-        reader.close();
     }//}}}
     
     //{{{ XMLDocument constructor
