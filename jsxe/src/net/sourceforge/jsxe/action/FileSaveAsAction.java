@@ -43,6 +43,7 @@ import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.CustomFileFilter;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -83,7 +84,8 @@ public class FileSaveAsAction extends AbstractAction {
     //{{{ FileSaveAsAction constructor
     
     public FileSaveAsAction(TabbedView parent) {
-        putValue(Action.NAME, "Save As...");
+       // putValue(Action.NAME, "Save As...");
+    	putValue(Action.NAME, Messages.getMessage("File.SaveAs"));	
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("A").getKeyCode()));
         view = parent;
     }//}}}

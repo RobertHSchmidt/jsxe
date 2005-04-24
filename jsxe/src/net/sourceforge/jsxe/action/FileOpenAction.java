@@ -33,6 +33,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -63,7 +64,8 @@ public class FileOpenAction extends AbstractAction {
     //{{{ FileOpenAction constructor
     
     public FileOpenAction(TabbedView parent) {
-        putValue(Action.NAME, "Open...");
+        //putValue(Action.NAME, "Open...");
+    	putValue(Action.NAME, Messages.getMessage("File.Open"));	
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl O"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
         view = parent;

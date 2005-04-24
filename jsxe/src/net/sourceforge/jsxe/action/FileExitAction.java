@@ -33,6 +33,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -58,7 +59,8 @@ public class FileExitAction extends AbstractAction {
     //{{{ FileExitAction constructor
     
     public FileExitAction(TabbedView parent) {
-        putValue(Action.NAME, "Exit");
+        //putValue(Action.NAME, "Exit");
+    	putValue(Action.NAME, Messages.getMessage("File.Exit"));	
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl Q"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("X").getKeyCode()));
         view = parent;

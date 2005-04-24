@@ -35,6 +35,7 @@ package treeview;
 //{{{ imports
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.dom.completion.*;
 //}}}
@@ -457,7 +458,8 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         //{{{ RenameNodeAction constructor
         
         public RenameNodeAction() {
-            putValue(Action.NAME, "Rename Node");
+           // putValue(Action.NAME, "Rename Node");
+        	putValue(Action.NAME, Messages.getMessage("TreeView.RenameNode"));	
         }//}}}
         
         //{{{ actionPerformed()
@@ -478,7 +480,9 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         //{{{ RemoveNodeAction constructor
         
         public RemoveNodeAction() {
-            putValue(Action.NAME, "Remove Node");
+            //putValue(Action.NAME, "Remove Node");
+            putValue(Action.NAME, Messages.getMessage("TreeView.RemoveNode"));	
+            
         }//}}}
         
         //{{{ actionPerformed()

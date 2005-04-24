@@ -33,6 +33,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.gui.GlobalOptionsDialog;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -59,7 +60,8 @@ public class ToolsOptionsAction extends AbstractAction {
     //{{{ ToolsOptionsAction constructor
     
     public ToolsOptionsAction(TabbedView parent) {
-        putValue(Action.NAME, "Options...");
+        //putValue(Action.NAME, "Options...");
+    	putValue(Action.NAME, Messages.getMessage("Tools.Options"));	
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
         view = parent;
     }//}}}

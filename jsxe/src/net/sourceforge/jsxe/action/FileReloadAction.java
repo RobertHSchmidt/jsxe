@@ -34,6 +34,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.DocumentBuffer;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.DocumentView;
 //}}}
@@ -65,7 +66,8 @@ public class FileReloadAction extends AbstractAction {
     //{{{ FileReloadAction constructor
     
     public FileReloadAction(TabbedView parent) {
-        putValue(Action.NAME, "Reload");
+      //  putValue(Action.NAME, "Reload");
+    	putValue(Action.NAME, Messages.getMessage("File.Reload"));	
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("R").getKeyCode()));
         m_view = parent;
     }//}}}

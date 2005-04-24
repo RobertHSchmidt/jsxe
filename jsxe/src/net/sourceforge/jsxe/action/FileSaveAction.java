@@ -35,6 +35,7 @@ belongs to.
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -71,7 +72,8 @@ public class FileSaveAction extends AbstractAction {
     //{{{ FileSaveAction constructor
     
     public FileSaveAction(TabbedView parent) {
-        putValue(Action.NAME, "Save");
+        // putValue(Action.NAME, "Save");   
+    	putValue(Action.NAME, Messages.getMessage("File.Save"));	
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl S"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("S").getKeyCode()));
         view = parent;
