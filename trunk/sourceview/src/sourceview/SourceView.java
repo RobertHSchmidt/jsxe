@@ -43,6 +43,7 @@ belongs to.
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.DocumentBufferListener;
 import net.sourceforge.jsxe.ViewPlugin;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.dom.AdapterNode;
@@ -280,7 +281,8 @@ public class SourceView extends JPanel implements DocumentView {
         //{{{ EditCutAction constructor
         
         public EditCutAction() {
-            putValue(Action.NAME, "Cut");
+            //putValue(Action.NAME, "Cut");
+        	putValue(Action.NAME, Messages.getMessage("SourceView.Cut"));
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
             putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("C").getKeyCode()));
         }//}}}
@@ -300,7 +302,8 @@ public class SourceView extends JPanel implements DocumentView {
         //{{{ EditCopyAction constructor
         
         public EditCopyAction() {
-            putValue(Action.NAME, "Copy");
+            //putValue(Action.NAME, "Copy");
+        	putValue(Action.NAME, Messages.getMessage("SourceView.Copy"));
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl C"));
             putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
         }//}}}
@@ -320,7 +323,8 @@ public class SourceView extends JPanel implements DocumentView {
         //{{{ EditPasteAction constructor
         
         public EditPasteAction() {
-            putValue(Action.NAME, "Paste");
+            //putValue(Action.NAME, "Paste");
+            putValue(Action.NAME, Messages.getMessage("SourceView.Paste"));
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl V"));
             putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("P").getKeyCode()));
         }//}}}
@@ -340,7 +344,8 @@ public class SourceView extends JPanel implements DocumentView {
         //{{{ EditFindAction constructor
         
         public EditFindAction() {
-            putValue(Action.NAME, "Find...");
+            //putValue(Action.NAME, "Find...");
+        	putValue(Action.NAME, Messages.getMessage("SourceView.Find"));
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl F"));
             putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("F").getKeyCode()));
         }//}}}
@@ -360,7 +365,8 @@ public class SourceView extends JPanel implements DocumentView {
         //{{{ EditFindNextAction constructor
         
         public EditFindNextAction() {
-            putValue(Action.NAME, "Find Next");
+            //putValue(Action.NAME, "Find Next");
+        	putValue(Action.NAME,  Messages.getMessage("SourceView.FindNext"));
             putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl G"));
             putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("N").getKeyCode()));
         }//}}}

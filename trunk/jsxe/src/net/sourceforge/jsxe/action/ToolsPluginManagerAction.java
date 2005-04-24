@@ -32,6 +32,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.PluginManagerDialog;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
@@ -59,7 +60,8 @@ public class ToolsPluginManagerAction extends AbstractAction {
     //{{{ ToolsPluginManagerAction constructor
     
     public ToolsPluginManagerAction(TabbedView parent) {
-        putValue(Action.NAME, "Plugin Manager...");
+        //putValue(Action.NAME, "Plugin Manager...");
+    	putValue(Action.NAME, Messages.getMessage("Tools.Plugin"));	
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("P").getKeyCode()));
         view = parent;
     }//}}}

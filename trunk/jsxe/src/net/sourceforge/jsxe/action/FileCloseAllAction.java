@@ -34,6 +34,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.DocumentBuffer;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -64,7 +65,8 @@ public class FileCloseAllAction extends AbstractAction {
     //{{{ FileCloseAllAction constructor
     
     public FileCloseAllAction(TabbedView parent) {
-        putValue(Action.NAME, "Close All");
+        //putValue(Action.NAME, "Close All");
+    	putValue(Action.NAME, Messages.getMessage("File.CloseAll"));	
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("E").getKeyCode()));
         m_view = parent;
     }//}}}
