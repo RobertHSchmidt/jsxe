@@ -1,0 +1,25 @@
+# JSXE English properties file
+# Last updated 10/4/05
+
+
+File.New New 
+File.Open Open
+File.Recent Recent Files
+File.Save Save
+File.SaveAs Save As...
+File.Reload Reload
+File.Close Close
+File.CloseAll Close All
+File.Exit Exit
+View.Tree Tree View
+View.Source Source View
+Tools.Options Options
+Tools.Plugin Plugin Manager
+Help.About About JSXE...
+SourceView.Cut Cut
+SourceView.Copy Copy
+SourceView.Paste Paste
+SourceView.Find Find...
+SourceView.FindNext Find Next
+TreeView.RenameNode Rename Node
+TreeView.RemoveNode Remove Node
