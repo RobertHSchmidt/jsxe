@@ -488,6 +488,7 @@ public class XMLDocument {
      * Determines if the entity was declared by the DTD/Schema.
      * @param entityName the name of the entity
      * @return true if the entity was declared in this document
+     * @since jsXe 0.4 pre1
      */
     public boolean entityDeclared(String entityName) {
         if(m_document.getDoctype() != null) {

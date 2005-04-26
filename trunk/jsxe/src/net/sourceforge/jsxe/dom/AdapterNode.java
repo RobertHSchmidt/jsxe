@@ -308,7 +308,8 @@ public class AdapterNode {
             } else {
                 if (m_domNode.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
                     if (m_domNode.getNodeName() != localName) {
-                        if (getOwnerDocument().entityDeclared(localName)) {
+                        boolean validating = Boolean.valueOf(getOwnerDocument().getProperty(XMLDocument.IS_VALIDATING)).booleanValue();
+                        if (getOwnerDocument().entityDeclared(localName) || !validating) {
                             Node newNode = m_domNode.getOwnerDocument().createEntityReference(localName);
                             m_domNode.getParentNode().replaceChild(newNode, m_domNode);
                             m_domNode = newNode;
