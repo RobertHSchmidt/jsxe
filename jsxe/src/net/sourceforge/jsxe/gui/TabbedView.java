@@ -371,7 +371,7 @@ public class TabbedView extends JFrame {
         while (historyItr.hasNext()) {
             //If the menu gets too big make a new one
             if (index >= 20) {
-                JMenu newAddMenu = new JMenu("More");
+                JMenu newAddMenu = new JMenu(Messages.getMessage("common.more"));
                 addMenu.add(newAddMenu);
                 addMenu = newAddMenu;
                 index = 0;
@@ -467,7 +467,7 @@ public class TabbedView extends JFrame {
             m_fileMenu.add( menuItem );
             
             //Add recent files menu
-            m_recentFilesMenu = new JMenu(Messages.getMessage("Recent.Files"));
+            m_recentFilesMenu = new JMenu(Messages.getMessage("File.Recent"));
             m_fileMenu.add(m_recentFilesMenu);
             
             m_fileMenu.addSeparator();
