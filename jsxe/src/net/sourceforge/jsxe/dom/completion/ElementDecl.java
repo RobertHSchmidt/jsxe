@@ -37,8 +37,8 @@ public class ElementDecl {
         public boolean empty;
         public boolean any;
 
-        public List attributes;
-        public Map attributeHash;
+        private List attributes;
+        private Map attributeHash;
         public Set content;
 
         //{{{ ElementDecl constructor
@@ -68,29 +68,29 @@ public class ElementDecl {
             this.content = content;
         } //}}}
 
-        //{{{ setContent() method
-        public void setContent(String content)
-        {
-                if(content.equals("EMPTY"))
+        //{{{ setContent()
+        public void setContent(String content) {
+            
+            if (content.equals("EMPTY")) {
                         empty = true;
-                else if(content.equals("ANY"))
+            } else {
+                if (content.equals("ANY")) {
                         any = true;
-                else
-                {
-                        this.content = new HashSet();
+                } else {
+                    this.content = new HashSet();
 
-                        StringTokenizer st = new StringTokenizer(content,
-                                "(?*+|,) \t\n");
-                        while(st.hasMoreTokens())
-                        {
-                                String element = st.nextToken();
-                                if(element.equals("#PCDATA"))
-                                        continue;
-
-                                this.content.add(element);
+                    StringTokenizer st = new StringTokenizer(content,"(?*+|,) \t\n");
+                    while (st.hasMoreTokens()) {
+                        String element = st.nextToken();
+                        if (element.equals("#PCDATA")) {
+                            continue;
                         }
+
+                        this.content.add(element);
+                    }
                 }
-        } //}}}
+            }
+        }//}}}
 
         //{{{ withPrefix()
         public ElementDecl withPrefix(String prefix) {
@@ -101,7 +101,7 @@ public class ElementDecl {
             }
         } //}}}
 
-        //{{{ getChildElements() method
+        //{{{ getChildElements()
         public List getChildElements(String prefix) {
             
             ArrayList children = new ArrayList(100);
@@ -129,12 +129,12 @@ public class ElementDecl {
             return children;
         } //}}}
 
-        //{{{ getAttribute() method
+        //{{{ getAttribute()
         public AttributeDecl getAttribute(String name) {
             return (AttributeDecl)attributeHash.get(name);
         } //}}}
 
-        //{{{ addAttribute() method
+        //{{{ addAttribute()
         public void addAttribute(AttributeDecl attribute) {
             attributeHash.put(attribute.name,attribute);
 
@@ -148,73 +148,78 @@ public class ElementDecl {
 
             attributes.add(attribute);
         } //}}}
-
+        
+        //{{{ getAttributes()
+        /**
+         * Gets all the attribute declarations for this element
+         * @return a list of AttributeDecl objects
+         */
+        public List getAttributes() {
+            return attributes;
+        }//}}}
+        
         //{{{ getRequiredAttributesString()
-        public String getRequiredAttributesString()
-        {
-                StringBuffer buf = new StringBuffer();
+        public String getRequiredAttributesString() {
+            StringBuffer buf = new StringBuffer();
 
-                for(int i = 0; i < attributes.size(); i++)
-                {
-                        AttributeDecl attr = (AttributeDecl)attributes.get(i);
+            for (int i = 0; i < attributes.size(); i++) {
+                AttributeDecl attr = (AttributeDecl)attributes.get(i);
 
-                        if(attr.required)
-                        {
-                                buf.append(' ');
-                                buf.append(attr.name);
-                                buf.append("=\"");
-                                if(attr.value != null)
-                                        buf.append(attr.value);
-                                buf.append('"');
-                        }
+                if (attr.required) {
+                    buf.append(' ');
+                    buf.append(attr.name);
+                    buf.append("=\"");
+                    if (attr.value != null) {
+                        buf.append(attr.value);
+                    }
+                    buf.append('"');
                 }
+            }
 
-                return buf.toString();
+            return buf.toString();
         } //}}}
 
         //{{{ toString() method
-        public String toString()
-        {
-                StringBuffer buf = new StringBuffer();
-                buf.append("<element name=\"");
-                buf.append(name);
-                buf.append('"');
+        public String toString() {
+            StringBuffer buf = new StringBuffer();
+            buf.append("<element name=\"");
+            buf.append(name);
+            buf.append('"');
 
-                buf.append("\ncontent=\"");
+            buf.append("\ncontent=\"");
 
-                if(empty)
-                        buf.append("EMPTY");
-                else if(content != null)
-                {
-                        buf.append('(');
+            if (empty) {
+                buf.append("EMPTY");
+            } else {
+                if (content != null) {
+                    buf.append('(');
 
-                        Iterator iter = content.iterator();
-                        while(iter.hasNext())
-                        {
-                                buf.append(iter.next());
-                                if(iter.hasNext())
-                                        buf.append('|');
+                    Iterator iter = content.iterator();
+                    while(iter.hasNext()) {
+                        buf.append(iter.next());
+                        if(iter.hasNext()) {
+                            buf.append('|');
                         }
+                    }
 
-                        buf.append(')');
+                    buf.append(')');
                 }
+            }
 
-                buf.append('"');
+            buf.append('"');
 
-                if(attributes.size() == 0)
-                        buf.append(" />");
-                else
-                {
-                        buf.append(">\n");
-                        for(int i = 0; i < attributes.size(); i++)
-                        {
-                                buf.append(attributes.get(i));
-                                buf.append('\n');
-                        }
-                        buf.append("</element>");
+            if (attributes.size() == 0) {
+                buf.append(" />");
+            } else {
+                buf.append(">\n");
+                for (int i = 0; i < attributes.size(); i++) {
+                    buf.append(attributes.get(i));
+                    buf.append('\n');
                 }
+                buf.append("</element>");
+            }
 
-                return buf.toString();
+            return buf.toString();
         } //}}}
 
         //{{{ AttributeDecl class

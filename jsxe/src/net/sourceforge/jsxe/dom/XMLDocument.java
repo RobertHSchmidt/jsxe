@@ -128,8 +128,7 @@ public class XMLDocument {
      * @throws IOException if there was a problem reading the document
      */
     public XMLDocument(Reader reader) throws IOException {
-        setDefaultProperties();
-        setModel(reader);
+        this(reader, null);
     }//}}}
     
     //{{{ XMLDocument constructor
@@ -482,6 +481,21 @@ public class XMLDocument {
      */
     public boolean hasCompletionInfo() {
         return (m_mappings.size() != 0);
+    }//}}}
+    
+    //{{{ entityDeclared()
+    /**
+     * Determines if the entity was declared by the DTD/Schema.
+     * @param entityName the name of the entity
+     * @return true if the entity was declared in this document
+     */
+    public boolean entityDeclared(String entityName) {
+        if(m_document.getDoctype() != null) {
+            NamedNodeMap entities = m_document.getDoctype().getEntities();
+            return (entities.getNamedItem(entityName) != null);
+        } else {
+            return false;
+        }
     }//}}}
     
     //{{{ serialize()

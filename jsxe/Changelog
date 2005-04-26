@@ -1,3 +1,8 @@
+04/26/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Moved entityDeclared() from AdapterNode to XMLDocument
+    * Cleaned up and Documented some methods
+
 04/21/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added a getActiveView() method to the jsXe class so that you can get
