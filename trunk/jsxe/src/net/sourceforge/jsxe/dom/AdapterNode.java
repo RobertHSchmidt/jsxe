@@ -179,6 +179,7 @@ public class AdapterNode {
         Adapter. Once asked for however the object should
         be persistent.
         */
+        XMLDocument rootDocument = getOwnerDocument();
         AdapterNode child = null;
         if (index < m_domNode.getChildNodes().getLength()) {
             if (index < m_children.size()) {
@@ -186,7 +187,7 @@ public class AdapterNode {
                     child = (AdapterNode)m_children.get(index);
                     if (child == null) {
                         //the size was ok but no AdapterNode was at this index
-                        child = m_rootDocument.newAdapterNode(this, m_domNode.getChildNodes().item(index));
+                        child = rootDocument.newAdapterNode(this, m_domNode.getChildNodes().item(index));
                         m_children.set(index, child);
                     }
                 } catch (IndexOutOfBoundsException ioobe) {}
@@ -196,7 +197,7 @@ public class AdapterNode {
                 have the correct size.
                 */
                 ensureChildrenSize(index+1);
-                child = m_rootDocument.newAdapterNode(this, m_domNode.getChildNodes().item(index));
+                child = rootDocument.newAdapterNode(this, m_domNode.getChildNodes().item(index));
                 m_children.set(index, child);
             }
         }
@@ -261,10 +262,10 @@ public class AdapterNode {
         
         renameElementNode(prefix, localName);
         
-        if (oldPrefix != prefix) {
+        if (!oldPrefix.equals(prefix)) {
             fireNamespaceChanged(this);
         }
-        if (oldLocalName != localName) {
+        if (!oldLocalName.equals(localName)) {
             fireLocalNameChanged(this);
         }
         
@@ -307,7 +308,7 @@ public class AdapterNode {
             } else {
                 if (m_domNode.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
                     if (m_domNode.getNodeName() != localName) {
-                        if (entityDeclared(localName)) {
+                        if (getOwnerDocument().entityDeclared(localName)) {
                             Node newNode = m_domNode.getOwnerDocument().createEntityReference(localName);
                             m_domNode.getParentNode().replaceChild(newNode, m_domNode);
                             m_domNode = newNode;
@@ -401,7 +402,7 @@ public class AdapterNode {
      *                      inserted is readonly.
      */
     public AdapterNode addAdapterNode(String name, String value, short type, int index) throws DOMException {
-        return addAdapterNodeAt(m_rootDocument.newAdapterNode(this, name, value, type), index);
+        return addAdapterNodeAt(getOwnerDocument().newAdapterNode(this, name, value, type), index);
     }//}}}
     
     //{{{ addAdapterNode()
@@ -505,22 +506,6 @@ public class AdapterNode {
             m_children.remove(child);
             child.setParent(null);
             fireNodeRemoved(this, child);
-        }
-    }//}}}
-    
-    //{{{ entityDeclared()
-    /**
-     * Determines if the entity was declared by the DTD/Schema.
-     * @param entityName the name of the entity
-     * @return true if the entity was declared in this document
-     */
-    public boolean entityDeclared(String entityName) {
-        if(m_domNode.getOwnerDocument().getDoctype() != null) {
-            NamedNodeMap entities = m_domNode.getOwnerDocument().getDoctype().getEntities();
-            
-            return (entities.getNamedItem(entityName) != null);
-        } else {
-            return false;
         }
     }//}}}
     
@@ -672,8 +657,9 @@ public class AdapterNode {
      */
     public List getAllowedElements() {
         
-        HashMap mappings = m_rootDocument.getCompletionInfoMappings();
-        ElementDecl thisDecl = m_rootDocument.getElementDecl(getNodeName());
+        XMLDocument rootDocument = getOwnerDocument();
+        HashMap mappings = rootDocument.getCompletionInfoMappings();
+        ElementDecl thisDecl = rootDocument.getElementDecl(getNodeName());
         
         ArrayList allowedElements = new ArrayList();
         
@@ -695,6 +681,14 @@ public class AdapterNode {
             }
         }
         return allowedElements;
+    }//}}}
+    
+    //{{{ getElementDecl()
+    /**
+     * Gets the Element declaration that defines this element
+     */
+    public ElementDecl getElementDecl() {
+        return getOwnerDocument().getElementDecl(getNodeName());
     }//}}}
     
     //{{{ equals()
@@ -733,7 +727,7 @@ public class AdapterNode {
      * @return the string representation of this node.
      */
     public String serializeToString() {
-        return m_rootDocument.serializeNodeToString(this);
+        return getOwnerDocument().serializeNodeToString(this);
     }//}}}
     
     //{{{ toString()
