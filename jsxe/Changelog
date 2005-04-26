@@ -2,6 +2,9 @@
 
     * Moved entityDeclared() from AdapterNode to XMLDocument
     * Cleaned up and Documented some methods
+    * AdapterNode will now let you add entity nodes if the document is not
+      being validated.
+    * Updated Copyright info
 
 04/21/2005  Ian Lewis <IanLewis@member.fsf.org>
 

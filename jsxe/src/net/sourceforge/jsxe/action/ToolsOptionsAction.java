@@ -4,6 +4,7 @@ ToolsOptionsAction.java
 :folding=explicit:collapseFolds=1:
 
 Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
+Portions Copyright (C) 2005 Trish Harnett (trishah136@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -53,6 +54,7 @@ import java.awt.event.ActionEvent;
  * The action that is executed when the user selects 'options' from the tools
  * menu.
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
  * @version $Id$
  */
 public class ToolsOptionsAction extends AbstractAction {

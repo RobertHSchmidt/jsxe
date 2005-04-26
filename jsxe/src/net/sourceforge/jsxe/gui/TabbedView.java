@@ -467,7 +467,7 @@ public class TabbedView extends JFrame {
             m_fileMenu.add( menuItem );
             
             //Add recent files menu
-            m_recentFilesMenu = new JMenu("Recent Files");
+            m_recentFilesMenu = new JMenu(Messages.getMessage("Recent.Files"));
             m_fileMenu.add(m_recentFilesMenu);
             
             m_fileMenu.addSeparator();
