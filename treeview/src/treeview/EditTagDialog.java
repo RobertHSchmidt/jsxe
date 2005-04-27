@@ -41,6 +41,7 @@ import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.dom.completion.*;
 import net.sourceforge.jsxe.gui.EnhancedDialog;
 import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
 public class EditTagDialog extends EnhancedDialog {
@@ -125,13 +126,13 @@ public class EditTagDialog extends EnhancedDialog {
         buttons.setBorder(new EmptyBorder(12,0,0,0));
 
         buttons.add(Box.createGlue());
-        buttons.add(ok = new JButton("OK"));
+        buttons.add(ok = new JButton(Messages.getMessage("common.ok")));
         ok.addActionListener(new ActionHandler());
         getRootPane().setDefaultButton(ok);
 
         buttons.add(Box.createHorizontalStrut(6));
 
-        buttons.add(cancel = new JButton("Cancel"));
+        buttons.add(cancel = new JButton(Messages.getMessage("common.cancel")));
         cancel.addActionListener(new ActionHandler());
         buttons.add(cancel);
 
