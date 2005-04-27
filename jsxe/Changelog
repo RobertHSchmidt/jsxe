@@ -5,6 +5,7 @@
     * AdapterNode will now let you add entity nodes if the document is not
       being validated.
     * Updated Copyright info
+    * Added an Edit Tag Dialog for adding tags that are defined in a DTD/Schema
 
 04/21/2005  Ian Lewis <IanLewis@member.fsf.org>
 

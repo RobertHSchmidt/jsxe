@@ -73,6 +73,19 @@ public class AdapterNode {
     
     //{{{ AdapterNode constructor
     /**
+     * Creates a new AdapterNode for a node in a DOM tree. This is normally used
+     * by an implementation of the XMLDocument interface. This node will not be
+     * part of an XMLDocument or the child of any element. Use the
+     * <code>newAdapterNode()</code> method in the XMLDocument interface to
+     * create AdapterNodes.
+     * @param node the Node object that this AdapterNode represents.
+     */
+    AdapterNode(Node node) {
+        m_domNode = node;
+    }//}}}
+    
+    //{{{ AdapterNode constructor
+    /**
      * <p>Creates an AdapterNode for a root document node. This is normally used
      * by an implementation of the XMLDocument interface when it is created.</p>
      * @param xmlDocument the XMLDocument object that wraps the Document object
@@ -90,16 +103,14 @@ public class AdapterNode {
      * by an implementation of the XMLDocument interface. Use the
      * <code>newAdapterNode()</code> method in the XMLDocument interface to
      * create AdapterNodes.
-     * @param xmlDocument the XMLDocument that owns this node
      * @param parent the parent AdapterNode object for the parent DOM node
      * @param node the Node object that this AdapterNode represents. This node
      *             should be a child of the Node that is wrapped by the parent
      *             AdapterNode
      */
-    AdapterNode(XMLDocument xmlDocument, AdapterNode parent, Node node) {
+    AdapterNode(AdapterNode parent, Node node) {
         m_domNode = node;
         setParent(parent);
-        m_rootDocument = xmlDocument;
     }//}}}
     
     //{{{ getOwnerDocument()
@@ -782,6 +793,11 @@ public class AdapterNode {
      */
     void setParent(AdapterNode parent) {
         m_parentNode = parent;
+        if (parent != null) {
+            m_rootDocument = m_parentNode.getOwnerDocument();
+        } else {
+            m_rootDocument = null;
+        }
     }//}}}
     
     //{{{ updateNode()
@@ -794,7 +810,6 @@ public class AdapterNode {
     protected void updateNode(Node node) {
         Iterator itr = m_children.iterator();
         int index = 0;
-        Log.log(Log.DEBUG, this, "updating Node: "+getNodeName()+" to "+node.getNodeName());
         while (itr.hasNext()) {
             AdapterNode child = (AdapterNode)itr.next();
             
@@ -803,10 +818,7 @@ public class AdapterNode {
             //AdapterNode object will be created when it is
             //needed.
             if (child != null) {
-                Log.log(Log.DEBUG, this, "   updating child: "+child.getNodeName());
                 child.updateNode(node.getChildNodes().item(index));
-            } else {
-                Log.log(Log.DEBUG, this, "   child is null: "+node.getNodeName());
             }
             ++index;
         }
@@ -824,6 +836,7 @@ public class AdapterNode {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
             listener.nodeAdded(source, child);
         }
+        fireStructureChanged();
     }//}}}
     
     //{{{ fireNodeRemoved()
@@ -833,6 +846,7 @@ public class AdapterNode {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
             listener.nodeRemoved(source, child);
         }
+        fireStructureChanged();
     }//}}}
     
     //{{{ fireLocalNameChanged()
@@ -842,6 +856,7 @@ public class AdapterNode {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
             listener.localNameChanged(source);
         }
+        fireStructureChanged();
     }//}}}
     
     //{{{ fireNamespaceChanged()
@@ -851,6 +866,7 @@ public class AdapterNode {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
             listener.namespaceChanged(source);
         }
+        fireStructureChanged();
     }//}}}
     
     //{{{ fireNodeValueChanged()
@@ -860,6 +876,7 @@ public class AdapterNode {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
             listener.nodeValueChanged(source);
         }
+        fireStructureChanged();
     }//}}}
     
     //{{{ fireAttributeChanged()
@@ -868,6 +885,15 @@ public class AdapterNode {
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
             listener.attributeChanged(source, attr);
+        }
+        fireStructureChanged();
+    }//}}}
+    
+    //{{{ fireStructureChanged()
+    public void fireStructureChanged() {
+        XMLDocument doc = getOwnerDocument();
+        if (doc != null) {
+            doc.fireStructureChanged(this);
         }
     }//}}}
     
@@ -929,6 +955,7 @@ public class AdapterNode {
     
     private AdapterNode m_parentNode;
     private XMLDocument m_rootDocument;
+    
     private ArrayList m_children = new ArrayList();
     
     private Node m_domNode;

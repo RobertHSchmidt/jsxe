@@ -798,7 +798,6 @@ public class DocumentBuffer extends XMLDocument {
                     //create the path to the entity relative to the document
                     filePathURI += entity;
                     source = new InputSource((new URL(filePathURI)).openStream());
-                    Log.log(Log.DEBUG, this, filePathURI);
                     
                 } catch (MalformedURLException e) {
                     //Do nothing and try to open this entity normally

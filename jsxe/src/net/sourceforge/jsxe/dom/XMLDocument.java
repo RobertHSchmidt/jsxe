@@ -307,15 +307,18 @@ public class XMLDocument {
     /**
      * Factory method that creates a new AdapterNode object wrapping the Node
      * object and AdapterNode object wrapping the Node's parent Node object.
-     * @param parent the AdapterNode for the parent of the new node
+     * @param parent the AdapterNode for the parent of the new node. Can be null.
      * @param node the Node object that the new AdapterNode should wrap
      * @return the new AdapterNode object
      */
     public AdapterNode newAdapterNode(AdapterNode parent, Node node) {
         AdapterNode newNode = null;
-        if (node != null && parent != null) {
-            newNode = new AdapterNode(this, parent, node);
-            newNode.addAdapterNodeListener(docAdapterListener);
+        if (node != null) {
+            if (parent != null) {
+                newNode = new AdapterNode(parent, node);
+            } else {
+                newNode = new AdapterNode(node);
+            }
         }
         return newNode;
     }//}}}
@@ -324,7 +327,7 @@ public class XMLDocument {
     /**
      * Creates a new AdapterNode in this document. This method is namespace aware.
      *
-     * @param parent The parent of the node to create.
+     * @param parent The parent of the node to create. Can be null.
      * @param name the qualified name of the new node
      * @param value the value of the new node to create
      * @param type the type of node to create. Uses the types defined in the Node class.
@@ -482,7 +485,7 @@ public class XMLDocument {
     public boolean hasCompletionInfo() {
         return (m_mappings.size() != 0);
     }//}}}
-    
+
     //{{{ entityDeclared()
     /**
      * Determines if the entity was declared by the DTD/Schema.
@@ -811,7 +814,6 @@ public class XMLDocument {
      * @since jsXe 0.4 pre1
      */
     public void parseDocument() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
-        Log.log(Log.DEBUG, this, "parsing document with validation: "+getProperty(IS_VALIDATING));
         Boolean validating = new Boolean(getProperty(IS_VALIDATING));
         
         //{{{ Parse using DocumentBuilder
@@ -866,6 +868,7 @@ public class XMLDocument {
             reader.setEntityResolver(m_entityResolver);
         }
         
+        m_mappings = new HashMap();
         reader.parse(new InputSource(new ContentManagerInputStream(m_content)));
         //}}}
         
@@ -1310,17 +1313,17 @@ public class XMLDocument {
         
         //{{{ error
         public void error(SAXParseException exception) {
-            Log.log(Log.DEBUG, this, "error: "+exception.getMessage());
+            Log.log(Log.WARNING, this, "parse error: "+exception.getMessage());
         }//}}}
         
         //{{{ fatalError
         public void fatalError(SAXParseException exception) {
-            Log.log(Log.DEBUG, this, "fatalError: "+exception.getMessage());
+            Log.log(Log.WARNING, this, "parse fatalError: "+exception.getMessage());
         }//}}}
         
         //{{{ warning
         public void warning(SAXParseException exception) {
-            Log.log(Log.DEBUG, this, "warning: "+exception.getMessage());
+            Log.log(Log.NOTICE, this, "parse warning: "+exception.getMessage());
         }//}}}
         
     }//}}}
@@ -1382,7 +1385,6 @@ public class XMLDocument {
         
         //{{{ elementDecl() method
         public void elementDecl(String name, String model) {
-            Log.log(Log.DEBUG, this, "elementDecl: "+name+", "+model);
             ElementDecl element = getElementDecl(name);
             if(element == null) {
                 CompletionInfo info = getNoNamespaceCompletionInfo();
@@ -1395,7 +1397,6 @@ public class XMLDocument {
 
         //{{{ attributeDecl() method
         public void attributeDecl(String eName, String aName, String type, String valueDefault, String value) {
-            Log.log(Log.DEBUG, this, "attributeDecl: "+eName+", "+aName+", "+type+", "+valueDefault+", "+value);
             ElementDecl element = getElementDecl(eName);
             if (element == null) {
                 CompletionInfo info = getNoNamespaceCompletionInfo();
@@ -1427,7 +1428,6 @@ public class XMLDocument {
 
         //{{{ internalEntityDecl()
         public void internalEntityDecl(String name, String value) {
-            Log.log(Log.DEBUG, this, "elementDecl: "+name+", "+value);
             // this is a bit of a hack
             if (name.startsWith("%")) {
                 return;
@@ -1437,12 +1437,11 @@ public class XMLDocument {
 
         //{{{ externalEntityDecl()
         public void externalEntityDecl(String name, String publicId, String systemId) {
-            Log.log(Log.DEBUG, this, "elementDecl: "+name+", "+publicId+", "+systemId);
             if (name.startsWith("%")) {
                 return;
             }
 
-            getNoNamespaceCompletionInfo() .addEntity(EntityDecl.EXTERNAL,name, publicId, systemId);
+            getNoNamespaceCompletionInfo().addEntity(EntityDecl.EXTERNAL,name, publicId, systemId);
         } //}}}
     
         //{{{ Private members
@@ -1532,7 +1531,7 @@ public class XMLDocument {
      * A namespace uri to CompletionInfo map used to hold completion info
      * for active namespaces
      */
-    private HashMap m_mappings = new HashMap();
+    private HashMap m_mappings;
     
     private XMLDocAdapterListener docAdapterListener = new XMLDocAdapterListener();
     

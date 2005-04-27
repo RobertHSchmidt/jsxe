@@ -1130,6 +1130,63 @@ loop:       for(int i = 0; i < str.length(); i++)
         return prefix;
     }//}}}
     
+    //{{{ charactersToEntities()
+    /**
+     * Converts characters to entities.
+     * @param s The string in which to convert characters to entities
+     * @param hash a Map containing character to entity name mappings
+     */
+    public static String charactersToEntities(String s, Map hash) {
+        
+        StringBuffer buf = new StringBuffer();
+        for(int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (ch >= 0x7f || ch == '<' || ch == '>' || ch == '&' || ch == '"' || ch == '\'') {
+                Character c = new Character(ch);
+                String entity = (String)hash.get(c);
+                if (entity != null) {
+                    buf.append('&');
+                    buf.append(entity);
+                    buf.append(';');
+                    continue;
+                }
+            }
+            buf.append(ch);
+        }
+
+        return buf.toString();
+    } //}}}
+
+    //{{{ entitiesToCharacters()
+    /**
+     * Converts entities to characters
+     * @param s The string in which to convert characters to entities
+     * @param hash a Map containing entity name to character mappings
+     */
+    public static String entitiesToCharacters(String s, Map hash) {
+        StringBuffer buf = new StringBuffer();
+        
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (ch == '&') {
+                int index = s.indexOf(';',i);
+                if (index != -1) {
+                    String entityName = s.substring(i + 1,index);
+                    Character c = (Character)hash.get(entityName);
+                    if (c != null) {
+                        buf.append(c.charValue());
+                        i = index;
+                        continue;
+                    }
+                }
+            }
+
+            buf.append(ch);
+        }
+
+        return buf.toString();
+    } //}}}
+
     //}}}
     
     //{{{ Private members
