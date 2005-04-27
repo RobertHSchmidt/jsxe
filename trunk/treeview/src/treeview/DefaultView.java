@@ -102,6 +102,9 @@ public class DefaultView extends JPanel implements DocumentView {
         
         //{{{ init html editor pane
         htmlPane.setEditable(false);
+        //use hard coded font for right now
+        //style: 0=plain, 1=bold, 2=italic, 3=boldItalic
+        htmlPane.setFont(new Font("Monospaced", 0, 12));
         JScrollPane htmlView = new JScrollPane(htmlPane);
         //}}}
         

@@ -2,6 +2,8 @@
 
     * The Add Element context menu when using a DTD/Schema now has a 'More' menu
       that expands the menu.
+    * Updated the EditTagDialog to use the Messages class
+    * Changed the text pane to use a monospaced font
 
 04/26/2005   Ian Lewis <IanLewis@member.fsf.org>
 
