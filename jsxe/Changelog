@@ -1,6 +1,8 @@
 04/27/2005  Ian Lewis <IanLewis@member.fsf.org>
 
-    * Added Trish to the About Dialog:
+    * Added Trish to the About Dialog.
+    * jsXe no longer thinks the document is not well formed if the DTD/Schema
+      cannot be found. It is treated as a validation error.
 
 04/26/2005  Ian Lewis <IanLewis@member.fsf.org>
 
