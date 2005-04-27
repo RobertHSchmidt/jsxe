@@ -47,8 +47,9 @@ public class ElementDecl {
 
             this.name = name;
 
-            if(content != null)
-                    setContent(content);
+            if (content != null) {
+                setContent(content);
+            }
 
             attributes = new ArrayList();
             attributeHash = new HashMap();
