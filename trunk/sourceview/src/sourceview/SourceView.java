@@ -123,6 +123,8 @@ public class SourceView extends JPanel implements DocumentView {
         m_plugin = plugin;
         
         textarea = new SourceViewTextPane();
+        //use hard coded font for now
+        textarea.setFont(new Font("Monospaced", 0, 12));
         textarea.setTabSize(4);
         textarea.setCaretPosition(0);
         textarea.setLineWrap(false);
