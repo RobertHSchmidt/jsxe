@@ -35,6 +35,7 @@ package treeview;
 //{{{ imports
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.dom.completion.*;
@@ -321,7 +322,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                         Iterator allowedElements = selectedNode.getAllowedElements().iterator();
                         while (allowedElements.hasNext()) {
                             ElementDecl decl = (ElementDecl)allowedElements.next();
-                            popupMenuItem = new JMenuItem(new AddNodeAction(decl.name, "", decl.name, Node.ELEMENT_NODE));
+                            popupMenuItem = new JMenuItem(new AddNodeAction(decl));
                             addElement.add(popupMenuItem);
                         }
                         addNodeItem.add(addElement);
@@ -409,8 +410,9 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         
         //{{{ AddNodeAction constructor
         
-        public AddNodeAction(String qualifiedName, String value,  String actionTitle, short nodeType) {
-            init(qualifiedName, value, actionTitle, nodeType);
+        public AddNodeAction(ElementDecl element) {
+            init(element.name, "", element.name, Node.ELEMENT_NODE);
+            m_m_element = element;
         }//}}}
         
         //{{{ actionPerformed()
@@ -421,8 +423,19 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 if (selPath != null) {
                     AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
                     
-                    //add the node of the correct type to the end of the children of this node
-                    selectedNode.addAdapterNode(m_name, m_value, m_nodeType, selectedNode.childCount());
+                    if (m_m_element != null) {
+                        EditTagDialog dialog = new EditTagDialog(jsXe.getActiveView(),
+                                                                 m_m_element,
+                                                                 new HashMap(),
+                                                                 m_m_element.empty,
+                                                                 m_m_element.completionInfo.entityHash,
+                                                                 new ArrayList(), //don't support IDs for now.
+                                                                 selectedNode.getOwnerDocument());
+                        selectedNode.addAdapterNode(dialog.getNewNode());
+                    } else {
+                        //add the node of the correct type to the end of the children of this node
+                        selectedNode.addAdapterNode(m_name, m_value, m_nodeType, selectedNode.childCount());
+                    }
                     expandPath(selPath);
                     //The TreeModel doesn't automatically treeNodesInserted() yet
                    // updateComponents();
@@ -444,11 +457,12 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             putValue(Action.NAME, actionTitle);
         }//}}}
         
-        
         private short m_nodeType;
         private String m_name;
         private String m_value;
+        private ElementDecl m_m_element;
         //}}}
+        
     }//}}}
     
     //{{{ RenameNodeAction class
