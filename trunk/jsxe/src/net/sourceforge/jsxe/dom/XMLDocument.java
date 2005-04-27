@@ -870,7 +870,17 @@ public class XMLDocument {
         }
         
         m_mappings = new HashMap();
-        reader.parse(new InputSource(new ContentManagerInputStream(m_content)));
+        try {
+            reader.parse(new InputSource(new ContentManagerInputStream(m_content)));
+        } catch(SAXException se) {
+            //validation errors
+            Log.log(Log.WARNING,this,se.getMessage());
+            m_parseErrors.add(se);
+        } catch(IOException ie) {
+            //possible missing DTD, validation error
+            Log.log(Log.WARNING,this,ie.getMessage());
+            m_parseErrors.add(ie);
+        }
         //}}}
         
         m_document=doc;
@@ -1358,12 +1368,12 @@ public class XMLDocument {
             }
         } //}}}
         
-        //{{{ startPrefixMapping() method
+        //{{{ startPrefixMapping()
         public void startPrefixMapping(String prefix, String uri) {
             m_m_activePrefixes.put(prefix,uri);
         } //}}}
 
-        //{{{ endPrefixMapping() method
+        //{{{ endPrefixMapping()
         public void endPrefixMapping(String prefix) {
             String uri = (String)m_m_activePrefixes.get(prefix);
             // check for built-in completion info for this URI
@@ -1386,7 +1396,7 @@ public class XMLDocument {
             }
         } //}}}
         
-        //{{{ elementDecl() method
+        //{{{ elementDecl()
         public void elementDecl(String name, String model) {
             ElementDecl element = getElementDecl(name);
             if(element == null) {
@@ -1398,7 +1408,7 @@ public class XMLDocument {
             }
         } //}}}
 
-        //{{{ attributeDecl() method
+        //{{{ attributeDecl()
         public void attributeDecl(String eName, String aName, String type, String valueDefault, String value) {
             ElementDecl element = getElementDecl(eName);
             if (element == null) {
