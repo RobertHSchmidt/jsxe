@@ -68,7 +68,9 @@ public class jsxeAboutDialog extends AbstractAction {
     }//}}}
     
     //{{{ actionPerformed()
-    
+    /**
+     * Displays jsXe's About dialog
+     */
     public void actionPerformed(ActionEvent e) {
         String aboutMsg = 
         jsXe.getAppTitle() + " " + jsXe.getVersion()+"\n"+
@@ -76,8 +78,10 @@ public class jsxeAboutDialog extends AbstractAction {
         "Copyright (C) 2002 Ian Lewis\n\n"+
         jsXe.getAppTitle() + " is an XML editor written using swing and JAXP 1.1\n"+
         "Released under the terms of the GNU General Public License\n\n"+
-        "Contributors:\n"+
+        "Active Contributors:\n"+
         "    Ian Lewis <IanLewis@member.fsf.org>\n"+
+        "    Trish Hartnett <trishah136@users.sourceforge.net>\n\n"+
+        "Past Contributers:\n"+
         "    Bilel Remmache <rbilel@users.sourceforge.net>\n"+
         "    SVM <svmcoranto@users.sourceforge.net>\n\n"+
         "Homepage: http://jsxe.sourceforge.net/";
