@@ -320,12 +320,22 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     if (selectedNode.getOwnerDocument().hasCompletionInfo()) {
                         JMenu addElement = new JMenu("Element");
                         Iterator allowedElements = selectedNode.getAllowedElements().iterator();
+                        int index = 0;
+                        addNodeItem.add(addElement);
                         while (allowedElements.hasNext()) {
                             ElementDecl decl = (ElementDecl)allowedElements.next();
                             popupMenuItem = new JMenuItem(new AddNodeAction(decl));
                             addElement.add(popupMenuItem);
+                            ++index;
+                            
+                            //If the list gets too large add expand the menu
+                            if (index >= 20) {
+                                JMenu newMenu = new JMenu(Messages.getMessage("common.more"));
+                                addElement.add(newMenu);
+                                addElement = newMenu;
+                                index = 0;
+                            }
                         }
-                        addNodeItem.add(addElement);
                     } else {
                         popupMenuItem = new JMenuItem(new AddNodeAction("New_Element", "", Node.ELEMENT_NODE));
                         addNodeItem.add(popupMenuItem);
