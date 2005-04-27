@@ -370,7 +370,7 @@ public class jsXe {
      * @return the currently active view.
      * @since jsXe 0.4 pre1
      */
-    public TabbedView getActiveView() {
+    public static TabbedView getActiveView() {
         /*
         there is only one view per instance of jsXe currently.
         Eventually there may be more.
