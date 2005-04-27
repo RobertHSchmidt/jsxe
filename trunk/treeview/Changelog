@@ -1,4 +1,9 @@
-0/26/2005   Ian Lewis <IanLewis@member.fsf.org>
+04/27/2005   Ian Lewis <IanLewis@member.fsf.org>
+
+    * The Add Element context menu when using a DTD/Schema now has a 'More' menu
+      that expands the menu.
+
+04/26/2005   Ian Lewis <IanLewis@member.fsf.org>
 
     * Added an Edit Tag Dialog to edit elements defined in an XML Schema.
 
