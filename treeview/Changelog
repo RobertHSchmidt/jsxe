@@ -1,3 +1,7 @@
+0/26/2005   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added an Edit Tag Dialog to edit elements defined in an XML Schema.
+
 04/18/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated the context menu for the tree to not allow you to invalidate
