@@ -465,6 +465,7 @@ public class XMLDocument {
             try {
                 checkWellFormedness();
             } catch (SAXException e) {
+                return false;
             } catch (ParserConfigurationException e) {
                 throw new IOException(e.getMessage());
             }
@@ -475,7 +476,7 @@ public class XMLDocument {
         }
     }//}}}
     
-    //{{{ isValidated()
+    //{{{ hasCompletionInfo()
     /**
      * Gets whether this document has completion info obtained from a
      * DTD/Schema. This effectively lets you know if the document has a valid
