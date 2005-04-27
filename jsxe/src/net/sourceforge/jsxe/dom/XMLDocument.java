@@ -1315,11 +1315,13 @@ public class XMLDocument {
         //{{{ error
         public void error(SAXParseException exception) {
             Log.log(Log.WARNING, this, "parse error: "+exception.getMessage());
+            m_parseErrors.add(exception);
         }//}}}
         
         //{{{ fatalError
         public void fatalError(SAXParseException exception) {
             Log.log(Log.WARNING, this, "parse fatalError: "+exception.getMessage());
+            m_parseFatalErrors.add(exception);
         }//}}}
         
         //{{{ warning
