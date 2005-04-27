@@ -1,3 +1,7 @@
+04/27/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added Trish to the About Dialog:
+
 04/26/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Moved entityDeclared() from AdapterNode to XMLDocument
