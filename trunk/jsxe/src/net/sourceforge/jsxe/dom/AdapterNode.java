@@ -273,10 +273,10 @@ public class AdapterNode {
         
         renameElementNode(prefix, localName);
         
-        if (!oldPrefix.equals(prefix)) {
+        if (!MiscUtilities.equals(oldPrefix, prefix)) {
             fireNamespaceChanged(this);
         }
-        if (!oldLocalName.equals(localName)) {
+        if (!MiscUtilities.equals(oldLocalName, localName)) {
             fireLocalNameChanged(this);
         }
         
@@ -688,6 +688,7 @@ public class AdapterNode {
                 myprefix = "";
             }
             if (!prefix.equals(myprefix)) {
+                Log.log(Log.DEBUG,this, "adding completion info for prefix: "+prefix);
                 CompletionInfo info = (CompletionInfo)mappings.get(prefix);
                 info.getAllElements(prefix, allowedElements);
             }
