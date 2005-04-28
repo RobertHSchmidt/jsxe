@@ -112,9 +112,9 @@ public class DefaultViewOptionsPanel extends OptionsPanel {
         add(ContinuousLayoutCheckBox);
     }//}}}
     
-    //{{{ saveOptions()
+    //{{{ save()
     
-    public void saveOptions() {
+    public void save() {
         m_document.setProperty(DefaultView.SHOW_COMMENTS,String.valueOf(showCommentsCheckBox.isSelected()));
        // m_document.setProperty(SHOW_EMPTY_NODES,(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
         
