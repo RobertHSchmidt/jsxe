@@ -1026,8 +1026,8 @@ public class jsXe {
             return "jsxeoptions";
         }//}}}
         
-        //{{{ saveOptions()
-        public void saveOptions() {
+        //{{{ save()
+        public void save() {
             try {
                 //don't need to set dirty, no change to text
                 jsXe.setProperty("max.recent.files", (new Integer(maxRecentFilesComboBox.getSelectedItem().toString())).toString());

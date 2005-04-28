@@ -50,20 +50,14 @@ import java.awt.Component;
  */
 public abstract class OptionsPanel extends JPanel implements OptionPane {
     
-    //{{{ saveOptions()
-    public void save() {
-        saveOptions();
-    }//}}}
+    //{{{ save()
+    public abstract void save();//}}}
     
     //{{{ getComponent()
     
     public Component getComponent() {
         return this;
     }//}}}
-    
-    //{{{ saveOptions()
-    
-    public abstract void saveOptions();//}}}
     
     //{{{ getTitle()
     

@@ -1,5 +1,8 @@
 # JSXE English properties file
 # Last updated 4/26/05 ;silly europeans ;)
+#:mode=properties:
+#:tabSize=4:indentSize=4:noTabs=true:
+#:folding=explicit:collapseFolds=1:
 
 #{{{ common properties
 
@@ -14,6 +17,10 @@ common.remove=Remove
 common.moveUp=Move Up
 common.moveDown=Move Down
 
+#}}}
+
+#{{{ Global Options
+global.options.title=Global Options
 #}}}
 
 #{{{ File Menu Items
