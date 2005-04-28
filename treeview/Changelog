@@ -1,7 +1,9 @@
 04/28/2005   Ian Lewis <IanLewis@member.fsf.org>
-
+    
     * Updated the options panel to conform to the new OptionsPanel interface in
       jsXe core.
+    * Made add, remove, and rename node actions into their own files and added
+      them as actions for this plugin.
 
 04/27/2005   Ian Lewis <IanLewis@member.fsf.org>
 
