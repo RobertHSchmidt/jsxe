@@ -1189,6 +1189,25 @@ loop:       for(int i = 0; i < str.length(); i++)
 
     //}}}
     
+    //{{{ equals()
+    /**
+     * Determines if object a equals object b. Returns false if one is null and the other is not.
+     * This was written mainly because you cannot do a.equals(b) if a could be null.
+     * @return true if the objects are equal based on the equals method of a or b or if both are null.
+     * @since jsXe 0.4 pre1
+     */
+    public static boolean equals(Object a, Object b) {
+        if (a == null && b == null) {
+            return true;
+        } else {
+            if (a != null) {
+                return a.equals(b);
+            } else {
+                return b.equals(a);
+            }
+        }
+    }//}}}
+    
     //{{{ Private members
     private MiscUtilities() {}
 
