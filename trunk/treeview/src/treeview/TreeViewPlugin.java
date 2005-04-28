@@ -26,9 +26,12 @@ package treeview;
 
 //{{{ imports
 
+import treeview.action.*;
+
 //{{{ jsXe classes
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.ViewPlugin;
+import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 //}}}
@@ -44,6 +47,19 @@ import java.util.Properties;
 public class TreeViewPlugin extends ViewPlugin {
     
     public static final String PLUGIN_NAME = "tree";
+    
+    //{{{ TreeViewPlugin constructor
+    
+    public TreeViewPlugin() {
+        //add actions
+        addAction("treeview.add.element.node", new AddNodeAction("Add Element Node", "new_element", "", AdapterNode.ELEMENT_NODE));
+        addAction("treeview.add.text.node", new AddNodeAction("Add Text Node", "", "New Text Node", AdapterNode.TEXT_NODE));
+        addAction("treeview.add.cdata.node", new AddNodeAction("Add CDATA Node", "", "New CDATA Section", AdapterNode.CDATA_SECTION_NODE));
+        addAction("treeview.add.processing.instruction.node", new AddNodeAction("Add Processing Instruction", "Instruction", "New Processing Instruction", AdapterNode.PROCESSING_INSTRUCTION_NODE));
+        addAction("treeview.add.comment.node", new AddNodeAction("Add Comment", "", "New Comment", AdapterNode.COMMENT_NODE));
+        addAction("treeview.remove.node", new RemoveNodeAction());
+        addAction("treeview.rename.node", new RenameNodeAction());
+    }//}}}
     
     //{{{ newDocumentView()
     

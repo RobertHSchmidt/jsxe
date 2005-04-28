@@ -34,6 +34,8 @@ package treeview;
 
 //{{{ imports
 
+import treeview.action.AddNodeAction;
+
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.Messages;
@@ -169,6 +171,20 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             setEditable(true);
             super.startEditingAtPath(path);
         }
+    }//}}}
+    
+    //{{{ getSelectedNode()
+    /**
+     * Gets the current node that is selected for editing.
+     * @return the current selected node or null if no node is selected.
+     */
+    public AdapterNode getSelectedNode() {
+        TreePath selPath = getLeadSelectionPath();
+        AdapterNode selectedNode = null;
+        if (selPath != null) {
+            selectedNode = (AdapterNode)selPath.getLastPathComponent();
+        }
+        return selectedNode;
     }//}}}
     
     //{{{ Autoscroll methods
@@ -319,12 +335,14 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     
                     if (selectedNode.getOwnerDocument().hasCompletionInfo()) {
                         JMenu addElement = new JMenu("Element");
+                        addNodeItem.add(addElement);
+                        
+                        addElement.add(new JMenuItem(jsXe.getAction("treeview.add.element.node")));
                         Iterator allowedElements = selectedNode.getAllowedElements().iterator();
                         int index = 0;
-                        addNodeItem.add(addElement);
                         while (allowedElements.hasNext()) {
                             ElementDecl decl = (ElementDecl)allowedElements.next();
-                            popupMenuItem = new JMenuItem(new AddNodeAction(decl));
+                            popupMenuItem = new JMenuItem(new AddNodeAction(decl, decl.name));
                             addElement.add(popupMenuItem);
                             ++index;
                             
@@ -337,13 +355,13 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                             }
                         }
                     } else {
-                        popupMenuItem = new JMenuItem(new AddNodeAction("New_Element", "", Node.ELEMENT_NODE));
+                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.element.node"));
                         addNodeItem.add(popupMenuItem);
                     }
                     
-                    popupMenuItem = new JMenuItem(new AddNodeAction("", "New Text Node", Node.TEXT_NODE));
+                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.text.node"));
                     addNodeItem.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem(new AddNodeAction("", "New CDATA Node", Node.CDATA_SECTION_NODE));
+                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.cdata.node"));
                     addNodeItem.add(popupMenuItem);
                    // popupMenuItem = new JMenuItem(new AddNodeAction("New_Entity", "", Node.ENTITY_REFERENCE_NODE));
                    // addNodeItem.add(popupMenuItem);
@@ -351,9 +369,9 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     showpopup = true;
                 }
                 if (selectedNode.getNodeType() == Node.DOCUMENT_NODE || selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                    popupMenuItem = new JMenuItem(new AddNodeAction("Instruction", "New Processing Instruction", Node.PROCESSING_INSTRUCTION_NODE));
+                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.processing.instruction.node"));
                     addNodeItem.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem(new AddNodeAction("", "New Comment Node", Node.COMMENT_NODE));
+                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.comment.node"));
                     addNodeItem.add(popupMenuItem);
                     addNodeShown = true;
                     showpopup = true;
@@ -362,12 +380,12 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     popup.add(addNodeItem);
                 }
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE || selectedNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-                    popupMenuItem = new JMenuItem(new RenameNodeAction());
+                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.rename.node"));
                     popup.add(popupMenuItem);
                 }
                 //if the node is not the document or the document root.
                 if (selectedNode.getNodeType() != Node.DOCUMENT_NODE && selectedNode.getParentNode().getNodeType() != Node.DOCUMENT_NODE) {
-                    popupMenuItem = new JMenuItem(new RemoveNodeAction());
+                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.remove.node"));
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
@@ -379,155 +397,6 @@ public class DefaultViewTree extends JTree implements Autoscroll {
     
     }//}}}
 
-    //{{{ AddNodeAction
-    
-    private class AddNodeAction extends AbstractAction {
-        
-        //{{{ AddNodeAction constructor
-        
-        public AddNodeAction(String name, String value, short nodeType) {
-            String actionName;
-            switch (nodeType) {
-                case Node.CDATA_SECTION_NODE:
-                    actionName = "CDATA Section";
-                    break;
-                case Node.COMMENT_NODE:
-                    actionName = "Comment";
-                    break;
-                case Node.ENTITY_NODE:
-                    actionName = "Entity";
-                    break;
-                case Node.ENTITY_REFERENCE_NODE:
-                    actionName = "Entity Reference";
-                    break;
-                case Node.ELEMENT_NODE:
-                    actionName = "Element Node";
-                    break;
-                case Node.NOTATION_NODE:
-                    actionName = "Notation Node";
-                    break;
-                case Node.PROCESSING_INSTRUCTION_NODE:
-                    actionName = "Processing Instruction";
-                    break;
-                case Node.TEXT_NODE:
-                    actionName = "Text Node";
-                    break;
-                default:
-                    actionName = "XML Node";
-            }
-            init(name, value, actionName, nodeType);
-        }//}}}
-        
-        //{{{ AddNodeAction constructor
-        
-        public AddNodeAction(ElementDecl element) {
-            init(element.name, "", element.name, Node.ELEMENT_NODE);
-            m_m_element = element;
-        }//}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            try {
-                TreePath selPath = getLeadSelectionPath();
-                if (selPath != null) {
-                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    
-                    if (m_m_element != null) {
-                        EditTagDialog dialog = new EditTagDialog(jsXe.getActiveView(),
-                                                                 m_m_element,
-                                                                 new HashMap(),
-                                                                 m_m_element.empty,
-                                                                 m_m_element.completionInfo.entityHash,
-                                                                 new ArrayList(), //don't support IDs for now.
-                                                                 selectedNode.getOwnerDocument());
-                        selectedNode.addAdapterNode(dialog.getNewNode());
-                    } else {
-                        //add the node of the correct type to the end of the children of this node
-                        selectedNode.addAdapterNode(m_name, m_value, m_nodeType, selectedNode.childCount());
-                    }
-                    expandPath(selPath);
-                    //The TreeModel doesn't automatically treeNodesInserted() yet
-                   // updateComponents();
-                    updateUI();
-                }
-            } catch (DOMException dome) {
-                JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
-            }
-        }//}}}
-        
-        //{{{ Private members
-        
-        //{{{ init()
-        
-        private void init(String qualifiedName, String value,  String actionTitle, short nodeType) {
-            m_name     = qualifiedName;
-            m_value    = value;
-            m_nodeType = nodeType;
-            putValue(Action.NAME, actionTitle);
-        }//}}}
-        
-        private short m_nodeType;
-        private String m_name;
-        private String m_value;
-        private ElementDecl m_m_element;
-        //}}}
-        
-    }//}}}
-    
-    //{{{ RenameNodeAction class
-    
-    private class RenameNodeAction extends AbstractAction {
-        
-        //{{{ RenameNodeAction constructor
-        
-        public RenameNodeAction() {
-           // putValue(Action.NAME, "Rename Node");
-        	putValue(Action.NAME, Messages.getMessage("TreeView.RenameNode"));	
-        }//}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            TreePath selPath = getLeadSelectionPath();
-            if (selPath != null) {
-                startEditingAtPath(selPath);
-            }
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ RemoveNodeAction class
-    
-    private class RemoveNodeAction extends AbstractAction {
-        
-        //{{{ RemoveNodeAction constructor
-        
-        public RemoveNodeAction() {
-            //putValue(Action.NAME, "Remove Node");
-            putValue(Action.NAME, Messages.getMessage("TreeView.RemoveNode"));	
-            
-        }//}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            try {
-                TreePath selPath = getLeadSelectionPath();
-                if (selPath != null) {
-                    AdapterNode selectedNode = (AdapterNode)selPath.getLastPathComponent();
-                    selectedNode.getParentNode().remove(selectedNode);
-                    //The TreeModel doesn't automatically treeNodesRemoved() yet
-                   // updateComponents();
-                    updateUI();
-                }
-            } catch (DOMException dome) {
-                JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
-            }
-        }//}}}
-        
-    }//}}}
-    
     //{{{ DefaultViewTreeCellRenderer class
     
     private class DefaultViewTreeCellRenderer extends DefaultTreeCellRenderer {

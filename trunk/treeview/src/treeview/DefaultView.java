@@ -26,6 +26,8 @@ package treeview;
 
 //{{{ imports
 
+import treeview.action.*;
+
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.DocumentBuffer;
@@ -77,7 +79,6 @@ public class DefaultView extends JPanel implements DocumentView {
     public static final String HORIZ_SPLIT_LOCATION = TreeViewPlugin.PLUGIN_NAME+".splitpane.horiz.loc";
     public static final String SHOW_COMMENTS = TreeViewPlugin.PLUGIN_NAME+".show.comment.nodes";
     public static final String SHOW_EMPTY_NODES = TreeViewPlugin.PLUGIN_NAME+".show.empty.nodes";
-    
     //}}}
     
     static {
@@ -311,6 +312,24 @@ public class DefaultView extends JPanel implements DocumentView {
     } //}}}
     
     //}}}
+    
+    //{{{ getDefaultViewTree()
+    /**
+     * Gets the tree component for this DefaultView.
+     * @return the tree component
+     */
+    public DefaultViewTree getDefaultViewTree() {
+        return tree;
+    }//}}}
+    
+    //{{{ getDefaultViewHTMLPane()
+    /**
+     * Gets the component used for editing node values
+     * @return the editor pane
+     */
+    public JEditorPane getDefaultViewTextPane() {
+        return htmlPane;
+    }//}}}
     
     //{{{ Private Members
     
