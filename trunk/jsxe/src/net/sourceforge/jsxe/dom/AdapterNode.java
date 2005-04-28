@@ -662,8 +662,8 @@ public class AdapterNode {
     
     //{{{ getAllowedElements()
     /**
-     * Gets the all the elements (ElementDecl objects) allowed as children of this
-     * node.
+     * Gets a sorted list of all the elements (ElementDecl objects) allowed as
+     * children of this node as defined in the DTD or Schema.
      * @return a list of ElementDecl objects.
      * @since jsXe 0.4 pre1
      */
@@ -678,7 +678,7 @@ public class AdapterNode {
         if (thisDecl != null) {
             allowedElements.addAll(thisDecl.getChildElements(getNSPrefix()));
         }
-         
+        
         // add everything but the parent's prefix now
         Iterator iter = mappings.keySet().iterator();
         while(iter.hasNext()) {
@@ -688,11 +688,11 @@ public class AdapterNode {
                 myprefix = "";
             }
             if (!prefix.equals(myprefix)) {
-                Log.log(Log.DEBUG,this, "adding completion info for prefix: "+prefix);
                 CompletionInfo info = (CompletionInfo)mappings.get(prefix);
                 info.getAllElements(prefix, allowedElements);
             }
         }
+        MiscUtilities.quicksort(allowedElements, new ElementDecl.Compare());
         return allowedElements;
     }//}}}
     
