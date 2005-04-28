@@ -71,6 +71,21 @@ import org.w3c.dom.NodeList;
  */
 public class AdapterNode {
     
+    //{{{ Public static properties
+    public static final short ATTRIBUTE_NODE = Node.ATTRIBUTE_NODE;
+    public static final short CDATA_SECTION_NODE = Node.CDATA_SECTION_NODE;
+    public static final short COMMENT_NODE = Node.COMMENT_NODE;
+    public static final short DOCUMENT_FRAGMENT_NODE = Node.DOCUMENT_FRAGMENT_NODE;
+    public static final short DOCUMENT_NODE = Node.DOCUMENT_NODE;
+    public static final short DOCUMENT_TYPE_NODE = Node.DOCUMENT_TYPE_NODE;
+    public static final short ELEMENT_NODE = Node.ELEMENT_NODE;
+    public static final short ENTITY_NODE = Node.ENTITY_NODE;
+    public static final short ENTITY_REFERENCE_NODE = Node.ENTITY_REFERENCE_NODE;
+    public static final short NOTATION_NODE = Node.NOTATION_NODE;
+    public static final short PROCESSING_INSTRUCTION_NODE = Node.PROCESSING_INSTRUCTION_NODE;
+    public static final short TEXT_NODE = Node.TEXT_NODE;
+    //}}}
+    
     //{{{ AdapterNode constructor
     /**
      * Creates a new AdapterNode for a node in a DOM tree. This is normally used
