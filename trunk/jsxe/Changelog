@@ -1,6 +1,8 @@
 04/28/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * getAllowedElements() in AdapterNode.java now sorts the elements
+    * Updated the OptionsPanel interface to remove the redundant saveOptions()
+      method
 
 04/27/2005  Ian Lewis <IanLewis@member.fsf.org>
 

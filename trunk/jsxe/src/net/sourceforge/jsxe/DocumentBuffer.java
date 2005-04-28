@@ -668,9 +668,9 @@ public class DocumentBuffer extends XMLDocument {
             
         }//}}}
         
-        //{{{ saveOptions()
+        //{{{ save()
         
-        public void saveOptions() {
+        public void save() {
             if (!String.valueOf(formatCheckBox.isSelected()).equals(getProperty(XMLDocument.FORMAT_XML))) {
                 setDirty(true);
                 setProperty(XMLDocument.FORMAT_XML, String.valueOf(formatCheckBox.isSelected()));

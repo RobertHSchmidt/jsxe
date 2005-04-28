@@ -50,7 +50,7 @@ public class GlobalOptionsDialog extends OptionsDialog {
     //{{{ GlobalOptionsDialog constructor
     
     public GlobalOptionsDialog(TabbedView view) {
-        super(view, "global","Global Options", jsXe.getProperty("global.last"));
+        super(view, "global", Messages.getMessage("global.options.title"), jsXe.getProperty("global.last"));
     }//}}}
     
     //{{{ createOptionTreeModel()

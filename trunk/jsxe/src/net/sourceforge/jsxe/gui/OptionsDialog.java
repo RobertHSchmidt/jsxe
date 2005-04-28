@@ -278,16 +278,16 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
         Box buttons = new Box(BoxLayout.X_AXIS);
         buttons.add(Box.createGlue());
 
-        ok = new JButton("OK");
+        ok = new JButton(Messages.getMessage("common.ok"));
         ok.addActionListener(this);
         buttons.add(ok);
         buttons.add(Box.createHorizontalStrut(6));
         getRootPane().setDefaultButton(ok);
-        cancel = new JButton("Cancel");
+        cancel = new JButton(Messages.getMessage("common.cancel"));
         cancel.addActionListener(this);
         buttons.add(cancel);
         buttons.add(Box.createHorizontalStrut(6));
-        apply = new JButton("Apply");
+        apply = new JButton(Messages.getMessage("common.apply"));
         apply.addActionListener(this);
         buttons.add(apply);
 
