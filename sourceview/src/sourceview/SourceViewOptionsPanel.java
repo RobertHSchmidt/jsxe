@@ -90,9 +90,9 @@ public class SourceViewOptionsPanel extends OptionsPanel {
         return "sourceview";
     }//}}}
     
-    //{{{ saveOptions()
+    //{{{ save()
     
-    public void saveOptions() {
+    public void save() {
         m_document.setProperty(SourceView.SOFT_TABS,(new Boolean(m_m_softTabsCheckBox.isSelected())).toString());
     }//}}}
     
