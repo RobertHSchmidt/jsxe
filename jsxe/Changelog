@@ -1,3 +1,7 @@
+04/28/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * getAllowedElements() in AdapterNode.java now sorts the elements
+
 04/27/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added Trish to the About Dialog.
