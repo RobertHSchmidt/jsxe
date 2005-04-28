@@ -1,3 +1,8 @@
+04/28/2005   Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated the options panel to conform to the new OptionsPanel interface in
+      jsXe core.
+
 04/27/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated the text area to use a monospaced font.
