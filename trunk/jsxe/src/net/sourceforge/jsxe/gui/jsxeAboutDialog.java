@@ -76,8 +76,7 @@ public class jsxeAboutDialog extends AbstractAction {
         jsXe.getAppTitle() + " " + jsXe.getVersion()+"\n"+
         "Java Simple XML Editor\n"+
         "Copyright (C) 2002 Ian Lewis\n\n"+
-        jsXe.getAppTitle() + " is an XML editor written using swing and JAXP 1.1\n"+
-        "Released under the terms of the GNU General Public License\n\n"+
+        jsXe.getAppTitle() + " is Released under the terms of the GNU General Public License\n\n"+
         "Active Contributors:\n"+
         "    Ian Lewis <IanLewis@member.fsf.org>\n"+
         "    Trish Hartnett <trishah136@users.sourceforge.net>\n\n"+

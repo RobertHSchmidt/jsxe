@@ -3,6 +3,7 @@
     * getAllowedElements() in AdapterNode.java now sorts the elements
     * Updated the OptionsPanel interface to remove the redundant saveOptions()
       method
+    * Added node types to AdapterNode
 
 04/27/2005  Ian Lewis <IanLewis@member.fsf.org>
 

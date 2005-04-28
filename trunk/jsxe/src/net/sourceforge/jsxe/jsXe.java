@@ -817,7 +817,6 @@ public class jsXe {
     }//}}}
     
     //{{{ getAction()
-    
     /**
      * Gets the action set with the given name
      */
