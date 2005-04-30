@@ -119,7 +119,7 @@ public class ElementDecl {
                 if (content != null) {
                     Iterator iter = content.iterator();
                     while(iter.hasNext()) {
-                        ElementDecl decl = (ElementDecl)completionInfo.elementHash.get(iter.next());
+                        ElementDecl decl = completionInfo.getElement(iter.next().toString());
                         if (decl != null) {
                             children.add(decl.withPrefix(prefix));
                         }

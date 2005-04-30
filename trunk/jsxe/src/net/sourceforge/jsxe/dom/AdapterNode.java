@@ -96,6 +96,9 @@ public class AdapterNode {
      * @param node the Node object that this AdapterNode represents.
      */
     AdapterNode(Node node) {
+        if (node == null) {
+            throw new NullPointerException();
+        }
         m_domNode = node;
     }//}}}
     
@@ -108,6 +111,9 @@ public class AdapterNode {
      *                 represent
      */
     AdapterNode(XMLDocument xmlDocument, Document document) {
+        if (xmlDocument == null || document == null) {
+            throw new NullPointerException();
+        }
         m_domNode = document;
         m_rootDocument = xmlDocument;
     }//}}}
@@ -124,6 +130,9 @@ public class AdapterNode {
      *             AdapterNode
      */
     AdapterNode(AdapterNode parent, Node node) {
+        if (node == null) {
+            throw new NullPointerException();
+        }
         m_domNode = node;
         setParent(parent);
     }//}}}
@@ -236,7 +245,19 @@ public class AdapterNode {
      * @return the number of children of this node
      */
     public int childCount() {
-        return m_domNode.getChildNodes().getLength();
+        NodeList childNodes = m_domNode.getChildNodes();
+        if (childNodes != null) {
+            if (childNodes.getLength() == 7) {
+                Log.log(Log.DEBUG,this, "childCount: "+m_parentNode.getNodeName());
+                Log.log(Log.DEBUG,this, "childCount:     "+m_domNode.getNodeName());
+                for (int i=0; i<7; i++) {
+                    Log.log(Log.DEBUG,this, "child: "+childNodes.item(i).getNodeName());
+                }
+            }
+            return childNodes.getLength();
+        } else {
+            return 0;
+        }
     }//}}}
     
     //{{{ getNSPrefix()
@@ -334,8 +355,7 @@ public class AdapterNode {
             } else {
                 if (m_domNode.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
                     if (m_domNode.getNodeName() != localName) {
-                        boolean validating = Boolean.valueOf(getOwnerDocument().getProperty(XMLDocument.IS_VALIDATING)).booleanValue();
-                        if (getOwnerDocument().entityDeclared(localName) || !validating) {
+                        if (getOwnerDocument().entityDeclared(localName)) {
                             Node newNode = m_domNode.getOwnerDocument().createEntityReference(localName);
                             m_domNode.getParentNode().replaceChild(newNode, m_domNode);
                             m_domNode = newNode;
