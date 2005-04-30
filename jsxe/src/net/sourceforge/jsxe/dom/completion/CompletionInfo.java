@@ -42,11 +42,11 @@ import org.xml.sax.SAXException;
  * @version $Id$
  */
 public class CompletionInfo {
-        public ArrayList elements;
-        public HashMap elementHash;
-        public ArrayList entities;
-        public HashMap entityHash;
-        public ArrayList elementsAllowedAnywhere;
+        protected ArrayList elements;
+        private HashMap elementHash;
+        protected ArrayList entities;
+        private HashMap entityHash;
+        protected ArrayList elementsAllowedAnywhere;
 
         //{{{ CompletionInfo constructor
         public CompletionInfo()
@@ -99,20 +99,63 @@ public class CompletionInfo {
                 }
         } //}}}
 
+        //{{{ getEntity()
+        /**
+         * Gets an entity with the given Name
+         * @param name the name of the entity
+         */
+        public EntityDecl getEntity(String name) {
+            Iterator itr = entities.iterator();
+            while (itr.hasNext()) {
+                EntityDecl decl = (EntityDecl)itr.next();
+                if (decl.name.equals(name)) {
+                    return decl;
+                }
+            }
+            return null;
+        }//}}}
+        
+        //{{{ getEntities()
+        /**
+         * Gets the entities for this completion info
+         * @return a list of EntityDecl objects
+         */
+        public List getEntities() {
+            return entities;
+        }//}}}
+        
+        //{{{ getEntityHash()
+        /**
+         * Gets a map containing entity name to character and character to
+         * entity name mappings.
+         */
+        public Map getEntityHash() {
+            return entityHash;
+        }//}}}
+        
         //{{{ addElement() method
         public void addElement(ElementDecl element)
         {
                 elementHash.put(element.name,element);
                 elements.add(element);
         } //}}}
-
+        
+        //{{{ getElement()
+        /**
+         * Gets the element declaration for the element with the given
+         * local name.
+         */
+        public ElementDecl getElement(String localName) {
+            return (ElementDecl)elementHash.get(localName);
+        }//}}}
+        
         //{{{ getAllElements() method
         public void getAllElements(String prefix, List out) {
             for(int i = 0; i < elements.size(); i++) {
                 out.add(((ElementDecl)elements.get(i)).withPrefix(prefix));
             }
         } //}}}
-
+        
         //{{{ toString() method
         public String toString()
         {

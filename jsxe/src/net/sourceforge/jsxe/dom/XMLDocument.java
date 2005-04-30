@@ -353,14 +353,10 @@ public class XMLDocument {
                 newNode = m_document.createProcessingInstruction(name, value);
                 break;
             case Node.ENTITY_REFERENCE_NODE:
-                if (m_document.getDoctype() ==  null) {
-                    throw new DOMException(DOMException.NOT_FOUND_ERR, "No DTD defined");
+                if (entityDeclared(name)) {
+                    newNode = m_document.createEntityReference(name);
                 } else {
-                    if (m_document.getDoctype().getEntities().getNamedItem(name) != null) {
-                        newNode = m_document.createEntityReference(name);
-                    } else {
-                        throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+name+"\""+" is not declared in the DTD");
-                    }
+                    throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+name+"\""+" has not been declared.");
                 }
                 break;
             case Node.DOCUMENT_TYPE_NODE:
@@ -484,7 +480,9 @@ public class XMLDocument {
      * @return true if the document has completion info.
      */
     public boolean hasCompletionInfo() {
-        return (m_mappings.size() != 0);
+        getNoNamespaceCompletionInfo();
+        //it has more completion info than the default namespace
+        return (m_mappings.size() > 1);
     }//}}}
 
     //{{{ entityDeclared()
@@ -495,12 +493,59 @@ public class XMLDocument {
      * @since jsXe 0.4 pre1
      */
     public boolean entityDeclared(String entityName) {
-        if(m_document.getDoctype() != null) {
-            NamedNodeMap entities = m_document.getDoctype().getEntities();
-            return (entities.getNamedItem(entityName) != null);
-        } else {
-            return false;
+        return (getEntityDecl(entityName) != null);
+       // if (m_document.getDoctype() != null) {
+       //     //checks the DocumentType instead of the completion info
+       //     //this should be ok.
+       //     NamedNodeMap entities = m_document.getDoctype().getEntities();
+       //     return (entities.getNamedItem(entityName) != null);
+       // } else {
+       //     return false;
+       // }
+    }//}}}
+    
+    //{{{ getElementDecl()
+    /**
+     * Gets an element declaration for a qualified name.
+     * @param the qualified name
+     * @since jsXe 0.4 pre1
+     */
+    protected ElementDecl getElementDecl(String name) {
+        String prefix = MiscUtilities.getNSPrefixFromQualifiedName(name);
+        if (prefix == null) {
+            prefix = "";
         }
+        CompletionInfo info = (CompletionInfo)m_mappings.get(prefix);
+        
+        if(info == null) {
+            return null;
+        } else {
+            String lName = MiscUtilities.getLocalNameFromQualifiedName(name);
+            ElementDecl decl = info.getElement(lName);
+            if(decl == null) {
+                return null;
+            } else {
+                return decl.withPrefix(prefix);
+            }
+        }
+    } //}}}
+    
+    //{{{ getEntityDecl()
+    /**
+     * Gets the entity declaration with the given name
+     * @param the name of the entity
+     */
+    public EntityDecl getEntityDecl(String name) {
+        return getNoNamespaceCompletionInfo().getEntity(name);
+    }//}}}
+    
+    //{{{ getEntities()
+    /**
+     * Get the entities defined for this document.
+     * @return a list of EntityDecl objects
+     */
+    public List getAllowedEntities() {
+        return getNoNamespaceCompletionInfo().getEntities();
     }//}}}
     
     //{{{ serialize()
@@ -701,32 +746,6 @@ public class XMLDocument {
     
     //{{{ Protected members
     
-    //{{{ getElementDecl()
-    /**
-     * Gets an element declaration for a qualified name.
-     * @param the qualified name
-     * @since jsXe 0.4 pre1
-     */
-    protected ElementDecl getElementDecl(String name) {
-        String prefix = MiscUtilities.getNSPrefixFromQualifiedName(name);
-        if (prefix == null) {
-            prefix = "";
-        }
-        CompletionInfo info = (CompletionInfo)m_mappings.get(prefix);
-        
-        if(info == null) {
-            return null;
-        } else {
-            String lName = MiscUtilities.getLocalNameFromQualifiedName(name);
-            ElementDecl decl = (ElementDecl)info.elementHash.get(lName);
-            if(decl == null) {
-                return null;
-            } else {
-                return decl.withPrefix(prefix);
-            }
-        }
-    } //}}}
-    
     //{{{ getCompletionInfoMappings()
     /**
      * Gets the namespace uri to CompletionInfo Mappings for this document.
@@ -786,6 +805,16 @@ public class XMLDocument {
                         throw new IOException("Could not serialize XML document.");
                     }
                     m_content = content;
+                    boolean formatting = Boolean.valueOf(getProperty(FORMAT_XML)).booleanValue();
+                    if (formatting != m_formattedLastTime) {
+                        /*
+                        if we format the document then we may be changing
+                        document structure.
+                        */
+                        m_parsedMode = false;
+                        fireStructureChanged(null);
+                    }
+                    m_formattedLastTime = formatting;
                 } catch (IOException ioe) {
                     //If an error occurs then we're in trouble
                     jsXe.exiterror(this, ioe, 1);
@@ -916,7 +945,7 @@ public class XMLDocument {
             parent.content.add(name);
         }
 
-        if (info.elementHash.get(name) != null) {
+        if (info.getElement(name) != null) {
             return;
         }
 
@@ -1539,6 +1568,8 @@ public class XMLDocument {
     private EntityResolver m_entityResolver;
     private ArrayList listeners = new ArrayList();
     private Properties props = new Properties();
+    
+    private boolean m_formattedLastTime = false;
     
     /**
      * A namespace uri to CompletionInfo map used to hold completion info
