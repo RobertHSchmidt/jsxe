@@ -81,6 +81,7 @@ public class AddNodeAction extends AbstractAction {
             DefaultView defView = (DefaultView)view;
             DefaultViewTree tree = defView.getDefaultViewTree();
             AdapterNode selectedNode = tree.getSelectedNode();
+            AdapterNode addedNode = null;
             if (selectedNode != null) {
                 try {
                     if (m_m_element != null) {
@@ -88,19 +89,20 @@ public class AddNodeAction extends AbstractAction {
                                                                  m_m_element,
                                                                  new HashMap(),
                                                                  m_m_element.empty,
-                                                                 m_m_element.completionInfo.entityHash,
+                                                                 m_m_element.completionInfo.getEntityHash(),
                                                                  new ArrayList(), //don't support IDs for now.
                                                                  selectedNode.getOwnerDocument());
-                        selectedNode.addAdapterNode(dialog.getNewNode());
+                        addedNode = selectedNode.addAdapterNode(dialog.getNewNode());
                     } else {
                         //add the node of the correct type to the end of the children of this node
-                        selectedNode.addAdapterNode(m_name, m_value, m_nodeType, selectedNode.childCount());
+                        addedNode = selectedNode.addAdapterNode(m_name, m_value, m_nodeType, selectedNode.childCount());
                     }
                     tree.expandPath(tree.getLeadSelectionPath());
                     //The TreeModel doesn't automatically treeNodesInserted() yet
                     tree.updateUI();
                 
                 } catch (DOMException dome) {
+                    net.sourceforge.jsxe.util.Log.log(net.sourceforge.jsxe.util.Log.DEBUG, this, dome);
                     JOptionPane.showMessageDialog(tree, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
                 }
             }
