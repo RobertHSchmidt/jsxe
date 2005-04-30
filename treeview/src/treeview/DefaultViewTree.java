@@ -324,6 +324,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 
                 //Don't want to interact with AdapterNodes too much. Maybe change this.
                 AdapterNode selectedNode = ((AdapterNode)selPath.getLastPathComponent());
+                XMLDocument ownerDocument = selectedNode.getOwnerDocument();
                 
                 JMenuItem popupMenuItem;
                 JMenu addNodeItem = new JMenu("Add");
@@ -333,7 +334,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     
-                    if (selectedNode.getOwnerDocument().hasCompletionInfo()) {
+                    if (ownerDocument.hasCompletionInfo()) {
                         JMenu addElement = new JMenu("Element");
                         addNodeItem.add(addElement);
                         
@@ -357,6 +358,28 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     } else {
                         popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.element.node"));
                         addNodeItem.add(popupMenuItem);
+                    }
+                    
+                    //Add the allowed entities even if no matter what
+                    
+                    JMenu addEntity = new JMenu("Entity");
+                    addNodeItem.add(addEntity);
+                    addEntity.add(new JMenuItem(new AddNodeAction("blah", "blah", "test", AdapterNode.ENTITY_REFERENCE_NODE)));
+                    int index = 0;
+                    Iterator allowedEntities = ownerDocument.getAllowedEntities().iterator();
+                    while (allowedEntities.hasNext()) {
+                        EntityDecl decl = (EntityDecl)allowedEntities.next();
+                        popupMenuItem = new JMenuItem(new AddNodeAction(decl.name, decl.name, decl.value, AdapterNode.ENTITY_REFERENCE_NODE));
+                        addEntity.add(popupMenuItem);
+                        ++index;
+                            
+                        //If the list gets too large add expand the menu
+                        if (index >= 20) {
+                            JMenu newMenu = new JMenu(Messages.getMessage("common.more"));
+                            addEntity.add(newMenu);
+                            addEntity = newMenu;
+                            index = 0;
+                        }
                     }
                     
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.text.node"));
