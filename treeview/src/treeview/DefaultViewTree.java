@@ -39,8 +39,10 @@ import treeview.action.AddNodeAction;
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.EnhancedMenu;
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.dom.completion.*;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Swing components
@@ -334,26 +336,15 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     
-                    if (ownerDocument.hasCompletionInfo()) {
-                        JMenu addElement = new JMenu("Element");
+                    if (ownerDocument.hasSchema()) {
+                        JMenu addElement = new EnhancedMenu("Element", 20);
                         addNodeItem.add(addElement);
                         
-                        addElement.add(new JMenuItem(jsXe.getAction("treeview.add.element.node")));
+                        addElement.add(jsXe.getAction("treeview.add.element.node"));
                         Iterator allowedElements = selectedNode.getAllowedElements().iterator();
-                        int index = 0;
                         while (allowedElements.hasNext()) {
                             ElementDecl decl = (ElementDecl)allowedElements.next();
-                            popupMenuItem = new JMenuItem(new AddNodeAction(decl, decl.name));
-                            addElement.add(popupMenuItem);
-                            ++index;
-                            
-                            //If the list gets too large add expand the menu
-                            if (index >= 20) {
-                                JMenu newMenu = new JMenu(Messages.getMessage("common.more"));
-                                addElement.add(newMenu);
-                                addElement = newMenu;
-                                index = 0;
-                            }
+                            addElement.add(new AddNodeAction(decl, decl.name));
                         }
                     } else {
                         popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.element.node"));
@@ -362,24 +353,14 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     
                     //Add the allowed entities even if no matter what
                     
-                    JMenu addEntity = new JMenu("Entity");
+                    JMenu addEntity = new EnhancedMenu("Entity", 20);
                     addNodeItem.add(addEntity);
-                    addEntity.add(new JMenuItem(new AddNodeAction("blah", "blah", "test", AdapterNode.ENTITY_REFERENCE_NODE)));
-                    int index = 0;
+                    
                     Iterator allowedEntities = ownerDocument.getAllowedEntities().iterator();
                     while (allowedEntities.hasNext()) {
                         EntityDecl decl = (EntityDecl)allowedEntities.next();
                         popupMenuItem = new JMenuItem(new AddNodeAction(decl.name, decl.name, decl.value, AdapterNode.ENTITY_REFERENCE_NODE));
                         addEntity.add(popupMenuItem);
-                        ++index;
-                            
-                        //If the list gets too large add expand the menu
-                        if (index >= 20) {
-                            JMenu newMenu = new JMenu(Messages.getMessage("common.more"));
-                            addEntity.add(newMenu);
-                            addEntity = newMenu;
-                            index = 0;
-                        }
                     }
                     
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.text.node"));
