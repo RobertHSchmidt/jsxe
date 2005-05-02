@@ -472,17 +472,13 @@ public class XMLDocument {
         }
     }//}}}
     
-    //{{{ hasCompletionInfo()
+    //{{{ hasSchema()
     /**
-     * Gets whether this document has completion info obtained from a
-     * DTD/Schema. This effectively lets you know if the document has a valid
-     * DTD/Schema declaration or not.
-     * @return true if the document has completion info.
+     * Gets whether the document has a valid DTD/Schema declaration or not.
+     * @return true if the document has a valid DTD/Schema declaration.
      */
-    public boolean hasCompletionInfo() {
-        getNoNamespaceCompletionInfo();
-        //it has more completion info than the default namespace
-        return (m_mappings.size() > 1);
+    public boolean hasSchema() {
+        return (m_document.getDoctype() != null);
     }//}}}
 
     //{{{ entityDeclared()
