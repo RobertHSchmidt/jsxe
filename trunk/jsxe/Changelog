@@ -1,3 +1,9 @@
+05/01/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug in XMLDocument with the hasCompletionInfo method.
+      Renamed it to hasSchema().
+    * Added the EnhancedMenu class that handles wrapping of the menu for you.
+
 04/29/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug in XMLDocument that caused null pointer exceptions to be

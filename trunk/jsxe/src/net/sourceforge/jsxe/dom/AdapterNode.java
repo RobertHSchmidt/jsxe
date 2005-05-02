@@ -247,13 +247,6 @@ public class AdapterNode {
     public int childCount() {
         NodeList childNodes = m_domNode.getChildNodes();
         if (childNodes != null) {
-            if (childNodes.getLength() == 7) {
-                Log.log(Log.DEBUG,this, "childCount: "+m_parentNode.getNodeName());
-                Log.log(Log.DEBUG,this, "childCount:     "+m_domNode.getNodeName());
-                for (int i=0; i<7; i++) {
-                    Log.log(Log.DEBUG,this, "child: "+childNodes.item(i).getNodeName());
-                }
-            }
             return childNodes.getLength();
         } else {
             return 0;
