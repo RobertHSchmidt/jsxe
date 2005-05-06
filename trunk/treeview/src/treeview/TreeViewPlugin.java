@@ -59,6 +59,8 @@ public class TreeViewPlugin extends ViewPlugin {
         addAction("treeview.add.comment.node", new AddNodeAction("Add Comment", "", "New Comment", AdapterNode.COMMENT_NODE));
         addAction("treeview.remove.node", new RemoveNodeAction());
         addAction("treeview.rename.node", new RenameNodeAction());
+        addAction("treeview.add.attribute", new AddAttributeAction());
+        addAction("treeview.remove.attribute", new RemoveAttributeAction());
     }//}}}
     
     //{{{ newDocumentView()

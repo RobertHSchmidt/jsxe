@@ -30,6 +30,7 @@ import treeview.action.*;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.*;
+import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.gui.OptionsPanel;
@@ -336,6 +337,16 @@ public class DefaultView extends JPanel implements DocumentView {
         return htmlPane;
     }//}}}
     
+    //{{{ getDefaultViewAttributeTable()
+    /**
+     * Gets the table component used to display attributes
+     * for this DefaultView.
+     * @return the table component
+     */
+    public JTable getDefaultViewAttributeTable() {
+        return attributesTable;
+    }//}}}
+    
     //{{{ Private Members
     
     //{{{ canEditInJEditorPane()
@@ -388,12 +399,12 @@ public class DefaultView extends JPanel implements DocumentView {
                 JMenuItem popupMenuItem;
                 
                 popupMenuItem = new JMenuItem("Add Attribute");
-                popupMenuItem.addActionListener(new AddAttributeAction());
+                popupMenuItem.addActionListener(jsXe.getAction("treeview.add.attribute"));
                 popup.add(popupMenuItem);
                 
                 if (row != attributesTable.getRowCount()-1) {
                     popupMenuItem = new JMenuItem("Remove Attribute");
-                    popupMenuItem.addActionListener(new RemoveAttributeAction(row));
+                    popupMenuItem.addActionListener(jsXe.getAction("treeview.remove.attribute"));
                     popup.add(popupMenuItem);
                 }
                 popup.show(e.getComponent(), e.getX(), e.getY());
@@ -447,42 +458,6 @@ public class DefaultView extends JPanel implements DocumentView {
         //{{{ Private members
         private Component parent;
         //}}}
-        
-    }//}}}
-    
-    //{{{ RemoveAttributeAction class
-    
-    private class RemoveAttributeAction implements ActionListener {
-        
-        //{{{ RemoveAttributeAction constructor
-        
-        public RemoveAttributeAction(int r) {
-            row = r;
-        }//}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            DefaultViewTableModel model = (DefaultViewTableModel)attributesTable.getModel();
-            model.removeRow(row);
-           // updateComponents();
-            attributesTable.updateUI();
-        }//}}}
-        
-        //{{{ Private members
-        private int row;
-        //}}}
-    }//}}}
-    
-    //{{{ AddAttributeAction class
-    
-    private class AddAttributeAction implements ActionListener {
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            attributesTable.editCellAt(attributesTable.getRowCount()-1,0);
-        }//}}}
         
     }//}}}
     
