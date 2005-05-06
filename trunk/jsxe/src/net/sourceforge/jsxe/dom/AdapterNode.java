@@ -564,6 +564,7 @@ public class AdapterNode {
      */
     public void setAttribute(String name, String value) throws DOMException {
         if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
+            
             Element element = (Element)m_domNode;
             String localName = MiscUtilities.getLocalNameFromQualifiedName(name);
             String prefix    = MiscUtilities.getNSPrefixFromQualifiedName(name);
@@ -587,7 +588,14 @@ public class AdapterNode {
             if (prefix != null && !prefix.equals("")) {
                 element.setAttributeNS(lookupNamespaceURI(prefix),name,value);
             } else {
-                element.setAttribute(name,value);
+                /*
+                setAttribute doesn't throw an error if the first character is
+                a ":"
+                */
+                if (name != null && !name.equals("") && name.charAt(0)==':') {
+                    throw new DOMException(DOMException.NAMESPACE_ERR, "An attribute name cannot have a ':' as the first character");
+                }
+                element.setAttribute(name, value);
             }
             fireAttributeChanged(this, name);
         } else {

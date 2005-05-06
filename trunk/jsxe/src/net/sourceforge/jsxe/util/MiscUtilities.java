@@ -1105,7 +1105,7 @@ loop:       for(int i = 0; i < str.length(); i++)
     public static String getLocalNameFromQualifiedName(String qualifiedName) {
         int index = qualifiedName.indexOf(":");
         String localName;
-        if (index != -1) {
+        if (index > 0) { // not -1 and not 0
             localName = qualifiedName.substring(index+1);
         } else {
             localName = qualifiedName;
