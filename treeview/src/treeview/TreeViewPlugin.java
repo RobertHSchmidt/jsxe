@@ -61,6 +61,7 @@ public class TreeViewPlugin extends ViewPlugin {
         addAction("treeview.rename.node", new RenameNodeAction());
         addAction("treeview.add.attribute", new AddAttributeAction());
         addAction("treeview.remove.attribute", new RemoveAttributeAction());
+        addAction("treeview.edit.node", new EditNodeAction());
     }//}}}
     
     //{{{ newDocumentView()
