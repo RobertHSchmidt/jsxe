@@ -24,20 +24,37 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package treeview.action;
 
+//{{{ imports
+
+import treeview.*;
+
+//{{{ AWT classes
 import java.awt.event.ActionEvent;
+//}}}
+
+//{{{ Java base classes
 import java.util.HashMap;
 import java.util.ArrayList;
+//}}}
+
+//{{{ Swing classes
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import javax.swing.Action;
+//}}}
 
+//{{{ DOM classes
 import org.w3c.dom.DOMException;
+//}}}
 
-import treeview.*;
+//{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.completion.ElementDecl;
+//}}}
+
+//}}}
 
 /**
  * An action that adds a node to the tree at the current selected node.
