@@ -978,10 +978,15 @@ public class XMLDocument {
                 // TODO: possible values
                 String type = decl.getTypeDefinition().getName();
                 Log.log(Log.DEBUG,this, type);
-                if(type == null) {
+                if (type == null) {
                     type = "CDATA";
                 }
-                elementDecl.addAttribute(new ElementDecl.AttributeDecl(attrName,value,null,type,required));
+                StringList enumList = decl.getTypeDefinition().getLexicalEnumeration();
+                ArrayList values = new ArrayList();
+                for (int j=0; j<enumList.getLength(); j++) {
+                    values.add(enumList.item(j));
+                }
+                elementDecl.addAttribute(new ElementDecl.AttributeDecl(attrName,value,values,type,required));
             }
         }
     } //}}}
