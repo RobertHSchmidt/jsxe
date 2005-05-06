@@ -239,7 +239,7 @@ public class CompletionInfo {
         //{{{ Private members
         private static HashMap globs;
         private static HashMap completionInfoResources;
-        private static HashMap completionInfoNamespaces;
+        private static HashMap completionInfoNamespaces = new HashMap();
 
         //}}}
 }
