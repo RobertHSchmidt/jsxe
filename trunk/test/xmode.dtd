@@ -36,7 +36,7 @@
 
 <!-- RULES attributes -->
 <!ATTLIST RULES
-	SET CDATA "MAIN"
+    SET CDATA "MAIN"
 	IGNORE_CASE %att-bool; "TRUE"
 	HIGHLIGHT_DIGITS %att-bool; "FALSE"
 	DIGIT_RE CDATA #IMPLIED
