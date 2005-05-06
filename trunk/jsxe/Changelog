@@ -1,3 +1,8 @@
+05/06/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug in CompletionInfo that caused NullPointerExceptions to be
+      thrown.
+
 05/01/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug in XMLDocument with the hasCompletionInfo method.
