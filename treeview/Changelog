@@ -1,3 +1,8 @@
+05/06/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug where the tree view was catching NullPointerExceptions when
+      it shouldn't have
+
 05/01/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * using the EnhancedMenu class in the tree view now.
