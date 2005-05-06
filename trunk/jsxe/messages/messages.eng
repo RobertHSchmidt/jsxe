@@ -1,5 +1,5 @@
 # JSXE English properties file
-# Last updated 4/26/05 ;silly europeans ;)
+# $Id$
 #:mode=properties:
 #:tabSize=4:indentSize=4:noTabs=true:
 #:folding=explicit:collapseFolds=1:
@@ -48,3 +48,5 @@ SourceView.Find=Find...
 SourceView.FindNext=Find Next
 TreeView.RenameNode=Rename Node
 TreeView.RemoveNode=Remove Node
+TreeView.AddAttribute=Add Attribute
+TreeView.RemoveAttribute=Remove Attribute
