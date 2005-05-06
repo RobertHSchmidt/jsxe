@@ -508,7 +508,7 @@ public class XMLDocument {
      * @param the qualified name
      * @since jsXe 0.4 pre1
      */
-    protected ElementDecl getElementDecl(String name) {
+    public ElementDecl getElementDecl(String name) {
         String prefix = MiscUtilities.getNSPrefixFromQualifiedName(name);
         if (prefix == null) {
             prefix = "";
