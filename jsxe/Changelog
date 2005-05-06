@@ -2,6 +2,7 @@
 
     * Fixed a bug in CompletionInfo that caused NullPointerExceptions to be
       thrown.
+    * Removed the hasSchema() method because it was dumb
 
 05/01/2005  Ian Lewis <IanLewis@member.fsf.org>
 

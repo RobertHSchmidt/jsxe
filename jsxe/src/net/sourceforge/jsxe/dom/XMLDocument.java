@@ -472,15 +472,6 @@ public class XMLDocument {
         }
     }//}}}
     
-    //{{{ hasSchema()
-    /**
-     * Gets whether the document has a valid DTD/Schema declaration or not.
-     * @return true if the document has a valid DTD/Schema declaration.
-     */
-    public boolean hasSchema() {
-        return (m_document.getDoctype() != null);
-    }//}}}
-
     //{{{ entityDeclared()
     /**
      * Determines if the entity was declared by the DTD/Schema.
@@ -933,7 +924,6 @@ public class XMLDocument {
      */
     private void xsElementToElementDecl(CompletionInfo info, XSElementDeclaration element, ElementDecl parent) {
         String name = element.getName();
-
         if (parent != null) {
             if (parent.content == null) {
                 parent.content = new HashSet();
@@ -1499,7 +1489,6 @@ public class XMLDocument {
             for(int i = 0; i < elements.getLength(); i++) {
                 XSElementDeclaration element = (XSElementDeclaration)
                     elements.item(i);
-
                 xsElementToElementDecl(info,element,null);
             }
 
@@ -1507,7 +1496,7 @@ public class XMLDocument {
             
             for(int i = 0; i < attributes.getLength(); i++) {
                 XSObject attribute = attributes.item(i);
-                System.err.println("look! " + attribute);
+                Log.log(Log.WARNING, this, "look! " + attribute);
                 /* String name = element.getName();
                 boolean empty = true;
                 boolean any = true;
