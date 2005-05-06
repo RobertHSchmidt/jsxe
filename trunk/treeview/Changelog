@@ -2,6 +2,7 @@
 
     * Fixed a bug where the tree view was catching NullPointerExceptions when
       it shouldn't have
+    * This now shows the schema completion info.
 
 05/01/2005  Ian Lewis <IanLewis@member.fsf.org>
 

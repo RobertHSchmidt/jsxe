@@ -336,19 +336,14 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     
-                    if (ownerDocument.hasSchema()) {
-                        JMenu addElement = new EnhancedMenu("Element", 20);
-                        addNodeItem.add(addElement);
-                        
-                        addElement.add(jsXe.getAction("treeview.add.element.node"));
-                        Iterator allowedElements = selectedNode.getAllowedElements().iterator();
-                        while (allowedElements.hasNext()) {
-                            ElementDecl decl = (ElementDecl)allowedElements.next();
-                            addElement.add(new AddNodeAction(decl, decl.name));
-                        }
-                    } else {
-                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.element.node"));
-                        addNodeItem.add(popupMenuItem);
+                    JMenu addElement = new EnhancedMenu("Element", 20);
+                    addNodeItem.add(addElement);
+                    
+                    addElement.add(jsXe.getAction("treeview.add.element.node"));
+                    Iterator allowedElements = selectedNode.getAllowedElements().iterator();
+                    while (allowedElements.hasNext()) {
+                        ElementDecl decl = (ElementDecl)allowedElements.next();
+                        addElement.add(new AddNodeAction(decl, decl.name));
                     }
                     
                     //Add the allowed entities even if no matter what
