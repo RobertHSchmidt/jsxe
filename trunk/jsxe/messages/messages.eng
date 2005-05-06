@@ -50,3 +50,4 @@ TreeView.RenameNode=Rename Node
 TreeView.RemoveNode=Remove Node
 TreeView.AddAttribute=Add Attribute
 TreeView.RemoveAttribute=Remove Attribute
+TreeView.EditNode=Edit Node
