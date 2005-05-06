@@ -576,7 +576,19 @@ public class AdapterNode {
                 }
             }
             
-            element.setAttributeNS(lookupNamespaceURI(prefix),name,value);
+            /*
+            If the attribute did not have a prefix to begin with then
+            using setAttributeNS may add a new attribute node to the element
+            even though the attribute already exists.
+            
+            Also, if adding or removing a prefix we need to remove the attribute
+            first so that namespace errors are thrown
+            */
+            if (prefix != null && !prefix.equals("")) {
+                element.setAttributeNS(lookupNamespaceURI(prefix),name,value);
+            } else {
+                element.setAttribute(name,value);
+            }
             fireAttributeChanged(this, name);
         } else {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
@@ -586,13 +598,20 @@ public class AdapterNode {
     //{{{ getAttribute()
     /**
      * <p>Gets the value of an attribute associated with this node.</p>
-     * @param name the name of the attribute
+     * @param name the qualified name of the attribute
      * @throws DOMException NOT_SUPPORTED_ERR: if this is not an element node
      */
     public String getAttribute(String name) throws DOMException {
         if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
+            String localName = MiscUtilities.getLocalNameFromQualifiedName(name);
+            String prefix    = MiscUtilities.getNSPrefixFromQualifiedName(name);
+            
             Element element = (Element)m_domNode;
-            return element.getAttribute(name);
+            if (prefix != null && !prefix.equals("")) {
+                return element.getAttributeNS(lookupNamespaceURI(prefix),localName);
+            } else {
+                return element.getAttribute(name);
+            }
         } else {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
         }
@@ -663,8 +682,31 @@ public class AdapterNode {
                 }
             }
             
-            element.removeAttributeNS(lookupNamespaceURI(prefix),localName);
+            if (prefix != null && !prefix.equals("")) {
+                element.removeAttributeNS(lookupNamespaceURI(prefix),localName);
+            } else {
+                element.removeAttribute(localName);
+            }
             fireAttributeChanged(this, attr);
+        } else {
+            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
+        }
+    }//}}}
+    
+    //{{{ getAttributeNameAt()
+    /**
+     * <p>Gets the qualified name of an attribute at the given index</p>
+     * <p><b>Note:</b> Attributes are sorted alphabetically.</p>
+     * @param index the index of the attribute to get
+     * @return the qualified name of the attribute at the index
+     * @throws DOMException NOT_SUPPORTED_ERR: if this is not an element node
+     */
+    public String getAttributeNameAt(int index) throws DOMException {
+        if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element element = (Element)m_domNode;
+            NamedNodeMap attrs = element.getAttributes();
+            Node attr = attrs.item(index);
+            return attr.getNodeName();
         } else {
             throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
         }
@@ -675,17 +717,11 @@ public class AdapterNode {
      * <p>Gets the value of an attribute at the given index</p>
      * <p><b>Note:</b> Attributes are sorted alphabetically.</p>
      * @param index the index of the attribute to get
+     * @return the value of the attribute at the index
      * @throws DOMException NOT_SUPPORTED_ERR: if this is not an element node
      */
     public String getAttributeAt(int index) throws DOMException {
-        if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
-            Element element = (Element)m_domNode;
-            NamedNodeMap attrs = element.getAttributes();
-            Node attr = attrs.item(index);
-            return attr.getNodeName();
-        } else {
-            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
-        }
+        return getAttribute(getAttributeNameAt(index));
     }//}}}
     
     //{{{ getAllowedElements()
@@ -981,8 +1017,7 @@ public class AdapterNode {
             return ((org.apache.xerces.dom.NodeImpl)m_domNode).lookupNamespaceURI(prefix);
         }
     }//}}}
-    
-    private AdapterNode m_parentNode;
+        private AdapterNode m_parentNode;
     private XMLDocument m_rootDocument;
     
     private ArrayList m_children = new ArrayList();

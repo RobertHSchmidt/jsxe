@@ -2,7 +2,11 @@
 
     * Fixed a bug in CompletionInfo that caused NullPointerExceptions to be
       thrown.
-    * Removed the hasSchema() method because it was dumb
+    * Removed the hasSchema() method from XMLDocument because it was dumb
+    * Fixed a bug in AdapterNode.getAttributeAt(); Added the
+      getAttributeNameAt() method.
+    * Fixed several namespace bugs in the getters and setters for attributes in
+      AdapterNode
 
 05/01/2005  Ian Lewis <IanLewis@member.fsf.org>
 
