@@ -56,6 +56,9 @@ import java.util.Enumeration;
 import java.util.Properties;
 //}}}
 
+import org.xml.sax.SAXException;
+import javax.xml.parsers.ParserConfigurationException;
+
 //}}}
 
 /**
@@ -267,10 +270,12 @@ public class DefaultView extends JPanel implements DocumentView {
         
         try {
             document.checkWellFormedness();
-        } catch (Exception e) {
+        } catch (SAXException e) {
             String errormsg = "The tree view requires XML documents to be well-formed.\n\n"+
             e.toString();
             throw new IOException(errormsg);
+        } catch (ParserConfigurationException e) {
+            throw new IOException(e.toString());
         }
         
         ensureDefaultProps(document);
