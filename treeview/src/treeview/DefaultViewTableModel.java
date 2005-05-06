@@ -33,6 +33,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.AdapterNode;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Swing components
@@ -163,8 +164,10 @@ public class DefaultViewTableModel implements TableModel {
                     //now DefaultViewTable will force edit of the attribute value
                 } else {
                     if (m_addingAttribute) {
-                        m_currentNode.setAttribute(m_data[0].get(rowIndex).toString(), aValue.toString());
+                        // this must be before setAttribute in case exceptions are thrown.
                         m_addingAttribute = false;
+                        
+                        m_currentNode.setAttribute(m_data[0].get(rowIndex).toString(), aValue.toString());
                         updateTable(m_currentNode);
                         fireTableChanged(new TableModelEvent(this, rowIndex, rowIndex, columnIndex, TableModelEvent.UPDATE));
                     }
@@ -201,8 +204,6 @@ public class DefaultViewTableModel implements TableModel {
                     }
                 }
             }
-        //We need to catch this here unfortunately because this method is called by
-        //a default table editor. Maybe this will change.
         } catch (DOMException dome) {
             updateTable(m_currentNode);
             JOptionPane.showMessageDialog(m_view, dome, "XML Error", JOptionPane.WARNING_MESSAGE);

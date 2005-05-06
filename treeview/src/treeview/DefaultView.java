@@ -422,8 +422,15 @@ public class DefaultView extends JPanel implements DocumentView {
                 //if the selected node can be edited in the text pane
                 htmlPane.setEditable(canEditInJEditorPane(selectedNode));
                 
+                //if the table is editing we want to cancel it.
+                if (attributesTable.isEditing()) {
+                    int row = attributesTable.getEditingRow();
+                    int column = attributesTable.getEditingColumn();
+                    attributesTable.getCellEditor(row, column).cancelCellEditing();
+                }
+                
                 //update the attributes table with the current info.
-               ((DefaultViewTableModel)attributesTable.getModel()).setAdapterNode(selectedNode);
+                ((DefaultViewTableModel)attributesTable.getModel()).setAdapterNode(selectedNode);
                 
                 //update the text pane with the current info
                 DefaultViewDocument styledDoc = new DefaultViewDocument(selectedNode);
@@ -490,9 +497,6 @@ public class DefaultView extends JPanel implements DocumentView {
             int editColumn = getEditingColumn();
             
             super.editingStopped(e);
-            
-            Log.log(Log.DEBUG, this, "editRow: "+editRow);
-            Log.log(Log.DEBUG, this, "editColumn: "+editColumn);
             
             if (editRow==getRowCount()-1) {
                 //users can switch the columns around in the ui
