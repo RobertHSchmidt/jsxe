@@ -201,13 +201,24 @@ public class XMLDocument {
                 m_syncedWithContent = false;
             }
             if (key.equals(IS_VALIDATING)) {
+                //This is ugly. Need to rethink how this should happen.
+                
+                //syncContentWithDOM could change m_parsedMode
+                boolean wasParsedMode = m_parsedMode;
+                AdapterNode oldNode = m_adapterNode;
                 syncContentWithDOM();
                 //if we were in parsed mode we must make sure
                 //the AdapterNodes in the tree have the correct
                 //nodes internally.
-                if (m_parsedMode) {
+                if (wasParsedMode) {
                     try {
                         parseDocument();
+                        m_parsedMode = true;
+                        m_syncedWithContent = false;
+                        m_adapterNode = oldNode;
+                        
+                        //We don't create a new AdapterNode here because 
+                        //we want them to be as persistent as possible.
                         m_adapterNode.updateNode(m_document);
                     } catch (Exception e) {
                         //If an error occurs then we're in trouble
@@ -628,6 +639,7 @@ public class XMLDocument {
         syncContentWithDOM();
         m_content.insert(offset, text);
         m_parsedMode = false;
+        m_adapterNode = null;
         //may have some algorithm to determine the modified node(s) in the
         //future
         fireStructureChanged(null);
@@ -644,6 +656,7 @@ public class XMLDocument {
         syncContentWithDOM();
         m_content.remove(offset, length);
         m_parsedMode = false;
+        m_adapterNode = null;
         //may have some algorithm to determine the modified node(s) in the
         //future
         fireStructureChanged(null);
@@ -676,6 +689,7 @@ public class XMLDocument {
         m_content = content;
         
         m_parsedMode = false;
+        m_adapterNode = null;
         
        // try {
        //     checkWellFormedness();
@@ -799,6 +813,7 @@ public class XMLDocument {
                         document structure.
                         */
                         m_parsedMode = false;
+                        m_adapterNode = null;
                         fireStructureChanged(null);
                     }
                     m_formattedLastTime = formatting;
@@ -826,8 +841,8 @@ public class XMLDocument {
     
     //{{{ parseDocument()
     /**
-     * Parses the document with the current options. After this is called m_adapterNode must
-     * be updated.
+     * Parses the document with the current options. After this is called
+     * m_adapterNode and m_parsedMode must be updated.
      * @since jsXe 0.4 pre1
      */
     public void parseDocument() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
@@ -962,6 +977,7 @@ public class XMLDocument {
                 String value = decl.getConstraintValue();
                 // TODO: possible values
                 String type = decl.getTypeDefinition().getName();
+                Log.log(Log.DEBUG,this, type);
                 if(type == null) {
                     type = "CDATA";
                 }
@@ -1322,6 +1338,7 @@ public class XMLDocument {
                 */
                 m_syncedWithContent = true;
                 m_parsedMode = false;
+                m_adapterNode = null;
                 fireStructureChanged(null);
                 return true;
             }
