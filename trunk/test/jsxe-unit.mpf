@@ -1,16 +1,16 @@
 #Marathon Project File
-#Thu Nov 11 13:38:00 EST 2004
+#Tue Mar 08 22:44:36 EST 2005
 marathon.project.description=Java Simple XML Editor
 marathon.application.vm.arguments=
-marathon.application.classpath=C\:\\Documents and Settings\\iml\\src\\jsxe\\jsxe\\jsXe.jar;C\:\\Documents and Settings\\iml\\src\\jsxe\\jsxe\\lib\\xercesImpl.jar;C\:\\Documents and Settings\\iml\\src\\jsxe\\jsxe\\lib\\xml-apis.jar
+marathon.application.classpath=/home/okaasan/src/jsxe/jsxe/jsXe.jar;/home/okaasan/src/jsxe/jsxe/lib/xercesImpl.jar;/home/okaasan/src/jsxe/jsxe/lib/xml-apis.jar
 marathon.component.resolvers=
 marathon.application.pythonpath=
 marathon.project.name=jsXe
 marathon.application.mainclass=net.sourceforge.jsxe.jsXe
-marathon.fixture.dir=C\:\\Documents and Settings\\iml\\src\\jsxe\\test\\Fixtures
-marathon.capture.dir=C\:\\Documents and Settings\\iml\\src\\jsxe\\test\\CaptureScripts
-marathon.test.dir=C\:\\Documents and Settings\\iml\\src\\jsxe\\test\\TestCases
-marathon.project.dir=C\:\\Documents and Settings\\iml\\src\\jsxe\\test
+marathon.fixture.dir=/home/okaasan/src/jsxe/test/Fixtures
+marathon.capture.dir=/home/okaasan/src/jsxe/test/CaptureScripts
+marathon.test.dir=/home/okaasan/src/jsxe/test/TestCases
+marathon.project.dir=/home/okaasan/src/jsxe/test
 marathon.application.arguments=
 marathon.application.main.thread=false
-marathon.application.working.dir=C\:\\Documents and Settings\\iml\\src\\jsxe\\test
+marathon.application.working.dir=/home/okaasan/src/jsxe/test
