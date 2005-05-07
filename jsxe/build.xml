@@ -16,7 +16,9 @@
 		<property name="src.dir" value="${root.dir}/src"/>
 		<property name="lib.dir" value="${root.dir}/lib"/>
 		<property name="bin.dir" value="${root.dir}/bin"/>
-		<property name="docs.dir" value="${src.dir}/doc"/>
+		<property name="messages.dir" value="${root.dir}/messages"/>
+    <property name="build.messages" value="${build.dir}/messages"/>
+    <property name="docs.dir" value="${src.dir}/doc"/>
     <property name="plugin.dir" value="${root.dir}/jars"/>
 		<property name="build.src" value="${build.dir}/src"/>
 		<property name="build.dest" value="${build.dir}/classes"/>
@@ -26,7 +28,7 @@
 		<property name="build.bin" value="${build.dir}/bin"/>
 		<property name="build.javadocs" value="${build.docs}/api"/>
 		<property name="build.help" value="${build.docs}/help"/>
-		<property name="javac.debug" value="on"/>
+    <property name="javac.debug" value="on"/>
 		<property name="javac.optimize" value="off"/>
 		<property name="javac.deprecation" value="on"/>
     <property name="javac.include.runtime" value="no"/>
@@ -95,6 +97,12 @@
 				<include name="**/*.png"/>
 			</fileset>
 		</copy>
+    <mkdir dir="${build.messages}"/>
+    <copy todir="${build.messages}">
+      <fileset dir="${messages.dir}">
+        <include name="**/messages.*"/>
+      </fileset>
+    </copy>
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Compiles the program ============================= -->
@@ -212,6 +220,15 @@
 				<include name="**/*"/>
 			</fileset>
 		</copy>
+    
+    <!-- messages -->
+    <mkdir dir="${distbin.dir}/messages"/>
+		<copy todir="${distbin.dir}/messages">
+			<fileset dir="${build.messages}">
+				<include name="**/messages.*"/>
+			</fileset>
+		</copy>
+    
 		<copy file="${app.name}.jar" tofile="${distbin.dir}/${app.name}.jar"/>
 		<!-- lib -->
 		<mkdir dir="${distbin.dir}/lib"/>
@@ -262,6 +279,13 @@
 		<copy todir="${distsrc.dir}/lib">
 			<fileset dir="${build.lib}">
 				<include name="**/*"/>
+			</fileset>
+		</copy>
+        <!-- messages -->
+    <mkdir dir="${distsrc.dir}/messages"/>
+		<copy todir="${distsrc.dir}/messages">
+			<fileset dir="${build.messages}">
+				<include name="**/messages.*"/>
 			</fileset>
 		</copy>
     

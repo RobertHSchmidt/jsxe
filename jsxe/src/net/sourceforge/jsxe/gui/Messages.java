@@ -4,7 +4,7 @@ Messages.java
 :folding=explicit:collapseFolds=1:
 
 Copyright (C) 2005 Trish Harnett (trishah136@member.fsf.org)
-Portions Copyright (C) 2005 Trish Harnett (trishah136@member.fsf.org)
+Portions Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -38,86 +38,97 @@ import java.util.Locale;
 import java.util.Properties;
 //}}}
 
+//{{{ jsXe classes
+import net.sourceforge.jsxe.util.Log;
+//}}}
+
 //}}}
 
 /**
  * Gets the messages for the current locale according to the JVM.
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @since jsXe 0.4 pre1
  */
 public class Messages {
-	
-	 //{{{ Private static members
-	private static Messages INSTANCE;
-	private Properties propertiesObject = new Properties();
-	private String language;
-	 //}}}
-	
+    
+     //{{{ Private static members
+    private static Properties m_propertiesObject = new Properties();
+    private static String m_language;
+    private static String m_directory = "."; //default to current directory
+     //}}}
+    
+    /**
+     * @return Returns the language.
+     */
+    public static String getLanguage() {
+        return m_language;
+    }
+    
+    /**
+     * @param newLanguage The language to set.
+     */
+    public static void setLanguage(String newLanguage) {
+        initializePropertiesObject(newLanguage, m_directory);
+    }
 
-	/**
-	 * @return Returns the language.
-	 */
-	public String getLanguage() {
-		return language;
-	}
-		
-	/**
-	 * @param newLanguage The language to set.
-	 */
-	public static void setLanguage(String newLanguage) {
-			INSTANCE = new Messages();
-			INSTANCE.initializePropertiesObject(newLanguage);		
-	}
-
-	/**
-	 * @param String propertyName - the name of the property you want the value for
-	 * @return Returns the value of a property from the propertiesObject.
-	 */
-	public static  synchronized String getMessage (String propertyName){
-		if(INSTANCE == null){
-			//setLanguage("en");	
-			Locale newLocal = Locale.getDefault();
-			String isoLanguage =newLocal.getISO3Language();
-			setLanguage(isoLanguage);		
-		}
-		return INSTANCE.propertiesObject.getProperty(propertyName);
-	}
-	
-	/**
-	 * @param language The language for the propertiesObject.
-	 *
-	 */
-	public void initializePropertiesObject(String language) {
-		File messagesFile =  new File("messages"+language );
-		if(messagesFile.length() == 0){
-			messagesFile = new File("messages.eng");
-		}
-		
-		loadMessages(propertiesObject, messagesFile);
-	}
-
-	
-	/**
-	 * 
-	 * @param propertiesObject The propertiesObject which will store the values from the messages file.
-	 * @param messssagesFile The name of the messages file to be used.
-	 */
-	public void loadMessages(Properties propertiesObject, File messagesFile){
-		try {
-			//create input stream from messages file 
-			 FileInputStream in
-			   = new FileInputStream(messagesFile);	
-			 propertiesObject.load(in);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}catch(IOException e){
-			e.printStackTrace();
-		}		
-	}
-	
-	
-	
-	
-	
+    /**
+     * @param String propertyName - the name of the property you want the value for
+     * @return Returns the value of a property from the propertiesObject.
+     */
+    public static synchronized String getMessage(String propertyName){
+        if (m_language == null){
+            //setLanguage("en");
+            Locale newLocal = Locale.getDefault();
+            String isoLanguage =newLocal.getISO3Language();
+            setLanguage(isoLanguage);
+        }
+        return m_propertiesObject.getProperty(propertyName);
+    }
+    
+    /**
+    
+     * @param language The language for the propertiesObject.
+     */
+    public static void initializePropertiesObject(String language, String directory) {
+        String isoLanguage = language;
+        if (isoLanguage == null){
+            //setLanguage("en");
+            Locale newLocal = Locale.getDefault();
+            isoLanguage =newLocal.getISO3Language();
+        }
+        
+        File messagesFile =  new File(directory+System.getProperty("file.separator")+"messages"+language);
+        if (!messagesFile.exists()) {
+            Log.log(Log.WARNING, Messages.class, "Default messages file for current language not found");
+            messagesFile = new File(directory+System.getProperty("file.separator")+"messages.en");
+            if (!messagesFile.exists()) {
+                Log.log(Log.ERROR, Messages.class, "Default messages file for English not found");
+            }
+        }
+        
+        m_language = language;
+        m_directory = directory;
+        loadMessages(m_propertiesObject, messagesFile);
+    }
+    
+    /**
+     * 
+     * @param propertiesObject The propertiesObject which will store the values from the messages file.
+     * @param messssagesFile The name of the messages file to be used.
+     */
+    public static void loadMessages(Properties propertiesObject, File messagesFile) {
+        try {
+            //create input stream from messages file 
+             FileInputStream in = new FileInputStream(messagesFile);    
+             propertiesObject.load(in);
+        } catch (FileNotFoundException e) {
+            Log.log(Log.ERROR, Messages.class, e);
+        }catch(IOException e){
+            Log.log(Log.ERROR, Messages.class, e);
+        }       
+    }
+    
 
 }

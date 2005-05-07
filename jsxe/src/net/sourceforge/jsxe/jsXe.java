@@ -144,6 +144,7 @@ public class jsXe {
             //}}}
             
             //{{{ parse command line arguments
+            Log.log(Log.NOTICE, jsXe.class, "Parsing command line options");
             String viewname = null;
             ArrayList files = new ArrayList();
             boolean debug = false;
@@ -178,7 +179,6 @@ public class jsXe {
             
             //{{{ start logging
             Log.init(true, Log.ERROR, debug);
-                
             try {
                 BufferedWriter stream = new BufferedWriter(new FileWriter(new File(settingsDirectory+fileSep+"jsXe.log")));
                 
@@ -189,11 +189,13 @@ public class jsXe {
             } catch (IOException ioe) {
                 Log.log(Log.ERROR, jsXe.class, ioe);
             }
+            
             //}}}
             
             //{{{ load plugins
-            
+            Log.log(Log.NOTICE, jsXe.class, "Loading plugins");
             m_pluginLoader = new JARClassLoader();
+            Log.log(Log.NOTICE, jsXe.class, "Adding to plugin search path: "+pluginsDirectory);
             ArrayList pluginMessages = m_pluginLoader.addDirectory(pluginsDirectory);
             
             String jsXeHome = System.getProperty("jsxe.home");
@@ -214,7 +216,12 @@ public class jsXe {
                 }
             }
             //add the jsXe home to the plugins directory
-            pluginMessages.addAll(m_pluginLoader.addDirectory(jsXeHome+"/jars"));
+            Log.log(Log.NOTICE, jsXe.class, "Adding to plugin search path: "+jsXeHome+fileSep+"jars");
+            pluginMessages.addAll(m_pluginLoader.addDirectory(jsXeHome+fileSep+"jars"));
+            //}}}
+            
+            //{{{ start locale
+            Messages.initializePropertiesObject(null, jsXeHome+fileSep+"messages");
             //}}}
             
             //{{{ start plugins
@@ -256,7 +263,7 @@ public class jsXe {
             //}}}
             
             //{{{ create the TabbedView
-            
+            Log.log(Log.NOTICE, jsXe.class, "Starting the main window");
             TabbedView tabbedview = null;
             DocumentBuffer defaultBuffer = null;
             try {
@@ -283,6 +290,7 @@ public class jsXe {
             //}}}
             
             //{{{ Parse files to open on the command line
+            Log.log(Log.NOTICE, jsXe.class, "Parsing files to open on command line");
             if (files.size() > 0) {
                 if (openXMLDocuments(tabbedview, (String[])files.toArray(new String[] {}))) {
                     try {
@@ -297,8 +305,9 @@ public class jsXe {
             tabbedview.setVisible(true);
             
             //Show plugin error dialog
-            if (pluginErrors.size() > 0)
+            if (pluginErrors.size() > 0) {
                 new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), true);
+            }
         } catch (Throwable e) {
             exiterror(null, e, 1);
         }
@@ -888,6 +897,7 @@ public class jsXe {
             //successfully.
             if (args[i] != null) {
                 try {
+                    Log.log(Log.NOTICE, jsXe.class, "Trying to open "+args[i]);
                     success = openXMLDocument(view, new File(args[i])) || success;
                 } catch (IOException ioe) {
                     //I/O error doesn't change value of success
