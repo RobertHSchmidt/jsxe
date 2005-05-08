@@ -1,0 +1,53 @@
+# JSXE English properties file
+# $Id$
+#:mode=properties:
+#:tabSize=4:indentSize=4:noTabs=true:
+#:folding=explicit:collapseFolds=1:
+
+#{{{ common properties
+
+common.ok=OK
+common.cancel=Cancel
+common.close=Close
+common.apply=Apply
+common.more=More
+common.insert=Insert
+common.add=Add
+common.remove=Remove
+common.moveUp=Move Up
+common.moveDown=Move Down
+
+#}}}
+
+#{{{ Global Options
+global.options.title=Global Options
+#}}}
+
+#{{{ File Menu Items
+File.New=New
+File.Open=Open...
+File.Recent=Recent Files
+File.Save=Save
+File.SaveAs=Save As...
+File.Reload=Reload
+File.Recent=Recent Files
+File.Close=Close
+File.CloseAll=Close All
+File.Exit=Exit
+#}}}
+
+View.Tree=Tree View
+View.Source=Source View
+Tools.Options=Options...
+Tools.Plugin=Plugin Manager...
+Help.About=About jsXe...
+SourceView.Cut=Cut
+SourceView.Copy=Copy
+SourceView.Paste=Paste
+SourceView.Find=Find...
+SourceView.FindNext=Find Next
+TreeView.RenameNode=Rename Node
+TreeView.RemoveNode=Remove Node
+TreeView.AddAttribute=Add Attribute
+TreeView.RemoveAttribute=Remove Attribute
+TreeView.EditNode=Edit Node

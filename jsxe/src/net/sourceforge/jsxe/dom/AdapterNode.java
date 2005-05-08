@@ -44,13 +44,7 @@ import java.util.*;
 //}}}
 
 //{{{ DOM classes
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 //}}}
 
 //}}}
@@ -299,8 +293,15 @@ public class AdapterNode {
         
         String prefix = MiscUtilities.getNSPrefixFromQualifiedName(qualifiedName);
         String localName = MiscUtilities.getLocalNameFromQualifiedName(qualifiedName);
-        
-        renameElementNode(prefix, localName);
+        if (getNodeType() == ELEMENT_NODE) {
+            renameElementNode(prefix, localName);
+        } else {
+            if (getNodeType() == PROCESSING_INSTRUCTION_NODE) {
+                renamePINode(localName);
+            } else {
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "An attempt was made to rename a node that is not supported.");
+            }
+        }
         
         if (!MiscUtilities.equals(oldPrefix, prefix)) {
             fireNamespaceChanged(this);
@@ -1015,6 +1016,23 @@ public class AdapterNode {
         m_domNode = newNode;
     }//}}}
     
+    //{{{ renamePINode()
+    /**
+     * Renames this processing instruction node with the target given. This
+     * should only be called on an processing instruction node.
+     */
+    private void renamePINode(String target) {
+        //get the nodes needed
+        Node parent = m_domNode.getParentNode();
+        NodeList children = m_domNode.getChildNodes();
+        Document document = m_domNode.getOwnerDocument();
+        
+        ProcessingInstruction newNode = document.createProcessingInstruction(target, m_domNode.getNodeValue());
+        
+        parent.replaceChild(newNode, m_domNode);
+        m_domNode = newNode;
+    }//}}}
+    
     //{{{ lookupNamespaceURI()
     
     private String lookupNamespaceURI(String prefix) {
@@ -1025,7 +1043,8 @@ public class AdapterNode {
             return ((org.apache.xerces.dom.NodeImpl)m_domNode).lookupNamespaceURI(prefix);
         }
     }//}}}
-        private AdapterNode m_parentNode;
+    
+    private AdapterNode m_parentNode;
     private XMLDocument m_rootDocument;
     
     private ArrayList m_children = new ArrayList();

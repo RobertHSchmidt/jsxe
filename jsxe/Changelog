@@ -1,3 +1,10 @@
+05/07/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug that caused NullPointerExceptions when renaming Processing
+      Instruction nodes.
+    * Updated Messages to allow you to specify a directory to load from.
+    * Updated the build script to handle the messages file.
+
 05/06/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug in CompletionInfo that caused NullPointerExceptions to be
