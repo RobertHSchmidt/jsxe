@@ -43,6 +43,7 @@ import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.EnhancedDialog;
+import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
 //{{{ Swing components
@@ -119,7 +120,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         JButton findButton = new JButton("Find");
         JButton replaceButton = new JButton("Replace&Find");
        // JButton replaceAllButton = new JButton("Replace All");
-        JButton cancelButton = new JButton("Cancel");
+        JButton cancelButton = new JButton(Messages.getMessage("common.cancel"));
         
         
         findButton.addActionListener(new FindAction());
