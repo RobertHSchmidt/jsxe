@@ -54,7 +54,7 @@ public class TreeViewPlugin extends ViewPlugin {
         //add actions
         addAction("treeview.add.element.node", new AddNodeAction("Add Element Node", "new_element", "", AdapterNode.ELEMENT_NODE));
         addAction("treeview.add.text.node", new AddNodeAction("Add Text Node", "", "New Text Node", AdapterNode.TEXT_NODE));
-        addAction("treeview.add.cdata.node", new AddNodeAction("Add CDATA Node", "", "New CDATA Section", AdapterNode.CDATA_SECTION_NODE));
+        addAction("treeview.add.cdata.node", new AddNodeAction("Add CDATA Section", "", "New CDATA Section", AdapterNode.CDATA_SECTION_NODE));
         addAction("treeview.add.processing.instruction.node", new AddNodeAction("Add Processing Instruction", "Instruction", "New Processing Instruction", AdapterNode.PROCESSING_INSTRUCTION_NODE));
         addAction("treeview.add.comment.node", new AddNodeAction("Add Comment", "", "New Comment", AdapterNode.COMMENT_NODE));
         addAction("treeview.remove.node", new RemoveNodeAction());
