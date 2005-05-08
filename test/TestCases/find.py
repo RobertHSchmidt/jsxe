@@ -1,5 +1,6 @@
 useFixture(default)
 
+# Tests the sourceview's Find dialog
 def test():
 	window('jsXe - Untitled-1')
 	click('View')

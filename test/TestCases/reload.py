@@ -1,7 +1,7 @@
 useFixture(default)
 
+# Tests reloading an untitled file
 def test():
-	# Tests reloading an untitled file
 	window('jsXe - Untitled-1')
 	doubleclick('DefaultViewTree', '/Document Root/default_element')
 	rightclick('DefaultViewTree', '/Document Root/default_element/default_node')
@@ -10,32 +10,33 @@ def test():
 
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Element Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'New_Element' ] ])
+	click('Element')
+	click('Add Element Node')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'new_element' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Text Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'New_Element', 'New Text Node' ] ])
+	click('Add Text Node')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'new_element', 'New Text Node' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('CDATA Section')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'New_Element', 'New Text Node', 'New CDATA Node' ] ])
+	click('Add CDATA Section')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'new_element', 'New Text Node', 'New CDATA Section' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Processing Instruction')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'New_Element', 'New Text Node', 'New CDATA Node', 'Instruction' ] ])
+	click('Add Processing Instruction')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'new_element', 'New Text Node', 'New CDATA Section', 'Instruction' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Comment')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'New_Element', 'New Text Node', 'New CDATA Node', 'Instruction', 'New Comment Node' ] ])
+	click('Add Comment')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'new_element', 'New Text Node', 'New CDATA Section', 'Instruction', 'New Comment' ] ])
 
-	select('JTable', 'TEST', 'Attribute,0')
-	select('JTable', 'TEST2', 'Value,0')
-	assertContent('JTable', [ [ 'TEST', 'TEST2' ], [ '', '' ] ])
+	select('AttributesTable', 'TEST', 'Attribute,0')
+	select('AttributesTable', 'TEST2', 'Value,0')
+	assertContent('AttributesTable', [ [ 'TEST', 'TEST2' ], [ '', '' ] ])
 	click('File')
 	click('Reload')
 
@@ -45,5 +46,5 @@ def test():
 
 	click('DefaultViewTree', '/Document Root/default_element')
 	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'default_node' ] ])
-	assertContent('JTable', [ [ '', '' ] ])
+	assertContent('AttributesTable', [ [ '', '' ] ])
 	close()

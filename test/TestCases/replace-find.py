@@ -1,5 +1,6 @@
 useFixture(default)
 
+# Tests the find dialog's find and replace feature
 def test():
 	window('jsXe - Untitled-1')
 	doubleclick('DefaultViewTree', '/Document Root/default_element')
@@ -7,13 +8,16 @@ def test():
 	click('Remove Node')
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Element Node')
+	click('Element')
+	click('Add Element Node')
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Element Node')
+	click('Element')
+	click('Add Element Node')
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Element Node')
+	click('Element')
+	click('Add Element Node')
 
 	click('Tools')
 	click('Options...')
@@ -29,7 +33,7 @@ def test():
 	click('Find...')
 
 	window('Search and Replace')
-	select('FindComboBox', 'New_Element')
+	select('FindComboBox', 'new_element')
 	select('ReplaceComboBox', 'element1')
 	# for some reason we need this to for combo box to update selected content
 	click('ReplaceComboBox') 
@@ -39,11 +43,11 @@ def test():
 	click('Replace&Find') #this should do nothing
 
 	window('jsXe - Untitled-1')
-	assertText('SourceView$SourceViewTextPane', """<?xml version="1.0" encoding="UTF-8"?>
+	assertText('SourceTextArea', """<?xml version="1.0" encoding="UTF-8"?>
 <default_element>
-	<New_Element/>
-	<New_Element/>
-	<New_Element/>
+	<new_element/>
+	<new_element/>
+	<new_element/>
 </default_element>
 """)
 
@@ -52,11 +56,11 @@ def test():
 	click('Replace&Find')
 
 	window('jsXe - Untitled-1')
-	assertText('SourceView$SourceViewTextPane', """<?xml version="1.0" encoding="UTF-8"?>
+	assertText('SourceTextArea', """<?xml version="1.0" encoding="UTF-8"?>
 <default_element>
 	<element1/>
-	<New_Element/>
-	<New_Element/>
+	<new_element/>
+	<new_element/>
 </default_element>
 """)
 
@@ -64,11 +68,11 @@ def test():
 	click('Replace&Find')
 
 	window('jsXe - Untitled-1')
-	assertText('SourceView$SourceViewTextPane', """<?xml version="1.0" encoding="UTF-8"?>
+	assertText('SourceTextArea', """<?xml version="1.0" encoding="UTF-8"?>
 <default_element>
 	<element1/>
 	<element1/>
-	<New_Element/>
+	<new_element/>
 </default_element>
 """)
 
@@ -76,7 +80,7 @@ def test():
 	click('Replace&Find')
 
 	window('jsXe - Untitled-1')
-	assertText('SourceView$SourceViewTextPane', """<?xml version="1.0" encoding="UTF-8"?>
+	assertText('SourceTextArea', """<?xml version="1.0" encoding="UTF-8"?>
 <default_element>
 	<element1/>
 	<element1/>
@@ -88,7 +92,7 @@ def test():
 	click('Replace&Find') # should do nothing
 
 	window('jsXe - Untitled-1')
-	assertText('SourceView$SourceViewTextPane', """<?xml version="1.0" encoding="UTF-8"?>
+	assertText('SourceTextArea', """<?xml version="1.0" encoding="UTF-8"?>
 <default_element>
 	<element1/>
 	<element1/>

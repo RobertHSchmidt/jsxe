@@ -1,5 +1,5 @@
 #Marathon Project File
-#Tue Mar 08 22:44:36 EST 2005
+#Sat May 07 18:15:41 EDT 2005
 marathon.project.description=Java Simple XML Editor
 marathon.application.vm.arguments=
 marathon.application.classpath=/home/okaasan/src/jsxe/jsxe/jsXe.jar;/home/okaasan/src/jsxe/jsxe/lib/xercesImpl.jar;/home/okaasan/src/jsxe/jsxe/lib/xml-apis.jar

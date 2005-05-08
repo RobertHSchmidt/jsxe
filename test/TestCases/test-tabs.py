@@ -1,8 +1,7 @@
 useFixture(default)
 
+#Tests opening multiple files at once and closing.
 def test():
-	#Tests opening multiple files at once and closing.
-
 	# rename default_element to differentiate files
 	window('jsXe - Untitled-1')
 	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'default_node' ] ])
