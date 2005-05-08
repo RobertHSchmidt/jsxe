@@ -465,6 +465,14 @@ public class DefaultView extends JPanel implements DocumentView {
     
     public class DefaultViewTable extends JTable {
     
+        //{{{ DefaultViewTable constructor
+        
+        public DefaultViewTable() {
+            super();
+            setName("AttributesTable");
+        }//}}}
+        
+        
         //{{{ editingStopped()
         
         public void editingStopped(ChangeEvent e) {
