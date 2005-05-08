@@ -1,7 +1,7 @@
 useFixture(default)
 
+# Tests the soft-tabs and indent width options
 def test():
-	#Tests the soft-tabs and indent width options
 	window('jsXe - Untitled-1')
 	click('View')
 	click('Source View')
@@ -15,9 +15,9 @@ def test():
 	click('OK')
 	close()
 
-	select('SourceView$SourceViewTextPane', '')
+	select('SourceTextArea', '')
 	keystroke('Tab')
-	assertText('SourceView$SourceViewTextPane', '    ')
+	assertText('SourceTextArea', '    ')
 
 	click('Tools')
 	click('Options...')
@@ -29,7 +29,7 @@ def test():
 	click('OK')
 	close()
 
-	select('SourceView$SourceViewTextPane', '')
+	select('SourceTextArea', '')
 	keystroke('Tab')
-	assertText('SourceView$SourceViewTextPane', '        ')
+	assertText('SourceTextArea', '        ')
 	close()

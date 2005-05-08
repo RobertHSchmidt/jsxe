@@ -1,7 +1,7 @@
 useFixture(default)
 
+# Tests editing a processing instruction
 def test():
-	# Tests renaming a processing instruction
 	window('jsXe - Untitled-1')
 	doubleclick('DefaultViewTree', '/Document Root/default_element')
 	rightclick('DefaultViewTree', '/Document Root/default_element/default_node')
@@ -11,7 +11,7 @@ def test():
 	
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Processing Instruction')
+	click('Add Processing Instruction')
 	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'Instruction' ] ])
 
 	
@@ -27,6 +27,6 @@ def test():
 	click('View')
 	click('Source View')
 	
-	assertText('SourceView$SourceViewTextPane', """<?xml version="1.0" encoding="UTF-8"?>
+	assertText('SourceTextArea', """<?xml version="1.0" encoding="UTF-8"?>
 <default_element><?SQLSELECT SELECT * FROM BLAH?></default_element>""")
 	close()

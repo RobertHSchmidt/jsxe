@@ -1,11 +1,11 @@
 useFixture(default)
 
+# Tests editing a file from source
 def test():
-	# Tests editing a file from source
 	window('jsXe - Untitled-1')
 	click('View')
 	click('Source View')
-	select('SourceView$SourceViewTextPane', '''<?xml version="1.0" encoding="UTF-8"?>
+	select('SourceTextArea', '''<?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<text_element>Text</text_element>
 	<cdata_element>

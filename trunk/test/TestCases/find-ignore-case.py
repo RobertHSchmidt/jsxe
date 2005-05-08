@@ -1,5 +1,6 @@
 useFixture(default)
 
+# Tests the find dialog's find ignoring case feature
 def test():
 	window('jsXe - Untitled-1')
 	doubleclick('DefaultViewTree', '/Document Root/default_element')
@@ -7,15 +8,17 @@ def test():
 	click('Remove Node')
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Element Node')
-	rightclick('DefaultViewTree', '/Document Root/default_element/New_Element')
+	click('Element')
+	click('Add Element Node')
+	rightclick('DefaultViewTree', '/Document Root/default_element/new_element')
 	click('Rename Node')
 	select('DefaultTreeCellEditor$DefaultTextField', 'Default')
 	keystroke('Enter')
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Element Node')
-	rightclick('DefaultViewTree', '/Document Root/default_element/New_Element')
+	click('Element')
+	click('Add Element Node')
+	rightclick('DefaultViewTree', '/Document Root/default_element/new_element')
 	click('Rename Node')
 	select('DefaultTreeCellEditor$DefaultTextField', 'default')
 	keystroke('Enter')
@@ -28,7 +31,7 @@ def test():
 	select('FindComboBox', 'Default')
 	select('ReplaceComboBox', 'test1')
 	
-	# for some reason we need this to for combo box to update selected content
+	# for some reason we need this for combo box to update selected content
 	click('ReplaceComboBox')
 	select('Ignore Case', 'true')
 	click('Find')
@@ -38,7 +41,7 @@ def test():
 	click('Replace&Find')
 
 	window('jsXe - Untitled-1')
-	assertText('SourceView$SourceViewTextPane',"""<?xml version="1.0" encoding="UTF-8"?>
+	assertText('SourceTextArea',"""<?xml version="1.0" encoding="UTF-8"?>
 <test1_element><Default/><default/></default_element>""")
 
 	window('Search and Replace')
@@ -49,7 +52,7 @@ def test():
 	click('Replace&Find')
 
 	window('jsXe - Untitled-1')
-	assertText('SourceView$SourceViewTextPane',"""<?xml version="1.0" encoding="UTF-8"?>
+	assertText('SourceTextArea',"""<?xml version="1.0" encoding="UTF-8"?>
 <test1_element><Default/><test2/></default_element>""")
 
 	window('Search and Replace')
@@ -59,7 +62,7 @@ def test():
 	click('Replace&Find')
 
 	window('jsXe - Untitled-1')
-	assertText('SourceView$SourceViewTextPane',"""<?xml version="1.0" encoding="UTF-8"?>
+	assertText('SourceTextArea',"""<?xml version="1.0" encoding="UTF-8"?>
 <test1_element><Default/><test2/></test3_element>""")
 
 	click('Cancel')

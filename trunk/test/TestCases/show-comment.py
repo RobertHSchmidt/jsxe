@@ -1,7 +1,7 @@
 useFixture(default)
 
+# Tests the showing/hiding comment nodes feature
 def test():
-	# Tests showing/hiding comment nodes
 	window('jsXe - Untitled-1')
 	doubleclick('DefaultViewTree', '/Document Root/default_element')
 	rightclick('DefaultViewTree', '/Document Root/default_element/default_node')
@@ -10,10 +10,11 @@ def test():
 	
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Element Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'New_Element' ] ])
+	click('Element')
+	click('Add Element Node')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'new_element' ] ])
 
-	rightclick('DefaultViewTree', '/Document Root/default_element/New_Element')
+	rightclick('DefaultViewTree', '/Document Root/default_element/new_element')
 	click('Rename Node')
 	select('DefaultTreeCellEditor$DefaultTextField', 'element1')
 	keystroke('Enter')
@@ -21,76 +22,78 @@ def test():
 
 	rightclick('DefaultViewTree', '/Document Root/default_element/element1')
 	click('Add')
-	click('Text Node')
+	click('Add Text Node')
 	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element/element1')
 	click('Add')
-	click('Comment')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node' ] ])
+	click('Add Comment')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Element Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'New_Element' ] ])
+	click('Element')
+	click('Add Element Node')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'new_element' ] ])
 
-	rightclick('DefaultViewTree', '/Document Root/default_element/New_Element')
+	rightclick('DefaultViewTree', '/Document Root/default_element/new_element')
 	click('Rename Node')
 	select('DefaultTreeCellEditor$DefaultTextField', 'element2')
 	keystroke('Enter')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2' ] ])
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element/element2')
 	click('Add')
-	click('CDATA Section')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node' ] ])
+	click('Add CDATA Section')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2', 'New CDATA Section' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Comment')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node', 'New Comment Node' ] ])
+	click('Add Comment')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2', 'New CDATA Section', 'New Comment' ] ])
 
-	click('DefaultViewTree', '/Document Root/default_element/New Comment Node')
+	click('DefaultViewTree', '/Document Root/default_element/New Comment')
 	select('JEditorPane', 'Comment Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node', 'Comment Node' ] ])
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2', 'New CDATA Section', 'Comment Node' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Element Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node', 'Comment Node', 'New_Element' ] ])
+	click('Element')
+	click('Add Element Node')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2', 'New CDATA Section', 'Comment Node', 'new_element' ] ])
 
-	click('DefaultViewTree', '/Document Root/default_element/New_Element')
-	rightclick('DefaultViewTree', '/Document Root/default_element/New_Element')
+	rightclick('DefaultViewTree', '/Document Root/default_element/new_element')
 	click('Rename Node')
 	select('DefaultTreeCellEditor$DefaultTextField', 'element3')
 	keystroke('Enter')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node', 'Comment Node', 'element3' ] ])
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2', 'New CDATA Section', 'Comment Node', 'element3' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element/element3')
 	click('Add')
-	click('Element Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node', 'Comment Node', 'element3', 'New_Element' ] ])
+	click('Element')
+	click('Add Element Node')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2', 'New CDATA Section', 'Comment Node', 'element3', 'new_element' ] ])
 
-	rightclick('DefaultViewTree', '/Document Root/default_element/element3/New_Element')
+	rightclick('DefaultViewTree', '/Document Root/default_element/element3/new_element')
 	click('Rename Node')
 	select('DefaultTreeCellEditor$DefaultTextField', 'element4')
 	keystroke('Enter')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node', 'Comment Node', 'element3', 'element4' ] ])
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2', 'New CDATA Section', 'Comment Node', 'element3', 'element4' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element/element3/element4')
 	click('Add')
-	click('CDATA Section')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node', 'Comment Node', 'element3', 'element4', 'New CDATA Node' ] ])
+	click('Add CDATA Section')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2', 'New CDATA Section', 'Comment Node', 'element3', 'element4', 'New CDATA Section' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element/element3/element4')
 	click('Add')
-	click('Comment')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node', 'Comment Node', 'element3', 'element4', 'New CDATA Node', 'New Comment Node' ] ])
+	click('Add Comment')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2', 'New CDATA Section', 'Comment Node', 'element3', 'element4', 'New CDATA Section', 'New Comment' ] ])
 
 	rightclick('DefaultViewTree', '/Document Root/default_element/element3/element4')
 	click('Add')
-	click('Processing Instruction')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node', 'Comment Node', 'element3', 'element4', 'New CDATA Node', 'New Comment Node', 'Instruction' ] ])
+	click('Add Processing Instruction')
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2', 'New CDATA Section', 'Comment Node', 'element3', 'element4', 'New CDATA Section', 'New Comment', 'Instruction' ] ])
 
 	#doubleclick('JScrollPane$ScrollBar.')
 	#doubleclick('JScrollPane$ScrollBar.')
@@ -101,7 +104,7 @@ def test():
 	select('Show comment nodes', 'false')
 	click('OK')
 	close()
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New CDATA Node', 'element3', 'element4', 'New CDATA Node', 'Instruction' ] ])
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New CDATA Section', 'element3', 'element4', 'New CDATA Section', 'Instruction' ] ])
 
 	click('Tools')
 	click('Options...')
@@ -110,7 +113,7 @@ def test():
 	select('Show comment nodes', 'true')
 	click('OK')
 	close()
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment Node', 'element2', 'New CDATA Node', 'Comment Node', 'element3', 'element4', 'New CDATA Node', 'New Comment Node', 'Instruction' ] ])
+	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'New Comment', 'element2', 'New CDATA Section', 'Comment Node', 'element3', 'element4', 'New CDATA Section', 'New Comment', 'Instruction' ] ])
 
 	close()
 
