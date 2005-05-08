@@ -129,6 +129,8 @@ public class SourceView extends JPanel implements DocumentView {
         textarea.setCaretPosition(0);
         textarea.setLineWrap(false);
         textarea.setWrapStyleWord(false);
+        //for test scripts
+        textarea.setName("SourceTextArea");
         
         JScrollPane scrollPane = new JScrollPane(textarea);
         
