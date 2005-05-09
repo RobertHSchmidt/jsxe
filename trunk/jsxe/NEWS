@@ -1,3 +1,19 @@
+05/08/2005  version 0.4 pre1
+
+    * Added new support for validation
+        * Added support allowing allowed tag names to be derived from
+          DTD/Schema. Users can create a new node this way through a dialog
+          that knows the users
+    * Fixed several namespace bugs having to do with editing nodes with
+      namespaces
+    * Added support for adding entity reference nodes to the document.
+    * Added some support for internationalization. Some messages can be
+      overridden in the user's native language.
+    * Fixed a bug where the recent files menu would include a file twice.
+    * Fixed a bug where jsXe thought the document is not well formed if the
+      DTD/Schema could not be found. It is treated as a validation error.
+    * Fixed various other bugs.
+    
 03/30/2005  verison 0.3 beta
 
     * Added much better namespace support. Users can no longer create
