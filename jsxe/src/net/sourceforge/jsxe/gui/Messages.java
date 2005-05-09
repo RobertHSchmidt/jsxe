@@ -78,10 +78,10 @@ public class Messages {
      * @return Returns the value of a property from the propertiesObject.
      */
     public static synchronized String getMessage(String propertyName){
-        if (m_language == null){
+        if (m_language == null) {
             //setLanguage("en");
             Locale newLocal = Locale.getDefault();
-            String isoLanguage =newLocal.getISO3Language();
+            String isoLanguage =newLocal.getLanguage();
             setLanguage(isoLanguage);
         }
         return m_propertiesObject.getProperty(propertyName);
@@ -96,19 +96,20 @@ public class Messages {
         if (isoLanguage == null){
             //setLanguage("en");
             Locale newLocal = Locale.getDefault();
-            isoLanguage =newLocal.getISO3Language();
+            isoLanguage = newLocal.getLanguage();
         }
-        
-        File messagesFile =  new File(directory+System.getProperty("file.separator")+"messages"+language);
+        File messagesFile =  new File(directory+System.getProperty("file.separator")+"messages."+isoLanguage);
         if (!messagesFile.exists()) {
             Log.log(Log.WARNING, Messages.class, "Default messages file for current language not found");
             messagesFile = new File(directory+System.getProperty("file.separator")+"messages.en");
             if (!messagesFile.exists()) {
                 Log.log(Log.ERROR, Messages.class, "Default messages file for English not found");
+            } else {
+                m_language = "en";
             }
+        } else {
+            m_language = isoLanguage;
         }
-        
-        m_language = language;
         m_directory = directory;
         loadMessages(m_propertiesObject, messagesFile);
     }
