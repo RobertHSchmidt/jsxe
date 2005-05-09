@@ -1,4 +1,3 @@
-
 /*
 NodeTransferHandler.java
 :tabSize=4:indentSize=4:noTabs=true:

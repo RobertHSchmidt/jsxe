@@ -1,3 +1,8 @@
+05/09/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed bug where the context menu wouldn't show for Processing Instruction
+      and Comment Nodes outside of the root element.
+
 05/06/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug where the tree view was catching NullPointerExceptions when
