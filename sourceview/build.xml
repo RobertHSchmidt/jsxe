@@ -84,12 +84,6 @@
 				<include name="**/*.png"/>
 			</fileset>
 		</copy>
-    <copy todir="${build.src}">
-      <fileset dir="${root.dir}">
-        <include name="build.xml"/>
-        <include name="${app.name}.manifest"/>
-      </fileset>
-    </copy>
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Compiles the program ============================= -->
