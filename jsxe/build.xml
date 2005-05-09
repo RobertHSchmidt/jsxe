@@ -255,9 +255,8 @@
 		</copy>
     <!-- build files -->
     <copy todir="${distsrc.dir}">
-      <fileset dir="${build.src}">
+      <fileset dir="${root.dir}">
         <include name="build.xml"/>
-        <include name="${app.name}.manifest"/>
       </fileset>
     </copy>
 		<!-- bin -->
@@ -289,19 +288,15 @@
 			</fileset>
 		</copy>
     
-    <copy todir="${distsrc.dir}">
-      <fileset dir="${root.dir}">
-        <include name="build.xml"/>
-        <include name="${app.name}.manifest"/>
-      </fileset>
-    </copy>
-    
 		<zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-src/**" zipfile="${build.dir}/${app.name}-${app_version}-src.zip"/>
 	</target>
   <target name="copy-treeview-source" if="treeview.avail">
     <copy todir="${distsrc.dir}/jars">
       <fileset dir="${root.dir}/jars/">
         <include name="treeview/**/*"/>
+        <exclude name="treeview/build"/>
+        <exclude name="treeview/build/**/*"/>
+        <exclude name="treeview/treeview.manifest"/>
       </fileset>
     </copy>
   </target>
@@ -309,6 +304,9 @@
     <copy todir="${distsrc.dir}/jars">
       <fileset dir="${root.dir}/jars/">
         <include name="sourceview/**/*"/>
+        <exclude name="sourceview/build"/>
+        <exclude name="sourceview/build/**/*"/>
+        <exclude name="sourceview/sourceview.manifest"/>
       </fileset>
     </copy>
   </target>
