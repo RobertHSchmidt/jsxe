@@ -304,13 +304,27 @@ public class TabbedView extends JFrame {
         
         return true;
     }//}}}
+
+    //{{{ Private static members
+    
+    private static final String _WIDTH = "tabbedview.width";
+    private static final String _HEIGHT = "tabbedview.height";
+    private static final String _X = "tabbedview.x";
+    private static final String _Y = "tabbedview.y";
+    
+    private static final ImageIcon m_cleanIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/clean.png"), "clean");
+    private static final ImageIcon m_dirtyIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/dirty.png"), "dirty");
+    
+    //}}}
+    
+    //{{{ Private members
     
     //{{{ updateTitle()
     /**
      * Updates the frame title. Useful when the tab has changed to a
      * different open document..
      */
-    public void updateTitle() {
+    private void updateTitle() {
         DocumentView currentDocView = getDocumentView();
         if (currentDocView != null) {
             DocumentBuffer buffer = getDocumentBuffer();
@@ -328,7 +342,7 @@ public class TabbedView extends JFrame {
     /**
      * Updates the menubar. Useful when the DocumentView has changed.
      */
-    public void updateMenuBar() {
+    private void updateMenuBar() {
         
         JMenuBar menubar = new JMenuBar();
         DocumentView currentDocView = getDocumentView();
@@ -362,39 +376,23 @@ public class TabbedView extends JFrame {
     
     //{{{ updateRecentFilesMenu()
     
-    public void updateRecentFilesMenu() {
+    private void updateRecentFilesMenu() {
+        /*
+        TODO: Make this more efficient
+        Currently it creates new OpenRecentFileAction objects for every recent file
+        every time you close a file, open a file, or change files
+        */
         m_recentFilesMenu.removeAll();
         ArrayList historyEntries = jsXe.getBufferHistory().getEntries();
         int index = 0;
         JMenu addMenu = m_recentFilesMenu;
         Iterator historyItr = historyEntries.iterator();
         while (historyItr.hasNext()) {
-            //If the menu gets too big make a new one
-            if (index >= 20) {
-                JMenu newAddMenu = new JMenu(Messages.getMessage("common.more"));
-                addMenu.add(newAddMenu);
-                addMenu = newAddMenu;
-                index = 0;
-            }
             BufferHistory.BufferHistoryEntry entry = (BufferHistory.BufferHistoryEntry)historyItr.next();
             addMenu.add(new JMenuItem(new OpenRecentFileAction(this, entry)));
             index++;
         }
     }//}}}
-    
-    //{{{ Private static members
-    
-    private static final String _WIDTH = "tabbedview.width";
-    private static final String _HEIGHT = "tabbedview.height";
-    private static final String _X = "tabbedview.x";
-    private static final String _Y = "tabbedview.y";
-    
-    private static final ImageIcon m_cleanIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/clean.png"), "clean");
-    private static final ImageIcon m_dirtyIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/dirty.png"), "dirty");
-    
-    //}}}
-    
-    //{{{ Private members
     
     //{{{ init()
     
@@ -467,7 +465,7 @@ public class TabbedView extends JFrame {
             m_fileMenu.add( menuItem );
             
             //Add recent files menu
-            m_recentFilesMenu = new JMenu(Messages.getMessage("File.Recent"));
+            m_recentFilesMenu = new EnhancedMenu(Messages.getMessage("File.Recent"), 20);
             m_fileMenu.add(m_recentFilesMenu);
             
             m_fileMenu.addSeparator();
@@ -621,7 +619,7 @@ public class TabbedView extends JFrame {
     private JMenu m_viewMenu;
     private JMenu m_toolsMenu;
     private JMenu m_helpMenu;
-    private JMenu m_recentFilesMenu;
+    private EnhancedMenu m_recentFilesMenu;
     private ArrayList m_documentViews = new ArrayList();
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);

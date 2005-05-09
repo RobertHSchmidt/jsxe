@@ -79,7 +79,8 @@ public class jsxeAboutDialog extends AbstractAction {
         jsXe.getAppTitle() + " is Released under the terms of the GNU General Public License\n\n"+
         "Active Contributors:\n"+
         "    Ian Lewis <IanLewis@member.fsf.org>\n"+
-        "    Trish Hartnett <trishah136@users.sourceforge.net>\n\n"+
+        "    Trish Hartnett <trishah136@users.sourceforge.net>\n"+
+        "    Aaron Flatten  <aflatten@users.sourceforge.net>\n\n"+
         "Past Contributers:\n"+
         "    Bilel Remmache <rbilel@users.sourceforge.net>\n"+
         "    SVM <svmcoranto@users.sourceforge.net>\n\n"+

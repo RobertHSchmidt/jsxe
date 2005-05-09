@@ -46,6 +46,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 //}}}
 
+import net.sourceforge.jsxe.util.Log;
+
 //}}}
 
 /**
@@ -75,6 +77,7 @@ public class BufferHistory {
      * @return the BufferHistoryEntry object containing the info
      */
     public BufferHistoryEntry getEntry(String path) {
+        //TODO: make this use a HashMap
         Iterator historyItr = m_history.iterator();
         while (historyItr.hasNext()) {
             BufferHistoryEntry nextEntry = (BufferHistoryEntry)historyItr.next();
@@ -102,8 +105,12 @@ public class BufferHistory {
      */
     public void setEntry(DocumentBuffer buffer, String viewName) {
         if (!buffer.isUntitled()) {
-            String path = buffer.getFile().getPath();
-            setEntry(path, viewName, buffer.getProperties());
+            try {
+                String path = buffer.getFile().getCanonicalPath();
+                setEntry(path, viewName, buffer.getProperties());
+            } catch (IOException ioe) {
+                Log.log(Log.ERROR, this, ioe);
+            }
         }
     }//}}}
     
