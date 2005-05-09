@@ -74,7 +74,6 @@ public class EnhancedMenu extends JMenu {
         JMenu menu = getCurrentMenu();
         if (menu == this) {
             r = super.add(a);
-            ++m_itemCount;
         } else {
             r = menu.add(a);
         }
@@ -90,7 +89,6 @@ public class EnhancedMenu extends JMenu {
         JMenu menu = getCurrentMenu();
         if (menu == this) {
             r = super.add(c);
-            ++m_itemCount;
         } else {
             r = menu.add(c);
         }
@@ -111,7 +109,6 @@ public class EnhancedMenu extends JMenu {
             JMenu menu = (JMenu)m_addToMenus.get(addIndex);
             if (menu == this) {
                 r = super.add(c, addSubIndex);
-                ++m_itemCount;
             } else {
                 r = menu.add(c, addSubIndex);
             }
@@ -131,7 +128,6 @@ public class EnhancedMenu extends JMenu {
         JMenu menu = getCurrentMenu();
         if (menu == this) {
             r = super.add(menuItem);
-            ++m_itemCount;
         } else {
             r = menu.add(menuItem);
         }
@@ -146,7 +142,6 @@ public class EnhancedMenu extends JMenu {
         JMenu menu = getCurrentMenu();
         if (menu == this) {
             r = super.add(s);
-            ++m_itemCount;
         } else {
             r = menu.add(s);
         }
@@ -246,6 +241,15 @@ public class EnhancedMenu extends JMenu {
         }
         m_menuHash.remove(item);
         updateSubMenus();
+    }//}}}
+    
+    //{{{ removeAll()
+    
+    public void removeAll() {
+        m_menuHash = new HashMap();
+        m_addToMenus = new Stack();
+        m_addToMenus.push(this);
+        super.removeAll();
     }//}}}
     
     //{{{ getMenuComponent()
@@ -359,7 +363,6 @@ public class EnhancedMenu extends JMenu {
     
     private int m_wrapCount = 20;
     private Stack m_addToMenus = new Stack();
-    private int m_itemCount= 0;
     
     /**
      * An item to menu that contains it mapping.

@@ -35,6 +35,7 @@ belongs to.
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.BufferHistory;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Swing components

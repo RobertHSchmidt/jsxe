@@ -1,3 +1,10 @@
+05/08/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Made the recent files menu use the EnhancedMenu class.
+    * The BufferHistory now uses the canonical name of the file to store it's
+      location.
+    * Implemented the removeAll method in the EnhancedMenu class
+
 05/07/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug that caused NullPointerExceptions when renaming Processing
