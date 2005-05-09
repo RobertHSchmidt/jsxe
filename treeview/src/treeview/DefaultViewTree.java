@@ -320,8 +320,9 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         
         private void maybeShowPopup(MouseEvent e) {
             TreePath selPath = getPathForLocation(e.getX(), e.getY());
+            Log.log(Log.DEBUG,this, (selPath != null) ? selPath.toString() : "selPath is null");
             if (e.isPopupTrigger() && selPath != null) {
-                
+                Log.log(Log.DEBUG,this, "isPopupTrigger");
                 setSelectionPath(selPath);
                 
                 //Don't want to interact with AdapterNodes too much. Maybe change this.
@@ -389,9 +390,10 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE || selectedNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.rename.node"));
                     popup.add(popupMenuItem);
+                    showpopup = true;
                 }
                 //if the node is not the document or the document root.
-                if (selectedNode.getNodeType() != Node.DOCUMENT_NODE && selectedNode.getParentNode().getNodeType() != Node.DOCUMENT_NODE) {
+                if (selectedNode.getNodeType() != Node.DOCUMENT_NODE && !(selectedNode.getNodeType() == Node.ELEMENT_NODE && selectedNode.getParentNode().getNodeType() == Node.DOCUMENT_NODE)) {
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.remove.node"));
                     popup.add(popupMenuItem);
                     showpopup = true;
