@@ -124,14 +124,14 @@ public class SourceView extends JPanel implements DocumentView {
         //use hard coded font for now
         textarea.getPainter().setStyles(
             new SyntaxStyle[] { new SyntaxStyle(Color.BLACK, false,false),      //NULL
-                                new SyntaxStyle(Color.GREEN, true, false),      //COMMENT1
-                                new SyntaxStyle(Color.BLACK, false,false),      //COMMENT2
-                                new SyntaxStyle(Color.GRAY, false,false),       //LITERAL1
-                                new SyntaxStyle(Color.BLACK, false,false),      //LITERAL2
-                                new SyntaxStyle(Color.BLACK, false,false),      //LABEL
-                                new SyntaxStyle(Color.GRAY, false,true),        //KEYWORD1
-                                new SyntaxStyle(Color.GRAY, false,true),        //KEYWORD2
-                                new SyntaxStyle(Color.BLUE, false,true),        //KEYWORD3
+                                new SyntaxStyle(Color.GREEN, true, false),      //COMMENT
+                                new SyntaxStyle(Color.BLUE, true,true),         //DECLARATION
+                                new SyntaxStyle(Color.GRAY, false,false),       //ATTRIBUTE VALUE
+                                new SyntaxStyle(Color.ORANGE, false,true),      //CDATA
+                                new SyntaxStyle(Color.BLACK, false,true),       //ENTITY REFERENCE
+                                new SyntaxStyle(Color.GRAY, false,true),        //ELEMENT
+                                new SyntaxStyle(Color.GRAY, false,true),        //ATTRIBUTE NAME
+                                new SyntaxStyle(Color.CYAN, false,true),        //PROCESSING INSTRUCTION
                                 new SyntaxStyle(Color.BLACK, false, true),      //OPERATOR
                                 new SyntaxStyle(Color.RED, false, false),       //INVALID
                                 });
