@@ -49,20 +49,18 @@ import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
+import net.sourceforge.jsxe.util.Log;
+//}}}
+
+//{{{ jEdit Syntax classes
+import org.syntax.jedit.*;
+import org.syntax.jedit.tokenmarker.XMLTokenMarker;
 //}}}
 
 //{{{ Swing components
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 //}}}
 
 //{{{ AWT components
@@ -122,13 +120,23 @@ public class SourceView extends JPanel implements DocumentView {
         
         m_plugin = plugin;
         
-        textarea = new SourceViewTextPane();
+        textarea = new JEditTextArea();
         //use hard coded font for now
+        textarea.getPainter().setStyles(
+            new SyntaxStyle[] { new SyntaxStyle(Color.BLACK, false,false),      //NULL
+                                new SyntaxStyle(Color.GREEN, true, false),      //COMMENT1
+                                new SyntaxStyle(Color.BLACK, false,false),      //COMMENT2
+                                new SyntaxStyle(Color.GRAY, false,false),       //LITERAL1
+                                new SyntaxStyle(Color.BLACK, false,false),      //LITERAL2
+                                new SyntaxStyle(Color.BLACK, false,false),      //LABEL
+                                new SyntaxStyle(Color.GRAY, false,true),        //KEYWORD1
+                                new SyntaxStyle(Color.GRAY, false,true),        //KEYWORD2
+                                new SyntaxStyle(Color.BLUE, false,true),        //KEYWORD3
+                                new SyntaxStyle(Color.BLACK, false, true),      //OPERATOR
+                                new SyntaxStyle(Color.RED, false, false),       //INVALID
+                                });
         textarea.setFont(new Font("Monospaced", 0, 12));
-        textarea.setTabSize(4);
         textarea.setCaretPosition(0);
-        textarea.setLineWrap(false);
-        textarea.setWrapStyleWord(false);
         //for test scripts
         textarea.setName("SourceTextArea");
         
@@ -159,7 +167,7 @@ public class SourceView extends JPanel implements DocumentView {
     
     //{{{ getTextArea()
     
-    public JTextArea getTextArea() {
+    public JEditTextArea getTextArea() {
         return textarea;
     }//}}}
     
@@ -246,7 +254,12 @@ public class SourceView extends JPanel implements DocumentView {
         
         m_document = document;
         textarea.setDocument(new SourceViewDocument(m_document));
-        textarea.setTabSize((new Integer(m_document.getProperty(XMLDocument.INDENT, "4"))).intValue());
+        textarea.setTokenMarker(new XMLTokenMarker());
+        try {
+            textarea.getDocument().putProperty(PlainDocument.tabSizeAttribute, Integer.valueOf(document.getProperty(XMLDocument.INDENT, "4")));
+        } catch (NumberFormatException e) {
+            Log.log(Log.WARNING, this, e.getMessage());
+        }
         m_document.addXMLDocumentListener(docListener);
     }//}}}
     
@@ -392,8 +405,12 @@ public class SourceView extends JPanel implements DocumentView {
         
         public void propertyChanged(XMLDocument source, String key, String oldValue) {
             if (key.equals(XMLDocument.INDENT)) {
-                textarea.setTabSize(Integer.parseInt(source.getProperty(XMLDocument.INDENT, "4")));
-                textarea.updateUI();
+                try {
+                    textarea.getDocument().putProperty(PlainDocument.tabSizeAttribute, Integer.valueOf(source.getProperty(XMLDocument.INDENT, "4")));
+                    textarea.updateUI();
+                } catch (NumberFormatException e) {
+                    Log.log(Log.WARNING, this, e.getMessage());
+                }
             }
         }//}}}
         
@@ -403,38 +420,38 @@ public class SourceView extends JPanel implements DocumentView {
         
     }//}}}
 
-    //{{{ SourceViewTextPane class
+   // //{{{ SourceViewTextPane class
     
-    private class SourceViewTextPane extends JTextArea {
+   // private class SourceViewTextPane extends JEditTextArea {
         
-        //{{{ SourceViewTextPane constructor
+   //     //{{{ SourceViewTextPane constructor
         
-        public SourceViewTextPane() {
-            super("");
-        }//}}}
+   //     public SourceViewTextPane() {
+   //         super();
+   //     }//}}}
         
-        //{{{ processKeyEvent()
+   //     //{{{ processKeyEvent()
         
-        protected void processComponentKeyEvent(KeyEvent e) {
-            if (!e.isConsumed() && e.getKeyCode() == KeyEvent.VK_TAB && e.getID() == KeyEvent.KEY_PRESSED) {
-                boolean softTabs = Boolean.valueOf(m_document.getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
-                if (softTabs) {
-                    try {
-                        int indent = Integer.parseInt(m_document.getProperty(XMLDocument.INDENT));
-                        StringBuffer tab = new StringBuffer();
-                        for (int i=0; i<indent; i++) {
-                            tab.append(" ");
-                        }
-                        getDocument().insertString(getCaretPosition(),tab.toString(),null);
-                        e.consume();
-                    } catch (NumberFormatException nfe) {}
-                      catch (BadLocationException ble) {}
-                }
-            }
-            super.processComponentKeyEvent(e);
-        }//}}}
+   //     protected void processComponentKeyEvent(KeyEvent e) {
+   //         if (!e.isConsumed() && e.getKeyCode() == KeyEvent.VK_TAB && e.getID() == KeyEvent.KEY_PRESSED) {
+   //             boolean softTabs = Boolean.valueOf(m_document.getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
+   //             if (softTabs) {
+   //                 try {
+   //                     int indent = Integer.parseInt(m_document.getProperty(XMLDocument.INDENT));
+   //                     StringBuffer tab = new StringBuffer();
+   //                     for (int i=0; i<indent; i++) {
+   //                         tab.append(" ");
+   //                     }
+   //                     getDocument().insertString(getCaretPosition(),tab.toString(),null);
+   //                     e.consume();
+   //                 } catch (NumberFormatException nfe) {}
+   //                   catch (BadLocationException ble) {}
+   //             }
+   //         }
+   //         super.processComponentKeyEvent(e);
+   //     }//}}}
         
-    }//}}}
+   // }//}}}
     
     //{{{ ensureDefaultProps()
     
@@ -445,7 +462,7 @@ public class SourceView extends JPanel implements DocumentView {
     private SourceViewXMLDocumentListener docListener = new SourceViewXMLDocumentListener();
     
     private DocumentBuffer m_document;
-    private SourceViewTextPane textarea;
+    private JEditTextArea textarea;
     
     private String m_searchString;
     private String m_replaceString;
