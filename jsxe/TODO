@@ -36,63 +36,9 @@ TODO:
       deal with serializing to it if necessary. Investigate XNI or whatever
       that is part of the xerces distribution as a way to do this.
     
-    * Create an interface for the main view in jsXe where the TabbedView
-      implements it. Other views can then be created to allow a more
-      customizable look.
-    
-    * Add support for DTDs and Schema and add feedback about whether the
-      current document can be validated by the DTD and what needs to be done to
-      the document before it will comply with the DTD. Create interfaces to
-      coincide with the XMLDocument interfaces that handles various Schema.
-        * Look at some projects that convert DTD to Schema. This may be useful
-          so that DTDs can be edited as Schema. Is that possible? DTDs seem to
-          have features that aren't in Schema and don't translate at all.
-        * Look at the XML plugin for jEdit for ways of finding what nodes can
-          be inserted at various locations in the document.
-    
-    * Add a feature that allows you to validate the document and moves the
-      cursor to the location of a parse/validation error in the source view.
-    
-    * Create some sort of interface to deal with editing of entity reference.
-    
-    * Add support for evaluating an XPath expression on an XMLDocument.
-        * Maybe add a XPath evaluation field
-    
     * Implement serialization support having to do with DTD/Schema support.
     
 * Version 0.5 beta (Actions)
-    
-    * Implement cut, copy, paste in the DefaultView
-    
-    * Implement undo for the DefaultView and SourceView.
-    
-    * Implement BeanShell support. This is required for dynamic actions like
-      those in jEdit. Create a way for actions to be created dynamically and
-      then registered with jsXe. Much the same way that jEdit does.Is this
-      really necessary? Can I achieve the same effect with actions that are not
-      BeanShell actions?
-    
-    * Look at HistoryTextField and HistoryModel in jEdit. Use code from there
-      to implement a history text model for combo boxes in jsXe
-    
-    * Fully implement gui actions to include key mnemonics etc. so the actions
-      act like you would expect. Allow users to define keys shortcuts to
-      actions.
-    
-    * Create a toolbar that is customizable much the same way jEdit's is.
-	    
-    * By this time, make sure all classes are documented with javadoc.
-    
-    * Make sure all instance variables are prefixed with m_ and are named in a
-      consistent manner.
-    
-    * Begin internationalization support by storing messages, menu titles, and
-      other text in a properties file.
-    
-    * Build in some support for XML document types (XSLT, XSL:FO, Schema etc.)
-        * Build a global defaults options pane and allow the user to set options
-          based on the document type.
-        * Build some way to associate views with document types.
     
 * Version 0.6 beta (GUI focus)
     
@@ -118,8 +64,6 @@ TODO:
         * Highlighting where a parse error is located. Is it feasable to do
           multiple parses to find as many errors as possible? SAX parsers find
           the first one and then quit.
-    
-    * Implement syntax highlighting for the SourceView.
     
     * Create a dialog that displays all dirty DocumentBuffers and allows you to
       save the selected ones, like jEdit.
