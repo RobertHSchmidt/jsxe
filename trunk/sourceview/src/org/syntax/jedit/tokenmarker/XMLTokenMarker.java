@@ -3,6 +3,7 @@ package org.syntax.jedit.tokenmarker;
  * XMLTokenMarker.java - XML token marker
  * Copyright (C) 1998, 1999 Slava Pestov
  * Copyright (C) 2001 Tom Bradford
+ * Portions Copyright Ian Lewis (IanLewis@member.fsf.org)
  *
  * You may use and modify this package for any purpose. Redistribution is
  * permitted, in both source and binary form, provided that this notice
@@ -10,12 +11,14 @@ package org.syntax.jedit.tokenmarker;
  */
 
 import javax.swing.text.Segment;
+import net.sourceforge.jsxe.util.Log;
 import org.syntax.jedit.SyntaxUtilities;
 
 /**
  * XML Token Marker Rewrite
  *
  * @author Tom Bradford
+ * @author Ian Lewis
  * @version $Id$
  */
 public class XMLTokenMarker extends TokenMarker {
@@ -28,12 +31,13 @@ public class XMLTokenMarker extends TokenMarker {
       int lastOffset = offset;
       int length = line.count + offset;
       
-      // Ugly hack to handle multi-line tags
+      // Ugly hack to handle multi-line tags and CDATA
       boolean sk1 = token == Token.KEYWORD1;
       
       for ( int i = offset; i < length; i++ ) {
          int ip1 = i+1;
          char c = array[i];
+        // Log.log(Log.DEBUG,this, String.valueOf(c));
          switch ( token ) {
             case Token.NULL: // text
                switch ( c ) {
@@ -117,21 +121,34 @@ public class XMLTokenMarker extends TokenMarker {
                   case '\'':
                      addToken(i-lastOffset, token);
                      lastOffset = i;
-                     if ( c == '\"' )
-                        token = Token.LITERAL1;
-                     else
-                        token = Token.LITERAL2;
+                     token = Token.LITERAL1;
+                     break;
+                  case '>':
+                     addToken(i-lastOffset, token);
+                     lastOffset = i;
+                     token = Token.NULL;
+                     break;
+                  default:
+                     addToken(i-lastOffset, token);
+                     lastOffset = i;
+                     token = Token.KEYWORD1;
                      break;
                }
                break;
                
-            case Token.LITERAL1:
-            case Token.LITERAL2: // strings
-               if ( ( token == Token.LITERAL1 && c == '\"' )
-                 || ( token == Token.LITERAL2 && c == '\'' ) ) {
+            case Token.LITERAL1: // strings
+               if ( token == Token.LITERAL1 && (c == '\"' || c == '\'' ) ) {
                   addToken(ip1-lastOffset, token);
                   lastOffset = ip1;
                   token = Token.KEYWORD1;
+               }
+               break;
+            
+            case Token.LITERAL2:
+               if ( SyntaxUtilities.regionMatches(false, line, i, "]]>") ) {
+                  addToken((i+3)-lastOffset, token);
+                  lastOffset = i+3;
+                  token = Token.NULL;
                }
                break;
             
@@ -157,6 +174,9 @@ public class XMLTokenMarker extends TokenMarker {
                   addToken(ip1-lastOffset, token);
                   lastOffset = ip1;
                   token = Token.NULL;
+               }
+               if (SyntaxUtilities.regionMatches(false, line, i, "[CDATA[") ) {
+                  token = Token.LITERAL2;
                }
                break;
 
