@@ -84,6 +84,7 @@ public class jsXe {
     public static void main(String args[]) {
         
         try {
+            long startTime = System.currentTimeMillis();
             
             //{{{ Check the java version
             String javaVersion = System.getProperty("java.version");
@@ -93,7 +94,9 @@ public class jsXe {
                 System.err.println(getAppTitle() + ": ERROR: You are running Java version " + javaVersion + ".");
                 System.err.println(getAppTitle() + ": ERROR:" + getAppTitle()+" requires Java 1.3 or later.");
                 System.exit(1);
-            }//}}}
+            }
+            
+            //}}}
             
             //{{{ set settings dirs
             String homeDir = System.getProperty("user.home");
@@ -189,7 +192,6 @@ public class jsXe {
             } catch (IOException ioe) {
                 Log.log(Log.ERROR, jsXe.class, ioe);
             }
-            
             //}}}
             
             //{{{ load plugins
@@ -260,7 +262,6 @@ public class jsXe {
                 
                 addActionSet(plugin.getActionSet());
             }
-            
             //}}}
             
             //{{{ create the TabbedView
@@ -309,6 +310,9 @@ public class jsXe {
             if (pluginErrors.size() > 0) {
                 new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), true);
             }
+            
+            Log.log(Log.NOTICE, jsXe.class, "jsXe started in "+(System.currentTimeMillis()-startTime)+" milliseconds");
+            
         } catch (Throwable e) {
             exiterror(null, e, 1);
         }
@@ -463,6 +467,7 @@ public class jsXe {
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
     public static boolean openXMLDocument(TabbedView view, File file, Properties properties, String viewName) throws IOException {
+        
         if (file == null)
             return false;
         
@@ -513,7 +518,6 @@ public class jsXe {
                 throw ioe;
             }
         }
-        
     }//}}}
     
     //{{{ openXMLDocument()
@@ -539,7 +543,6 @@ public class jsXe {
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
     public static boolean openXMLDocument(TabbedView view, Reader reader) throws IOException {
-        
         DocumentBuffer buffer = new DocumentBuffer(reader);
         try {
             m_buffers.add(buffer);
@@ -550,7 +553,6 @@ public class jsXe {
             m_buffers.remove(buffer);
             throw ioe;
         }
-        
     }//}}}
     
     //{{{ getOpenBuffer()

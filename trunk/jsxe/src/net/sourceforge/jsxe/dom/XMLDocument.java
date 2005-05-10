@@ -977,7 +977,6 @@ public class XMLDocument {
                 String value = decl.getConstraintValue();
                 // TODO: possible values
                 String type = decl.getTypeDefinition().getName();
-                Log.log(Log.DEBUG,this, type);
                 if (type == null) {
                     type = "CDATA";
                 }
