@@ -240,6 +240,12 @@ public class DefaultViewTableModel implements TableModel {
         fireTableChanged(new TableModelEvent(this));
     }//}}}
     
+    //{{{ updateTable()
+    
+    protected void updateTable() {
+        updateTable(m_currentNode);
+    }//}}}
+    
     //{{{ Private members
     
     //{{{ fireTableChanged()

@@ -94,9 +94,9 @@ public class EditNodeAction extends AbstractAction {
                                                                  element.empty,
                                                                  element.completionInfo.getEntityHash(),
                                                                  new ArrayList(), //don't support IDs for now.
-                                                                 selectedNode.getOwnerDocument());
-                        addedNode = selectedNode.addAdapterNode(dialog.getNewNode());
-                        
+                                                                 selectedNode.getOwnerDocument(),
+                                                                 selectedNode);
+                        dialog.show();
                         tree.expandPath(tree.getLeadSelectionPath());
                         //The TreeModel doesn't automatically treeNodesInserted() yet
                         tree.updateUI();

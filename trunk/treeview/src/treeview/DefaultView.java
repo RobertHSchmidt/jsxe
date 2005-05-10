@@ -496,7 +496,7 @@ public class DefaultView extends JPanel implements DocumentView {
     
     private DefaultViewTree tree = new DefaultViewTree();
     private JEditorPane htmlPane = new JEditorPane("text/plain","");
-    private JTable attributesTable = new DefaultViewTable();
+    private DefaultViewTable attributesTable = new DefaultViewTable();
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
     private DocumentBuffer m_document;
@@ -564,8 +564,10 @@ public class DefaultView extends JPanel implements DocumentView {
             need to reload since saving can change the structure,
             like when splitting cdata sections
             */
-            
             tree.updateUI();
+            //TODO: update the attributes table to handle this
+            ((DefaultViewTableModel)attributesTable.getModel()).updateTable();
+            attributesTable.updateUI();
         }//}}}
         
     };//}}}
