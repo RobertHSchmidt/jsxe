@@ -382,10 +382,10 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 }
                 //Add the edit node action
                 //EditTagDialog needs to be reworked. disabled for now.
-               // if (selectedNode.getNodeType() == Node.ELEMENT_NODE && ownerDocument.getElementDecl(selectedNode.getNodeName()) != null) {
-               //     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.edit.node"));
-               //     popup.add(popupMenuItem);
-               // }
+                if (selectedNode.getNodeType() == Node.ELEMENT_NODE && ownerDocument.getElementDecl(selectedNode.getNodeName()) != null) {
+                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.edit.node"));
+                    popup.add(popupMenuItem);
+                }
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE || selectedNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.rename.node"));

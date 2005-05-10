@@ -42,17 +42,39 @@ import net.sourceforge.jsxe.dom.completion.*;
 import net.sourceforge.jsxe.gui.EnhancedDialog;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 public class EditTagDialog extends EnhancedDialog {
 
+    //{{{ EditTagDialog constructor
+    /**
+     * Allows you to edit an existing node that has an element declaration.
+     */
+    public EditTagDialog(Frame view, ElementDecl element,
+        Map attributeValues, boolean elementEmpty, Map entityHash,
+        List ids, XMLDocument document, AdapterNode node)
+    {
+        this(view, element, attributeValues, elementEmpty, entityHash, ids, document);
+        m_newNode = node;
+        org.w3c.dom.NamedNodeMap attributes = m_newNode.getAttributes();
+        for (int i = 0; i < attributeModel.size(); i++) {
+            Attribute attr = (Attribute)attributeModel.get(i);
+            if (attributes.getNamedItem(attr.name) != null) {
+                attr.value.value = m_newNode.getAttribute(attr.name);
+                attr.set = true;
+            }
+        }
+        updateTag();
+    }//}}}
+    
     //{{{ EditTagDialog constructor
     
     public EditTagDialog(Frame view, ElementDecl element,
         Map attributeValues, boolean elementEmpty, Map entityHash,
         List ids, XMLDocument document)
     {
-        super(view,"Edit Tag",true);
+        super(view,Messages.getMessage("Edit.Node.Dialog.Title"),true);
 
         m_document = document;
         this.element = element;
@@ -146,7 +168,6 @@ public class EditTagDialog extends EnhancedDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
         setLocationRelativeTo(view);
-        show();
     } //}}}
 
     //{{{ ok() method
@@ -160,6 +181,24 @@ public class EditTagDialog extends EnhancedDialog {
             }
         }
 
+        //update the m_newNode object
+        if (m_newNode == null) {
+            //node will be added to parent later
+            m_newNode = m_document.newAdapterNode(null, element.name, "", Node.ELEMENT_NODE);
+        }
+        //remove all attributes
+        org.w3c.dom.NamedNodeMap map = m_newNode.getAttributes();
+        int len = map.getLength();
+        for (int i=0; i<len; i++) {
+            m_newNode.removeAttribute(map.item(0).getNodeName());
+        }
+        for (int i = 0; i < attributeModel.size(); i++) {
+            Attribute attr = (Attribute)attributeModel.get(i);
+            if (attr.set) {
+                m_newNode.setAttribute(attr.name, attr.value.value);
+            }
+        }
+        
         isOK = true;
         dispose();
     } //}}}
@@ -251,9 +290,6 @@ public class EditTagDialog extends EnhancedDialog {
     //{{{ updateTag() method
     private void updateTag() {
         
-        //the node will be added to it's mparent later.
-        AdapterNode newNode = m_document.newAdapterNode(null, element.name, "", Node.ELEMENT_NODE);
-        
         StringBuffer buf = new StringBuffer("<");
         buf.append(element.name);
         
@@ -262,8 +298,6 @@ public class EditTagDialog extends EnhancedDialog {
             if (!attr.set) {
                 continue;
             }
-            
-            newNode.setAttribute(attr.name, attr.value.value);
             
             buf.append(' ');
             String attrName = attr.name;
@@ -284,7 +318,6 @@ public class EditTagDialog extends EnhancedDialog {
         buf.append(">");
         
         newTag = buf.toString();
-        m_newNode = newNode;
         
         preview.setText(newTag);
     } //}}}

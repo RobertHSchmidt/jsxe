@@ -109,6 +109,7 @@ public class AddNodeAction extends AbstractAction {
                                                                  m_m_element.completionInfo.getEntityHash(),
                                                                  new ArrayList(), //don't support IDs for now.
                                                                  selectedNode.getOwnerDocument());
+                        dialog.show();
                         addedNode = selectedNode.addAdapterNode(dialog.getNewNode());
                     } else {
                         //add the node of the correct type to the end of the children of this node
