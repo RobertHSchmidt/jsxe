@@ -320,9 +320,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         
         private void maybeShowPopup(MouseEvent e) {
             TreePath selPath = getPathForLocation(e.getX(), e.getY());
-            Log.log(Log.DEBUG,this, (selPath != null) ? selPath.toString() : "selPath is null");
             if (e.isPopupTrigger() && selPath != null) {
-                Log.log(Log.DEBUG,this, "isPopupTrigger");
                 setSelectionPath(selPath);
                 
                 //Don't want to interact with AdapterNodes too much. Maybe change this.
