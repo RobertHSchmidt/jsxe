@@ -44,6 +44,10 @@ import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
 //}}}
 
+//{{{ jEdit Syntax classes
+import org.syntax.jedit.SyntaxDocument;
+//}}}
+
 //{{{ AWT components
 import java.awt.Component;
 import java.awt.Toolkit;
@@ -80,12 +84,12 @@ import java.util.StringTokenizer;
  * @version $Id$
  * @see SourceView
  */
-public class SourceViewDocument extends DefaultStyledDocument {
+public class SourceViewDocument extends SyntaxDocument {
 
     //{{{ SourceViewDocument constructor
     
     protected SourceViewDocument(XMLDocument document) throws IOException {
-        super(new GapContent(), new StyleContext());
+        super();
         m_document = document;
         
        // document.addXMLDocumentListener(new SourceViewDocumentXMLDocumentListener());

@@ -46,6 +46,10 @@ import net.sourceforge.jsxe.gui.EnhancedDialog;
 import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
+//{{{ jEdit syntax classes
+import org.syntax.jedit.JEditTextArea;
+//}}}
+
 //{{{ Swing components
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -311,16 +315,14 @@ public class SourceViewSearchDialog extends EnhancedDialog {
             
             RESearchMatcher matcher = new RESearchMatcher(search, replace, ignoreCase);
             
-            JTextArea textArea = m_view.getTextArea();
+            JEditTextArea textArea = m_view.getTextArea();
             
             //replace previous text
             if (doReplace) {
                 String selText = textArea.getSelectedText();
                 if (selText != null && !selText.equals("")) { 
                     String replaceString = matcher.substitute(selText);
-                    int selStart = textArea.getSelectionStart();
-                    int selEnd = textArea.getSelectionEnd();
-                    textArea.replaceRange(replaceString, selStart, selEnd);
+                    textArea.setSelectedText(replaceString);
                 }
             }
             
@@ -338,7 +340,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
                 int end = match[1]+caretPosition;
                 textArea.requestFocus();
                 textArea.setCaretPosition(start);
-                textArea.moveCaretPosition(end);
+                textArea.setCaretPosition(end);
             } else {
                 int again = JOptionPane.showConfirmDialog(m_view, "No more matches were found. Continue search from the beginning?", "No More Matches Found", JOptionPane.YES_NO_OPTION);
                 if (again == 0) {
