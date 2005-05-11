@@ -106,14 +106,6 @@
     <!-- copy dependencies file -->
     <copy file="dependency.props" todir="${build.dest}"/>
     
-    <propertyfile comment="${root.dir}/${app.name}&apos;s build properties" file="${build.dest}/sourceview/build.properties">
-			<entry key="application.name" value="${app.name}"/>
-			<entry key="build.time" pattern="dd/MM/yyyy HH:mm" type="date" value="now"/>
-			<entry key="major.version" value="${major.version}"/>
-			<entry key="minor.version" value="${minor.version}"/>
-			<entry key="build.version" value="${build.version}"/>
-		</propertyfile>
-    
     <!-- create jar manifest -->
     <manifest file="${root.dir}/${app.name}.manifest">
       <attribute name="Built-By" value="${user.name}"/>
