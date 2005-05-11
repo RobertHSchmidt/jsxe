@@ -1,5 +1,11 @@
 05/10/2005   Ian Lewis <IanLewis@member.fsf.org>
 
+    * Fixed the soft tabs option, key mnemonics, and scrollbar after adding
+      syntax highlighting support.
+    * Fixed the find dialog after adding syntax highlighting
+
+05/10/2005   Ian Lewis <IanLewis@member.fsf.org>
+
     * Added syntax highlighting support
 
 04/28/2005   Ian Lewis <IanLewis@member.fsf.org>

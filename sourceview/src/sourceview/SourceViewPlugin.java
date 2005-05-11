@@ -33,6 +33,8 @@ package sourceview;
 
 //{{{ Imports
 
+import sourceview.action.*;
+
 //{{{ jsXe classes
 
 import net.sourceforge.jsxe.ViewPlugin;
@@ -51,6 +53,15 @@ import java.util.Properties;
 //}}}
 
 public class SourceViewPlugin extends ViewPlugin {
+    
+    //{{{ SourceViewPlugin
+    
+    public SourceViewPlugin() {
+        addAction("sourceview.cut", new EditCutAction());
+        addAction("sourceview.copy", new EditCopyAction());
+        addAction("sourceview.paste", new EditPasteAction());
+        addAction("sourceview.find", new EditFindAction());
+    }//}}}
     
     //{{{ newDocumentView()
     

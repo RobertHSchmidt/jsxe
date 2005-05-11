@@ -1,6 +1,7 @@
 /*
  * JEditTextArea.java - jEdit's text component
  * Copyright (C) 1999 Slava Pestov
+ * Portions Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
  *
  * You may use and modify this package for any purpose. Redistribution is
  * permitted, in both source and binary form, provided that this notice
@@ -1522,18 +1523,25 @@ public class JEditTextArea extends JComponent
 	{
 		if(inputHandler == null)
 			return;
-		switch(evt.getID())
-		{
-		case KeyEvent.KEY_TYPED:
-			inputHandler.keyTyped(evt);
-			break;
-		case KeyEvent.KEY_PRESSED:
-			inputHandler.keyPressed(evt);
-			break;
-		case KeyEvent.KEY_RELEASED:
-			inputHandler.keyReleased(evt);
-			break;
-		}
+		if (!evt.isConsumed()) {
+         switch(evt.getID())
+         {
+         case KeyEvent.KEY_TYPED:
+            inputHandler.keyTyped(evt);
+            break;
+         case KeyEvent.KEY_PRESSED:
+            inputHandler.keyPressed(evt);
+            break;
+         case KeyEvent.KEY_RELEASED:
+            inputHandler.keyReleased(evt);
+            break;
+         }
+      }
+      //If it's still not consumed then process it through the super class. This
+      //is needed to pick up action mnemonics that have been set up in swing.
+      if (!evt.isConsumed()) {
+         super.processKeyEvent(evt);
+      }
 	}
 
 	// protected members
