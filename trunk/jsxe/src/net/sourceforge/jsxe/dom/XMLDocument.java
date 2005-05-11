@@ -636,13 +636,15 @@ public class XMLDocument {
      * @throws IOException if the text could not be inserted
      */
     public void insertText(int offset, String text) throws IOException {
-        syncContentWithDOM();
-        m_content.insert(offset, text);
-        m_parsedMode = false;
-        m_adapterNode = null;
-        //may have some algorithm to determine the modified node(s) in the
-        //future
-        fireStructureChanged(null);
+        if (text.length() > 0) {
+            syncContentWithDOM();
+            m_content.insert(offset, text);
+            m_parsedMode = false;
+            m_adapterNode = null;
+            //may have some algorithm to determine the modified node(s) in the
+            //future
+            fireStructureChanged(null);
+        }
     }//}}}
     
     //{{{ removeText()
@@ -653,13 +655,15 @@ public class XMLDocument {
      * @throws IOException if the text could not be removed
      */
     public void removeText(int offset, int length) throws IOException {
-        syncContentWithDOM();
-        m_content.remove(offset, length);
-        m_parsedMode = false;
-        m_adapterNode = null;
-        //may have some algorithm to determine the modified node(s) in the
-        //future
-        fireStructureChanged(null);
+        if (length > 0) {
+            syncContentWithDOM();
+            m_content.remove(offset, length);
+            m_parsedMode = false;
+            m_adapterNode = null;
+            //may have some algorithm to determine the modified node(s) in the
+            //future
+            fireStructureChanged(null);
+        }
     }//}}}
     
     //{{{ setModel()
