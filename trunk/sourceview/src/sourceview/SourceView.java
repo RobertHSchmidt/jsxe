@@ -3,15 +3,7 @@ SourceView.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editor
-jsXe is a gui application that creates a tree view of an XML document.
-The user can then edit this tree and the content in the tree.
-
-This file contions the code source view in jsXe. This will eventually
-be scrapped and a jEdit syntax highlighting view will be added.
-
-This file written by Ian Lewis (IanLewis@member.fsf.org)
-Copyright (C) 2002 Ian Lewis
+Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -40,9 +32,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.DocumentBufferListener;
-import net.sourceforge.jsxe.ViewPlugin;
+import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.DocumentView;
@@ -120,7 +110,7 @@ public class SourceView extends JPanel implements DocumentView {
         
         m_plugin = plugin;
         
-        textarea = new JEditTextArea();
+        textarea = new SourceViewTextPane();
         //use hard coded font for now
         textarea.getPainter().setStyles(
             new SyntaxStyle[] { new SyntaxStyle(Color.BLACK, false,false),      //NULL
@@ -140,10 +130,8 @@ public class SourceView extends JPanel implements DocumentView {
         //for test scripts
         textarea.setName("SourceTextArea");
         
-        JScrollPane scrollPane = new JScrollPane(textarea);
-        
         setLayout(new BorderLayout());
-        add(scrollPane, BorderLayout.CENTER);
+        add(textarea, BorderLayout.CENTER);
         
         setDocumentBuffer(document);
         
@@ -213,14 +201,14 @@ public class SourceView extends JPanel implements DocumentView {
            // menuItem.addActionListener( new EditRedoAction() );
            // menu.add(menuItem);
            // menu.addSeparator();
-            JMenuItem menuItem = new JMenuItem(new EditCutAction());
+            JMenuItem menuItem = new JMenuItem(jsXe.getAction("sourceview.cut"));
             menu.add(menuItem);
-            menuItem = new JMenuItem(new EditCopyAction());
+            menuItem = new JMenuItem(jsXe.getAction("sourceview.copy"));
             menu.add(menuItem);
-            menuItem = new JMenuItem(new EditPasteAction());
+            menuItem = new JMenuItem(jsXe.getAction("sourceview.paste"));
             menu.add(menuItem);
             menu.addSeparator();
-            menuItem = new JMenuItem(new EditFindAction());
+            menuItem = new JMenuItem(jsXe.getAction("sourceview.find"));
             menu.add(menuItem);
            // menuItem = new JMenuItem(new EditFindNextAction());
            // menu.add(menuItem);
@@ -291,90 +279,6 @@ public class SourceView extends JPanel implements DocumentView {
         
     }//}}}
     
-    //{{{ EditCutAction class
-    
-    private class EditCutAction extends AbstractAction {
-        
-        //{{{ EditCutAction constructor
-        
-        public EditCutAction() {
-            //putValue(Action.NAME, "Cut");
-        	putValue(Action.NAME, Messages.getMessage("SourceView.Cut"));
-            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
-            putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("C").getKeyCode()));
-        }//}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            textarea.cut();
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ EditCopyAction class
-    
-    private class EditCopyAction extends AbstractAction {
-        
-        //{{{ EditCopyAction constructor
-        
-        public EditCopyAction() {
-            //putValue(Action.NAME, "Copy");
-        	putValue(Action.NAME, Messages.getMessage("SourceView.Copy"));
-            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl C"));
-            putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
-        }//}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            textarea.copy();
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ EditPasteAction class
-    
-    private class EditPasteAction extends AbstractAction {
-        
-        //{{{ EditPasteAction constructor
-        
-        public EditPasteAction() {
-            //putValue(Action.NAME, "Paste");
-            putValue(Action.NAME, Messages.getMessage("SourceView.Paste"));
-            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl V"));
-            putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("P").getKeyCode()));
-        }//}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            textarea.paste();
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ EditFindAction class
-    
-    private class EditFindAction extends AbstractAction {
-        
-        //{{{ EditFindAction constructor
-        
-        public EditFindAction() {
-            //putValue(Action.NAME, "Find...");
-        	putValue(Action.NAME, Messages.getMessage("SourceView.Find"));
-            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl F"));
-            putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("F").getKeyCode()));
-        }//}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            SourceViewSearchDialog.showSearchDialog(SourceView.this);
-        }//}}}
-        
-    }//}}}
-    
     //{{{ EditFindNextAction class
     
     private class EditFindNextAction extends AbstractAction {
@@ -420,38 +324,39 @@ public class SourceView extends JPanel implements DocumentView {
         
     }//}}}
 
-   // //{{{ SourceViewTextPane class
+    //{{{ SourceViewTextPane class
     
-   // private class SourceViewTextPane extends JEditTextArea {
+    private class SourceViewTextPane extends JEditTextArea {
         
-   //     //{{{ SourceViewTextPane constructor
+        //{{{ SourceViewTextPane constructor
         
-   //     public SourceViewTextPane() {
-   //         super();
-   //     }//}}}
+        public SourceViewTextPane() {
+            super();
+        }//}}}
         
-   //     //{{{ processKeyEvent()
+        //{{{ processKeyEvent()
         
-   //     protected void processComponentKeyEvent(KeyEvent e) {
-   //         if (!e.isConsumed() && e.getKeyCode() == KeyEvent.VK_TAB && e.getID() == KeyEvent.KEY_PRESSED) {
-   //             boolean softTabs = Boolean.valueOf(m_document.getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
-   //             if (softTabs) {
-   //                 try {
-   //                     int indent = Integer.parseInt(m_document.getProperty(XMLDocument.INDENT));
-   //                     StringBuffer tab = new StringBuffer();
-   //                     for (int i=0; i<indent; i++) {
-   //                         tab.append(" ");
-   //                     }
-   //                     getDocument().insertString(getCaretPosition(),tab.toString(),null);
-   //                     e.consume();
-   //                 } catch (NumberFormatException nfe) {}
-   //                   catch (BadLocationException ble) {}
-   //             }
-   //         }
-   //         super.processComponentKeyEvent(e);
-   //     }//}}}
+        public void processKeyEvent(KeyEvent e) {
+            Log.log(Log.DEBUG,this,"processKeyEvent: "+KeyEvent.getKeyModifiersText(e.getModifiers())+" "+KeyEvent.getKeyText(e.getKeyCode()));
+            if (!e.isConsumed() && e.getKeyCode() == KeyEvent.VK_TAB && e.getID() == KeyEvent.KEY_PRESSED) {
+                boolean softTabs = Boolean.valueOf(m_document.getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
+                if (softTabs) {
+                    try {
+                        int indent = Integer.parseInt(m_document.getProperty(XMLDocument.INDENT));
+                        StringBuffer tab = new StringBuffer();
+                        for (int i=0; i<indent; i++) {
+                            tab.append(" ");
+                        }
+                        getDocument().insertString(getCaretPosition(),tab.toString(),null);
+                        e.consume();
+                    } catch (NumberFormatException nfe) {}
+                      catch (BadLocationException ble) {}
+                }
+            }
+            super.processKeyEvent(e);
+        }//}}}
         
-   // }//}}}
+    }//}}}
     
     //{{{ ensureDefaultProps()
     
@@ -462,7 +367,7 @@ public class SourceView extends JPanel implements DocumentView {
     private SourceViewXMLDocumentListener docListener = new SourceViewXMLDocumentListener();
     
     private DocumentBuffer m_document;
-    private JEditTextArea textarea;
+    private SourceViewTextPane textarea;
     
     private String m_searchString;
     private String m_replaceString;

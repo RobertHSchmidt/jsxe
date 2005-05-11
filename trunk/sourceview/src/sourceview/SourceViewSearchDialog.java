@@ -44,6 +44,7 @@ import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.EnhancedDialog;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ jEdit syntax classes
@@ -336,11 +337,11 @@ public class SourceViewSearchDialog extends EnhancedDialog {
             buffer.setProperty(SourceView.LAST_FIND_STRING, search);
             
             if (match != null) {
+                Log.log(Log.DEBUG, this, match[0] + " "+ match[1]);
                 int start = match[0]+caretPosition;
                 int end = match[1]+caretPosition;
-                textArea.requestFocus();
-                textArea.setCaretPosition(start);
-                textArea.setCaretPosition(end);
+               // textArea.requestFocus();
+                textArea.select(start, end);
             } else {
                 int again = JOptionPane.showConfirmDialog(m_view, "No more matches were found. Continue search from the beginning?", "No More Matches Found", JOptionPane.YES_NO_OPTION);
                 if (again == 0) {
