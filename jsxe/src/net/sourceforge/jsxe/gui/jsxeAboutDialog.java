@@ -81,6 +81,8 @@ public class jsxeAboutDialog extends AbstractAction {
         "    Ian Lewis <IanLewis@member.fsf.org>\n"+
         "    Trish Hartnett <trishah136@users.sourceforge.net>\n"+
         "    Aaron Flatten  <aflatten@users.sourceforge.net>\n\n"+
+        "Translators:\n"+
+        "    Swedish (sv) - Patrik Johansson <patrikjj at users.sourceforge.net>\n\n"+
         "Past Contributers:\n"+
         "    Bilel Remmache <rbilel@users.sourceforge.net>\n"+
         "    SVM <svmcoranto@users.sourceforge.net>\n\n"+
