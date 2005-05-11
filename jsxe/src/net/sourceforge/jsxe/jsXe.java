@@ -224,7 +224,7 @@ public class jsXe {
             
             //{{{ start locale
             Log.log(Log.NOTICE,jsXe.class, "Initializing locale");
-            Messages.initializePropertiesObject(null, jsXeHome+fileSep+"messages");
+            Messages.initializePropertiesObject("sv", jsXeHome+fileSep+"messages");
             //}}}
             
             //{{{ start plugins

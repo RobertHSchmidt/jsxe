@@ -66,7 +66,7 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
     //{{{ PluginManagerDialog constructor
     
     public PluginManagerDialog(TabbedView parent) {
-        super(parent, "Plugin Manager", true);
+        super(parent, Messages.getMessage("Plugin.Manager.Title"), true);
         setLocationRelativeTo(parent);
         
         final JTable table = new JTable(new PluginManagerTableModel());
@@ -84,7 +84,7 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         Box buttons = new Box(BoxLayout.X_AXIS);
         buttons.add(Box.createGlue());
         
-        m_ok = new JButton("Close");
+        m_ok = new JButton(Messages.getMessage("common.close"));
         m_ok.addActionListener(this);
         buttons.add(m_ok);
        // buttons.add(Box.createHorizontalStrut(6));
