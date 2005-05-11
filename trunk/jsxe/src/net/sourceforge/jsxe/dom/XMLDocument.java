@@ -1372,7 +1372,7 @@ public class XMLDocument {
         
         //{{{ warning
         public void warning(SAXParseException exception) {
-            Log.log(Log.NOTICE, this, "parse warning: "+exception.getMessage());
+            Log.log(Log.MESSAGE, this, "parse warning: "+exception.getMessage());
         }//}}}
         
     }//}}}
