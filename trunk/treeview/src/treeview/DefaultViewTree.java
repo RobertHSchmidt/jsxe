@@ -328,7 +328,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 XMLDocument ownerDocument = selectedNode.getOwnerDocument();
                 
                 JMenuItem popupMenuItem;
-                JMenu addNodeItem = new JMenu("Add");
+                JMenu addNodeItem = new JMenu(Messages.getMessage("common.add"));
                 JPopupMenu popup = new JPopupMenu();
                 boolean showpopup = false;
                 boolean addNodeShown = false;
