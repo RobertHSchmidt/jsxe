@@ -55,6 +55,7 @@ public class Messages {
     
      //{{{ Private static members
     private static Properties m_propertiesObject = new Properties();
+    private static Properties m_defaultProperties = new Properties();
     private static String m_language;
     private static String m_directory = "."; //default to current directory
      //}}}
@@ -84,7 +85,7 @@ public class Messages {
             String isoLanguage =newLocal.getLanguage();
             setLanguage(isoLanguage);
         }
-        return m_propertiesObject.getProperty(propertyName);
+        return m_propertiesObject.getProperty(propertyName, m_defaultProperties.getProperty(propertyName));
     }
     
     /**
@@ -101,17 +102,22 @@ public class Messages {
         File messagesFile =  new File(directory+System.getProperty("file.separator")+"messages."+isoLanguage);
         if (!messagesFile.exists()) {
             Log.log(Log.WARNING, Messages.class, "Default messages file for current language not found");
-            messagesFile = new File(directory+System.getProperty("file.separator")+"messages.en");
-            if (!messagesFile.exists()) {
-                Log.log(Log.ERROR, Messages.class, "Default messages file for English not found");
-            } else {
-                m_language = "en";
-            }
         } else {
             m_language = isoLanguage;
         }
         m_directory = directory;
         loadMessages(m_propertiesObject, messagesFile);
+        
+        //load default english
+        messagesFile = new File(directory+System.getProperty("file.separator")+"messages.en");
+        if (!messagesFile.exists()) {
+            Log.log(Log.ERROR, Messages.class, "Default messages file for English not found");
+        } else {
+            if (m_language == null) {
+                m_language = "en";
+            }
+        }
+        loadMessages(m_defaultProperties, messagesFile);
     }
     
     /**

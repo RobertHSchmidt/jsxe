@@ -1,3 +1,8 @@
+05/10/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added Swedish translation thanks to Patrik Johansson
+    * Some more buttons and menu's use Messages now
+
 05/08/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Made the recent files menu use the EnhancedMenu class.

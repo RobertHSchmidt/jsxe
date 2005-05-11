@@ -36,12 +36,14 @@ File.CloseAll=Close All
 File.Exit=Exit
 #}}}
 
-Edit.Node.Dialog.Title=Edit Node
 View.Tree=Tree View
 View.Source=Source View
 Tools.Options=Options...
 Tools.Plugin=Plugin Manager...
+Plugin.Manager.Title=Plugin Manager
 Help.About=About jsXe...
+
+
 SourceView.Cut=Cut
 SourceView.Copy=Copy
 SourceView.Paste=Paste
@@ -52,3 +54,4 @@ TreeView.RemoveNode=Remove Node
 TreeView.AddAttribute=Add Attribute
 TreeView.RemoveAttribute=Remove Attribute
 TreeView.EditNode=Edit Node
+Edit.Node.Dialog.Title=Edit Node
