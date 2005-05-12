@@ -26,7 +26,7 @@ package sourceview;
 
 //{{{ Imports
 
-//import sourceview.action.*;
+import sourceview.action.*;
 
 //{{{ jsXe classes
 
@@ -58,10 +58,10 @@ public class SourceViewPlugin extends ViewPlugin {
     //{{{ SourceViewPlugin
     
     public SourceViewPlugin() {
-       // addAction("sourceview.cut", new EditCutAction());
-       // addAction("sourceview.copy", new EditCopyAction());
-       // addAction("sourceview.paste", new EditPasteAction());
-       // addAction("sourceview.find", new EditFindAction());
+        addAction("sourceview.cut", new EditCutAction());
+        addAction("sourceview.copy", new EditCopyAction());
+        addAction("sourceview.paste", new EditPasteAction());
+        addAction("sourceview.find", new EditFindAction());
     }//}}}
     
     //{{{ newDocumentView()
