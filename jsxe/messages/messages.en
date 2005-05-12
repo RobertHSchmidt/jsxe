@@ -45,10 +45,23 @@ xml.schema=XML Schema
 #}}}
 
 #{{{ Global Options
-global.options.title=Global Options
+Global.Options.Dialog.Title=Global Options
+Global.Options.Title=jsXe Global Options
+Global.Options.Max.Recent.Files=Recent files to remember:
+Document.Options.Title=XML Document Options
+Document.Options.Encoding=Encoding:
+Document.Options.Indent.Width=Indent width:
+Document.Options.Format.XML=Format XML output
+Document.Options.Validate=Validate if DTD or Schema Available
+Document.Options.Soft.Tabs=Soft tabs (emulated with spaces)
 #}}}
 
 #{{{ Menu Items
+
+File.Menu=File
+View.Menu=View
+Tools.Menu=Tools
+Help.Menu=Help
 
 #{{{ File Menu Items
 File.New=New
@@ -95,14 +108,24 @@ SourceView.StyleEditor.Italics=Italics
 #}}}
 
 #{{{ TreeView
-
+TreeView.Options.Title=Tree View Options
+TreeView.Options.Show.Comments=Show comment nodes
+TreeView.Options.Continuous.Layout=Continuous layout for split-panes
 TreeView.RenameNode=Rename Node
 TreeView.RemoveNode=Remove Node
 TreeView.AddAttribute=Add Attribute
 TreeView.RemoveAttribute=Remove Attribute
 TreeView.EditNode=Edit Node
 Edit.Node.Dialog.Title=Edit Node
+#}}}
 
+#{{{ Messages
+DocumentBuffer.Reload.Message={0} unsaved!\n You will lose all unsaved changes if you reload!\n\nContinue?
+DocumentBuffer.Reload.Message.Title=Document Modified
+DocumentBuffer.SaveAs.Message=The file {0} already exists. Are you sure you want to overwrite it?
+DocumentBuffer.SaveAs.Message.Title=File Exists
+DocumentBuffer.Close.Message={0} unsaved! Save it now?
+DocumentBuffer.Close.Message.Title=Unsaved Changes
 #}}}
 
 #{{{ Error Messages

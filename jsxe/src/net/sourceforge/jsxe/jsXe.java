@@ -889,7 +889,7 @@ public class jsXe {
     private jsXe() {}
     //}}}
     
-    // Private static members {{{
+    // {{{ Private static members
 
     //{{{ openXMLDocuments()
     /**
@@ -978,10 +978,12 @@ public class jsXe {
             } catch (NumberFormatException nfe) {
                 try {
                     maxRecentFiles = Integer.parseInt(jsXe.getDefaultProperty("max.recent.files"));
-                } catch (NumberFormatException nfe2) {}
+                } catch (NumberFormatException nfe2) {
+                    Log.log(Log.ERROR, jsXe.class, "Could not read max.recent.files property");
+                }
             }
             
-            JLabel maxRecentFilesLabel = new JLabel("Recent files to remember:");
+            JLabel maxRecentFilesLabel = new JLabel(Messages.getMessage("Global.Options.Max.Recent.Files"));
             
             Vector sizes = new Vector(3);
             sizes.add("10");
@@ -1033,7 +1035,7 @@ public class jsXe {
         //{{{ getTitle()
         
         public String getTitle() {
-            return "jsXe Global Options";
+            return Messages.getMessage("Global.Options.Title");
         }//}}}
         
         //{{{ toString()
