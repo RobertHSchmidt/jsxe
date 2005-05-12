@@ -83,21 +83,12 @@ public class SourceView extends JPanel implements DocumentView {
     
     //{{{ Private static members
     private static final String _VIEWNAME = "source";
-    private static final Properties m_defaultProperties;
     //}}}
     
     //{{{ Public static members
     public static final String SOFT_TABS = _VIEWNAME+".soft.tabs";
     public static final String LAST_FIND_STRING = _VIEWNAME+".last.find.string";
     //}}}
-    
-    static {
-        InputStream defaultPropsStream = SourceView.class.getResourceAsStream("/sourceview/sourceview.props");
-        m_defaultProperties = new Properties();
-        try {
-            m_defaultProperties.load(defaultPropsStream);
-        } catch (IOException ioe) {}
-    }
     
     //{{{ SourceView constructor
     /**
@@ -111,21 +102,22 @@ public class SourceView extends JPanel implements DocumentView {
         m_plugin = plugin;
         
         textarea = new SourceViewTextPane();
-        //use hard coded font for now
         textarea.getPainter().setStyles(
-            new SyntaxStyle[] { new SyntaxStyle(Color.BLACK, false,false),      //NULL
-                                new SyntaxStyle(Color.GREEN, true, false),      //COMMENT
-                                new SyntaxStyle(Color.BLUE, true,true),         //DECLARATION
-                                new SyntaxStyle(Color.GRAY, false,false),       //ATTRIBUTE VALUE
-                                new SyntaxStyle(Color.ORANGE, false,true),      //CDATA
-                                new SyntaxStyle(Color.BLACK, false,true),       //ENTITY REFERENCE
-                                new SyntaxStyle(Color.GRAY, false,true),        //ELEMENT
-                                new SyntaxStyle(Color.GRAY, false,true),        //ATTRIBUTE NAME
-                                new SyntaxStyle(Color.CYAN, false,true),        //PROCESSING INSTRUCTION
-                                new SyntaxStyle(Color.BLACK, false, true),      //OPERATOR
-                                new SyntaxStyle(Color.RED, false, false),       //INVALID
+            new SyntaxStyle[] { SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.text.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.comment.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.doctype.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.attribute.value.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.cdata.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.entity.reference.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.element.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.attribute.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.processing.instruction.color")),
+                                
+                                //(Equals between attribute name and value
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.element.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.invalid.color")),
                                 });
-        textarea.setFont(new Font("Monospaced", 0, 12));
+       // textarea.setFont(new Font("Monospaced", 0, 12));
         textarea.setCaretPosition(0);
         //for test scripts
         textarea.setName("SourceTextArea");
@@ -337,7 +329,6 @@ public class SourceView extends JPanel implements DocumentView {
         //{{{ processKeyEvent()
         
         public void processKeyEvent(KeyEvent e) {
-            Log.log(Log.DEBUG,this,"processKeyEvent: "+KeyEvent.getKeyModifiersText(e.getModifiers())+" "+KeyEvent.getKeyText(e.getKeyCode()));
             if (!e.isConsumed() && e.getKeyCode() == KeyEvent.VK_TAB && e.getID() == KeyEvent.KEY_PRESSED) {
                 boolean softTabs = Boolean.valueOf(m_document.getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
                 if (softTabs) {

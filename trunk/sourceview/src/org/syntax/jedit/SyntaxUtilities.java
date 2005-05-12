@@ -1,6 +1,7 @@
 /*
  * SyntaxUtilities.java - Utility functions used by syntax colorizing
  * Copyright (C) 1999 Slava Pestov
+ * Portions Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
  *
  * You may use and modify this package for any purpose. Redistribution is
  * permitted, in both source and binary form, provided that this notice
@@ -133,14 +134,15 @@ public class SyntaxUtilities
 				break;
 
 			int length = tokens.length;
-			if(id == Token.NULL)
-			{
-				if(!defaultColor.equals(gfx.getColor()))
-					gfx.setColor(defaultColor);
-				if(!defaultFont.equals(gfx.getFont()))
-					gfx.setFont(defaultFont);
-			}
-			else
+            //We want to be able to specify the attributes of normal text
+		//	if(id == Token.NULL)
+		//	{
+		//		if(!defaultColor.equals(gfx.getColor()))
+		//			gfx.setColor(defaultColor);
+		//		if(!defaultFont.equals(gfx.getFont()))
+		//			gfx.setFont(defaultFont);
+		//	}
+		//	else
 				styles[id].setGraphicsFlags(gfx,defaultFont);
 
 			line.count = length;

@@ -1,36 +1,41 @@
-05/10/2005   Ian Lewis <IanLewis@member.fsf.org>
+05/10/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added an options panel for the source view that allows you to specify
+      colors that are used for syntax highlighting
+
+05/10/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed the soft tabs option, key mnemonics, and scrollbar after adding
       syntax highlighting support.
     * Fixed the find dialog after adding syntax highlighting
 
-05/10/2005   Ian Lewis <IanLewis@member.fsf.org>
+05/10/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added syntax highlighting support
 
-04/28/2005   Ian Lewis <IanLewis@member.fsf.org>
+04/28/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated the options panel to conform to the new OptionsPanel interface in
       jsXe core.
 
-04/27/2005  Ian Lewis <IanLewis@member.fsf.org>
+04/27/2005 Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated the text area to use a monospaced font.
 
-03/04/2005  version 0.3 pre15   Ian Lewis <IanLewis@member.fsf.org>
+03/04/2005 version 0.3 pre15   Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated to work with jsXe 0.3 pre15
 
-02/16/2005  version 0.3 pre11   Ian Lewis <IanLewis@member.fsf.org>
+02/16/2005 version 0.3 pre11   Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated to use the XMLDocument.IS_USING_SOFT_TABS property instead of
       the sourceview SOFT_TABS property.
 
-01/08/2005  version 0.3 pre9    Ian Lewis <IanLewis@member.fsf.org>
+01/08/2005 version 0.3 pre9    Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated so that getVersion() works properly;
 
-01/05/2005  version 0.3 pre7    Ian Lewis <IanLewis@member.fsf.org>
+01/05/2005 version 0.3 pre7    Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated to use new Plugin API
     * Added a dialog to continue searching from the beginning of a file.
