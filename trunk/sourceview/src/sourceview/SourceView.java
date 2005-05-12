@@ -122,8 +122,48 @@ public class SourceView extends JPanel implements DocumentView {
         //for test scripts
         textarea.setName("SourceTextArea");
         
+        //{{{ create popup menu
+        
+        JPopupMenu popup = new JPopupMenu();
+        JMenuItem menuItem = new JMenuItem(jsXe.getAction("sourceview.cut"));
+        popup.add(menuItem);
+        menuItem = new JMenuItem(jsXe.getAction("sourceview.copy"));
+        popup.add(menuItem);
+        menuItem = new JMenuItem(jsXe.getAction("sourceview.paste"));
+        popup.add(menuItem);
+        popup.addSeparator();
+        menuItem = new JMenuItem(jsXe.getAction("sourceview.find"));
+        popup.add(menuItem);
+        
+        textarea.setRightClickPopup(popup);
+        //}}}
+        
         setLayout(new BorderLayout());
         add(textarea, BorderLayout.CENTER);
+        
+        //{{{ Construct Edit Menu
+        m_editMenu = new JMenu("Edit");
+        m_editMenu.setMnemonic('E');
+       // These don't do anything yet.
+       // JMenuItem menuItem = new JMenuItem("Undo");
+       // menuItem.addActionListener( new EditUndoAction() );
+       // menu.add( menuItem );
+       // menuItem = new JMenuItem("Redo");
+       // menuItem.addActionListener( new EditRedoAction() );
+       // menu.add(menuItem);
+       // menu.addSeparator();
+        menuItem = new JMenuItem(jsXe.getAction("sourceview.cut"));
+        m_editMenu.add(menuItem);
+        menuItem = new JMenuItem(jsXe.getAction("sourceview.copy"));
+        m_editMenu.add(menuItem);
+        menuItem = new JMenuItem(jsXe.getAction("sourceview.paste"));
+        m_editMenu.add(menuItem);
+        m_editMenu.addSeparator();
+        menuItem = new JMenuItem(jsXe.getAction("sourceview.find"));
+        m_editMenu.add(menuItem);
+       // menuItem = new JMenuItem(new EditFindNextAction());
+       // menu.add(menuItem);
+        //}}}
         
         setDocumentBuffer(document);
         
@@ -179,35 +219,7 @@ public class SourceView extends JPanel implements DocumentView {
     //{{{ getMenus()
     
     public JMenu[] getMenus() {
-        
-        JMenu[] menus = new JMenu[1];
-        
-        //{{{ Construct Edit Menu
-        JMenu menu = new JMenu("Edit");
-        menu.setMnemonic('E');
-           // These don't do anything yet.
-           // JMenuItem menuItem = new JMenuItem("Undo");
-           // menuItem.addActionListener( new EditUndoAction() );
-           // menu.add( menuItem );
-           // menuItem = new JMenuItem("Redo");
-           // menuItem.addActionListener( new EditRedoAction() );
-           // menu.add(menuItem);
-           // menu.addSeparator();
-            JMenuItem menuItem = new JMenuItem(jsXe.getAction("sourceview.cut"));
-            menu.add(menuItem);
-            menuItem = new JMenuItem(jsXe.getAction("sourceview.copy"));
-            menu.add(menuItem);
-            menuItem = new JMenuItem(jsXe.getAction("sourceview.paste"));
-            menu.add(menuItem);
-            menu.addSeparator();
-            menuItem = new JMenuItem(jsXe.getAction("sourceview.find"));
-            menu.add(menuItem);
-           // menuItem = new JMenuItem(new EditFindNextAction());
-           // menu.add(menuItem);
-        //}}}
-        
-        menus[0] = menu;
-        return menus;
+        return new JMenu[] { m_editMenu };
     }//}}}
     
     //{{{ getDocumentBuffer()
@@ -363,6 +375,8 @@ public class SourceView extends JPanel implements DocumentView {
     private String m_searchString;
     private String m_replaceString;
     private SourceViewPlugin m_plugin;
+    
+    private JMenu m_editMenu;
     
     //}}}
     

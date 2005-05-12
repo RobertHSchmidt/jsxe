@@ -1984,7 +1984,8 @@ public class JEditTextArea extends JComponent
 				select(getMarkPosition(),dot);
 			}
 			else
-				setCaretPosition(dot);
+				if (!evt.isPopupTrigger())
+               setCaretPosition(dot);
 		}
 
 		private void doDoubleClick(MouseEvent evt, int line,

@@ -8,6 +8,8 @@
     * Fixed the soft tabs option, key mnemonics, and scrollbar after adding
       syntax highlighting support.
     * Fixed the find dialog after adding syntax highlighting
+    * Added a context menu to the source view. This allows you to execute the
+      actions in the edit menu from a right-click menu.
 
 05/10/2005  Ian Lewis <IanLewis@member.fsf.org>
 
