@@ -31,6 +31,7 @@ import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.DocumentView;
+import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
 //{{{ Swing components
@@ -74,9 +75,9 @@ public class DefaultViewOptionsPanel extends OptionsPanel {
        // boolean showEmptyNodes = Boolean.valueOf(m_document.getProperty(SHOW_EMPTY_NODES, "false")).booleanValue();
         boolean continuousLayout = Boolean.valueOf(m_document.getProperty(DefaultView.CONTINUOUS_LAYOUT, "false")).booleanValue();
         
-        showCommentsCheckBox = new JCheckBox("Show comment nodes",showCommentNodes);
+        showCommentsCheckBox = new JCheckBox(Messages.getMessage("TreeView.Options.Show.Comments"),showCommentNodes);
        // showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
-        ContinuousLayoutCheckBox = new JCheckBox("Continuous layout for split-panes",continuousLayout);
+        ContinuousLayoutCheckBox = new JCheckBox(Messages.getMessage("TreeView.Options.Continuous.Layout"),continuousLayout);
         
         constraints.gridy      = gridY++;
         constraints.gridx      = 1;
@@ -130,7 +131,7 @@ public class DefaultViewOptionsPanel extends OptionsPanel {
     //{{{ getTitle()
     
     public String getTitle() {
-        return "Tree View Options";
+        return Messages.getMessage("TreeView.Options.Title");
     }//}}}
         
     //{{{ Private Members

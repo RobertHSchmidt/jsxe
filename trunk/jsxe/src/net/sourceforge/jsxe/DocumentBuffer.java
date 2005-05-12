@@ -39,6 +39,7 @@ import net.sourceforge.jsxe.options.OptionPane;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.jsxeFileDialog;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
@@ -154,9 +155,9 @@ public class DocumentBuffer extends XMLDocument {
     public boolean close(TabbedView view) throws IOException {
         if (getStatus(DIRTY)) {
             
-             //If it's dirty ask if you want to save.
-            String msg = getName()+" unsaved! Save it now?";
-            String title = "Unsaved Changes";
+            //If it's dirty ask if you want to save.
+            String msg = Messages.getMessage("DocumentBuffer.Close.Message", new String[] { getName() });
+            String title = Messages.getMessage("DocumentBuffer.Close.Message.Title");
             int optionType = JOptionPane.YES_NO_CANCEL_OPTION;
             int messageType = JOptionPane.WARNING_MESSAGE;
             
@@ -263,9 +264,9 @@ public class DocumentBuffer extends XMLDocument {
         boolean stillReload = true;
         if (getStatus(DIRTY)) {
             
-             //If it's dirty ask if you want to save.
-            String msg = getName()+" unsaved!\n You will lose all unsaved changes if you reload!\n\nContinue?";
-            String title = "Document Modified";
+            //If it's dirty ask if you want to save.
+            String msg = Messages.getMessage("DocumentBuffer.Reload.Message", new String[] { getName() });
+            String title = Messages.getMessage("DocumentBuffer.Reload.Message.Title");
             int optionType = JOptionPane.YES_NO_OPTION;
             int messageType = JOptionPane.WARNING_MESSAGE;
             
@@ -301,7 +302,6 @@ public class DocumentBuffer extends XMLDocument {
     }//}}}
     
     //{{{ save()
-    
     /**
      * Saves the document buffer to disk in the current file. If the document
      * is untitled the user is prompted for a file to save to.
@@ -317,7 +317,6 @@ public class DocumentBuffer extends XMLDocument {
     }//}}}
     
     //{{{ saveAs()
-    
     /**
      * Displays a save dialog that the user uses to chose a file to save to
      * and saves the document to it.
@@ -337,8 +336,8 @@ public class DocumentBuffer extends XMLDocument {
             boolean reallySave = true;
             if (selectedFile.exists()) {
                 //If it's dirty ask if you want to save.
-                String msg = "The file "+selectedFile.getName()+" already exists. Are you sure you want to overwrite it?";
-                String title = "File Exists";
+                String msg = Messages.getMessage("DocumentBuffer.SaveAs.Message", new String[] { selectedFile.getName() });
+                String title = Messages.getMessage("DocumentBuffer.SaveAs.Message.Title");
                 int optionType = JOptionPane.YES_NO_OPTION;
                 int messageType = JOptionPane.WARNING_MESSAGE;
                 
@@ -538,7 +537,7 @@ public class DocumentBuffer extends XMLDocument {
            // supportedEncodings.add("UTF-16LE");
            // supportedEncodings.add("UTF-16");
             
-            JLabel encodingLabel = new JLabel("Encoding:");
+            JLabel encodingLabel = new JLabel(Messages.getMessage("Document.Options.Encoding"));
             encodingComboBox = new JComboBox(supportedEncodings);
             encodingComboBox.setEditable(false);
             
@@ -550,7 +549,7 @@ public class DocumentBuffer extends XMLDocument {
                 }
             }
             
-            JLabel indentLabel = new JLabel("Indent width:");
+            JLabel indentLabel = new JLabel(Messages.getMessage("Document.Options.Indent.Width"));
             
             Vector sizes = new Vector(3);
             sizes.add("2");
@@ -565,12 +564,12 @@ public class DocumentBuffer extends XMLDocument {
             boolean formatOutput = Boolean.valueOf(getProperty(XMLDocument.FORMAT_XML, "false")).booleanValue();
             
            // whitespaceCheckBox = new JCheckBox("Whitespace in element content", whitespace);
-            formatCheckBox     = new JCheckBox("Format XML output", formatOutput);
+            formatCheckBox     = new JCheckBox(Messages.getMessage("Document.Options.Format.XML"), formatOutput);
             
            // whitespaceCheckBox.addChangeListener(new WhiteSpaceChangeListener());
             
             boolean validating = Boolean.valueOf(getProperty(XMLDocument.IS_VALIDATING, "false")).booleanValue();
-            m_m_validatingCheckBox = new JCheckBox("Validate if DTD or Schema Available", validating);
+            m_m_validatingCheckBox = new JCheckBox(Messages.getMessage("Document.Options.Validate"), validating);
             
            // formatCheckBox.setEnabled(!whitespace);
             
@@ -653,7 +652,7 @@ public class DocumentBuffer extends XMLDocument {
             
             boolean softTabs = Boolean.valueOf(getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
         
-            m_m_softTabsCheckBox = new JCheckBox("Soft tabs (emulated with spaces)", softTabs);
+            m_m_softTabsCheckBox = new JCheckBox(Messages.getMessage("Document.Options.Soft.Tabs"), softTabs);
             
             constraints.gridy      = gridY++;
             constraints.gridx      = 0;
@@ -707,7 +706,7 @@ public class DocumentBuffer extends XMLDocument {
         //{{{ getTitle()
         
         public String getTitle() {
-            return "XML Document Options";
+            return Messages.getMessage("Document.Options.Title");
         };//}}}
         
        // //{{{ WhiteSpaceChangeListener class

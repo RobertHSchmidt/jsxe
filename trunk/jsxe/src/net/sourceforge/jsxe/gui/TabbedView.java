@@ -457,7 +457,7 @@ public class TabbedView extends JFrame {
     private void createDefaultMenuItems() {
         
         //{{{ Create File Menu
-        m_fileMenu = new JMenu("File");
+        m_fileMenu = new JMenu(Messages.getMessage("File.Menu"));
         m_fileMenu.setMnemonic('F');
             JMenuItem menuItem = new JMenuItem(new FileNewAction(this));
             m_fileMenu.add( menuItem );
@@ -486,7 +486,7 @@ public class TabbedView extends JFrame {
         //}}}
         
         //{{{ Create View Menu
-        m_viewMenu = new JMenu("View");
+        m_viewMenu = new JMenu(Messages.getMessage("View.Menu"));
         m_viewMenu.setMnemonic('V');
         ArrayList views = jsXe.getPluginLoader().getViewPlugins();
         for (int i=0; i<views.size(); i++) {
@@ -500,7 +500,7 @@ public class TabbedView extends JFrame {
         //}}}
         
         //{{{ Create Tools Menu
-        m_toolsMenu = new JMenu("Tools");
+        m_toolsMenu = new JMenu(Messages.getMessage("Tools.Menu"));
         m_toolsMenu.setMnemonic('T');
             menuItem = new JMenuItem(jsXe.getAction("general-options"));
             m_toolsMenu.add(menuItem);
@@ -517,7 +517,7 @@ public class TabbedView extends JFrame {
         //}}}
         
         //{{{ Create Help Menu
-        m_helpMenu = new JMenu("Help");
+        m_helpMenu = new JMenu(Messages.getMessage("Help.Menu"));
         m_helpMenu.setMnemonic('H');
             menuItem = new JMenuItem(jsXe.getAction("about-jsxe"));
             m_helpMenu.add(menuItem);
