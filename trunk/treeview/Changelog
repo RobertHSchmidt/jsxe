@@ -1,3 +1,7 @@
+05/12/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Using messages in a few more places now.
+
 05/09/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * The context menu now uses the common.add message

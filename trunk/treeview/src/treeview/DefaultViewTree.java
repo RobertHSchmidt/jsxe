@@ -335,7 +335,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     
-                    JMenu addElement = new EnhancedMenu("Element", 20);
+                    JMenu addElement = new EnhancedMenu(Messages.getMessage("xml.element"), 20);
                     addNodeItem.add(addElement);
                     
                     addElement.add(jsXe.getAction("treeview.add.element.node"));
@@ -347,7 +347,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     
                     //Add the allowed entities even if no matter what
                     
-                    JMenu addEntity = new EnhancedMenu("Entity", 20);
+                    JMenu addEntity = new EnhancedMenu(Messages.getMessage("xml.entity.reference"), 20);
                     addNodeItem.add(addEntity);
                     
                     Iterator allowedEntities = ownerDocument.getAllowedEntities().iterator();
@@ -358,8 +358,10 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     }
                     
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.text.node"));
+                    popupMenuItem.setText(Messages.getMessage("xml.text"));
                     addNodeItem.add(popupMenuItem);
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.cdata.node"));
+                    popupMenuItem.setText(Messages.getMessage("xml.cdata"));
                     addNodeItem.add(popupMenuItem);
                     
                    // popupMenuItem = new JMenuItem(new AddNodeAction("New_Entity", "", Node.ENTITY_REFERENCE_NODE));
@@ -369,8 +371,10 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 }
                 if (selectedNode.getNodeType() == Node.DOCUMENT_NODE || selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.processing.instruction.node"));
+                    popupMenuItem.setText(Messages.getMessage("xml.processing.instruction"));
                     addNodeItem.add(popupMenuItem);
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.comment.node"));
+                    popupMenuItem.setText(Messages.getMessage("xml.comment"));
                     addNodeItem.add(popupMenuItem);
                     addNodeShown = true;
                     showpopup = true;
@@ -444,49 +448,49 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     setLeafIcon(m_elementIcon);
                     setOpenIcon(m_elementIcon);
                     setClosedIcon(m_elementIcon);
-                    setToolTipText("Element Node");
+                    setToolTipText(Messages.getMessage("xml.element"));
                     break;
                 case Node.TEXT_NODE:
                     setIcon(m_textIcon);
                     setLeafIcon(m_textIcon);
                     setOpenIcon(m_textIcon);
                     setClosedIcon(m_textIcon);
-                    setToolTipText("Text Node");
+                    setToolTipText(Messages.getMessage("xml.text"));
                     break;
                 case Node.CDATA_SECTION_NODE:
                     setIcon(m_CDATAIcon);
                     setLeafIcon(m_CDATAIcon);
                     setOpenIcon(m_CDATAIcon);
                     setClosedIcon(m_CDATAIcon);
-                    setToolTipText("CDATA Section");
+                    setToolTipText(Messages.getMessage("xml.cdata"));
                     break;
                 case Node.COMMENT_NODE:
                     setIcon(m_commentIcon);
                     setLeafIcon(m_commentIcon);
                     setOpenIcon(m_commentIcon);
                     setClosedIcon(m_commentIcon);
-                    setToolTipText("Comment Node");
+                    setToolTipText(Messages.getMessage("xml.comment"));
                     break;
                 case Node.ENTITY_REFERENCE_NODE:
                     setIcon(m_internalEntityIcon);
                     setLeafIcon(m_internalEntityIcon);
                     setOpenIcon(m_internalEntityIcon);
                     setClosedIcon(m_internalEntityIcon);
-                    setToolTipText("Entity Reference");
+                    setToolTipText(Messages.getMessage("xml.entity.reference"));
                     break;
                 case Node.DOCUMENT_NODE:
                     setIcon(m_defaultClosedIcon);
                     setLeafIcon(m_defaultLeafIcon);
                     setOpenIcon(m_defaultOpenIcon);
                     setClosedIcon(m_defaultClosedIcon);
-                    setToolTipText("XML Document");
+                    setToolTipText(Messages.getMessage("xml.document"));
                     break;
                 case Node.PROCESSING_INSTRUCTION_NODE:
                     setIcon(m_defaultLeafIcon);
                     setLeafIcon(m_defaultLeafIcon);
                     setOpenIcon(m_defaultLeafIcon);
                     setClosedIcon(m_defaultLeafIcon);
-                    setToolTipText("Processing Instruction");
+                    setToolTipText(Messages.getMessage("xml.processing.instruction"));
                     break;
                 default:
                     if (leaf) {
@@ -502,8 +506,6 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     setLeafIcon(m_defaultLeafIcon);
                     setOpenIcon(m_defaultOpenIcon);
                     setClosedIcon(m_defaultClosedIcon);
-                    
-                    setToolTipText("Unknown Node Type");
                     
                     break;
             }
