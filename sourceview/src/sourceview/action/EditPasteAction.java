@@ -59,10 +59,9 @@ public class EditPasteAction extends AbstractAction {
     //{{{ EditPasteAction constructor
     
     public EditPasteAction() {
-        //putValue(Action.NAME, "Copy");
-        putValue(Action.NAME, Messages.getMessage("SourceView.Copy"));
-        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl C"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
+        putValue(Action.NAME, Messages.getMessage("SourceView.Paste"));
+        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl V"));
+        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("P").getKeyCode()));
     }//}}}
     
     //{{{ actionPerformed()
