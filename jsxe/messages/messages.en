@@ -19,9 +19,36 @@ common.moveDown=Move Down
 
 #}}}
 
+#{{{ XML Terminology
+
+#{{{ XML Node Types
+xml.element=Element
+xml.processing.instruction=Processing Instruction
+xml.cdata=CDATA Section
+xml.text=Text
+xml.entity.reference=Entity Reference
+xml.declaration=Element Declaration
+xml.notation=Notation
+xml.entity=Entity Declaration
+xml.comment=Comment
+xml.attribute=Attribute
+xml.doctype=Document Type
+#}}}
+
+xml.attribute.value.short=Value
+xml.attribute.value=Attribute Value
+xml.document=XML Document
+xml.namespace=Namespace
+xml.namespace.decl=Namespace Declaration
+xml.doctypedef=Document Type Definition
+xml.schema=XML Schema
+#}}}
+
 #{{{ Global Options
 global.options.title=Global Options
 #}}}
+
+#{{{ Menu Items
 
 #{{{ File Menu Items
 File.New=New
@@ -36,22 +63,48 @@ File.CloseAll=Close All
 File.Exit=Exit
 #}}}
 
-View.Tree=Tree View
-View.Source=Source View
 Tools.Options=Options...
 Tools.Plugin=Plugin Manager...
 Plugin.Manager.Title=Plugin Manager
 Help.About=About jsXe...
+#}}}
 
+#{{{ Source View
 
 SourceView.Cut=Cut
 SourceView.Copy=Copy
 SourceView.Paste=Paste
 SourceView.Find=Find...
 SourceView.FindNext=Find Next
+
+#{{{ Source View Options
+SourceView.Options.Title=Source View Options
+SourceView.Syntax.Object=Node Type
+SourceView.Syntax.Style=Text Style
+SourceView.ColorChooser.Title=Color Chooser
+SourceView.Invalid=Invalid
+#}}}
+
+#{{{ Style Editor
+SourceView.StyleEditor.Title=Style Editor
+SourceView.StyleEditor.Color=Text Color
+SourceView.StyleEditor.Bold=Bold
+SourceView.StyleEditor.Italics=Italics
+#}}}
+
+#}}}
+
+#{{{ TreeView
+
 TreeView.RenameNode=Rename Node
 TreeView.RemoveNode=Remove Node
 TreeView.AddAttribute=Add Attribute
 TreeView.RemoveAttribute=Remove Attribute
 TreeView.EditNode=Edit Node
 Edit.Node.Dialog.Title=Edit Node
+
+#}}}
+
+#{{{ Error Messages
+
+#}}}
