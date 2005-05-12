@@ -33,6 +33,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.AdapterNode;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
@@ -108,10 +109,11 @@ public class DefaultViewTableModel implements TableModel {
     //{{{ getColumnName()
     
     public String getColumnName(int columnIndex) {
-        if (columnIndex==0)
-            return "Attribute";
-        else
-            return "Value";
+        if (columnIndex==0) {
+            return Messages.getMessage("xml.attribute");
+        } else {
+            return Messages.getMessage("xml.attribute.value.short");
+        }
     }//}}}
     
     //{{{ getRowCount()
