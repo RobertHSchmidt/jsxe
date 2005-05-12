@@ -116,19 +116,6 @@ public class jsXe {
             //{{{ get and load the configuration files
             initDefaultProps();
             
-            File properties = new File(settingsDirectory,"properties");
-            try {
-                FileInputStream filestream = new FileInputStream(properties);
-                props.load(filestream);
-            } catch (FileNotFoundException fnfe) {
-                
-                //Don't do anything right now
-                
-            } catch (IOException ioe) {
-                System.err.println(getAppTitle() + ": I/O ERROR: Could not open settings file");
-                System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
-            }
-            
             //Load the recent files list
             File recentFiles = new File(settingsDirectory, "recent.xml");
             m_bufferHistory = new BufferHistory();
@@ -261,6 +248,22 @@ public class jsXe {
                 }
                 
                 addActionSet(plugin.getActionSet());
+            }
+            //}}}
+            
+            //{{{ load user specific properties
+            
+            File properties = new File(settingsDirectory,"properties");
+            try {
+                FileInputStream filestream = new FileInputStream(properties);
+                props.load(filestream);
+            } catch (FileNotFoundException fnfe) {
+                
+                //Don't do anything right now
+                
+            } catch (IOException ioe) {
+                System.err.println(getAppTitle() + ": I/O ERROR: Could not open settings file");
+                System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
             }
             //}}}
             
@@ -950,27 +953,6 @@ public class jsXe {
             Log.log(Log.ERROR, jsXe.class, "**** jsXe was probably not built correctly ****");
             exiterror(null, ioe, 1);
         }
-        //}}}
-        
-        //{{{ Load default properties of installed views
-       // Enumeration installedViews = DocumentViewFactory.getAvailableViewTypes();
-       // while (installedViews.hasMoreElements()) {
-       //     String viewname = (String)installedViews.nextElement();
-       //     InputStream viewinputstream = jsXe.class.getResourceAsStream("/net/sourceforge/jsxe/gui/view/"+viewname+".props");
-       //     try {
-       //         Properties defViewProps = new Properties();
-       //         defViewProps.load(viewinputstream);
-       //         Enumeration propsList = defViewProps.propertyNames();
-       //         while (propsList.hasMoreElements()) {
-       //             String key = (String)propsList.nextElement();
-       //             defaultProps.setProperty(key, defViewProps.getProperty(key));
-       //         }
-       //     } catch (IOException ioe) {
-       //         System.err.println(getAppTitle() + ": Internal ERROR: Could not open default settings file");
-       //         System.err.println(getAppTitle() + ": Internal ERROR: "+ioe.toString());
-       //         System.err.println(getAppTitle() + ": Internal ERROR: You probobly didn't build jsXe correctly.");
-       //     }
-       // }
         //}}}
         
     }//}}}

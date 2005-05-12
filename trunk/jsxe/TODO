@@ -57,17 +57,6 @@ TODO:
       handle editing using a view that uses source and one that uses the tree
       structure at the same time?
     
-    * Enhance the source view with element completion and other cool stuff. See
-      the XML plugin for jEdit for ideas. How would I display well-formedness
-      errors?
-        * Element completion
-        * Highlighting where a parse error is located. Is it feasable to do
-          multiple parses to find as many errors as possible? SAX parsers find
-          the first one and then quit.
-    
-    * Create a dialog that displays all dirty DocumentBuffers and allows you to
-      save the selected ones, like jEdit.
-    
     * Create an install program for jsXe.
     
     * Add a ghosted image of the node to drag and drop cursor. Hopefully the
@@ -80,15 +69,13 @@ TODO:
       documents and navigate among many documents.
     
     * Create a help system for jsXe.
+        * Create documentation on how to use jsXe
         * Create documentation for developing views with jsXe
             * Document how to use actions and components to handle saving
               settings and other general stuff.
+        * Create a way for plugins to provide help.
     
 * Version 0.7 beta
-    
-    * Implement some form of internationalization support. Maybe implement this
-      by using different properties files for error messages and menu item
-      names?
     
     * Build into the interfaces support for printing. Implement printing
       support in the Default View and SourceView
@@ -101,6 +88,7 @@ TODO:
       installed view to open the document with.
     
     * Look for ways to improve efficiency with large XML documents
+        * Improve performance in whatever ways are possible
     
 * Version 0.8 beta
 
@@ -136,11 +124,7 @@ TODO:
       Maybe XSmiles can do this too. See www.x-smiles.org. Maybe look for other
       java XHTML browsers.
     
-    * Implement a JasperReports plugin that helps users view report definitions
-      for jasper reports. Eventually add support to edit visually like the
-      JasperAssistant. See jasperreports.sourceforge.net
-    
-    * Implement a Schema Diagram plugin that can show Shema as a flow like
+    * Implement a Schema Diagram plugin that can show Schema as a flow like
       diagram. Look at the JGraph components for this. www.jgraph.com.
       Eventually add support to allow editing of schemas
     

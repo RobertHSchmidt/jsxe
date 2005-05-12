@@ -1,3 +1,9 @@
+# JSXE Swedish properties file
+# $Id$
+#:mode=properties:
+#:tabSize=4:indentSize=4:noTabs=true:
+#:folding=explicit:collapseFolds=1:
+
 #{{{ common properties
 
 common.ok=OK

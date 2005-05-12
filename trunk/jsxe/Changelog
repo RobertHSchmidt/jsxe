@@ -1,3 +1,8 @@
+05/11/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed bug where user specific properties were being overwritten by
+      a plugin's default properties
+
 05/10/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added Swedish translation thanks to Patrik Johansson

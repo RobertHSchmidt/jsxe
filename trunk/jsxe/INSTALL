@@ -38,7 +38,7 @@ in  C:\Program Files\  or  /usr/local/share/  or something like that.
 
 RUNNING jsXe
 
-You should probably have 1.4.2 or better of java and you need 2.6.2 of Xerces.
+You should have 1.4.2 or better of java and you need 2.6.2 of Xerces.
 To run jsXe you should just run the java interpreter on the jsXe.jar file. There
 is a shell script or batch file included in the source tree for this purpose.
 
