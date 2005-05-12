@@ -1,1 +1,14 @@
 #SourceView default document properties
+
+#{{{ Syntax Styles
+source.text.color=color\:black
+source.comment.color=color\:green style\:i
+source.doctype.color=color\:blue style\:bi
+source.attribute.color=color\:gray style\:b
+source.attribute.value.color=color\:gray
+source.cdata.color=color\:orange style\:b
+source.entity.reference.color=color\:black style\:b
+source.element.color=color\:gray style\:b
+source.processing.instruction.color=color\:cyan style\:b
+source.invalid.color=color\:red
+#}}}

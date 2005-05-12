@@ -3,14 +3,7 @@ SourceViewPlugin.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editor
-jsXe is a gui application that creates a tree view of an XML document.
-The user can then edit this tree and the content in the tree.
-
-This file contions the code source view plugin for jsXe.
-
-This file written by Ian Lewis (IanLewis@member.fsf.org)
-Copyright (C) 2002 Ian Lewis
+Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -33,7 +26,7 @@ package sourceview;
 
 //{{{ Imports
 
-import sourceview.action.*;
+//import sourceview.action.*;
 
 //{{{ jsXe classes
 
@@ -41,6 +34,7 @@ import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.OptionsPanel;
+import net.sourceforge.jsxe.util.Log;
 
 //}}}
 
@@ -52,15 +46,22 @@ import java.util.Properties;
 
 //}}}
 
+/**
+ * A plugin for jsXe for viewing and editing an XML Document as text.
+ * Supports syntax highlighting.
+ * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
+ * @version $Id$
+ * @see SourceView
+ */
 public class SourceViewPlugin extends ViewPlugin {
     
     //{{{ SourceViewPlugin
     
     public SourceViewPlugin() {
-        addAction("sourceview.cut", new EditCutAction());
-        addAction("sourceview.copy", new EditCopyAction());
-        addAction("sourceview.paste", new EditPasteAction());
-        addAction("sourceview.find", new EditFindAction());
+       // addAction("sourceview.cut", new EditCutAction());
+       // addAction("sourceview.copy", new EditCopyAction());
+       // addAction("sourceview.paste", new EditPasteAction());
+       // addAction("sourceview.find", new EditFindAction());
     }//}}}
     
     //{{{ newDocumentView()
@@ -72,10 +73,20 @@ public class SourceViewPlugin extends ViewPlugin {
     //{{{ getOptionsPanel()
     
     public OptionsPanel getOptionsPanel(DocumentBuffer buffer) {
-       // return new SourceViewOptionsPanel(buffer);
-        // moved the soft tabs option to the jsXe core.
-        // no need for a options panel right now.
-        return null;
+        return new SourceViewOptionsPanel(buffer);
     }//}}}
     
+    //{{{ getProperties()
+    
+    public Properties getProperties() {
+        Properties props = new Properties();
+        try {
+            InputStream stream = SourceView.class.getResourceAsStream("/sourceview/sourceview.props");
+            props.load(stream);
+        } catch (IOException ioe) {
+            Log.log(Log.ERROR, this, "Source View: failed to load default properties.");
+            Log.log(Log.ERROR, this, ioe.getMessage());
+        }
+        return props;
+    }//}}}
 }
