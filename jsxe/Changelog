@@ -1,3 +1,8 @@
+05/13/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Rearranged how jsXe starts up to hopefully make it run faster.
+    * Added a check for the correct Xerces version.
+
 05/11/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed bug where user specific properties were being overwritten by

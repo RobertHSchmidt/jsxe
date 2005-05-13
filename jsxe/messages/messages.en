@@ -129,5 +129,6 @@ DocumentBuffer.Close.Message.Title=Unsaved Changes
 #}}}
 
 #{{{ Error Messages
-
+No.Xerces.Error={0} not found. jsXe requires Apache {0}.
+No.Xerces.Error.Title={0} not found.
 #}}}

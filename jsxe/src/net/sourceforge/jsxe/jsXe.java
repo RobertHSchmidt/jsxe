@@ -88,15 +88,13 @@ public class jsXe {
             
             //{{{ Check the java version
             String javaVersion = System.getProperty("java.version");
-            if(javaVersion.compareTo("1.3") < 0)
+            if(javaVersion.compareTo("1.4.2") < 0)
             {
                 System.err.println(getAppTitle() + ": ERROR: " + getAppTitle() + getVersion());
                 System.err.println(getAppTitle() + ": ERROR: You are running Java version " + javaVersion + ".");
-                System.err.println(getAppTitle() + ": ERROR:" + getAppTitle()+" requires Java 1.3 or later.");
+                System.err.println(getAppTitle() + ": ERROR:" + getAppTitle()+" requires Java 1.4.2 or later.");
                 System.exit(1);
-            }
-            
-            //}}}
+            }//}}}
             
             //{{{ set settings dirs
             String homeDir = System.getProperty("user.home");
@@ -111,30 +109,36 @@ public class jsXe {
             File _pluginsDirectory = new File(pluginsDirectory);
             if(!_pluginsDirectory.exists())
                 _pluginsDirectory.mkdirs();
+            
+            String jsXeHome = System.getProperty("jsxe.home");
+            if(jsXeHome == null) {
+                String classpath = System.getProperty("java.class.path");
+                int index = classpath.toLowerCase().indexOf("jsxe.jar");
+                int start = classpath.lastIndexOf(File.pathSeparator,index) + 1;
+                // if started with java -jar jsxe.jar
+                if(classpath.equalsIgnoreCase("jsxe.jar")) {
+                    jsXeHome = System.getProperty("user.dir");
+                } else {
+                    if(index > start) {
+                        jsXeHome = classpath.substring(start, index - 1);
+                    } else {
+                        // use user.dir as last resort
+                        jsXeHome = System.getProperty("user.dir");
+                    }
+                }
+            }
+            
+            //}}}
+            
+            //{{{ start locale
+            Messages.initializePropertiesObject(null, jsXeHome+fileSep+"messages");
             //}}}
             
             //{{{ get and load the configuration files
             initDefaultProps();
-            
-            //Load the recent files list
-            File recentFiles = new File(settingsDirectory, "recent.xml");
-            m_bufferHistory = new BufferHistory();
-            try {
-                m_bufferHistory.load(recentFiles);
-            } catch (IOException ioe) {
-                System.err.println(getAppTitle() + ": I/O ERROR: Could not open recent files list");
-                System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
-            } catch (SAXException saxe) {
-                System.err.println(getAppTitle() + ": I/O ERROR: recent.xml not formatted properly");
-                System.err.println(getAppTitle() + ": I/O ERROR: "+saxe.toString());
-            } catch (ParserConfigurationException pce) {
-                System.err.println(getAppTitle() + ": I/O ERROR: Could not parse recent.xml");
-                System.err.println(getAppTitle() + ": I/O ERROR: "+pce.toString());
-            }
             //}}}
             
             //{{{ parse command line arguments
-            Log.log(Log.NOTICE, jsXe.class, "Parsing command line options");
             String viewname = null;
             ArrayList files = new ArrayList();
             boolean debug = false;
@@ -178,8 +182,33 @@ public class jsXe {
                 Log.setLogWriter(stream);
             } catch (IOException ioe) {
                 Log.log(Log.ERROR, jsXe.class, ioe);
-            }
-            //}}}
+            }//}}}
+            
+            //{{{ check Xerces version
+            String xercesVersion = org.apache.xerces.impl.Version.getVersion();
+            String reqVersion = "Xerces-J 2.6.2";
+            if (MiscUtilities.compareStrings(xercesVersion, reqVersion, false) != 0) {
+                String msg = Messages.getMessage("No.Xerces.Error", new String[] { reqVersion });
+                Log.log(Log.ERROR, jsXe.class, msg);
+                JOptionPane.showMessageDialog(null, msg, Messages.getMessage("No.Xerces.Error.Title", new String[] { reqVersion }), JOptionPane.WARNING_MESSAGE);
+                System.exit(1);
+            }//}}}
+            
+            //{{{ Load the recent files list
+            File recentFiles = new File(settingsDirectory, "recent.xml");
+            m_bufferHistory = new BufferHistory();
+            try {
+                m_bufferHistory.load(recentFiles);
+            } catch (IOException ioe) {
+                System.err.println(getAppTitle() + ": I/O ERROR: Could not open recent files list");
+                System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
+            } catch (SAXException saxe) {
+                System.err.println(getAppTitle() + ": I/O ERROR: recent.xml not formatted properly");
+                System.err.println(getAppTitle() + ": I/O ERROR: "+saxe.toString());
+            } catch (ParserConfigurationException pce) {
+                System.err.println(getAppTitle() + ": I/O ERROR: Could not parse recent.xml");
+                System.err.println(getAppTitle() + ": I/O ERROR: "+pce.toString());
+            }//}}}
             
             //{{{ load plugins
             Log.log(Log.NOTICE, jsXe.class, "Loading plugins");
@@ -187,33 +216,11 @@ public class jsXe {
             Log.log(Log.NOTICE, jsXe.class, "Adding to plugin search path: "+pluginsDirectory);
             ArrayList pluginMessages = m_pluginLoader.addDirectory(pluginsDirectory);
             
-            String jsXeHome = System.getProperty("jsxe.home");
-            if(jsXeHome == null) {
-                String classpath = System.getProperty("java.class.path");
-                int index = classpath.toLowerCase().indexOf("jsxe.jar");
-                int start = classpath.lastIndexOf(File.pathSeparator,index) + 1;
-                // if started with java -jar jsxe.jar
-                if(classpath.equalsIgnoreCase("jsxe.jar")) {
-                    jsXeHome = System.getProperty("user.dir");
-                } else {
-                    if(index > start) {
-                        jsXeHome = classpath.substring(start, index - 1);
-                    } else {
-                        // use user.dir as last resort
-                        jsXeHome = System.getProperty("user.dir");
-                    }
-                }
-            }
             //add the jsXe home to the plugins directory
             Log.log(Log.NOTICE, jsXe.class, "Adding to plugin search path: "+jsXeHome+fileSep+"jars");
             pluginMessages.addAll(m_pluginLoader.addDirectory(jsXeHome+fileSep+"jars"));
             //}}}
-            
-            //{{{ start locale
-            Log.log(Log.NOTICE,jsXe.class, "Initializing locale");
-            Messages.initializePropertiesObject(null, jsXeHome+fileSep+"messages");
-            //}}}
-            
+
             //{{{ start plugins
             
             Log.log(Log.NOTICE, jsXe.class, "Starting plugins");

@@ -50,7 +50,7 @@ import java.util.Properties;
  * to jsXe allowing it to do extra tasks such as XSLT transformation.
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
- * @since jsXe 0.4 beta
+ * @since jsXe 0.3 beta
  * @version $Id$
  */
 public abstract class ActionPlugin {
