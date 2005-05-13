@@ -43,6 +43,7 @@ import javax.swing.table.*;
 import javax.swing.border.EmptyBorder;
 import java.util.Vector;
 import java.util.StringTokenizer;
+import java.util.Iterator;
 //}}}
 
 //}}}
@@ -70,9 +71,9 @@ public class SourceViewOptionsPanel extends OptionsPanel {
     
     public void save() {
         styleModel.save();
-        DocumentView view = jsXe.getActiveView().getDocumentView();
-        if (view instanceof SourceView) {
-        ((SourceView)view).getTextArea().getPainter().setStyles(
+        Iterator itr = SourceView.m_sourceviews.iterator();
+        while (itr.hasNext()) {
+        ((SourceView)itr.next()).getTextArea().getPainter().setStyles(
             new SyntaxStyle[] { parseStyle(jsXe.getProperty("source.text.color")),
                                 parseStyle(jsXe.getProperty("source.comment.color")),
                                 parseStyle(jsXe.getProperty("source.doctype.color")),

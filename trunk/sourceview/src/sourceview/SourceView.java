@@ -68,6 +68,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.ArrayList;
 //}}}
 
 //}}}
@@ -80,6 +81,9 @@ import java.util.Properties;
  * @version $Id$
  */
 public class SourceView extends JPanel implements DocumentView {
+    
+    // Temporary Hack
+    protected static ArrayList m_sourceviews = new ArrayList();
     
     //{{{ Private static members
     private static final String _VIEWNAME = "source";
@@ -165,6 +169,8 @@ public class SourceView extends JPanel implements DocumentView {
        // menu.add(menuItem);
         //}}}
         
+        m_sourceviews.add(this);
+        
         setDocumentBuffer(document);
         
         //focus on the text area the first time the view is shown
@@ -207,6 +213,7 @@ public class SourceView extends JPanel implements DocumentView {
             dialog.dispose();
         }
         m_document.removeXMLDocumentListener(docListener);
+        m_sourceviews.remove(this);
         return true;
     }//}}}
     
