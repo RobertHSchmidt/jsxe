@@ -1189,6 +1189,15 @@ loop:       for(int i = 0; i < str.length(); i++)
 
     //}}}
     
+    //{{{ isTrue()
+    /**
+     * Returns true if the value of the string is true
+     * @param str the boolean string
+     */
+    public boolean isTrue(String str) {
+        return "true".equalsIgnoreCase(str);
+    }//}}}
+    
     //{{{ equals()
     /**
      * Determines if object a equals object b. Returns false if one is null and the other is not.
