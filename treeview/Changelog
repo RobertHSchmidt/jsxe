@@ -1,3 +1,7 @@
+05/15/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added support for showing ID type attributes in the tree.
+
 05/12/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Using messages in a few more places now.
