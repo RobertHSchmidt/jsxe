@@ -59,6 +59,7 @@ import java.awt.event.*;
 //}}}
 
 //{{{ DOM classes
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 //}}}
@@ -277,14 +278,25 @@ public class DefaultViewTree extends JTree implements Autoscroll {
      * Creates the string that will be displayed in the tree node
      */
     private static String toString(AdapterNode node) {
-        String s = new String();
+        StringBuffer s = new StringBuffer();
         if (node.getNodeType() == Node.DOCUMENT_NODE)
             return "Document Root";
         String nodeName = node.getNodeName();
         if (! nodeName.startsWith("#")) {   
-            s += nodeName;
+            s.append(nodeName);
+            if (node.getNodeType() == AdapterNode.ELEMENT_NODE) {
+                NamedNodeMap attributes = node.getAttributes();
+                ElementDecl decl = node.getElementDecl();
+                for (int i=0; i<attributes.getLength(); i++) {
+                    Node attr = attributes.item(i);
+                    ElementDecl.AttributeDecl attrDecl = (decl != null) ? decl.getAttribute(attr.getNodeName()) : null;
+                    if(attr.getNodeName().equalsIgnoreCase("id") || (attrDecl != null && attrDecl.type.equals("ID"))) {
+                        s.append(' '+attr.getNodeName() + "=\"" + attr.getNodeValue() + '"');
+                    }
+                }
+            }
         }
-        if (s.equals("")) {
+        if (s.length()==0) {
             if (node.getNodeValue() != null) {
                 String t = node.getNodeValue().trim();
                 int x = t.indexOf("\n");
@@ -294,10 +306,10 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                 if (t.length() > 50) {
                     t = t.substring(0, 50) + "...";
                 }
-                s += t;
+                s.append(t);
             }
         }
-        return s;
+        return s.toString();
     }//}}}
     
     //{{{ TreePopupListener class
