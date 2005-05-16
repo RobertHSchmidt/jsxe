@@ -83,6 +83,7 @@ public class DefaultView extends JPanel implements DocumentView {
     public static final String HORIZ_SPLIT_LOCATION = TreeViewPlugin.PLUGIN_NAME+".splitpane.horiz.loc";
     public static final String SHOW_COMMENTS = TreeViewPlugin.PLUGIN_NAME+".show.comment.nodes";
     public static final String SHOW_EMPTY_NODES = TreeViewPlugin.PLUGIN_NAME+".show.empty.nodes";
+    public static final String SHOW_ATTRIBUTES  = TreeViewPlugin.PLUGIN_NAME+".show.attributes";
     //}}}
     
     static {
@@ -363,6 +364,7 @@ public class DefaultView extends JPanel implements DocumentView {
         document.setProperty(HORIZ_SPLIT_LOCATION, document.getProperty(HORIZ_SPLIT_LOCATION, m_defaultProperties.getProperty(HORIZ_SPLIT_LOCATION)));
         document.setProperty(VERT_SPLIT_LOCATION, document.getProperty(VERT_SPLIT_LOCATION, m_defaultProperties.getProperty(VERT_SPLIT_LOCATION)));
         document.setProperty(SHOW_COMMENTS, document.getProperty(SHOW_COMMENTS, m_defaultProperties.getProperty(SHOW_COMMENTS)));
+        document.setProperty(SHOW_ATTRIBUTES, document.getProperty(SHOW_ATTRIBUTES, m_defaultProperties.getProperty(SHOW_ATTRIBUTES)));
        // document.setProperty(SHOW_EMPTY_NODES, document.getProperty(SHOW_EMPTY_NODES, m_defaultProperties.getProperty(SHOW_EMPTY_NODES)));
     }//}}}
     
@@ -552,7 +554,7 @@ public class DefaultView extends JPanel implements DocumentView {
                 vertSplitPane.setContinuousLayout(layout);
                 horizSplitPane.setContinuousLayout(layout);
             }
-            if (CONTINUOUS_LAYOUT.equals(key) || SHOW_COMMENTS.equals(key)) {
+            if (CONTINUOUS_LAYOUT.equals(key) || SHOW_COMMENTS.equals(key) || SHOW_ATTRIBUTES.equals(key)) {
                 tree.updateUI();
             }
         }//}}}
