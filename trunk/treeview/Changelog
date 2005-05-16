@@ -1,6 +1,8 @@
 05/15/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added support for showing ID type attributes in the tree.
+    * Added a new option that allows you to show all attributes, just ID
+      attributes or no attributes in the tree.
 
 05/12/2005  Ian Lewis <IanLewis@member.fsf.org>
 

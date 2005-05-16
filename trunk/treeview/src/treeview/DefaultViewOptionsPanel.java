@@ -74,15 +74,43 @@ public class DefaultViewOptionsPanel extends OptionsPanel {
         boolean showCommentNodes = Boolean.valueOf(m_document.getProperty(DefaultView.SHOW_COMMENTS, "false")).booleanValue();
        // boolean showEmptyNodes = Boolean.valueOf(m_document.getProperty(SHOW_EMPTY_NODES, "false")).booleanValue();
         boolean continuousLayout = Boolean.valueOf(m_document.getProperty(DefaultView.CONTINUOUS_LAYOUT, "false")).booleanValue();
+        String showAttrs = m_document.getProperty(DefaultView.SHOW_ATTRIBUTES, "ID only");
         
         showCommentsCheckBox = new JCheckBox(Messages.getMessage("TreeView.Options.Show.Comments"),showCommentNodes);
        // showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
         ContinuousLayoutCheckBox = new JCheckBox(Messages.getMessage("TreeView.Options.Continuous.Layout"),continuousLayout);
         
-        constraints.gridy      = gridY++;
+        JLabel showAttrsLabel = new JLabel(Messages.getMessage("TreeView.Options.Show.Attributes"));
+        m_showAttrsComboBox = new JComboBox(new String [] {"None", "ID only", "All"});
+        
+        m_showAttrsComboBox.setSelectedItem(showAttrs);
+        
+        constraints.gridy      = gridY;
         constraints.gridx      = 1;
         constraints.gridheight = 1;
         constraints.gridwidth  = 1;
+        constraints.weightx    = 1.0f;
+        constraints.fill       = GridBagConstraints.BOTH;
+        constraints.insets     = new Insets(1,0,1,0);
+        
+        layout.setConstraints(showAttrsLabel, constraints);
+        add(showAttrsLabel);
+        
+        constraints.gridy      = gridY++;
+        constraints.gridx      = 2;
+        constraints.gridheight = 1;
+        constraints.gridwidth  = 1;
+        constraints.weightx    = 1.0f;
+        constraints.fill       = GridBagConstraints.BOTH;
+        constraints.insets     = new Insets(1,0,1,0);
+        
+        layout.setConstraints(m_showAttrsComboBox, constraints);
+        add(m_showAttrsComboBox);
+        
+        constraints.gridy      = gridY++;
+        constraints.gridx      = 1;
+        constraints.gridheight = 1;
+        constraints.gridwidth  = 2;
         constraints.weightx    = 1.0f;
         constraints.fill       = GridBagConstraints.BOTH;
         constraints.insets     = new Insets(1,0,1,0);
@@ -104,7 +132,7 @@ public class DefaultViewOptionsPanel extends OptionsPanel {
         constraints.gridy      = gridY++;
         constraints.gridx      = 1;
         constraints.gridheight = 1;
-        constraints.gridwidth  = 1;
+        constraints.gridwidth  = 2;
         constraints.weightx    = 1.0f;
         constraints.fill       = GridBagConstraints.BOTH;
         constraints.insets     = new Insets(1,0,1,0);
@@ -118,8 +146,8 @@ public class DefaultViewOptionsPanel extends OptionsPanel {
     public void save() {
         m_document.setProperty(DefaultView.SHOW_COMMENTS,String.valueOf(showCommentsCheckBox.isSelected()));
        // m_document.setProperty(SHOW_EMPTY_NODES,(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
-        
         m_document.setProperty(DefaultView.CONTINUOUS_LAYOUT,String.valueOf(ContinuousLayoutCheckBox.isSelected()));
+        m_document.setProperty(DefaultView.SHOW_ATTRIBUTES, m_showAttrsComboBox.getSelectedItem().toString());
     }//}}}
     
     //{{{ getName()
@@ -139,6 +167,7 @@ public class DefaultViewOptionsPanel extends OptionsPanel {
     private JCheckBox showCommentsCheckBox;
    // private JCheckBox showEmptyNodesCheckBox;
     private JCheckBox ContinuousLayoutCheckBox;
+    private JComboBox m_showAttrsComboBox;
     
     private DocumentBuffer m_document;
     

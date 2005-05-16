@@ -287,10 +287,16 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             if (node.getNodeType() == AdapterNode.ELEMENT_NODE) {
                 NamedNodeMap attributes = node.getAttributes();
                 ElementDecl decl = node.getElementDecl();
+                XMLDocument document = node.getOwnerDocument();
+                String showAttrs = document.getProperty(DefaultView.SHOW_ATTRIBUTES);
                 for (int i=0; i<attributes.getLength(); i++) {
                     Node attr = attributes.item(i);
                     ElementDecl.AttributeDecl attrDecl = (decl != null) ? decl.getAttribute(attr.getNodeName()) : null;
-                    if(attr.getNodeName().equalsIgnoreCase("id") || (attrDecl != null && attrDecl.type.equals("ID"))) {
+                    if (showAttrs.equals("All") ||
+                    (showAttrs.equals("ID only") && 
+                        ((attr.getNodeName().equalsIgnoreCase("id") || 
+                        (attrDecl != null && attrDecl.type.equals("ID"))))))
+                    {
                         s.append(' '+attr.getNodeName() + "=\"" + attr.getNodeValue() + '"');
                     }
                 }
