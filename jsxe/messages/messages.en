@@ -111,6 +111,7 @@ SourceView.StyleEditor.Italics=Italics
 TreeView.Options.Title=Tree View Options
 TreeView.Options.Show.Comments=Show comment nodes
 TreeView.Options.Continuous.Layout=Continuous layout for split-panes
+TreeView.Options.Show.Attributes=Show element attributes in tree:
 TreeView.RenameNode=Rename Node
 TreeView.RemoveNode=Remove Node
 TreeView.AddAttribute=Add Attribute
