@@ -10,5 +10,13 @@ source.cdata.color=color\:orange style\:b
 source.entity.reference.color=color\:black style\:b
 source.element.color=color\:gray style\:b
 source.processing.instruction.color=color\:cyan style\:b
+source.markup.color=color\:gray
 source.invalid.color=color\:red
+source.namespace.prefix.color=color\:gray
 #}}}
+
+# Insert closing tag automatically after '</' typed
+source.close-complete=true
+
+# Insert closing tag automatically after '>' typed
+source.close-complete-open=false

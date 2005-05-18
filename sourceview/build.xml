@@ -34,8 +34,8 @@
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="4"/>
 		<property name="build.version" value="1"/>
-		<property name="app.version" value="${major.version}.${minor.version} pre${build.version}"/>
-		<property name="app_version" value="${major.version}_${minor.version}pre${build.version}"/>
+		<property name="app.version" value="${major.version}.${minor.version}.${build.version}"/>
+		<property name="app_version" value="${major.version}_${minor.version}_${build.version}"/>
         <property name="implementation.version" value="${major.version}.${minor.version}.${build.version}"/>
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
 		<property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>

@@ -109,6 +109,7 @@ public class SourceViewDocument extends SyntaxDocument {
         try {
             super.insertString(offs, str, a);
             m_document.insertText(offs, str);
+            
         } catch (DOMException dome) {
             Toolkit.getDefaultToolkit().beep();
         } catch (IOException ioe) {}
