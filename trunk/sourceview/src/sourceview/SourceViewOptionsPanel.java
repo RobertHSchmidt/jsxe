@@ -78,14 +78,14 @@ public class SourceViewOptionsPanel extends OptionsPanel {
                                 parseStyle(jsXe.getProperty("source.comment.color")),
                                 parseStyle(jsXe.getProperty("source.doctype.color")),
                                 parseStyle(jsXe.getProperty("source.attribute.value.color")),
+                                parseStyle(jsXe.getProperty("source.attribute.value.color")),
                                 parseStyle(jsXe.getProperty("source.cdata.color")),
                                 parseStyle(jsXe.getProperty("source.entity.reference.color")),
                                 parseStyle(jsXe.getProperty("source.element.color")),
                                 parseStyle(jsXe.getProperty("source.attribute.color")),
                                 parseStyle(jsXe.getProperty("source.processing.instruction.color")),
-                                
-                                //(Equals between attribute name and value
-                                parseStyle(jsXe.getProperty("source.element.color")),
+                                parseStyle(jsXe.getProperty("source.namespace.prefix.color")),
+                                parseStyle(jsXe.getProperty("source.markup.color")),
                                 parseStyle(jsXe.getProperty("source.invalid.color")),
                                 });
         }
@@ -390,6 +390,8 @@ public class SourceViewOptionsPanel extends OptionsPanel {
         //{{{ StyleTableModel constructor
         public StyleTableModel() {
             styleChoices = new Vector(9);
+            addStyleChoice("SourceView.Markup", "source.markup.color");
+            addStyleChoice("xml.namespace.prefix", "source.namespace.prefix.color");
             addStyleChoice("xml.text","source.text.color");
             addStyleChoice("xml.element","source.element.color");
             addStyleChoice("xml.attribute","source.attribute.color");

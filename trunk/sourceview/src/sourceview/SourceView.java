@@ -111,14 +111,14 @@ public class SourceView extends JPanel implements DocumentView {
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.comment.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.doctype.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.attribute.value.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.attribute.value.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.cdata.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.entity.reference.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.element.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.attribute.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.processing.instruction.color")),
-                                
-                                //(Equals between attribute name and value
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.element.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.namespace.prefix.color")),
+                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.markup.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.invalid.color")),
                                 });
        // textarea.setFont(new Font("Monospaced", 0, 12));
@@ -359,8 +359,11 @@ public class SourceView extends JPanel implements DocumentView {
                         }
                         getDocument().insertString(getCaretPosition(),tab.toString(),null);
                         e.consume();
-                    } catch (NumberFormatException nfe) {}
-                      catch (BadLocationException ble) {}
+                    } catch (NumberFormatException nfe) {
+                        Log.log(Log.ERROR, this, nfe);
+                    } catch (BadLocationException ble) {
+                        Log.log(Log.ERROR, this, ble);
+                    }
                 }
             }
             super.processKeyEvent(e);

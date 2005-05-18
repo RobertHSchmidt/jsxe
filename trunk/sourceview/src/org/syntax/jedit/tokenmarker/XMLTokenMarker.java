@@ -25,13 +25,57 @@ public class XMLTokenMarker extends TokenMarker {
    public XMLTokenMarker() {
    }
    
+   /**
+    * Marks Tokens in the buffer. The mapping for XML constructs and token types
+    * is as follows.
+    * <table>
+    *    <tr>
+    *       <td>NULL</td><td>Text</td>
+    *    </tr>
+    *    <tr>
+    *       <td>COMMENT1</td><td>Comment</td>
+    *    </tr>
+    *    <tr>
+    *       <td>COMMENT2</td><td>Declaration</td>
+    *    </tr>
+    *    <tr>
+    *       <td>LITERAL1</td><td>Attribute Value started by "</td>
+    *    </tr>
+    *    <tr>
+    *       <tr>LITERAL2</td><td>Attribute Value started by '</td>
+    *    </tr>
+    *    <tr>
+    *       <td>LITERAL3</td><td>CDATA</td>
+    *    </tr>
+    *    <tr>
+    *       <td>LABEL</td><td>Entity Reference</td>
+    *    </tr>
+    *    <tr>
+    *       <td>KEYWORD1</td><td>Element</td>
+    *    </tr>
+    *    <tr>
+    *       <td>KEYWORD2</td><td>Attribute Name</td>
+    *    </tr>
+    *    <tr>
+    *       <td>KEYWORD3</td><td>Processing Instruction</td>
+    *    </tr>
+    *    <tr>
+    *       <td>KEYWORD4</td><td>Namespace prefix</td>
+    *    </tr>
+    *    <tr>
+    *       <td>OPERATOR</td><td>Equals between attribute name and value, quotes, and tag markup</td>
+    *    </tr>
+    *    <tr>
+    *       <td>INVALID</td><td>Anything invalid</td>
+    *    </tr>
+    */
    public byte markTokensImpl(byte token, Segment line, int lineIndex) {
       char[] array = line.array;
       int offset = line.offset;
       int lastOffset = offset;
       int length = line.count + offset;
       
-      // Ugly hack to handle multi-line tags and CDATA
+      // Ugly hack to handle multi-line tags
       boolean sk1 = token == Token.KEYWORD1;
       
       for ( int i = offset; i < length; i++ ) {
@@ -57,7 +101,7 @@ public class XMLTokenMarker extends TokenMarker {
                         token = Token.KEYWORD3;
                      }
                      else
-                        token = Token.KEYWORD1;
+                        token = Token.OPERATOR; // add the < as an operator
                      break;
                      
                   case '&':
@@ -66,12 +110,23 @@ public class XMLTokenMarker extends TokenMarker {
                      token = Token.LABEL;
                      break;
                }
+               if ( SyntaxUtilities.regionMatches(false, line, i, "]]>") ) {
+                  addToken(i-lastOffset, token);
+                  lastOffset = i;
+                  addToken((i+3)-lastOffset, Token.INVALID);
+                  lastOffset = i+3;
+                  //no change in token type
+               }
                break;
                
             case Token.KEYWORD1: // tag
                switch ( c ) {
                   case '>':
-                     addToken(ip1-lastOffset, token);
+                    // addToken(ip1-lastOffset, token);
+                    // lastOffset = ip1;
+                     addToken(i-lastOffset, token);
+                     lastOffset = i;
+                     addToken(ip1-lastOffset, Token.OPERATOR); // add the '>' as an operator
                      lastOffset = ip1;
                      token = Token.NULL;
                      sk1 = false;
@@ -84,7 +139,12 @@ public class XMLTokenMarker extends TokenMarker {
                      token = Token.KEYWORD2;
                      sk1 = false;
                      break;
-                     
+                  case ':':
+                     addToken(ip1-lastOffset, Token.KEYWORD4);
+                     lastOffset = ip1;
+                     //no change to the keyword.
+                     sk1 = false;
+                     break;
                   default:
                      if ( sk1 ) {
                         token = Token.KEYWORD2;
@@ -118,15 +178,33 @@ public class XMLTokenMarker extends TokenMarker {
             case Token.OPERATOR: // equal for attribute
                switch ( c ) {
                   case '\"':
+                     addToken(i-lastOffset, token);
+                     lastOffset = i;
+                     addToken(ip1-lastOffset, Token.OPERATOR); //add the quote as on operator
+                     lastOffset = ip1;
+                     token = Token.LITERAL1;
+                     break;
                   case '\'':
                      addToken(i-lastOffset, token);
                      lastOffset = i;
-                     token = Token.LITERAL1;
+                     addToken(ip1-lastOffset, Token.OPERATOR); //add the quote as on operator
+                     lastOffset = ip1;
+                     token = Token.LITERAL2;
                      break;
                   case '>':
                      addToken(i-lastOffset, token);
                      lastOffset = i;
                      token = Token.NULL;
+                     break;
+                  case '/':
+                     addToken(i-lastOffset, token);
+                     lastOffset = i;
+                     addToken(ip1-lastOffset, Token.OPERATOR); //add the '/' as an operator
+                     lastOffset = ip1;
+                     token = Token.KEYWORD1;
+                     break;
+                  case ' ':
+                     //don't go to keyword if we have a space
                      break;
                   default:
                      addToken(i-lastOffset, token);
@@ -135,16 +213,26 @@ public class XMLTokenMarker extends TokenMarker {
                      break;
                }
                break;
-               
             case Token.LITERAL1: // strings
-               if ( token == Token.LITERAL1 && (c == '\"' || c == '\'' ) ) {
-                  addToken(ip1-lastOffset, token);
+               if ( c == '\"' ) {
+                  addToken(i-lastOffset, token);
+                  lastOffset = i;
+                  addToken(ip1-lastOffset, Token.OPERATOR); //add the quote as an operator
+                  lastOffset = ip1;
+                  token = Token.KEYWORD1;
+               }
+               break;
+            case Token.LITERAL2:
+               if ( c == '\'' ) {
+                  addToken(i-lastOffset, token);
+                  lastOffset = i;
+                  addToken(ip1-lastOffset, Token.OPERATOR); //add the quote as an operator
                   lastOffset = ip1;
                   token = Token.KEYWORD1;
                }
                break;
             
-            case Token.LITERAL2:
+            case Token.LITERAL3:
                if ( SyntaxUtilities.regionMatches(false, line, i, "]]>") ) {
                   addToken((i+3)-lastOffset, token);
                   lastOffset = i+3;
@@ -176,7 +264,7 @@ public class XMLTokenMarker extends TokenMarker {
                   token = Token.NULL;
                }
                if (SyntaxUtilities.regionMatches(false, line, i, "[CDATA[") ) {
-                  token = Token.LITERAL2;
+                  token = Token.LITERAL3;
                }
                break;
 
