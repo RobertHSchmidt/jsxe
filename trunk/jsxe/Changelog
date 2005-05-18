@@ -1,3 +1,8 @@
+05/18/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated how jsXe changes build versions into human readable versions so
+      that it works even after version 1.0 is released.
+
 05/13/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Rearranged how jsXe starts up to hopefully make it run faster.
