@@ -39,6 +39,8 @@ xml.attribute.value.short=Value
 xml.attribute.value=Attribute Value
 xml.document=XML Document
 xml.namespace=Namespace
+xml.namespace.prefix=Namespace Prefix
+xml.namespace.prefix.short=Prefix
 xml.namespace.decl=Namespace Declaration
 xml.doctypedef=Document Type Definition
 xml.schema=XML Schema
@@ -95,6 +97,7 @@ SourceView.Options.Title=Source View Options
 SourceView.Syntax.Object=Node Type
 SourceView.Syntax.Style=Text Style
 SourceView.ColorChooser.Title=Color Chooser
+SourceView.Markup=Markup
 SourceView.Invalid=Invalid
 #}}}
 
