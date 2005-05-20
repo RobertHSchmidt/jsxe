@@ -30,6 +30,7 @@ import treeview.action.*;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.*;
+import net.sourceforge.jsxe.dom.completion.ElementDecl;
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.ViewPlugin;
@@ -43,6 +44,8 @@ import javax.swing.*;
 import javax.swing.text.PlainDocument;
 import javax.swing.event.*;
 import javax.swing.tree.*;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableCellEditor;
 //}}}
 
 //{{{ AWT components
@@ -120,6 +123,8 @@ public class DefaultView extends JPanel implements DocumentView {
         attributesTable.setColumnSelectionAllowed(false);
         attributesTable.setRowSelectionAllowed(false);
         attributesTable.addMouseListener(new TablePopupListener());
+        attributesTable.setRowHeight(new JComboBox(new String[] { "template" })
+                .getPreferredSize().height);
         //}}}
         
         //{{{ init tree
@@ -136,11 +141,13 @@ public class DefaultView extends JPanel implements DocumentView {
             public void keyTyped(KeyEvent e) {
                 if (!e.isActionKey()) {
                     AdapterNode node = (AdapterNode)tree.getLastSelectedPathComponent();
-                    if (tree.isEditable(node)) {
-                        tree.startEditingAtPath(tree.getLeadSelectionPath());
-                    } else {
-                        if (canEditInJEditorPane(node)) {
-                            htmlPane.requestFocus();
+                    if (node != null) {
+                        if (tree.isEditable(node)) {
+                            tree.startEditingAtPath(tree.getLeadSelectionPath());
+                        } else {
+                            if (canEditInJEditorPane(node)) {
+                                htmlPane.requestFocus();
+                            }
                         }
                     }
                 }
@@ -474,7 +481,6 @@ public class DefaultView extends JPanel implements DocumentView {
             setName("AttributesTable");
         }//}}}
         
-        
         //{{{ editingStopped()
         
         public void editingStopped(ChangeEvent e) {
@@ -494,7 +500,68 @@ public class DefaultView extends JPanel implements DocumentView {
             }
         }//}}}
         
+        //{{{ getCellEditor() method
+        public TableCellEditor getCellEditor(int row, int column) {
+            Object value = getModel().getValueAt(row,column);
+            if (value instanceof EditTagDialog.Attribute.Value) {
+                return m_comboRenderer;
+            }
+
+            return super.getCellEditor(row,column);
+        } //}}}
+
+        //{{{ getCellRenderer() method
+        public TableCellRenderer getCellRenderer(int row, int column) {
+            Object value = getModel().getValueAt(row,column);
+            if (value instanceof EditTagDialog.Attribute.Value) {
+                return m_comboRenderer;
+            }
+
+            return super.getCellRenderer(row,column);
+        } //}}}
+        
     }//}}}
+    
+    //{{{ ComboValueRenderer class
+    private static class ComboValueRenderer extends DefaultCellEditor implements TableCellRenderer {
+        JComboBox editorCombo;
+        JComboBox renderCombo;
+
+        //{{{ ComboValueRenderer constructor
+        
+        public ComboValueRenderer() {
+            this(new JComboBox());
+        } //}}}
+
+        //{{{ ComboValueRenderer constructor
+        // this is stupid. why can't you reference instance vars
+        // in a super() invocation?
+        public ComboValueRenderer(JComboBox comboBox) {
+            super(comboBox);
+            this.editorCombo = comboBox;
+            editorCombo.setEditable(true);
+            this.renderCombo = new JComboBox();
+            renderCombo.setEditable(true);
+        } //}}}
+
+        //{{{ getTableCellEditorComponent() method
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            EditTagDialog.Attribute.Value _value = (EditTagDialog.Attribute.Value)value;
+            editorCombo.setModel(new DefaultComboBoxModel(_value.values.toArray()));
+            return super.getTableCellEditorComponent(table, _value.value,isSelected,row,column);
+        } //}}}
+
+        //{{{ getTableCellRendererComponent() method
+        public Component getTableCellRendererComponent(JTable table,
+                Object value, boolean isSelected, boolean hasFocus,
+                int row, int column)
+        {
+            EditTagDialog.Attribute.Value _value = (EditTagDialog.Attribute.Value)value;
+            renderCombo.setModel(new DefaultComboBoxModel(_value.values.toArray()));
+            renderCombo.setSelectedItem(_value.value);
+            return renderCombo;
+        } //}}}
+    } //}}}
     
     private DefaultViewTree tree = new DefaultViewTree();
     private JEditorPane htmlPane = new JEditorPane("text/plain","");
@@ -504,6 +571,8 @@ public class DefaultView extends JPanel implements DocumentView {
     private DocumentBuffer m_document;
     private boolean m_viewShown = false;
     private TreeViewPlugin m_plugin;
+    
+    private ComboValueRenderer m_comboRenderer = new ComboValueRenderer();
     
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {
