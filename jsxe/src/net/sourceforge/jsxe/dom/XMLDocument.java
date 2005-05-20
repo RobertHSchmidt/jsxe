@@ -985,9 +985,12 @@ public class XMLDocument {
                     type = "CDATA";
                 }
                 StringList enumList = decl.getTypeDefinition().getLexicalEnumeration();
-                ArrayList values = new ArrayList();
-                for (int j=0; j<enumList.getLength(); j++) {
-                    values.add(enumList.item(j));
+                ArrayList values = null;
+                if (enumList.getLength() > 0) {
+                    values = new ArrayList();
+                    for (int j=0; j<enumList.getLength(); j++) {
+                        values.add(enumList.item(j));
+                    }
                 }
                 elementDecl.addAttribute(new ElementDecl.AttributeDecl(attrName,value,values,type,required));
             }
