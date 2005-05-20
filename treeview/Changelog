@@ -1,3 +1,9 @@
+05/20/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Cleaned up the code a bit so I don't have duplicate classes.
+    * Removed the empty check box from the edit node dialog since it didn't do
+      anything anyway.
+
 05/19/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added support for showing choosing attribute values defined in the

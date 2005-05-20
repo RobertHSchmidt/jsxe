@@ -522,47 +522,6 @@ public class DefaultView extends JPanel implements DocumentView {
         
     }//}}}
     
-    //{{{ ComboValueRenderer class
-    private static class ComboValueRenderer extends DefaultCellEditor implements TableCellRenderer {
-        JComboBox editorCombo;
-        JComboBox renderCombo;
-
-        //{{{ ComboValueRenderer constructor
-        
-        public ComboValueRenderer() {
-            this(new JComboBox());
-        } //}}}
-
-        //{{{ ComboValueRenderer constructor
-        // this is stupid. why can't you reference instance vars
-        // in a super() invocation?
-        public ComboValueRenderer(JComboBox comboBox) {
-            super(comboBox);
-            this.editorCombo = comboBox;
-            editorCombo.setEditable(true);
-            this.renderCombo = new JComboBox();
-            renderCombo.setEditable(true);
-        } //}}}
-
-        //{{{ getTableCellEditorComponent() method
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            EditTagDialog.Attribute.Value _value = (EditTagDialog.Attribute.Value)value;
-            editorCombo.setModel(new DefaultComboBoxModel(_value.values.toArray()));
-            return super.getTableCellEditorComponent(table, _value.value,isSelected,row,column);
-        } //}}}
-
-        //{{{ getTableCellRendererComponent() method
-        public Component getTableCellRendererComponent(JTable table,
-                Object value, boolean isSelected, boolean hasFocus,
-                int row, int column)
-        {
-            EditTagDialog.Attribute.Value _value = (EditTagDialog.Attribute.Value)value;
-            renderCombo.setModel(new DefaultComboBoxModel(_value.values.toArray()));
-            renderCombo.setSelectedItem(_value.value);
-            return renderCombo;
-        } //}}}
-    } //}}}
-    
     private DefaultViewTree tree = new DefaultViewTree();
     private JEditorPane htmlPane = new JEditorPane("text/plain","");
     private DefaultViewTable attributesTable = new DefaultViewTable();
@@ -572,7 +531,7 @@ public class DefaultView extends JPanel implements DocumentView {
     private boolean m_viewShown = false;
     private TreeViewPlugin m_plugin;
     
-    private ComboValueRenderer m_comboRenderer = new ComboValueRenderer();
+    private EditTagDialog.ComboValueRenderer m_comboRenderer = new EditTagDialog.ComboValueRenderer();
     
     private TableModelListener tableListener = new TableModelListener() {//{{{
         public void tableChanged(TableModelEvent e) {
