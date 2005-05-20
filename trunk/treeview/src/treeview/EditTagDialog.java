@@ -84,7 +84,7 @@ public class EditTagDialog extends EnhancedDialog {
         content.setBorder(new EmptyBorder(12,12,12,12));
         setContentPane(content);
 
-        //{{{ Top panel with element name, empty toggle
+        //{{{ Top panel with element name
         JPanel top = new JPanel(new BorderLayout(6,0));
         top.setBorder(new EmptyBorder(0,0,12,0));
 
@@ -92,16 +92,16 @@ public class EditTagDialog extends EnhancedDialog {
 
         top.add(BorderLayout.CENTER,new JLabel(element.name));
 
-        empty = new JCheckBox("Empty");
-        if (element.empty) {
-            empty.setSelected(true);
-            empty.setEnabled(false);
-        }
-        else
-                empty.setSelected(elementEmpty);
-        empty.addActionListener(new ActionHandler());
+       // empty = new JCheckBox("Empty");
+       // if (element.empty) {
+       //     empty.setSelected(true);
+       //     empty.setEnabled(false);
+       // } else {
+       //     empty.setSelected(elementEmpty);
+       // }
+       // empty.addActionListener(new ActionHandler());
 
-        top.add(BorderLayout.EAST,empty);
+       // top.add(BorderLayout.EAST,empty);
         content.add(BorderLayout.NORTH,top);
         //}}}
 
@@ -220,17 +220,17 @@ public class EditTagDialog extends EnhancedDialog {
         return (isOK ? m_newNode : null);
     }//}}}
 
-    //{{{ isEmpty() method
-    public boolean isEmpty() {
-        return empty.isSelected();
-    } //}}}
+   // //{{{ isEmpty() method
+   // public boolean isEmpty() {
+   //     return empty.isSelected();
+   // } //}}}
 
     //{{{ Private members
 
     //{{{ Instance variables
     private ElementDecl element;
     private Map entityHash;
-    private JCheckBox empty;
+   // private JCheckBox empty;
     private List attributeModel;
     private JTable attributes;
     private JTextArea preview;
@@ -311,9 +311,9 @@ public class EditTagDialog extends EnhancedDialog {
             buf.append("\"");
         }
         
-        if (empty.isSelected()) {
-            buf.append("/");
-        }
+       // if (empty.isSelected()) {
+       //     buf.append("/");
+       // }
         
         buf.append(">");
         
@@ -327,14 +327,17 @@ public class EditTagDialog extends EnhancedDialog {
     //{{{ Inner classes
 
     //{{{ ActionHandler class
-    class ActionHandler implements ActionListener {
+    private class ActionHandler implements ActionListener {
         public void actionPerformed(ActionEvent evt) {
-            if(evt.getSource() == empty)
-                    updateTag();
-            else if(evt.getSource() == ok)
-                    ok();
-            else if(evt.getSource() == cancel)
+           // if(evt.getSource() == empty)
+           //         updateTag();
+           if (evt.getSource() == ok) {
+               ok();
+           } else {
+               if (evt.getSource() == cancel) {
                     cancel();
+               }
+           }
         }
     } //}}}
 
@@ -393,10 +396,10 @@ public class EditTagDialog extends EnhancedDialog {
         }
     } //}}}
 
-    static ComboValueRenderer comboRenderer = new ComboValueRenderer();
+    private static ComboValueRenderer comboRenderer = new ComboValueRenderer();
 
     //{{{ AttributeTable class
-    class AttributeTable extends JTable {
+    private class AttributeTable extends JTable {
         //{{{ getCellEditor() method
         public TableCellEditor getCellEditor(int row, int column) {
             Object value = getModel().getValueAt(row,column);
@@ -419,7 +422,7 @@ public class EditTagDialog extends EnhancedDialog {
     } //}}}
 
     //{{{ AttributeTableModel class
-    class AttributeTableModel extends AbstractTableModel {
+    private class AttributeTableModel extends AbstractTableModel {
         //{{{ getColumnCount() method
         public int getColumnCount() {
             return 4;
