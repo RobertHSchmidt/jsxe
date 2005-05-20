@@ -33,6 +33,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.AdapterNode;
+import net.sourceforge.jsxe.dom.completion.ElementDecl;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.Log;
 //}}}
@@ -125,6 +126,13 @@ public class DefaultViewTableModel implements TableModel {
     //{{{ getValueAt()
     
     public Object getValueAt(int rowIndex, int columnIndex) {
+        if (columnIndex == 1) {
+            String name = m_data[0].get(rowIndex).toString();
+            ElementDecl.AttributeDecl attrDecl = m_currentNode.getElementDecl().getAttribute(name);
+            if (attrDecl != null && attrDecl.values != null) {
+                return new EditTagDialog.Attribute.Value(m_data[columnIndex].get(rowIndex).toString(), attrDecl.values);
+            }
+        }
         return m_data[columnIndex].get(rowIndex);
     }//}}}
     

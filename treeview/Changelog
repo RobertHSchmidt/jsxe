@@ -1,3 +1,8 @@
+05/19/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Added support for showing choosing attribute values defined in the
+      Schema/DTD in the Attributes table.
+
 05/15/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Added support for showing ID type attributes in the tree.
