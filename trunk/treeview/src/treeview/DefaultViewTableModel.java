@@ -128,7 +128,8 @@ public class DefaultViewTableModel implements TableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         if (columnIndex == 1) {
             String name = m_data[0].get(rowIndex).toString();
-            ElementDecl.AttributeDecl attrDecl = m_currentNode.getElementDecl().getAttribute(name);
+            ElementDecl eleDecl = m_currentNode.getElementDecl();
+            ElementDecl.AttributeDecl attrDecl = ((eleDecl != null) ? eleDecl.getAttribute(name) : null);
             if (attrDecl != null && attrDecl.values != null) {
                 return new EditTagDialog.Attribute.Value(m_data[columnIndex].get(rowIndex).toString(), attrDecl.values);
             }
@@ -195,10 +196,16 @@ public class DefaultViewTableModel implements TableModel {
                         if (columnIndex == 0) {
                             //we are renaming the attribute, remove the old one first
                             String oldAttribute = (String)getValueAt(rowIndex, 0);
-                            String oldValue     = (String)getValueAt(rowIndex, 1);
+                            String oldValue;
+                            Object rawOldValue = getValueAt(rowIndex, 1);
+                            if (rawOldValue instanceof EditTagDialog.Attribute.Value) {
+                                oldValue = ((EditTagDialog.Attribute.Value)rawOldValue).value;
+                            } else {
+                                oldValue = rawOldValue.toString();
+                            }
                             m_currentNode.removeAttribute(oldAttribute);
                             try {
-                                m_currentNode.setAttribute(aValue.toString(), (String)getValueAt(rowIndex, 1));
+                                m_currentNode.setAttribute(aValue.toString(), oldValue);
                             } catch (DOMException e) {
                                 //if we fail setting the new name then we need to put the old one back.
                                 //this shouldn't throw exceptions
