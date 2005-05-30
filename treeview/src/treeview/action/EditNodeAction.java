@@ -97,13 +97,11 @@ public class EditNodeAction extends AbstractAction {
                                                                  selectedNode.getOwnerDocument(),
                                                                  selectedNode);
                         dialog.show();
-                        tree.expandPath(tree.getLeadSelectionPath());
-                        //The TreeModel doesn't automatically treeNodesInserted() yet
+                        //The TreeModel doesn't automatically call treeNodesInserted() yet
                         tree.updateUI();
                     }
                 
                 } catch (DOMException dome) {
-                    net.sourceforge.jsxe.util.Log.log(net.sourceforge.jsxe.util.Log.DEBUG, this, dome);
                     JOptionPane.showMessageDialog(tree, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
                 }
             }

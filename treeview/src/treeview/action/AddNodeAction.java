@@ -116,11 +116,10 @@ public class AddNodeAction extends AbstractAction {
                         addedNode = selectedNode.addAdapterNode(m_name, m_value, m_nodeType, selectedNode.childCount());
                     }
                     tree.expandPath(tree.getLeadSelectionPath());
-                    //The TreeModel doesn't automatically treeNodesInserted() yet
+                    //The TreeModel doesn't automatically call treeNodesInserted() yet
                     tree.updateUI();
                 
                 } catch (DOMException dome) {
-                    net.sourceforge.jsxe.util.Log.log(net.sourceforge.jsxe.util.Log.DEBUG, this, dome);
                     JOptionPane.showMessageDialog(tree, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
                 }
             }
