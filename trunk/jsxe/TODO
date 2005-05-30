@@ -56,24 +56,10 @@ TODO:
       to see more than one view of the document at the same time. How would you
       handle editing using a view that uses source and one that uses the tree
       structure at the same time?
-    
-    * Create an install program for jsXe.
-    
+      
     * Add a ghosted image of the node to drag and drop cursor. Hopefully the
       whole cursor can be replaced with the image since the default drag
       cursor is dumb in linux.
-    
-    * Make a splash screen that displays on startup.
-    
-    * Add a file browser to jsXe. This will allow users to easily open
-      documents and navigate among many documents.
-    
-    * Create a help system for jsXe.
-        * Create documentation on how to use jsXe
-        * Create documentation for developing views with jsXe
-            * Document how to use actions and components to handle saving
-              settings and other general stuff.
-        * Create a way for plugins to provide help.
     
 * Version 0.7 beta
     

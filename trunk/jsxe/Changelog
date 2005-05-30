@@ -1,3 +1,10 @@
+05/30/2005  Ian Lewis <IanLewiS@member.fsf.org>
+
+    * Fixed bug that caused NullPointerExceptions to be thrown when editing
+      attributes of an element node.
+    * Fixed a bug that caused renaming an attribute to clear the value of the
+      attribute.
+
 05/18/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated how jsXe changes build versions into human readable versions so
