@@ -774,7 +774,11 @@ public class AdapterNode {
      * Gets the Element declaration that defines this element
      */
     public ElementDecl getElementDecl() {
-        return getOwnerDocument().getElementDecl(getNodeName());
+        if (getOwnerDocument() != null) {
+            return getOwnerDocument().getElementDecl(getNodeName());
+        } else {
+            return null;
+        }
     }//}}}
     
     //{{{ equals()
