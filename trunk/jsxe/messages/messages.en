@@ -136,3 +136,16 @@ DocumentBuffer.Close.Message.Title=Unsaved Changes
 No.Xerces.Error={0} not found. jsXe requires Apache {0}.
 No.Xerces.Error.Title={0} not found.
 #}}}
+
+#{{{ Dirty Files Dialog
+DirtyFilesDialog.Dialog.Title = 
+DirtyFilesDialog.Dialog.Message = The following files have unsaved changes:
+DirtyFilesDialog.Dialog.Button.SelectAll.Title = Select All
+DirtyFilesDialog.Button.SelectAll.ToolTip = Select All
+DirtyFilesDialog.Button.SaveSelected.Title = Save Selected
+DirtyFilesDialog.Button.SaveSelected.ToolTip = Save Selected
+DirtyFilesDialog.Button.DiscardSelected.Title = Discard Selected
+DirtyFilesDialog.Button.DiscardSelected.ToolTip = Discard Selected
+DirtyFilesDialog.Button.Cancel.Title = Cancel
+DirtyFilesDialog.Button.Cancel.ToolTip = Cancel
+#}}}

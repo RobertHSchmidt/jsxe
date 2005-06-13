@@ -36,6 +36,7 @@ import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.options.OptionPane;
+import net.sourceforge.jsxe.gui.DirtyFilesDialog;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.jsxeFileDialog;
@@ -47,6 +48,7 @@ import net.sourceforge.jsxe.util.Log;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.util.*;
+
 import javax.swing.JOptionPane;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -108,6 +110,25 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = file;
         m_name = file.getName();
+        
+       // {{{ start logging
+            boolean debug = false;
+            Log.init(true, Log.ERROR, debug);
+            try {
+            	//        	{{{ set settings dirs
+                String homeDir = System.getProperty("user.home");
+                String fileSep = System.getProperty("file.separator");
+                
+                String settingsDirectory = homeDir+fileSep+".jsxe";
+                BufferedWriter stream = new BufferedWriter(new FileWriter(new File(settingsDirectory+fileSep+"jsXe.log")));
+                
+                stream.write("Log file created on " + new Date());
+                stream.write(System.getProperty("line.separator"));
+                
+                Log.setLogWriter(stream);
+            } catch (IOException ioe) {
+                Log.log(Log.ERROR, jsXe.class, ioe);
+            }//}}};
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -152,26 +173,31 @@ public class DocumentBuffer extends XMLDocument {
      * @return true if the close is requested
      * @throws IOException if the user chooses to save and the file could not be saved
      */
-    public boolean close(TabbedView view) throws IOException {
+    public boolean close(TabbedView view, boolean confirmClose) throws IOException {
+    	
         if (getStatus(DIRTY)) {
             
+        	if(confirmClose){
             //If it's dirty ask if you want to save.
-            String msg = Messages.getMessage("DocumentBuffer.Close.Message", new String[] { getName() });
-            String title = Messages.getMessage("DocumentBuffer.Close.Message.Title");
-            int optionType = JOptionPane.YES_NO_CANCEL_OPTION;
-            int messageType = JOptionPane.WARNING_MESSAGE;
-            
-            int returnVal = JOptionPane.showConfirmDialog(view,
-                                msg,
-                                title,
-                                optionType,
-                                messageType);
-            
-            if (returnVal == JOptionPane.YES_OPTION) {
-                return save(view);
-            } else {
-                return !(returnVal == JOptionPane.CANCEL_OPTION);
-            }
+	            String msg = Messages.getMessage("DocumentBuffer.Close.Message", new String[] { getName() });
+	            String title = Messages.getMessage("DocumentBuffer.Close.Message.Title");
+	            int optionType = JOptionPane.YES_NO_CANCEL_OPTION;
+	            int messageType = JOptionPane.WARNING_MESSAGE;
+	            
+	            int returnVal = JOptionPane.showConfirmDialog(view,
+	                                msg,
+	                                title,
+	                                optionType,
+	                                messageType);
+	            
+	            if (returnVal == JOptionPane.YES_OPTION) {
+	                return save(view);
+	            } else {
+	                return !(returnVal == JOptionPane.CANCEL_OPTION);
+	            }
+        	}else{
+        		return save(view);
+        	}
         } else {
             return true;
         }
@@ -326,14 +352,20 @@ public class DocumentBuffer extends XMLDocument {
      */
     public boolean saveAs(TabbedView view) throws IOException {
         
-        //  if XMLFile is null, defaults to home directory
+        //  if XMLFile is null, defaults to home directory    	
         JFileChooser saveDialog = new jsxeFileDialog(getFile());
+        //sets the default filename which appears in the filename field,
+        //to whatever the current buffer is called.
+        saveDialog.setSelectedFile(new File (getName()));
         
         int returnVal = saveDialog.showSaveDialog(view);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             
-            File selectedFile = saveDialog.getSelectedFile();
+            File selectedFile = saveDialog.getSelectedFile();   
+            
+            Log.log(Log.NOTICE, DocumentBuffer.class, "366 : "+selectedFile.getName());
             boolean reallySave = true;
+            Log.closeStream();
             if (selectedFile.exists()) {
                 //If it's dirty ask if you want to save.
                 String msg = Messages.getMessage("DocumentBuffer.SaveAs.Message", new String[] { selectedFile.getName() });
