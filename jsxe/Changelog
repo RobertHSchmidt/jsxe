@@ -1,3 +1,47 @@
+06/13/2005 Trish Hartnett <trishah136@users.sourceforge.net>
+
+	* Added functionality to DocumentBuffer saveAs() method, so that the fileanme
+	  of the file in the buffer (e.g. Untitled-1), is the filename which appears in 
+	  the filename text field in the JFileChooser.
+	* Added variable confirmClose into method signature of DocumentBuffer close() 
+	  method. This variable is a flag. If it's set to true then the Dialog box 
+	  "Untitled -1 unsaved! Save it now?" does appear, else the code sirectly skips 
+	  to the DocumentBuffer save method. This was done because if a user clicks 
+	  "Save Selected" on the DirtyFilesDialog then there is no need to pop up another
+	  Dialog box saying "Untitled -1 unsaved! Save it now?", the user should instead 
+	  be immeadiately shown the JFileChooser.
+	* Changed method close in TabbedView. Previously this method called JSXE's 
+	  closeDocumentBuffer() method. This caused a series of Save Dialog boxes 
+	  (one for each unsaved edited file) to be produced. To get all the unsaved edited 
+	  files to be displayed in one dialog box, the TabbedView close method was edited 
+	  so that it creates an ArrayList of dirtyBuffers and these are sent as an argument 
+	  to the DirtyFilesDialog constructor.
+	* Further changed close method in TabbedView. Previously TabbedView.close() returned 
+	  true to the JSXE exit method. This allowed the exit() method in JSXE to continue. 
+	  I've changed TabbedView.close() so that it checks to see did the user select the 
+	  Cancel button in DirtyFilesDialog. If the user did (cancelFlag = true), the close() 
+	  method returns false to JSXE exit() method, causing the sequence of events required
+	  for the editor to close down to stop.
+	* Edited closeDocumentBuffer() method in JSXE. I wanted to be able to pass a boolean 
+	  into the DocumentBuffer.close() method which is called by JSXE. closeDocumentBuffer().
+	  See second point in list of changed for todays date. To pass the boolean variabe
+	  confirmClose into DocumentBuffer.close(), I had to first pass it into 
+	  JSXE.closeDocumentBuffer(). Rather than disturbling a lot of other code which used the 
+	  JSXE.closeDocumentBuffer() method, I overloaded this method, so that there was now 2 
+	  JSXE.closeDocumentBuffer() methods. The first has the same signature as the original 
+	  method. It calls the new version of the method, with confirmClose set to true. This is
+	  because the majority of methods which call JSXE.closeDocumentBuffer(), want the user to 
+	  be prompted to confirm whether they want to save the file before closing.
+	* DirtyFilesDialog is a class which produces a JDialog box which contains information about
+	  edited , unsaved files. DirtyFilesDialog provides functionality for selecting all files,
+	  discarding files, and saving files. It also has a Cancel button which the user can click
+	  if they don't want to exit the application.
+   *  net.sourceforge.jsxe.icons was updated to include a new file metal-Warn.png. This image
+      would be produced by default, if I had to choosen to build DirtyFilesDialog using a 
+      JOptionPane, but I decided to use a JDialog box instead, because it was easier to code.
+      So the warning symbol on the DirtyFilesDialog upperleft hand corner had to be added in 
+      manually.
+	
 05/30/2005  Ian Lewis <IanLewiS@member.fsf.org>
 
     * Fixed bug that caused NullPointerExceptions to be thrown when editing
