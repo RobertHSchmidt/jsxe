@@ -348,7 +348,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
      */ 
 	private void cancelJButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		Log.log(Log.NOTICE, DirtyFilesDialog.class,
-				"348 using the dirtyFilesDialog cancel button ");
+				"351 using the dirtyFilesDialog cancel button ");
 		setCancelFlag(true);
 		dispose();
 		Log.closeStream();
@@ -365,7 +365,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		//have to remove the element from the dirtyFilesJList in the
 		//dirtyFilesDialog box.
 		ArrayList updatedDirtyFilesList = new ArrayList();
-		Log.log(Log.NOTICE, DirtyFilesDialog.class, "366 Removeing " + name
+		Log.log(Log.NOTICE, DirtyFilesDialog.class, "368 Removeing " + name
 				+ " from the list of unsaved files");
 		for (int i = 0; i < dirtyFiles.length; i++) {
 			//go through each element in the dirty files names list
@@ -373,23 +373,32 @@ public class DirtyFilesDialog extends EnhancedDialog {
 			//	if the file name is not the same as the filename selected by the user,
 			//	add it to a new list of unsaved dirty filenames
 
-			Log.log(Log.NOTICE, DirtyFilesDialog.class, "374 DirtyFiles length: "
+			Log.log(Log.NOTICE, DirtyFilesDialog.class, "376 DirtyFiles length: "
 					+ dirtyFiles.length
 					+ " current DirtyFile checking against: " + dirtyFiles[i]);
 
 			if (dirtyFiles[i]!=null && dirtyFiles[i].equals(name)) {
 				Log.log(Log.NOTICE, DirtyFilesDialog.class,
-						"380 current DirtyFile: " + dirtyFiles[i]
-								+ " doesn't match newly saved File: " + name+" so it remains in JList");
-				dirtyFilesJListModel.removeElementAt(i);
-//				DefaultListModel newModel =(DefaultListModel)dirtyFilesJList.getModel();
-//				updatedDirtyFilesList.add(dirtyFiles[i]);
-//				// repaint the JScrollPane with the new ArrayList
-//				populateDirtyFileList(updatedDirtyFilesList, newModel);
-				dirtyFilesJList.repaint();
-				dirtyFilesJList.revalidate();
-				jScrollPane.repaint();
+						"382 i: "+i+" DirtyFile: " + dirtyFiles[i]
+								+ " matches newly saved File: " + name+", so the filename ("+name+") can be removed from the JList");
+				
+				try{
+					int sizeListModel =dirtyFilesJListModel.getSize();
+					Log.log(Log.NOTICE, DirtyFilesDialog.class,
+							"388 sizeListModel: "+sizeListModel);				
+					if(i==sizeListModel){
+						i = sizeListModel-1;
+					}
+					if(sizeListModel != 0){
+						dirtyFilesJListModel.removeElementAt(i);
+					}
+				}catch(java.lang.ArrayIndexOutOfBoundsException e){
+					   //some times selectedRows() return false number and it cause exception
+					   e.printStackTrace();
 				}
+				dirtyFilesJList.repaint();
+				jScrollPane.repaint();
+			}
 		}
 	}//}}}
 
