@@ -109,7 +109,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
      * @since jsXe 0.3pre15
      */
 	public DirtyFilesDialog(TabbedView parent, ArrayList dirtyBuffers) {
-		super(parent, Messages.getMessage("Dirty.Files.Title"), true);
+		super(parent, Messages.getMessage("DirtyFilesDialog.Dialog.Title"), true);
 		newTabbedView = parent;
 		newDirtyBuffers = dirtyBuffers;
 		setLocationRelativeTo(parent);
@@ -184,15 +184,11 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		discardSelectedJButton = new javax.swing.JButton();
 		cancelJButton = new javax.swing.JButton();
 
-		this.setTitle("Unsaved Changes");
-		this.setName("unsavedChangesDialog");
-
-		//setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		jLabel1.setIcon(new javax.swing.ImageIcon(DirtyFilesDialog.class
 				.getResource("/net/sourceforge/jsxe/icons/metal-Warn.png")));
 		topJPanel.add(jLabel1);
 
-		topJLabel.setText("The following files have unsaved changes: ");
+		topJLabel.setText(Messages.getMessage("DirtyFilesDialog.Dialog.Message"));
 		topJPanel.add(topJLabel);
 
 		getContentPane().add(topJPanel, java.awt.BorderLayout.NORTH);
@@ -202,8 +198,8 @@ public class DirtyFilesDialog extends EnhancedDialog {
 
 		getContentPane().add(centerJPanel, java.awt.BorderLayout.CENTER);
 
-		selectAllJButton.setText("Select All");
-		selectAllJButton.setToolTipText("Select All");
+		selectAllJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.SelectAll.Title"));
+		selectAllJButton.setToolTipText(Messages.getMessage("DirtyFilesDialog.Button.SelectAll.ToolTip"));
 		selectAllJButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				selectAllJButtonActionPerformed(evt);
@@ -211,8 +207,8 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		});
 		bottomJPanel.add(selectAllJButton);
 
-		saveSelectedJButton.setText("Save Selected");
-		saveSelectedJButton.setToolTipText("Save Selected");
+		saveSelectedJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.SaveSelected.Title"));
+		saveSelectedJButton.setToolTipText(Messages.getMessage("DirtyFilesDialog.Button.SaveSelected.ToolTip"));
 		saveSelectedJButton
 				.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -221,8 +217,8 @@ public class DirtyFilesDialog extends EnhancedDialog {
 				});
 		bottomJPanel.add(saveSelectedJButton);
 
-		discardSelectedJButton.setText("Discard Selected");
-		discardSelectedJButton.setToolTipText("Discard Selected");
+		discardSelectedJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.DiscardSelected.Title"));
+		discardSelectedJButton.setToolTipText(Messages.getMessage("DirtyFilesDialog.Button.DiscardSelected.ToolTip"));
 		
 		discardSelectedJButton
 				.addActionListener(new java.awt.event.ActionListener() {
@@ -232,8 +228,8 @@ public class DirtyFilesDialog extends EnhancedDialog {
 				});
 		bottomJPanel.add(discardSelectedJButton);
 
-		cancelJButton.setText("Cancel");
-		cancelJButton.setToolTipText("Cancel");
+		cancelJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.Cancel.Title"));
+		cancelJButton.setToolTipText(Messages.getMessage("DirtyFilesDialog.Button.Cancel.ToolTip"));
 		cancelJButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				cancelJButtonActionPerformed(evt);
