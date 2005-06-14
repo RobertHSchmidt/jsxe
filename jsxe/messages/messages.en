@@ -138,9 +138,9 @@ No.Xerces.Error.Title={0} not found.
 #}}}
 
 #{{{ Dirty Files Dialog
-DirtyFilesDialog.Dialog.Title = 
+DirtyFilesDialog.Dialog.Title = Unsaved Changes
 DirtyFilesDialog.Dialog.Message = The following files have unsaved changes:
-DirtyFilesDialog.Dialog.Button.SelectAll.Title = Select All
+DirtyFilesDialog.Button.SelectAll.Title = Select All
 DirtyFilesDialog.Button.SelectAll.ToolTip = Select All
 DirtyFilesDialog.Button.SaveSelected.Title = Save Selected
 DirtyFilesDialog.Button.SaveSelected.ToolTip = Save Selected
