@@ -572,6 +572,7 @@ public class DocumentBuffer extends XMLDocument {
             JLabel encodingLabel = new JLabel(Messages.getMessage("Document.Options.Encoding"));
             encodingComboBox = new JComboBox(supportedEncodings);
             encodingComboBox.setEditable(false);
+            encodingComboBox.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
             
             Enumeration encodings = supportedEncodings.elements();
             while (encodings.hasMoreElements()) {
@@ -590,6 +591,7 @@ public class DocumentBuffer extends XMLDocument {
             indentComboBox = new JComboBox(sizes);
             indentComboBox.setEditable(true);
             indentComboBox.setSelectedItem(getProperty(INDENT));
+            indentComboBox.setToolTipText(Messages.getMessage("Document.Options.Indent.Width.ToolTip"));
             
             
            // boolean whitespace    = Boolean.valueOf(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, "true")).booleanValue();
@@ -670,6 +672,7 @@ public class DocumentBuffer extends XMLDocument {
             
             layout.setConstraints(formatCheckBox, constraints);
             add(formatCheckBox);
+            formatCheckBox.setToolTipText(Messages.getMessage("Document.Options.Format.XML.ToolTip"));
             
             constraints.gridy      = gridY++;
             constraints.gridx      = 0;
@@ -681,6 +684,7 @@ public class DocumentBuffer extends XMLDocument {
             
             layout.setConstraints(m_m_validatingCheckBox, constraints);
             add(m_m_validatingCheckBox);
+            m_m_validatingCheckBox.setToolTipText(Messages.getMessage("Document.Options.Validate.ToolTip"));
             
             boolean softTabs = Boolean.valueOf(getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
         
@@ -696,6 +700,7 @@ public class DocumentBuffer extends XMLDocument {
             
             layout.setConstraints(m_m_softTabsCheckBox, constraints);
             add(m_m_softTabsCheckBox);
+            m_m_softTabsCheckBox.setToolTipText(Messages.getMessage(""));
             
         }//}}}
         

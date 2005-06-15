@@ -77,13 +77,16 @@ public class DefaultViewOptionsPanel extends OptionsPanel {
         String showAttrs = m_document.getProperty(DefaultView.SHOW_ATTRIBUTES, "ID only");
         
         showCommentsCheckBox = new JCheckBox(Messages.getMessage("TreeView.Options.Show.Comments"),showCommentNodes);
-       // showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
+        showCommentsCheckBox.setToolTipText(Messages.getMessage("TreeView.Options.Show.Comments.ToolTip"));
+        // showEmptyNodesCheckBox = new JCheckBox("Show whitespace-only nodes",showEmptyNodes);
         ContinuousLayoutCheckBox = new JCheckBox(Messages.getMessage("TreeView.Options.Continuous.Layout"),continuousLayout);
+        ContinuousLayoutCheckBox.setToolTipText(Messages.getMessage("TreeView.Options.Continuous.Layout.ToolTip"));
         
         JLabel showAttrsLabel = new JLabel(Messages.getMessage("TreeView.Options.Show.Attributes"));
         m_showAttrsComboBox = new JComboBox(new String [] {"None", "ID only", "All"});
         
         m_showAttrsComboBox.setSelectedItem(showAttrs);
+        m_showAttrsComboBox.setToolTipText(Messages.getMessage("TreeView.Options.Show.Attributes.ToolTip"));
         
         constraints.gridy      = gridY;
         constraints.gridx      = 1;

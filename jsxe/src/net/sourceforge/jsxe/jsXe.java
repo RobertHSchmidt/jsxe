@@ -1020,6 +1020,9 @@ public class jsXe {
             maxRecentFilesComboBox.setEditable(true);
             maxRecentFilesComboBox.setSelectedItem(Integer.toString(maxRecentFiles));
             
+            maxRecentFilesComboBox.setToolTipText
+            (Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
+            
             constraints.gridy      = gridY;
             constraints.gridx      = 0;
             constraints.gridheight = 1;
