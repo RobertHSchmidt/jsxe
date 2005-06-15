@@ -1,3 +1,6 @@
+06/15/2005 Trish Hartnett <trishah136@users.sourceforge.net>
+	* Added tooltip texts for the checkboxes/scroll panes of the Options dialog box.
+
 05/30/2005  Ian Lewis <IanLewiS@member.fsf.org>
 
     * Fixed bug that caused NullPointerExceptions to be thrown when editing

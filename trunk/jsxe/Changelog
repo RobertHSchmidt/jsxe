@@ -1,3 +1,6 @@
+06/15/2005 Trish Hartnett <trishah136@users.sourceforge.net>
+	* Added tooltip texts for the checkboxes/scroll panes of the Options dialog box.
+
 06/13/2005 Trish Hartnett <trishah136@users.sourceforge.net>
 
 	* Added functionality to DocumentBuffer saveAs() method, so that the fileanme

@@ -59,6 +59,7 @@ public class SourceViewOptionsPanel extends OptionsPanel {
         setLayout(new BorderLayout(6,6));
 
         add(BorderLayout.CENTER,createStyleTableScroller());
+        
     }//}}}
     
     //{{{ getName()
@@ -291,12 +292,14 @@ public class SourceViewOptionsPanel extends OptionsPanel {
     
             italics = new JCheckBox(Messages.getMessage("SourceView.StyleEditor.Italics"));
             italics.setSelected(style.isItalic());
+            italics.setToolTipText(Messages.getMessage("SourceView.StyleEditor.Italics.ToolTip"));
             layout.setConstraints(italics,cons);
             panel.add(italics);
     
             cons.gridy++;
             bold = new JCheckBox(Messages.getMessage("SourceView.StyleEditor.Bold"));
             bold.setSelected(style.isBold());
+            bold.setToolTipText(Messages.getMessage("SourceView.StyleEditor.Bold.ToolTip"));
             layout.setConstraints(bold,cons);
             panel.add(bold);
     
@@ -308,6 +311,7 @@ public class SourceViewOptionsPanel extends OptionsPanel {
             fgColorCheckBox.setSelected(fg != null);
             fgColorCheckBox.addActionListener(this);
             fgColorCheckBox.setBorder(new EmptyBorder(0,0,0,12));
+            fgColorCheckBox.setToolTipText(Messages.getMessage("SourceView.StyleEditor.Color.ToolTip"));
             layout.setConstraints(fgColorCheckBox,cons);
             panel.add(fgColorCheckBox);
     
@@ -493,6 +497,7 @@ public class SourceViewOptionsPanel extends OptionsPanel {
                 setOpaque(true);
                // setBorder();
                 setText("Hello World");
+                setToolTipText(Messages.getMessage("SourceView.Syntax.ToolTip"));
             } //}}}
     
             //{{{ getTableCellRendererComponent() method
