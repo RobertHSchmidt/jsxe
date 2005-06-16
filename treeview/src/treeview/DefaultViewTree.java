@@ -123,10 +123,11 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         
-        setCellRenderer(new DefaultViewTreeCellRenderer());
+        DefaultViewTreeCellRenderer renderer = new DefaultViewTreeCellRenderer();
+        setCellRenderer(renderer);
         
         //Since elements are the only editable nodes...
-        ElementTreeCellRenderer renderer = new ElementTreeCellRenderer();
+        renderer = new DefaultViewTreeCellRenderer();
         setCellEditor(new DefaultTreeCellEditor(this, renderer, new ElementCellEditor(this, renderer)));
         
         
@@ -276,6 +277,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
     //{{{ toString()
     /**
      * Creates the string that will be displayed in the tree node
+     * @param showattrs "ID only", "All" or "None"
      */
     private static String toString(AdapterNode node) {
         StringBuffer s = new StringBuffer();
@@ -443,7 +445,8 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         
         public Component getTreeCellRendererComponent(JTree tree, 
             Object value, boolean selected, boolean expanded,
-            boolean leaf, int row, boolean hasFocus) {
+            boolean leaf, int row, boolean hasFocus)
+        {
             
             int type = -1;
             try {
@@ -548,24 +551,41 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         //{{{ ElementTreeCellRenderer constructor
         
         public ElementTreeCellRenderer() {
-            //only element nodes can be edited in the tree
-            setIcon(m_elementIcon);
-            setLeafIcon(m_elementIcon);
-            setOpenIcon(m_elementIcon);
-            setClosedIcon(m_elementIcon);
-            setToolTipText("Element Node");
+            m_defaultLeafIcon = getLeafIcon();
         }//}}}
         
         //{{{ getTreeCellRendererComponent
         
         public Component getTreeCellRendererComponent(JTree tree, 
             Object value, boolean selected, boolean expanded,
-            boolean leaf, int row, boolean hasFocus) {
+            boolean leaf, int row, boolean hasFocus)
+        {
+            AdapterNode node = (AdapterNode)value;
             
-            setText(DefaultViewTree.toString((AdapterNode)value));
+            // We can rename processing instruction nodes here too.
+            if (node.getNodeType() == AdapterNode.PROCESSING_INSTRUCTION_NODE) {
+                Log.log(Log.DEBUG,this,"default");
+                setIcon(m_defaultLeafIcon);
+                setLeafIcon(m_defaultLeafIcon);
+                setOpenIcon(m_defaultLeafIcon);
+                setClosedIcon(m_defaultLeafIcon);
+                setToolTipText(Messages.getMessage("xml.processing.instruction"));
+            } else {
+                Log.log(Log.DEBUG,this,"element");
+                setIcon(m_elementIcon);
+                setLeafIcon(m_elementIcon);
+                setOpenIcon(m_elementIcon);
+                setClosedIcon(m_elementIcon);
+                setToolTipText(Messages.getMessage("xml.element"));
+            }
+
+            //just use the node name, we don't want attributes and such.
+            setText(((AdapterNode)value).getNodeName());
             return this;
             
         }//}}}
+        
+        private Icon m_defaultLeafIcon;
         
     }//}}}
 
@@ -579,23 +599,40 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             super(tree, renderer);
         }//}}}
         
+        //{{{ prepareForEditing()
+        
+        protected void prepareForEditing() {
+            //HACK
+            //Use prepareForEditing to initialize the renderer
+            TreePath path = getLeadSelectionPath();
+            JTree tree = DefaultViewTree.this;
+            Object value = getLastSelectedPathComponent();
+            boolean isSelected = isPathSelected(path);
+            boolean expanded = isExpanded(path);
+            boolean leaf = getModel().isLeaf(value);
+            int row = getLeadSelectionRow();
+            renderer.getTreeCellRendererComponent(tree, value, isSelected, expanded, leaf, row, true);
+            super.prepareForEditing();
+        }//}}}
+        
         //{{{ getTreeCellEditorComponent
         
         public Component getTreeCellEditorComponent(JTree tree, Object value, boolean isSelected, boolean expanded, boolean leaf, int row) {
             /*
-            This code depends on the implementation of DefaultTreeCellEditor 
-            a little. I don't like it but I don't want AdapterNode's methods to
-            be specific to the tree view's implementation. The tree view might
-            like how AdapterNode implements toString() but another view might
-            not.
+            This code depends on the implementation of DefaultTreeCellEditor
+            a little.
             */
             
             //DefaultTreeCellEditor.EditorContainer
             Container container = (Container)super.getTreeCellEditorComponent(tree, value, isSelected, expanded, leaf, row);
             JTextField field = (JTextField)container.getComponent(0);
-            field.setText(DefaultViewTree.toString((AdapterNode)value));
+            
+            Log.log(Log.DEBUG,this,"test");
+            // We know this is an element so just use the node name.
+            field.setText(((AdapterNode)value).getNodeName());
             return field;
         }//}}}
+
     }//}}}
 
     //{{{ Drag n Drop classes
