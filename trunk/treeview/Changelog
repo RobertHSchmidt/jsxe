@@ -1,5 +1,11 @@
+06/16/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed bug where a processing instruction node's icon was not rendered
+      correctly when being edited.
+
 06/15/2005 Trish Hartnett <trishah136@users.sourceforge.net>
-	* Added tooltip texts for the checkboxes/scroll panes of the Options dialog box.
+     
+    * Added tooltip texts for the checkboxes/scroll panes of the Options dialog box.
 
 05/30/2005  Ian Lewis <IanLewiS@member.fsf.org>
 
