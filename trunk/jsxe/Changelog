@@ -2,6 +2,8 @@
 
     * Added Bianca Schoen to the about dialog for her contribution of a German
       translation.
+    * Fixed bug that didn't mark the file as dirty when changing the indent
+      and formatting and soft indent were true.
 
 06/15/2005 Trish Hartnett <trishah136@users.sourceforge.net>
 	* Added tooltip texts for the checkboxes/scroll panes of the Options dialog box.

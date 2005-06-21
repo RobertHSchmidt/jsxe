@@ -1200,7 +1200,7 @@ loop:       for(int i = 0; i < str.length(); i++)
      * Returns true if the value of the string is true
      * @param str the boolean string
      */
-    public boolean isTrue(String str) {
+    public static boolean isTrue(String str) {
         return "true".equalsIgnoreCase(str);
     }//}}}
     

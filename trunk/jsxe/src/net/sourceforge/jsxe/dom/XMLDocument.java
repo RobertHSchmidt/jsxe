@@ -226,6 +226,13 @@ public class XMLDocument {
                     }
                 }
             }
+            if (key.equals(INDENT)) {
+                if (MiscUtilities.isTrue(getProperty(FORMAT_XML))
+                    && MiscUtilities.isTrue(getProperty(IS_USING_SOFT_TABS)))
+                {
+                    m_syncedWithContent = false;
+                }
+            }
             firePropertyChanged(key, oldValue);
         }
         return oldValue;
