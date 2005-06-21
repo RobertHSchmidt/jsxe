@@ -592,6 +592,7 @@ public class jsXe {
         
         return null;
     }//}}}
+    
     //{{{ closeDocumentBuffer()
     /**
      * Closes an open DocumentBuffer. If dirty then the user will be prompted to save.
@@ -604,8 +605,7 @@ public class jsXe {
      */
     public static boolean closeDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException {
     	return closeDocumentBuffer(view, buffer, true);
-    
-    }
+    }//}}}
     
     //{{{ closeDocumentBuffer()
     /**
@@ -626,7 +626,6 @@ public class jsXe {
      */
     public static boolean closeDocumentBuffer(TabbedView view, DocumentBuffer buffer, boolean confirmClose) throws IOException {
         if (m_buffers.contains(buffer)) {
-            
             if (buffer.close(view, confirmClose)) {
                 m_bufferHistory.setEntry(buffer, getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME));
                 view.removeDocumentBuffer(buffer);
