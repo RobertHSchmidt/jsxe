@@ -1,3 +1,9 @@
+06/20/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Changed the text area for editing node values from a JEditorPane to a
+      JTextArea and set the line wrap policy to false so that word wrapping
+      doesn't occur. JEditorPane was wrapping lines very strangely.
+
 06/16/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed bug where a processing instruction node's icon was not rendered
