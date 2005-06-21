@@ -110,11 +110,12 @@ public class DefaultView extends JPanel implements DocumentView {
         setLayout(new BorderLayout());
         
         //{{{ init html editor pane
-        htmlPane.setEditable(false);
+        m_valueTextArea.setEditable(false);
         //use hard coded font for right now
         //style: 0=plain, 1=bold, 2=italic, 3=boldItalic
-        htmlPane.setFont(new Font("Monospaced", 0, 12));
-        JScrollPane htmlView = new JScrollPane(htmlPane);
+        m_valueTextArea.setFont(new Font("Monospaced", 0, 12));
+        m_valueTextArea.setLineWrap(false);
+        JScrollPane htmlView = new JScrollPane(m_valueTextArea);
         //}}}
         
         //{{{ init attributes table
@@ -146,7 +147,7 @@ public class DefaultView extends JPanel implements DocumentView {
                             tree.startEditingAtPath(tree.getLeadSelectionPath());
                         } else {
                             if (canEditInJEditorPane(node)) {
-                                htmlPane.requestFocus();
+                                m_valueTextArea.requestFocus();
                             }
                         }
                     }
@@ -303,7 +304,7 @@ public class DefaultView extends JPanel implements DocumentView {
         treeModel.addTreeModelListener(treeListener);
         tableModel.addTableModelListener(tableListener);
         
-        htmlPane.setDocument(styledDoc);
+        m_valueTextArea.setDocument(styledDoc);
         styledDoc.addDocumentListener(docListener);
         
         //get the splitpane layout options
@@ -336,13 +337,13 @@ public class DefaultView extends JPanel implements DocumentView {
         return tree;
     }//}}}
     
-    //{{{ getDefaultViewHTMLPane()
+    //{{{ getDefaultViewTextPane()
     /**
      * Gets the component used for editing node values
      * @return the editor pane
      */
-    public JEditorPane getDefaultViewTextPane() {
-        return htmlPane;
+    public JTextArea getDefaultViewTextPane() {
+        return m_valueTextArea;
     }//}}}
     
     //{{{ getDefaultViewAttributeTable()
@@ -440,7 +441,7 @@ public class DefaultView extends JPanel implements DocumentView {
             if ( selectedNode != null ) {
                 
                 //if the selected node can be edited in the text pane
-                htmlPane.setEditable(canEditInJEditorPane(selectedNode));
+                m_valueTextArea.setEditable(canEditInJEditorPane(selectedNode));
                 
                 //if the table is editing we want to cancel it.
                 if (attributesTable.isEditing()) {
@@ -454,13 +455,13 @@ public class DefaultView extends JPanel implements DocumentView {
                 
                 //update the text pane with the current info
                 DefaultViewDocument styledDoc = new DefaultViewDocument(selectedNode);
-                htmlPane.setDocument(styledDoc);
+                m_valueTextArea.setDocument(styledDoc);
                 styledDoc.addDocumentListener(docListener);
-                htmlPane.updateUI();
+                m_valueTextArea.updateUI();
                 
             } else {
-                htmlPane.setDocument(new PlainDocument());
-                htmlPane.setEditable(false);
+                m_valueTextArea.setDocument(new PlainDocument());
+                m_valueTextArea.setEditable(false);
             }
         }//}}}
         
@@ -523,7 +524,7 @@ public class DefaultView extends JPanel implements DocumentView {
     }//}}}
     
     private DefaultViewTree tree = new DefaultViewTree();
-    private JEditorPane htmlPane = new JEditorPane("text/plain","");
+    private JTextArea m_valueTextArea = new JTextArea("");
     private DefaultViewTable attributesTable = new DefaultViewTable();
     private JSplitPane vertSplitPane;
     private JSplitPane horizSplitPane;
