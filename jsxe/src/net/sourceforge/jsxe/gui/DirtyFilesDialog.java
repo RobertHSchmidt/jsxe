@@ -123,25 +123,6 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		dirtyFilesJList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		initComponents(dirtyFilesJList);
 
-		boolean debug = false;
-		//      {{{ start logging
-		Log.init(true, Log.ERROR, debug);
-		try {
-			//        	{{{ set settings dirs
-			String homeDir = System.getProperty("user.home");
-			String fileSep = System.getProperty("file.separator");
-
-			String settingsDirectory = homeDir + fileSep + ".jsxe";
-			BufferedWriter stream = new BufferedWriter(new FileWriter(new File(
-					settingsDirectory + fileSep + "jsXe.log")));
-
-			stream.write("Log file created on " + new Date());
-			stream.write(System.getProperty("line.separator"));
-
-			Log.setLogWriter(stream);
-		} catch (IOException ioe) {
-			Log.log(Log.ERROR, jsXe.class, ioe);
-		}//}}};
 	}//}}}
 	
    //	{{{ getDirtyFileNames()

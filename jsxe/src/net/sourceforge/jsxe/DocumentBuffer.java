@@ -36,12 +36,9 @@ import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.options.OptionPane;
-import net.sourceforge.jsxe.gui.DirtyFilesDialog;
-import net.sourceforge.jsxe.gui.OptionsPanel;
-import net.sourceforge.jsxe.gui.TabbedView;
-import net.sourceforge.jsxe.gui.jsxeFileDialog;
-import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.*;
 import net.sourceforge.jsxe.util.Log;
+import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
 
 //{{{ Java base classes
@@ -110,25 +107,6 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = file;
         m_name = file.getName();
-        
-       // {{{ start logging
-            boolean debug = false;
-            Log.init(true, Log.ERROR, debug);
-            try {
-            	//        	{{{ set settings dirs
-                String homeDir = System.getProperty("user.home");
-                String fileSep = System.getProperty("file.separator");
-                
-                String settingsDirectory = homeDir+fileSep+".jsxe";
-                BufferedWriter stream = new BufferedWriter(new FileWriter(new File(settingsDirectory+fileSep+"jsXe.log")));
-                
-                stream.write("Log file created on " + new Date());
-                stream.write(System.getProperty("line.separator"));
-                
-                Log.setLogWriter(stream);
-            } catch (IOException ioe) {
-                Log.log(Log.ERROR, jsXe.class, ioe);
-            }//}}};
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -726,11 +704,21 @@ public class DocumentBuffer extends XMLDocument {
                 setDirty(true);
                 setProperty(XMLDocument.ENCODING, encodingComboBox.getSelectedItem().toString());
             }
-            try {
-                //don't need to set dirty, no change to text
-                setProperty(XMLDocument.INDENT, (new Integer(indentComboBox.getSelectedItem().toString())).toString());
-            } catch (NumberFormatException nfe) {
-                //Bad input, don't save.
+            
+            if (!getProperty(XMLDocument.INDENT).equals(indentComboBox.getSelectedItem().toString())) {
+                try {
+                    //don't need to set dirty, no change to text
+                    setProperty(XMLDocument.INDENT, (new Integer(indentComboBox.getSelectedItem().toString())).toString());
+                    
+                    //we are changing the document structure.
+                    if (MiscUtilities.isTrue(getProperty(XMLDocument.FORMAT_XML))
+                        && MiscUtilities.isTrue(getProperty(XMLDocument.IS_USING_SOFT_TABS)))
+                    {
+                        setDirty(true);
+                    }
+                } catch (NumberFormatException nfe) {
+                    //Bad input, don't save.
+                }
             }
         };//}}}
         
