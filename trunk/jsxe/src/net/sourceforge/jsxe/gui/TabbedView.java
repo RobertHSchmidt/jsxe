@@ -284,28 +284,15 @@ public class TabbedView extends JFrame {
      */
     public boolean close() throws IOException {
         
-    	DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
         DocumentView currentDocView = null;
-        ArrayList dirtyBufferList = new ArrayList();
         
-        //sequentially close all the document views
-        for (int i=0; i < buffers.length; i++) {
-        	DocumentBuffer db= buffers[i];
-        	if (db.getStatus(DocumentBuffer.DIRTY)) {
-        		dirtyBufferList.add(db);
-        	}
-        }
-        //produce Dialog box with the list of currently opened files in it
-        if(dirtyBufferList.size() > 0){
-        	DirtyFilesDialog dirtyDialog = new DirtyFilesDialog(this, dirtyBufferList);
-        	if(dirtyDialog.getCancelFlag()==true){
-        		return false;
-        	}
+        if (!jsXe.closeAllDocumentBuffers(this)) {
+            return false;
         }
         
         /* original stuff here */
 //        for (int i=0; i < buffers.length; i++) { 
-//        	if (!jsXe.closeDocumentBuffer(this, buffers[i])) {
+//          if (!jsXe.closeDocumentBuffer(this, buffers[i])) {
 //                return false;
 //            }
 //        }
@@ -626,8 +613,8 @@ public class TabbedView extends JFrame {
         //{{{ windowClosing()
         
         public void windowClosing(WindowEvent e) {
-			jsXe.exit(TabbedView.this);
-		}//}}}
+            jsXe.exit(TabbedView.this);
+        }//}}}
         
     }//}}}
     

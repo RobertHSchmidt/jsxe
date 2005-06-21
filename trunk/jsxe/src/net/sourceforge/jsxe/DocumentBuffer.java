@@ -148,34 +148,31 @@ public class DocumentBuffer extends XMLDocument {
     /**
      * Performs closing tasks. If the document is dirty then the user is
      * prompted if they want to save.
+     * @param view the view that initiated the close
+     * @param confirmClose true if the user is to confirm save
      * @return true if the close is requested
      * @throws IOException if the user chooses to save and the file could not be saved
      */
     public boolean close(TabbedView view, boolean confirmClose) throws IOException {
     	
-        if (getStatus(DIRTY)) {
-            
-        	if(confirmClose){
+        if (getStatus(DIRTY) && confirmClose) {
             //If it's dirty ask if you want to save.
-	            String msg = Messages.getMessage("DocumentBuffer.Close.Message", new String[] { getName() });
-	            String title = Messages.getMessage("DocumentBuffer.Close.Message.Title");
-	            int optionType = JOptionPane.YES_NO_CANCEL_OPTION;
-	            int messageType = JOptionPane.WARNING_MESSAGE;
-	            
-	            int returnVal = JOptionPane.showConfirmDialog(view,
-	                                msg,
-	                                title,
-	                                optionType,
-	                                messageType);
-	            
-	            if (returnVal == JOptionPane.YES_OPTION) {
-	                return save(view);
-	            } else {
-	                return !(returnVal == JOptionPane.CANCEL_OPTION);
-	            }
-        	}else{
-        		return save(view);
-        	}
+            String msg = Messages.getMessage("DocumentBuffer.Close.Message", new String[] { getName() });
+            String title = Messages.getMessage("DocumentBuffer.Close.Message.Title");
+            int optionType = JOptionPane.YES_NO_CANCEL_OPTION;
+            int messageType = JOptionPane.WARNING_MESSAGE;
+            
+            int returnVal = JOptionPane.showConfirmDialog(view,
+                                msg,
+                                title,
+                                optionType,
+                                messageType);
+            
+            if (returnVal == JOptionPane.YES_OPTION) {
+                return save(view);
+            } else {
+                return !(returnVal == JOptionPane.CANCEL_OPTION);
+            }
         } else {
             return true;
         }
@@ -343,7 +340,6 @@ public class DocumentBuffer extends XMLDocument {
             
             Log.log(Log.NOTICE, DocumentBuffer.class, "366 : "+selectedFile.getName());
             boolean reallySave = true;
-            Log.closeStream();
             if (selectedFile.exists()) {
                 //If it's dirty ask if you want to save.
                 String msg = Messages.getMessage("DocumentBuffer.SaveAs.Message", new String[] { selectedFile.getName() });

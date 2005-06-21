@@ -161,6 +161,4 @@ DirtyFilesDialog.Button.SaveSelected.Title = Auswahl Speichern
 DirtyFilesDialog.Button.SaveSelected.ToolTip = Auswahl Speichern
 DirtyFilesDialog.Button.DiscardSelected.Title = Auswahl Verwerfen
 DirtyFilesDialog.Button.DiscardSelected.ToolTip = Auswahl Verwerfen
-DirtyFilesDialog.Button.Cancel.Title = Abbrechen
-DirtyFilesDialog.Button.Cancel.ToolTip = Abbrechen
 #}}}

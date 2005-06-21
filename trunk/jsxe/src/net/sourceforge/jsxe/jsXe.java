@@ -294,7 +294,7 @@ public class jsXe {
                 
             } catch (IOException ioe) {
                 Log.log(Log.ERROR, jsXe.class, ioe);
-                JOptionPane.showMessageDialog(null, ioe.getMessage()+".", "I/O Error", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, ioe.getMessage()+".", Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
                 System.exit(1);
             }
             
@@ -430,7 +430,7 @@ public class jsXe {
                         } catch (IOException ioe) {
                             //I/O error doesn't change value of success
                             Log.log(Log.WARNING, jsXe.class, ioe);
-                            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
                         }
                     }
                 }
@@ -647,7 +647,45 @@ public class jsXe {
         } else {
             return false;
         }
-    }//}}} 
+    }//}}}
+    
+    //{{{ closeAllDocumentBuffers()
+    /**
+     * Closes all open DocumentBuffers. If there are any dirty files then the
+     * user will be prompted to save or close them in a single dialog.
+     * @param view the view that initiated the close
+     * @throws IOException if the user chooses to save and the file cannot
+     *                     be saved because of an I/O error
+     */
+    public static boolean closeAllDocumentBuffers(TabbedView view) throws IOException {
+        DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
+        ArrayList dirtyBufferList = new ArrayList();
+        
+        //sequentially close all the document views
+        for (int i=0; i < buffers.length; i++) {
+            DocumentBuffer db= buffers[i];
+            if (db.getStatus(DocumentBuffer.DIRTY)) {
+                dirtyBufferList.add(db);
+            }
+        }
+        //produce Dialog box with the list of currently opened files in it
+        if (dirtyBufferList.size() > 0) {
+            DirtyFilesDialog dirtyDialog = new DirtyFilesDialog(view, dirtyBufferList);
+            
+            if (dirtyDialog.getCancelFlag()) {
+                return false;
+            } else {
+                //get the buffers that are still open and close them.
+                buffers = jsXe.getDocumentBuffers();
+                for (int i=0; i < buffers.length; i++) {
+                    if (!closeDocumentBuffer(view, buffers[i], false)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }//}}}
     
     //{{{ getBufferHistory()
     
@@ -738,7 +776,7 @@ public class jsXe {
         } catch (IOException ioe) {
             //failed save of a dirty buffer
             Log.log(Log.ERROR, jsXe.class, ioe);
-            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
             m_exiting = false;
         }
     }//}}}
@@ -934,7 +972,7 @@ public class jsXe {
                 } catch (IOException ioe) {
                     //I/O error doesn't change value of success
                     Log.log(Log.WARNING, jsXe.class, ioe);
-                    JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
                 }
             }
         }
