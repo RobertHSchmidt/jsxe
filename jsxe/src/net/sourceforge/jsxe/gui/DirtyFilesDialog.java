@@ -3,7 +3,8 @@
  :tabSize=4:indentSize=4:noTabs=true:
  :folding=explicit:collapseFolds=1:
 
- Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
+Copyright (C) 2005 Trish Harnett (trishah136@member.fsf.org)
+Portions Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
 
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License
@@ -23,7 +24,6 @@
  */
 
 package net.sourceforge.jsxe.gui;
-
 
 //{{{ imports
 /*
@@ -53,9 +53,8 @@ import net.sourceforge.jsxe.util.Log;
 
 //}}}
 
-
 /**
- * The Dialog box which comes up when user is exiting jsXE and their 
+ * The Dialog box which comes up when user is exiting jsXe and their 
  * are dirty files existing.
  *
  * @author  Trish Hartnett
@@ -240,7 +239,6 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		dirtyFilesJList.repaint();
 	}//}}}
 
-	
 	 //	{{{ saveSelectedJButtonActionPerformed()
 	/**
      * Does actions for clicking on the Save Selected JButton
@@ -277,7 +275,6 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Log.closeStream();
 	}//}}}
 
 	 //	{{{ discardSelectedJButtonActionPerformed()
@@ -318,7 +315,6 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		if(allDiscardFlag == true){
 			dispose();
 		}
-		Log.closeStream();
 	}//}}}
 
    //	{{{  cancelJButtonActionPerformed()
@@ -332,7 +328,6 @@ public class DirtyFilesDialog extends EnhancedDialog {
 				"351 using the dirtyFilesDialog cancel button ");
 		setCancelFlag(true);
 		dispose();
-		Log.closeStream();
 	}//}}}
 
 	 //	{{{ removeUnsavedFileFromList()
