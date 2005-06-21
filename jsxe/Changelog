@@ -1,3 +1,14 @@
+06/21/2005  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated jsXe so that it uses the DirtyFilesDialog when selecting
+      'Close All' from the File menu.
+    * Updated the DirtyFilesDialog so that it doesn't close until all files are
+      either saved or discarded.
+    * Updated DirtyFilesDialog so that it saves it's geometry to the properties
+      properly.
+    * Updated jsXe so that recent files information is saved even when closing
+      files through the DirtyFilesDialog
+
 06/20/2005  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added Bianca Schoen to the about dialog for her contribution of a German

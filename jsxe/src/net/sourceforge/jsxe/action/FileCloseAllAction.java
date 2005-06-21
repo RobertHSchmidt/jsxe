@@ -77,10 +77,7 @@ public class FileCloseAllAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {
         try {
-            DocumentBuffer[] buffers = jsXe.getDocumentBuffers();
-            for (int i=0; i<buffers.length; i++) {
-                jsXe.closeDocumentBuffer(m_view, buffers[i]);
-            }
+            jsXe.closeAllDocumentBuffers(m_view);
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(m_view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
         }
