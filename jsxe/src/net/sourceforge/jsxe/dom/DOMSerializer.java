@@ -518,12 +518,12 @@ public class DOMSerializer implements LSSerializer {
                                 //ignore this whitespace only text if formatting
                                 return;
                             }
-                           // if (node.getNextSibling()!=null || node.getPreviousSibling()!=null) {
-                           //     line++;
-                           //     column=0;
-                           //     doWrite(writer, m_newLine, node, line, column, offset);
-                           //     offset += m_newLine.length();
-                           // }
+                            if (node.getNextSibling() != null || node.getPreviousSibling() != null) {
+                                line++;
+                                column=0;
+                                doWrite(writer, m_newLine, node, line, column, offset);
+                                offset += m_newLine.length();
+                            }
                         }
                         
                         //This is a dumb quick fix and should be changed.
