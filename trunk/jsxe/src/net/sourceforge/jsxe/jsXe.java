@@ -675,9 +675,22 @@ public class jsXe {
         boolean closeFiles = true;
         //produce Dialog box with the list of currently opened files in it
         if (dirtyBufferList.size() > 0) {
-            DirtyFilesDialog dirtyDialog = new DirtyFilesDialog(view, dirtyBufferList);
-            
-            closeFiles = !dirtyDialog.getCancelFlag();
+            if (dirtyBufferList.size() > 1) {
+                
+                /*
+                If there are multiple dirty files then show
+                the dirty files dialog
+                */
+                DirtyFilesDialog dirtyDialog = new DirtyFilesDialog(view, dirtyBufferList);
+                closeFiles = !dirtyDialog.getCancelFlag();
+                
+            } else {
+                /*
+                if there is only one file then close the one file normally
+                then close the rest of the clean buffers
+                */
+                closeFiles = closeDocumentBuffer(view, (DocumentBuffer)dirtyBufferList.get(0), true);
+            }
         }
         
         if (closeFiles) {

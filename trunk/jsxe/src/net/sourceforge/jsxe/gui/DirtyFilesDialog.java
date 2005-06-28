@@ -252,6 +252,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 			Object[] selected = dirtyFilesJList.getSelectedValues();
 			int counter = 0;
 			boolean closeSuccessful = true;
+			boolean stillOK = true;
 			
 			for (Iterator it = newDirtyBuffers.iterator(); it.hasNext() && closeSuccessful;) {
 				DocumentBuffer db = (DocumentBuffer) it.next();
@@ -270,12 +271,15 @@ public class DirtyFilesDialog extends EnhancedDialog {
 								removeUnsavedFileFromList(unsavedName);
 								removeUnsavedFileFromDirtyBufferList(unsavedName);
 							}
+						} else {
+							//if user cancels the save then keep the dialog open.
+							stillOK = false;
 						}
 					}
 					counter++;
 				}
 			}
-			if(selected.length == (dirtyFiles.length+1)){
+			if (selected.length == (dirtyFiles.length+1) && stillOK) {
 				ok();
 			}
 		} catch (IOException e) {
