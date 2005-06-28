@@ -50,12 +50,19 @@ xml.schema=XML Schema
 Global.Options.Dialog.Title=Global Options
 Global.Options.Title=jsXe Global Options
 Global.Options.Max.Recent.Files=Recent files to remember:
+Global.Options.Max.Recent.Files.ToolTip=The maximum number of files that jsXe remembers in the recent files menu.
 Document.Options.Title=XML Document Options
 Document.Options.Encoding=Encoding:
+Document.Options.Encoding.ToolTip=The encoding that jsXe uses to write the file.
 Document.Options.Indent.Width=Indent width:
+Document.Options.Indent.Width.ToolTip=The width used when formatting and displaying tab characters.
 Document.Options.Format.XML=Format XML output
+Document.Options.Format.XML.ToolTip=If this box is checked then XML will be formatted automatically.
 Document.Options.Validate=Validate if DTD or Schema Available
+Document.Options.Validate.ToolTip=If this box is checked jsXe will validate the XML document.
 Document.Options.Soft.Tabs=Soft tabs (emulated with spaces)
+Document.Options.Soft.Tabs.ToolTip=If this box is checked then tab characters are replaced by spaces.
+
 #}}}
 
 #{{{ Menu Items
