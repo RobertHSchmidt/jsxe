@@ -1,117 +1,121 @@
+#:tabSize=4:indentSize=4:noTabs=false:
+#:folding=explicit:collapseFolds=1:
+
 useFixture(default)
 
 # tests the format-pretty-print feature
 def test():
+    
 	window('jsXe - Untitled-1')
-	doubleclick('DefaultViewTree', '/Document Root/default_element')
-	rightclick('DefaultViewTree', '/Document Root/default_element/default_node')
+	doubleclick('TreeViewTree', '/Document Root/default_element')
+	rightclick('TreeViewTree', '/Document Root/default_element/default_node')
 	click('Remove Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element' ] ])
 	
-	click('DefaultViewTree', '/Document Root/default_element')
-	assertContent('AttributesTable', [ [ '', ''  ] ])
-	select('AttributesTable', 'test', 'Attribute,0')
-	select('AttributesTable', 'junk', 'Value,0')
-	assertContent('AttributesTable', [ [ 'test', 'junk' ], [ '', '' ] ])
-	select('AttributesTable', 'test2', 'Attribute,1')
-	select('AttributesTable', 'test Attribute', 'Value,1')
-	assertContent('AttributesTable', [ [ 'test', 'junk' ], [ 'test2', 'test Attribute' ], [ '', '' ] ])
+	click('TreeViewTree', '/Document Root/default_element')
+	assertContent('TreeViewAttributesTable', [ [ '', ''  ] ])
+	select('TreeViewAttributesTable', 'test', 'Attribute,0')
+	select('TreeViewAttributesTable', 'junk', 'Value,0')
+	assertContent('TreeViewAttributesTable', [ [ 'test', 'junk' ], [ '', '' ] ])
+	select('TreeViewAttributesTable', 'test2', 'Attribute,1')
+	select('TreeViewAttributesTable', 'test Attribute', 'Value,1')
+	assertContent('TreeViewAttributesTable', [ [ 'test', 'junk' ], [ 'test2', 'test Attribute' ], [ '', '' ] ])
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element')
+	rightclick('TreeViewTree', '/Document Root/default_element')
 	click('Add')
 	click('Element')
 	click('Add Element Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'new_element' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'new_element' ] ])
 
-	rightclick('DefaultViewTree', '/Document Root/default_element/new_element')
+	rightclick('TreeViewTree', '/Document Root/default_element/new_element')
 	click('Rename Node')
 	select('DefaultTreeCellEditor$DefaultTextField', 'element1')
 	keystroke('Enter')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1' ] ])
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element/element1')
+	rightclick('TreeViewTree', '/Document Root/default_element/element1')
 	click('Add')
-	click('Add Text Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node' ] ])
+	click('Text')
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node' ] ])
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element')
+	rightclick('TreeViewTree', '/Document Root/default_element')
 	click('Add')
 	click('Element')
 	click('Add Element Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'new_element' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'new_element' ] ])
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element/new_element')
+	rightclick('TreeViewTree', '/Document Root/default_element/new_element')
 	click('Rename Node')
 	select('DefaultTreeCellEditor$DefaultTextField', 'element2')
 	keystroke('Enter')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2' ] ])
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element/element2')
+	rightclick('TreeViewTree', '/Document Root/default_element/element2')
 	click('Add')
-	click('Add Text Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node' ] ])
+	click('Text')
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node' ] ])
 
-	rightclick('DefaultViewTree', '/Document Root/default_element')
+	rightclick('TreeViewTree', '/Document Root/default_element')
 	click('Add')
 	click('Element')
 	click('Add Element Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'new_element' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'new_element' ] ])
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element/new_element')
+	rightclick('TreeViewTree', '/Document Root/default_element/new_element')
 	click('Rename Node')
 	select('DefaultTreeCellEditor$DefaultTextField', 'element3')
 	keystroke('Enter')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3' ] ])
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element/element3')
+	rightclick('TreeViewTree', '/Document Root/default_element/element3')
 	click('Add')
-	click('Add CDATA Section')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'New CDATA Section' ] ])
+	click('CDATA Section')
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'New CDATA Section' ] ])
 
-	click('DefaultViewTree', '/Document Root/default_element/element3/New CDATA Section')
-	select('JEditorPane', 'Test CDATA')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA' ] ])
+	click('TreeViewTree', '/Document Root/default_element/element3/New CDATA Section')
+	select('TreeViewTextArea', 'Test CDATA')
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA' ] ])
 
-	rightclick('DefaultViewTree', '/Document Root/default_element')
+	rightclick('TreeViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Add Processing Instruction')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction' ] ])
+	click('Processing Instruction')
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction' ] ])
 	
-	click('DefaultViewTree', '/Document Root/default_element/Instruction')
-	select('JEditorPane', 'Test Instruction')
+	click('TreeViewTree', '/Document Root/default_element/Instruction')
+	select('TreeViewTextArea', 'Test Instruction')
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element')
+	rightclick('TreeViewTree', '/Document Root/default_element')
 	click('Add')
-	click('Add Comment')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'New Comment' ] ])
+	click('Comment')
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'New Comment' ] ])
 
-	click('DefaultViewTree', '/Document Root/default_element/New Comment')
-	select('JEditorPane', 'TEST COMMENT')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'TEST COMMENT' ] ])
+	click('TreeViewTree', '/Document Root/default_element/New Comment')
+	select('TreeViewTextArea', 'TEST COMMENT')
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'TEST COMMENT' ] ])
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element')
+	rightclick('TreeViewTree', '/Document Root/default_element')
 	click('Add')
 	click('Element')
 	click('Add Element Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'TEST COMMENT', 'new_element' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'TEST COMMENT', 'new_element' ] ])
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element/new_element')
+	rightclick('TreeViewTree', '/Document Root/default_element/new_element')
 	click('Rename Node')
 	select('DefaultTreeCellEditor$DefaultTextField', 'element4')
 	keystroke('Enter')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'TEST COMMENT', 'element4' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'TEST COMMENT', 'element4' ] ])
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element/element4')
+	rightclick('TreeViewTree', '/Document Root/default_element/element4')
 	click('Add')
 	click('Element')
 	click('Add Element Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'TEST COMMENT', 'element4', 'new_element' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'TEST COMMENT', 'element4', 'new_element' ] ])
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element/element4/new_element')
+	rightclick('TreeViewTree', '/Document Root/default_element/element4/new_element')
 	click('Rename Node')
 	select('DefaultTreeCellEditor$DefaultTextField', 'element5')
 	keystroke('Enter')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'TEST COMMENT', 'element4', 'element5' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'element1', 'New Text Node', 'element2', 'New Text Node', 'element3', 'Test CDATA', 'Instruction', 'TEST COMMENT', 'element4', 'element5' ] ])
 	
 	click('Tools')
 	click('Options...')
@@ -123,7 +127,10 @@ def test():
 
 	click('View')
 	click('Source View')
-	assertText('SourceTextArea',"""<?xml version="1.0" encoding="UTF-8"?>
+	
+	textarea = getComponent('SourceTextArea')
+	
+	expected = """<?xml version="1.0" encoding="UTF-8"?>
 <default_element test="junk" test2="test Attribute">
 	<element1>New Text Node</element1>
 	<element2>New Text Node</element2>
@@ -135,6 +142,9 @@ def test():
 	<element4>
 		<element5/>
 	</element4>
-</default_element>""")
+</default_element>"""
+	
+	if not (textarea.getText() == expected):
+		fail('Text in sourceview does not match '+expected)
 	
 	close()
