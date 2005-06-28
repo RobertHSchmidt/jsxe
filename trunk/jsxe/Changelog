@@ -1,3 +1,9 @@
+06/27/2005  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Removed some NOTICES to the log in the DirtyFilesDialog since they aren't
+      necessary.
+    * Added some new NOTICEs to the Log
+
 06/21/2005  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated jsXe so that it uses the DirtyFilesDialog when selecting
