@@ -1,3 +1,13 @@
+06/28/2005  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Modified the DirtyFilesDialog to make it look a little bit better.
+        * Changed to use the BorderLayout better
+        * Changed to allow the JList to size itself correctly
+        * Changed from using 3 JPanels to using 1 and using the BorderLayout to
+          arrange the components
+        * Changed from using a JPanel to format the buttons to using a Box which
+          arranges the buttons closer to the way you want.
+
 06/27/2005  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Removed some NOTICES to the log in the DirtyFilesDialog since they aren't
