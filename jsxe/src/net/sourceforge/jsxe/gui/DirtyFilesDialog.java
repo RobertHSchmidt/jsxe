@@ -43,10 +43,10 @@ import java.util.Iterator;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 //}}}
 
 //{{{ jsXe classes
@@ -74,16 +74,16 @@ public class DirtyFilesDialog extends EnhancedDialog {
 	private DefaultListModel dirtyFilesJListModel;
 	private ArrayList newDirtyBuffers;
 	private String[] dirtyFiles;	
-	private javax.swing.JPanel bottomJPanel;
-	private javax.swing.JButton cancelJButton;
-	private javax.swing.JPanel centerJPanel;
-	private javax.swing.JButton discardSelectedJButton;
-	private javax.swing.JLabel jLabel1;
-	private javax.swing.JScrollPane jScrollPane;
-	private javax.swing.JButton saveSelectedJButton;
-	private javax.swing.JButton selectAllJButton;
-	private javax.swing.JLabel topJLabel;
-	private javax.swing.JPanel topJPanel;	
+	private JPanel bottomJPanel;
+	private JButton cancelJButton;
+	private JPanel centerJPanel;
+	private JButton discardSelectedJButton;
+	private JLabel jLabel1;
+	private JScrollPane jScrollPane;
+	private JButton saveSelectedJButton;
+	private JButton selectAllJButton;
+	private JLabel topJLabel;
+	private JPanel topJPanel;	
 	private boolean cancelFlag = false;  //if someone hits the cancel button, the exit doesn't go ahead
 	private static final String m_geometryName = "dirtyfiles";
 	
@@ -124,7 +124,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 			dirtyFilesJListModel.addElement(dirtyFiles[i]);
 		}
 		dirtyFilesJList = new JList(dirtyFilesJListModel);
-		dirtyFilesJList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		dirtyFilesJList.setLayoutOrientation(JList.VERTICAL);
 		initComponents(dirtyFilesJList);
 	}//}}}
 
@@ -155,72 +155,75 @@ public class DirtyFilesDialog extends EnhancedDialog {
      * @param dirtyFiles JList containing list of dirty files names
      */
 	private void initComponents(JList dirtyFiles) {
-		topJPanel = new javax.swing.JPanel();
-		jLabel1 = new javax.swing.JLabel();
-		topJLabel = new javax.swing.JLabel();
-		centerJPanel = new javax.swing.JPanel();
-		jScrollPane = new javax.swing.JScrollPane(dirtyFiles);
-		bottomJPanel = new javax.swing.JPanel();
-		selectAllJButton = new javax.swing.JButton();
-		saveSelectedJButton = new javax.swing.JButton();
-		discardSelectedJButton = new javax.swing.JButton();
-		cancelJButton = new javax.swing.JButton();
+		JPanel content = new JPanel(new BorderLayout(12,12));
+        content.setBorder(new EmptyBorder(12,12,12,12));
+        setContentPane(content);
+		
+	//	topJPanel = new JPanel();
+	//	jLabel1 = new JLabel();
+		topJLabel = new JLabel(); 
+	//	centerJPanel = JPanel();
+		jScrollPane = new JScrollPane(dirtyFiles);
+	//	bottomJPanel = new JPanel();
+		selectAllJButton = new JButton();
+		saveSelectedJButton = new JButton();
+		discardSelectedJButton = new JButton();
+		cancelJButton = new JButton();
 
-		jLabel1.setIcon(new javax.swing.ImageIcon(DirtyFilesDialog.class
-				.getResource("/net/sourceforge/jsxe/icons/metal-Warn.png")));
-		topJPanel.add(jLabel1);
-
+		topJLabel.setIcon(new ImageIcon(DirtyFilesDialog.class.getResource("/net/sourceforge/jsxe/icons/metal-Warn.png")));
+	//	topJPanel.add(jLabel1);
+	//	getContentPane().add(jLabel1, BorderLayout.WEST);
+		
 		topJLabel.setText(Messages.getMessage("DirtyFilesDialog.Dialog.Message"));
-		topJPanel.add(topJLabel);
+	//	topJPanel.add(topJLabel);
 
-		getContentPane().add(topJPanel, java.awt.BorderLayout.NORTH);
+		getContentPane().add(topJLabel, BorderLayout.NORTH);
 
-		jScrollPane.setPreferredSize(new java.awt.Dimension(300, 40));
-		centerJPanel.add(jScrollPane);
+	//	centerJPanel.add(jScrollPane);
 
-		getContentPane().add(centerJPanel, java.awt.BorderLayout.CENTER);
+		getContentPane().add(jScrollPane, BorderLayout.CENTER);
 
+		Box buttons = new Box(BoxLayout.X_AXIS);
+		buttons.add(Box.createGlue());
+		
 		selectAllJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.SelectAll.Title"));
-	//	selectAllJButton.setToolTipText(Messages.getMessage("DirtyFilesDialog.Button.SelectAll.ToolTip"));
 		selectAllJButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				selectAllJButtonActionPerformed(evt);
 			}
 		});
-		bottomJPanel.add(selectAllJButton);
+		buttons.add(selectAllJButton);
 
 		saveSelectedJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.SaveSelected.Title"));
-	//	saveSelectedJButton.setToolTipText(Messages.getMessage("DirtyFilesDialog.Button.SaveSelected.ToolTip"));
 		saveSelectedJButton	.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				saveSelectedJButtonActionPerformed(evt);
 			}
 		});
-		bottomJPanel.add(saveSelectedJButton);
-
-		discardSelectedJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.DiscardSelected.Title"));
-	//	discardSelectedJButton.setToolTipText(Messages.getMessage("DirtyFilesDialog.Button.DiscardSelected.ToolTip"));
+		buttons.add(saveSelectedJButton);
 		
-		discardSelectedJButton
-				.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent evt) {
-						discardSelectedJButtonActionPerformed(evt);
-					}
-				});
-		bottomJPanel.add(discardSelectedJButton);
+		discardSelectedJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.DiscardSelected.Title"));
+		
+		discardSelectedJButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				discardSelectedJButtonActionPerformed(evt);
+			}
+		});
+		buttons.add(discardSelectedJButton);
 
 		cancelJButton.setText(Messages.getMessage("common.cancel"));
-	//	cancelJButton.setToolTipText(Messages.getMessage("common.cancel"));
 		cancelJButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				cancelJButtonActionPerformed(evt);
 			}
 		});
-		bottomJPanel.add(cancelJButton);
+		buttons.add(cancelJButton);
 
-		getContentPane().add(bottomJPanel, java.awt.BorderLayout.SOUTH);
+		buttons.add(Box.createGlue());
+		
+		getContentPane().add(buttons, BorderLayout.SOUTH);
 
-		pack();
+	//	pack();
 		setVisible(true);
 	}//}}}
 
