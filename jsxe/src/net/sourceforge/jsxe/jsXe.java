@@ -491,6 +491,7 @@ public class jsXe {
             view.setDocumentBuffer(buffer);
             return true;
         } else {
+            Log.log(Log.NOTICE, jsXe.class, "Loading file "+file.getName());
             try {
                 buffer = new DocumentBuffer(file, properties);
                 m_buffers.add(buffer);
@@ -553,6 +554,7 @@ public class jsXe {
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
     public static boolean openXMLDocument(TabbedView view, Reader reader) throws IOException {
+        Log.log(Log.NOTICE, jsXe.class, "Loading Untitled Document");
         DocumentBuffer buffer = new DocumentBuffer(reader);
         try {
             m_buffers.add(buffer);
@@ -627,6 +629,7 @@ public class jsXe {
     public static boolean closeDocumentBuffer(TabbedView view, DocumentBuffer buffer, boolean confirmClose) throws IOException {
         if (m_buffers.contains(buffer)) {
             if (buffer.close(view, confirmClose)) {
+                Log.log(Log.NOTICE, jsXe.class, "Closing "+buffer.getName());
                 m_bufferHistory.setEntry(buffer, getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME));
                 view.removeDocumentBuffer(buffer);
                 m_buffers.remove(buffer);
@@ -668,23 +671,25 @@ public class jsXe {
                 dirtyBufferList.add(db);
             }
         }
+        
+        boolean closeFiles = true;
         //produce Dialog box with the list of currently opened files in it
         if (dirtyBufferList.size() > 0) {
             DirtyFilesDialog dirtyDialog = new DirtyFilesDialog(view, dirtyBufferList);
             
-            if (dirtyDialog.getCancelFlag()) {
-                return false;
-            } else {
-                //get the buffers that are still open and close them.
-                buffers = jsXe.getDocumentBuffers();
-                for (int i=0; i < buffers.length; i++) {
-                    if (!closeDocumentBuffer(view, buffers[i], false)) {
-                        return false;
-                    }
+            closeFiles = !dirtyDialog.getCancelFlag();
+        }
+        
+        if (closeFiles) {
+            //get the buffers that are still open and close them.
+            buffers = jsXe.getDocumentBuffers();
+            for (int i=0; i < buffers.length; i++) {
+                if (!closeDocumentBuffer(view, buffers[i], false)) {
+                    return false;
                 }
             }
         }
-        return true;
+        return closeFiles;
     }//}}}
     
     //{{{ getBufferHistory()
@@ -744,7 +749,7 @@ public class jsXe {
         try {//saves properties
             //exit only if the view really wants to.
             if (view.close()) {
-                
+                Log.log(Log.NOTICE, jsXe.class, "Exiting");
                 String homeDir = System.getProperty("user.home");
                 String fileSep = System.getProperty("file.separator");
                 String settingsDirectory = homeDir+fileSep+".jsxe";

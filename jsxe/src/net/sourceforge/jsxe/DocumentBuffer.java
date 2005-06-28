@@ -285,6 +285,7 @@ public class DocumentBuffer extends XMLDocument {
         }
         
         if (stillReload) {
+            Log.log(Log.NOTICE, this, "Reloading "+getName());
             if (isUntitled()) {
                 StringReader reader = new StringReader(jsXe.getDefaultDocument());
                 setModel(reader);
@@ -397,6 +398,7 @@ public class DocumentBuffer extends XMLDocument {
     public boolean saveAs(TabbedView view, File file) throws IOException {
         if (file != null) {
             try {
+                Log.log(Log.NOTICE, this, "Saving file "+getName());
                 FileOutputStream out = new FileOutputStream(file);
                 serialize(out);
                 

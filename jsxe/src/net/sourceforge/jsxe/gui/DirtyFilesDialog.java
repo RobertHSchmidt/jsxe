@@ -259,9 +259,9 @@ public class DirtyFilesDialog extends EnhancedDialog {
 						if (db.save(newTabbedView)) {
 							closeSuccessful = jsXe.closeDocumentBuffer(newTabbedView, db, false);
 							if (closeSuccessful) {
-								Log.log(Log.NOTICE, DirtyFilesDialog.class,
-										"211 About to remove " + unsavedName
-										+ " from the list of unsaved files");
+							//	Log.log(Log.NOTICE, DirtyFilesDialog.class,
+							//			"211 About to remove " + unsavedName
+							//			+ " from the list of unsaved files");
 								//removeUnsavedFileFromList(counter, newDirtyBuffers
 								//.size(), unsavedName);
 								removeUnsavedFileFromList(unsavedName);
@@ -332,8 +332,8 @@ public class DirtyFilesDialog extends EnhancedDialog {
      * @param evt ActionEvent of user clicking on Cancel JButton
      */ 
 	private void cancelJButtonActionPerformed(ActionEvent evt) {
-		Log.log(Log.NOTICE, DirtyFilesDialog.class,
-				"351 using the dirtyFilesDialog cancel button ");
+	//	Log.log(Log.NOTICE, DirtyFilesDialog.class,
+	//			"351 using the dirtyFilesDialog cancel button ");
 		setCancelFlag(true);
 		cancel();
 	}//}}}
@@ -348,27 +348,27 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		//have to remove the element from the dirtyFilesJList in the
 		//dirtyFilesDialog box.
 		ArrayList updatedDirtyFilesList = new ArrayList();
-		Log.log(Log.NOTICE, DirtyFilesDialog.class, "368 Removeing " + name
-				+ " from the list of unsaved files");
+	//	Log.log(Log.NOTICE, DirtyFilesDialog.class, "368 Removeing " + name
+	//			+ " from the list of unsaved files");
 		for (int i = 0; i < dirtyFiles.length; i++) {
 			//go through each element in the dirty files names list
 			//for each element, 
 			//	if the file name is not the same as the filename selected by the user,
 			//	add it to a new list of unsaved dirty filenames
 
-			Log.log(Log.NOTICE, DirtyFilesDialog.class, "376 DirtyFiles length: "
-					+ dirtyFiles.length
-					+ " current DirtyFile checking against: " + dirtyFiles[i]);
+		//	Log.log(Log.NOTICE, DirtyFilesDialog.class, "376 DirtyFiles length: "
+		//			+ dirtyFiles.length
+		//			+ " current DirtyFile checking against: " + dirtyFiles[i]);
 
 			if (dirtyFiles[i]!=null && dirtyFiles[i].equals(name)) {
-				Log.log(Log.NOTICE, DirtyFilesDialog.class,
-						"382 i: "+i+" DirtyFile: " + dirtyFiles[i]
-								+ " matches newly saved File: " + name+", so the filename ("+name+") can be removed from the JList");
+			//	Log.log(Log.NOTICE, DirtyFilesDialog.class,
+			//			"382 i: "+i+" DirtyFile: " + dirtyFiles[i]
+			//					+ " matches newly saved File: " + name+", so the filename ("+name+") can be removed from the JList");
 				
 				try{
 					int sizeListModel =dirtyFilesJListModel.getSize();
-					Log.log(Log.NOTICE, DirtyFilesDialog.class,
-							"388 sizeListModel: "+sizeListModel);				
+				//	Log.log(Log.NOTICE, DirtyFilesDialog.class,
+				//			"388 sizeListModel: "+sizeListModel);				
 					if(i==sizeListModel){
 						i = sizeListModel-1;
 					}
@@ -401,14 +401,14 @@ public class DirtyFilesDialog extends EnhancedDialog {
 			//	if the file name is the same as the filename selected by the user,
 			//	remove it from the list of unsaved dirty filenames
 			
-			Log.log(Log.NOTICE, DirtyFilesDialog.class,
-					"413 Checking for match, remove discarded dirty file from List " 
-					+ dirtyFiles[i]
-				    + " , unsavedName: "+ unsavedName);
+		//	Log.log(Log.NOTICE, DirtyFilesDialog.class,
+		//		"413 Checking for match, remove discarded dirty file from List " 
+		//		+ dirtyFiles[i]
+		//		+ " , unsavedName: "+ unsavedName);
 			if (dirtyFiles[i]!=null && !dirtyFiles[i].equals(unsavedName)) {
-				Log.log(Log.NOTICE, DirtyFilesDialog.class,
-						"418 new dirty files list - new element added:  " 
-						+ dirtyFiles[i]);	
+			//	Log.log(Log.NOTICE, DirtyFilesDialog.class,
+			//			"418 new dirty files list - new element added:  " 
+			//			+ dirtyFiles[i]);	
 				test.add(dirtyFiles[i]);
 			}			
 		}
@@ -419,8 +419,8 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		for (int i = 0; i< test.size(); i++ ) {
 	        tempArray[i] = (String)testArrayVersion[i];
 	    }
-		Log.log(Log.NOTICE, DirtyFilesDialog.class,
-				"431 new dirty files list length: "+ tempArray.length);
+	//	Log.log(Log.NOTICE, DirtyFilesDialog.class,
+	//			"431 new dirty files list length: "+ tempArray.length);
 		dirtyFiles = tempArray;		
 	}//}}}
 	
