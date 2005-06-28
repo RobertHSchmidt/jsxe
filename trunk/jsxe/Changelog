@@ -11,6 +11,7 @@
     * If you select all files in the dirty files dialog then choose save
       selected and then cancel any save the dialog will no longer close. It will
       remain open to prompt with what to do with the files you cancelled.
+    * Added some tooltip messages
     
 06/27/2005  Ian Lewis   <IanLewis@member.fsf.org>
 

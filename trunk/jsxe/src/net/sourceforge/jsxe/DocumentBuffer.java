@@ -546,6 +546,7 @@ public class DocumentBuffer extends XMLDocument {
            // supportedEncodings.add("UTF-16");
             
             JLabel encodingLabel = new JLabel(Messages.getMessage("Document.Options.Encoding"));
+            encodingLabel.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
             encodingComboBox = new JComboBox(supportedEncodings);
             encodingComboBox.setEditable(false);
             encodingComboBox.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
@@ -559,7 +560,7 @@ public class DocumentBuffer extends XMLDocument {
             }
             
             JLabel indentLabel = new JLabel(Messages.getMessage("Document.Options.Indent.Width"));
-            
+            indentLabel.setToolTipText(Messages.getMessage("Document.Options.Indent.Width.ToolTip"));
             Vector sizes = new Vector(3);
             sizes.add("2");
             sizes.add("4");
@@ -676,7 +677,7 @@ public class DocumentBuffer extends XMLDocument {
             
             layout.setConstraints(m_m_softTabsCheckBox, constraints);
             add(m_m_softTabsCheckBox);
-            m_m_softTabsCheckBox.setToolTipText(Messages.getMessage(""));
+            m_m_softTabsCheckBox.setToolTipText(Messages.getMessage("Document.Options.Soft.Tabs.ToolTip"));
             
         }//}}}
         

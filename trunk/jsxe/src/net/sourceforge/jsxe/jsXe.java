@@ -1066,6 +1066,7 @@ public class jsXe {
             }
             
             JLabel maxRecentFilesLabel = new JLabel(Messages.getMessage("Global.Options.Max.Recent.Files"));
+            maxRecentFilesLabel.setToolTipText(Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
             
             Vector sizes = new Vector(3);
             sizes.add("10");
@@ -1075,8 +1076,7 @@ public class jsXe {
             maxRecentFilesComboBox.setEditable(true);
             maxRecentFilesComboBox.setSelectedItem(Integer.toString(maxRecentFiles));
             
-            maxRecentFilesComboBox.setToolTipText
-            (Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
+            maxRecentFilesComboBox.setToolTipText(Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
             
             constraints.gridy      = gridY;
             constraints.gridx      = 0;
