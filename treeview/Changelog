@@ -1,3 +1,7 @@
+06/28/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Set the name of components so that they can be used in test scripts
+
 06/20/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Changed the text area for editing node values from a JEditorPane to a
