@@ -110,6 +110,7 @@ public class DefaultView extends JPanel implements DocumentView {
         setLayout(new BorderLayout());
         
         //{{{ init html editor pane
+        m_valueTextArea.setName("TreeViewTextArea");
         m_valueTextArea.setEditable(false);
         //use hard coded font for right now
         //style: 0=plain, 1=bold, 2=italic, 3=boldItalic
@@ -121,6 +122,7 @@ public class DefaultView extends JPanel implements DocumentView {
         //{{{ init attributes table
         JScrollPane attrView = new JScrollPane(attributesTable);
         
+        attributesTable.setName("TreeViewAttributesTable");
         attributesTable.setColumnSelectionAllowed(false);
         attributesTable.setRowSelectionAllowed(false);
         attributesTable.addMouseListener(new TablePopupListener());
@@ -129,6 +131,7 @@ public class DefaultView extends JPanel implements DocumentView {
         //}}}
         
         //{{{ init tree
+        tree.setName("TreeViewTree");
         JScrollPane treeView = new JScrollPane(tree);
         tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
         
@@ -479,7 +482,6 @@ public class DefaultView extends JPanel implements DocumentView {
         
         public DefaultViewTable() {
             super();
-            setName("AttributesTable");
         }//}}}
         
         //{{{ editingStopped()
