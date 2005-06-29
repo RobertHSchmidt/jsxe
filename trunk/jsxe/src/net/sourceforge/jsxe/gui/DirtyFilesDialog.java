@@ -354,7 +354,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 
 		//have to remove the element from the dirtyFilesJList in the
 		//dirtyFilesDialog box.
-		ArrayList updatedDirtyFilesList = new ArrayList();
+	//	ArrayList updatedDirtyFilesList = new ArrayList();
 	//	Log.log(Log.NOTICE, DirtyFilesDialog.class, "368 Removeing " + name
 	//			+ " from the list of unsaved files");
 		for (int i = 0; i < dirtyFiles.length; i++) {
@@ -398,7 +398,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
      * @param unsavedName name of file selected by the user
      */ 
 	public void removeUnsavedFileFromDirtyBufferList(String unsavedName){
-		String[] newDirtyFilesList = new String[dirtyFiles.length];
+	//	String[] newDirtyFilesList = new String[dirtyFiles.length];
 		
 		ArrayList test = new ArrayList();
 	

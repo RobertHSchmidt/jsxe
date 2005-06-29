@@ -1,3 +1,7 @@
+06/29/2005  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Made some changes suggested by FindBugs.
+
 06/28/2005  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Modified the DirtyFilesDialog to make it look a little bit better.

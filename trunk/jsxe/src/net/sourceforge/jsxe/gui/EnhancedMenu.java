@@ -353,7 +353,7 @@ public class EnhancedMenu extends JMenu {
     
     //{{{ MoreMenu class
     
-    private class MoreMenu extends JMenu {
+    private static class MoreMenu extends JMenu {
         
         public MoreMenu() {
             super(Messages.getMessage("common.more"));

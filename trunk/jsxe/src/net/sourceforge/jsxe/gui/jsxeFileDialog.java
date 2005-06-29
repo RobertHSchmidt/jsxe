@@ -103,7 +103,7 @@ public class jsxeFileDialog extends JFileChooser {
         addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL Stylesheets"));
         //Add a filter to display only XSL:FO files
         extentionList = new ArrayList();
-        extentionList.add(new String("fo"));
+        extentionList.add("fo");
         addChoosableFileFilter(new CustomFileFilter(extentionList, "XSL:FO Documents"));
         //Add a filter to display only Schema files
         extentionList = new ArrayList();
