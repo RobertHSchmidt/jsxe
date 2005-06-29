@@ -226,7 +226,8 @@ public class CompletionInfo {
        // } //}}}
 
         //{{{ clone() method
-        public Object clone() {
+        //marked final since this violates standard contract for clone()
+        public final Object clone() {
                 return new CompletionInfo(
                         (ArrayList)elements.clone(),
                         (HashMap)elementHash.clone(),
@@ -237,8 +238,8 @@ public class CompletionInfo {
         } //}}}
 
         //{{{ Private members
-        private static HashMap globs;
-        private static HashMap completionInfoResources;
+       // private static HashMap globs;
+       // private static HashMap completionInfoResources;
         private static HashMap completionInfoNamespaces = new HashMap();
 
         //}}}

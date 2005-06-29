@@ -567,7 +567,6 @@ public class AdapterNode {
         if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
             
             Element element = (Element)m_domNode;
-            String localName = MiscUtilities.getLocalNameFromQualifiedName(name);
             String prefix    = MiscUtilities.getNSPrefixFromQualifiedName(name);
             
             //check if we are setting a namespace declaration
@@ -753,15 +752,16 @@ public class AdapterNode {
         }
         
         // add everything but the parent's prefix now
-        Iterator iter = mappings.keySet().iterator();
+        Iterator iter = mappings.entrySet().iterator();
         while(iter.hasNext()) {
-            String prefix = (String)iter.next();
+            Map.Entry entry = (Map.Entry)iter.next();
+            String prefix = entry.getKey().toString();
             String myprefix = getNSPrefix();
             if (myprefix == null) {
                 myprefix = "";
             }
             if (!prefix.equals(myprefix)) {
-                CompletionInfo info = (CompletionInfo)mappings.get(prefix);
+                CompletionInfo info = (CompletionInfo)entry.getValue();
                 info.getAllElements(prefix, allowedElements);
             }
         }
@@ -1028,7 +1028,6 @@ public class AdapterNode {
     private void renamePINode(String target) {
         //get the nodes needed
         Node parent = m_domNode.getParentNode();
-        NodeList children = m_domNode.getChildNodes();
         Document document = m_domNode.getOwnerDocument();
         
         ProcessingInstruction newNode = document.createProcessingInstruction(target, m_domNode.getNodeValue());

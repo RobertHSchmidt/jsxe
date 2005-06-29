@@ -435,19 +435,17 @@ public class DocumentBuffer extends XMLDocument {
         if (getFile() != null && file != null) {
             boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
                 || File.separatorChar == ':' /* Windows or MacOS */);
-    
-            if (file != null) {
-                if (caseInsensitiveFilesystem) {
-                    
-                    if (file.getCanonicalPath().equalsIgnoreCase(getFile().getCanonicalPath())) {
-                        return true;
-                    }
-                    
-                } else {
-                    
-                    if (file.getCanonicalPath().equals(getFile().getCanonicalPath())) {
-                        return true;
-                    }
+            
+            if (caseInsensitiveFilesystem) {
+                
+                if (file.getCanonicalPath().equalsIgnoreCase(getFile().getCanonicalPath())) {
+                    return true;
+                }
+                
+            } else {
+                
+                if (file.getCanonicalPath().equals(getFile().getCanonicalPath())) {
+                    return true;
                 }
             }
         }

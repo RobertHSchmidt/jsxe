@@ -116,7 +116,7 @@ public class XMLDocument {
      * The property key for the property defining whether to validate the
      * document with a DTD or Schema
      */
-    public static String IS_VALIDATING = "validating";
+    public static final String IS_VALIDATING = "validating";
     
     //}}}
     
@@ -857,16 +857,16 @@ public class XMLDocument {
      * @since jsXe 0.4 pre1
      */
     public void parseDocument() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
-        Boolean validating = new Boolean(getProperty(IS_VALIDATING));
+        Boolean validating = Boolean.valueOf(getProperty(IS_VALIDATING));
         
         //{{{ Parse using DocumentBuilder
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setExpandEntityReferences(false);
-        factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", new Boolean(false));
-        factory.setAttribute("http://xml.org/sax/features/external-general-entities", new Boolean(false));
-        factory.setAttribute("http://xml.org/sax/features/external-parameter-entities", new Boolean(false));
-        factory.setAttribute("http://xml.org/sax/features/namespaces",new Boolean(true));
+        factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", Boolean.valueOf(false));
+        factory.setAttribute("http://xml.org/sax/features/external-general-entities", Boolean.valueOf(false));
+        factory.setAttribute("http://xml.org/sax/features/external-parameter-entities", Boolean.valueOf(false));
+        factory.setAttribute("http://xml.org/sax/features/namespaces", Boolean.valueOf(true));
        // factory.setAttribute("http://apache.org/xml/features/validation/dynamic",new Boolean(true));
         factory.setAttribute("http://xml.org/sax/features/validation",validating);
         factory.setAttribute("http://apache.org/xml/features/validation/schema",validating);
@@ -1583,7 +1583,7 @@ public class XMLDocument {
     
     private ArrayList m_parseErrors = new ArrayList();
     private ArrayList m_parseFatalErrors = new ArrayList();
-    private ArrayList m_parseWarnings = new ArrayList();
+   // private ArrayList m_parseWarnings = new ArrayList();
     
     private EntityResolver m_entityResolver;
     private ArrayList listeners = new ArrayList();

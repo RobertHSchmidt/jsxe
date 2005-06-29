@@ -93,8 +93,8 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
     //}}}
     
     //{{{ Additional parameters supported by DOMSerializerConfiguration
-    public static String SOFT_TABS = "soft-tabs";
-    public static String INDENT    = "indent";
+    public static final String SOFT_TABS = "soft-tabs";
+    public static final String INDENT    = "indent";
     //}}}
     
     //{{{ DOMSerializerConfiguration constructor
@@ -221,12 +221,12 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
             return false;
         } else {
             if (name.equals(ERROR_HANDLER)) {
-                if (value instanceof DOMErrorHandler || value == null) {
+                if (value instanceof DOMErrorHandler) {
                     return true;
                 }
             }
             if (name.equals(INDENT)) {
-                if (value instanceof Integer || value == null) {
+                if (value instanceof Integer) {
                     return true;
                 }
             }
@@ -251,7 +251,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
                 boolean comments   = getFeature(COMMENTS);
                 boolean namespaces = getFeature(NAMESPACES);
                 
-                return (new Boolean(!namespaceDeclarations &&
+                return (Boolean.valueOf(!namespaceDeclarations &&
                         !validateIfSchema &&
                         !entities &&
                         !datatypeNormalization &&
@@ -369,7 +369,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
      * @param value The boolean value to set to the feature
      */
     public void setFeature(String name, boolean value) throws DOMException {
-        setParameter(name, new Boolean(value));
+        setParameter(name, Boolean.valueOf(value));
     }//}}}
     
     //{{{ Private static members

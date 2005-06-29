@@ -501,7 +501,7 @@ public class JARClassLoader extends ClassLoader {
         String implTitle = null;
         String implVersion = null;
         String implVendor = null;
-        String sealed = null;
+       // String sealed = null;
         URL sealBase = null;
 
         Attributes attr = man.getAttributes(path);
@@ -513,7 +513,7 @@ public class JARClassLoader extends ClassLoader {
             implTitle = attr.getValue(Attributes.Name.IMPLEMENTATION_TITLE);
             implVersion = attr.getValue(Attributes.Name.IMPLEMENTATION_VERSION);
             implVendor = attr.getValue(Attributes.Name.IMPLEMENTATION_VENDOR);
-            sealed = attr.getValue(Attributes.Name.SEALED);
+           // sealed = attr.getValue(Attributes.Name.SEALED);
         }
 
         attr = man.getMainAttributes();
@@ -543,9 +543,9 @@ public class JARClassLoader extends ClassLoader {
                 implVendor = attr.getValue(Attributes.Name.IMPLEMENTATION_VENDOR);
             }
 
-            if (sealed == null) {
-                sealed = attr.getValue(Attributes.Name.SEALED);
-            }
+           // if (sealed == null) {
+           //     sealed = attr.getValue(Attributes.Name.SEALED);
+           // }
         }
 
         return super.definePackage(name, specTitle, specVersion, specVendor,
@@ -570,11 +570,10 @@ public class JARClassLoader extends ClassLoader {
             //prefix with both the plugin name and class
             m_pluginProperties.setProperty(propPrefix1+PLUGIN_NAME, pluginName);
             m_pluginProperties.setProperty(propPrefix2+PLUGIN_NAME, pluginName);
-            if (mainClass != null) {
-                //prefix the main class with the plugin name
-                m_pluginProperties.setProperty(propPrefix1+PLUGIN_CLASS, mainClass);
-                m_pluginProperties.setProperty(propPrefix2+PLUGIN_CLASS, mainClass);
-            }
+            //prefix the main class with the plugin name
+            m_pluginProperties.setProperty(propPrefix1+PLUGIN_CLASS, mainClass);
+            m_pluginProperties.setProperty(propPrefix2+PLUGIN_CLASS, mainClass);
+            
             if (implVersion != null) {
                 m_pluginProperties.setProperty(propPrefix1+PLUGIN_VERSION, implVersion);
                 m_pluginProperties.setProperty(propPrefix2+PLUGIN_VERSION, implVersion);

@@ -250,7 +250,9 @@ public class DOMSerializer implements LSSerializer {
             //flush the output-stream. Without this
             //files are sometimes not written at all.
             writer.flush();
-        } catch (DOMSerializerException dse) {}
+        } catch (DOMSerializerException dse) {
+            throw new DOMException(DOMException.INVALID_STATE_ERR, dse.getMessage());
+        }
         return writer.toString();
     }//}}}
 
