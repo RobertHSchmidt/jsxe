@@ -1,3 +1,6 @@
+#:tabSize=4:indentSize=4:noTabs=false:
+#:folding=explicit:collapseFolds=1:
+
 useFixture(default)
 
 # Tests the soft-tabs and indent width options
@@ -9,27 +12,45 @@ def test():
 	click('Options...')
 
 	window('Global Options')
-	doubleclick('JTree', '//jsxe/XML Document Options')
-	select('JComboBox2', '4')
+	click('JTree', '//jsxe/XML Document Options')
+	setcombobox('3')
 	select('Soft tabs #{emulated with spaces#}', 'true')
 	click('OK')
 	close()
 
-	select('SourceTextArea', '')
+	settext('')
+	click('TextAreaPainter')
 	keystroke('Tab')
-	assertText('SourceTextArea', '    ')
+	checktext('    ')
 
 	click('Tools')
 	click('Options...')
 
 	window('Global Options')
-	doubleclick('JTree', '//jsxe/XML Document Options')
-	select('JComboBox2', '8')
-	select('Soft tabs #{emulated with spaces#}', 'true')
+	click('JTree', '//jsxe/XML Document Options')
+	setcombobox('8')
 	click('OK')
 	close()
 
-	select('SourceTextArea', '')
+	settext('')
+	click('TextAreaPainter')
 	keystroke('Tab')
-	assertText('SourceTextArea', '        ')
+	checktext('        ')
 	close()
+
+def checktext(expected):
+	textarea = getComponent('SourceTextArea')
+	
+	if not (textarea.getText() == expected):
+		fail('Text in sourceview "'+textarea.getText()+'" does not match "'+expected+'"')
+
+def settext(text):
+	textarea = getComponent('SourceTextArea')
+	
+	textarea.setText(text)
+
+#a hack since the select() function doesn't seem to save the value
+#works in real life though.
+def setcombobox(item):
+	combobox = getComponent('IndentComboBox')
+	combobox.setSelectedItem(item)
