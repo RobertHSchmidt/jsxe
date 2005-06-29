@@ -1,10 +1,10 @@
 #Marathon Project File
-#Sat May 07 18:15:41 EDT 2005
-marathon.project.description=Java Simple XML Editor
+#Tue Jun 28 21:37:29 EDT 2005
+marathon.project.description=
 marathon.application.vm.arguments=
-marathon.application.classpath=/home/okaasan/src/jsxe/jsxe/jsXe.jar;/home/okaasan/src/jsxe/jsxe/lib/xercesImpl.jar;/home/okaasan/src/jsxe/jsxe/lib/xml-apis.jar
+marathon.application.classpath=/home/okaasan/src/jsxe/jsxe/lib/xercesImpl.jar;/home/okaasan/src/jsxe/jsxe/lib/xml-apis.jar;/home/okaasan/src/jsxe/jsxe/jsXe.jar;/home/okaasan/src/jsxe/jsxe/jars/sourceview.jar;/home/okaasan/src/jsxe/jsxe/jars/treeview.jar
 marathon.component.resolvers=
-marathon.application.pythonpath=
+marathon.application.pythonpath=/home/okaasan/src/jsxe/test/CaptureScripts
 marathon.project.name=jsXe
 marathon.application.mainclass=net.sourceforge.jsxe.jsXe
 marathon.fixture.dir=/home/okaasan/src/jsxe/test/Fixtures
@@ -13,4 +13,4 @@ marathon.test.dir=/home/okaasan/src/jsxe/test/TestCases
 marathon.project.dir=/home/okaasan/src/jsxe/test
 marathon.application.arguments=
 marathon.application.main.thread=false
-marathon.application.working.dir=/home/okaasan/src/jsxe/test
+marathon.application.working.dir=/home/okaasan/src/jsxe/jsxe

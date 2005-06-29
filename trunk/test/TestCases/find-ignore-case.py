@@ -1,27 +1,24 @@
+#:tabSize=4:indentSize=4:noTabs=false:
+#:folding=explicit:collapseFolds=1:
+
+import treeview, sourceview
+
 useFixture(default)
 
 # Tests the find dialog's find ignoring case feature
 def test():
 	window('jsXe - Untitled-1')
-	doubleclick('DefaultViewTree', '/Document Root/default_element')
-	rightclick('DefaultViewTree', '/Document Root/default_element/default_node')
-	click('Remove Node')
-	rightclick('DefaultViewTree', '/Document Root/default_element')
-	click('Add')
-	click('Element')
-	click('Add Element Node')
-	rightclick('DefaultViewTree', '/Document Root/default_element/new_element')
-	click('Rename Node')
-	select('DefaultTreeCellEditor$DefaultTextField', 'Default')
-	keystroke('Enter')
-	rightclick('DefaultViewTree', '/Document Root/default_element')
-	click('Add')
-	click('Element')
-	click('Add Element Node')
-	rightclick('DefaultViewTree', '/Document Root/default_element/new_element')
-	click('Rename Node')
-	select('DefaultTreeCellEditor$DefaultTextField', 'default')
-	keystroke('Enter')
+	
+	treeview.expand('/Document Root/default_element')
+	treeview.removeNode('/Document Root/default_element/default_node')
+	
+	treeview.addElementNode('/Document Root/default_element')
+	treeview.renameNode('/Document Root/default_element/new_element', 'Default')
+	
+	treeview.addElementNode('/Document Root/default_element')
+	
+	treeview.renameNode('/Document Root/default_element/new_element', 'default')
+	
 	click('View')
 	click('Source View')
 	click('Edit')
@@ -41,7 +38,7 @@ def test():
 	click('Replace&Find')
 
 	window('jsXe - Untitled-1')
-	assertText('SourceTextArea',"""<?xml version="1.0" encoding="UTF-8"?>
+	sourceview.assertText("""<?xml version="1.0" encoding="UTF-8"?>
 <test1_element><Default/><default/></default_element>""")
 
 	window('Search and Replace')
@@ -52,7 +49,7 @@ def test():
 	click('Replace&Find')
 
 	window('jsXe - Untitled-1')
-	assertText('SourceTextArea',"""<?xml version="1.0" encoding="UTF-8"?>
+	sourceview.assertText("""<?xml version="1.0" encoding="UTF-8"?>
 <test1_element><Default/><test2/></default_element>""")
 
 	window('Search and Replace')
@@ -62,9 +59,10 @@ def test():
 	click('Replace&Find')
 
 	window('jsXe - Untitled-1')
-	assertText('SourceTextArea',"""<?xml version="1.0" encoding="UTF-8"?>
+	
+	sourceview.assertText("""<?xml version="1.0" encoding="UTF-8"?>
 <test1_element><Default/><test2/></test3_element>""")
-
+	
 	click('Cancel')
 	close()
 	close()

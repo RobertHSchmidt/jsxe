@@ -1,27 +1,24 @@
+#:tabSize=4:indentSize=4:noTabs=false:
+#:folding=explicit:collapseFolds=1:
+
+import treeview
+
 useFixture(default)
 
 # Tests adding and removing and editing attributes
 # in the attributes table
 def test():
 	window('jsXe - Untitled-1')
-	click('DefaultViewTree', '/Document Root/default_element')
-	rightclick('AttributesTable', 'Attribute,0')
-	click('Add Attribute')
-	select('AttributesTable', 'test1', 'Attribute,0')
-	select('AttributesTable', '123', 'Value,0')
-	assertContent('AttributesTable', [ [ 'test1', '123' ], [ '', '' ] ])
+	click('TreeViewTree', '/Document Root/default_element')
+	treeview.addAttribute('test1', '123')
+	treeview.assertAttributes([ [ 'test1', '123' ] ])
 
-	rightclick('AttributesTable', 'Attribute,0')
-	click('Add Attribute')
-	select('AttributesTable', 'test2', 'Attribute,1')
-	select('AttributesTable', '124', 'Value,1')
-	assertContent('AttributesTable', [ [ 'test1', '123' ], [ 'test2', '124' ], [ '', '' ] ])
+	treeview.addAttribute('test2', '124')
+	treeview.assertAttributes([ [ 'test1', '123' ], [ 'test2', '124' ] ])
 
-	rightclick('AttributesTable', 'Attribute,0')
-	click('Remove Attribute')
-	assertContent('AttributesTable', [ [ 'test2', '124' ], [ '', '' ] ])
+	treeview.removeAttribute(0)
+	treeview.assertAttributes([ [ 'test2', '124' ] ])
 
-	select('AttributesTable', 'blah', 'Attribute,0')
-	select('AttributesTable', '1234', 'Value,0')
-	assertContent('AttributesTable', [ [ 'blah', '1234' ], [ '', '' ] ])
+	treeview.setAttribute('blah', '1234', 0)
+	treeview.assertAttributes([ [ 'blah', '1234' ] ])
 	close()

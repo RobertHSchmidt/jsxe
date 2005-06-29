@@ -1,32 +1,30 @@
+#:tabSize=4:indentSize=4:noTabs=false:
+#:folding=explicit:collapseFolds=1:
+
+import treeview, sourceview
+
 useFixture(default)
 
 # Tests editing a processing instruction
 def test():
 	window('jsXe - Untitled-1')
-	doubleclick('DefaultViewTree', '/Document Root/default_element')
-	rightclick('DefaultViewTree', '/Document Root/default_element/default_node')
-	click('Remove Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element' ] ])
+	treeview.expand('/Document Root/default_element')
+	treeview.removeNode('/Document Root/default_element/default_node')
+	treeview.assertTree([ [ 'Document Root', 'default_element' ] ])
 
 	
-	rightclick('DefaultViewTree', '/Document Root/default_element')
-	click('Add')
-	click('Add Processing Instruction')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'Instruction' ] ])
+	treeview.addPINode('/Document Root/default_element')
+	treeview.assertTree([ [ 'Document Root', 'default_element', 'Instruction' ] ])
 
 	
-	click('DefaultViewTree', '/Document Root/default_element/Instruction')
-	rightclick('DefaultViewTree', '/Document Root/default_element/Instruction')
-	click('Rename Node')
-	select('DefaultTreeCellEditor$DefaultTextField', 'SQLSELECT')
-	keystroke('Enter')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'default_element', 'SQLSELECT' ] ])
+	treeview.renameNode('/Document Root/default_element/Instruction', 'SQLSELECT')
+	treeview.assertTree([ [ 'Document Root', 'default_element', 'SQLSELECT' ] ])
 
-	
-	select('JEditorPane', 'SELECT * FROM BLAH')
+	treeview.choose('/Document Root/default_element/SQLSELECT')
+	treeview.setValue('SELECT * FROM BLAH')
 	click('View')
 	click('Source View')
 	
-	assertText('SourceTextArea', """<?xml version="1.0" encoding="UTF-8"?>
+	sourceview.assertText("""<?xml version="1.0" encoding="UTF-8"?>
 <default_element><?SQLSELECT SELECT * FROM BLAH?></default_element>""")
 	close()
