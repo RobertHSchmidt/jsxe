@@ -1,3 +1,8 @@
+#:tabSize=4:indentSize=4:noTabs=false:
+#:folding=explicit:collapseFolds=1:
+
+import treeview, sourceview
+
 useFixture(default)
 
 # Tests editing a file from source
@@ -5,7 +10,7 @@ def test():
 	window('jsXe - Untitled-1')
 	click('View')
 	click('Source View')
-	select('SourceTextArea', '''<?xml version="1.0" encoding="UTF-8"?>
+	sourceview.setText('''<?xml version="1.0" encoding="UTF-8"?>
 <root>
 	<text_element>Text</text_element>
 	<cdata_element>
@@ -21,5 +26,5 @@ def test():
 	click('View')
 	click('Tree View')
 
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'root', 'text_element', 'Text', 'cdata_element', 'CDATA', 'pi_element', 'Instruction', 'comment_element', 'comment' ] ])
+	treeview.assertTree([ [ 'Document Root', 'root', 'text_element', 'Text', 'cdata_element', 'CDATA', 'pi_element', 'Instruction', 'comment_element', 'comment' ] ])
 	close()

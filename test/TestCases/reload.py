@@ -1,42 +1,35 @@
+#:tabSize=4:indentSize=4:noTabs=false:
+#:folding=explicit:collapseFolds=1:
+
+import treeview
+
 useFixture(default)
 
 # Tests reloading an untitled file
 def test():
 	window('jsXe - Untitled-1')
-	doubleclick('TreeViewTree', '/Document Root/default_element')
-	rightclick('TreeViewTree', '/Document Root/default_element/default_node')
-	click('Remove Node')
-	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element' ] ])
+	treeview.expand('/Document Root/default_element')
+	treeview.removeNode('/Document Root/default_element/default_node')
+	treeview.assertTree([ [ 'Document Root', 'default_element' ] ])
 
-	rightclick('TreeViewTree', '/Document Root/default_element')
-	click('Add')
-	click('Element')
-	click('Add Element Node')
-	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'new_element' ] ])
+	treeview.addElementNode('/Document Root/default_element')
+	treeview.assertTree([ [ 'Document Root', 'default_element', 'new_element' ] ])
 
-	rightclick('TreeViewTree', '/Document Root/default_element')
-	click('Add')
-	click('Text')
-	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'new_element', 'New Text Node' ] ])
+	treeview.addTextNode('/Document Root/default_element')
+	treeview.assertTree([ [ 'Document Root', 'default_element', 'new_element', 'New Text Node' ] ])
 
-	rightclick('TreeViewTree', '/Document Root/default_element')
-	click('Add')
-	click('CDATA Section')
-	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'new_element', 'New Text Node', 'New CDATA Section' ] ])
+	treeview.addCDATANode('/Document Root/default_element')
+	treeview.assertTree([ [ 'Document Root', 'default_element', 'new_element', 'New Text Node', 'New CDATA Section' ] ])
 
-	rightclick('TreeViewTree', '/Document Root/default_element')
-	click('Add')
-	click('Processing Instruction')
-	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'new_element', 'New Text Node', 'New CDATA Section', 'Instruction' ] ])
+	treeview.addPINode('/Document Root/default_element')
+	treeview.assertTree([ [ 'Document Root', 'default_element', 'new_element', 'New Text Node', 'New CDATA Section', 'Instruction' ] ])
 
-	rightclick('TreeViewTree', '/Document Root/default_element')
-	click('Add')
-	click('Comment')
-	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'new_element', 'New Text Node', 'New CDATA Section', 'Instruction', 'New Comment' ] ])
+	treeview.addCommentNode('/Document Root/default_element')
+	treeview.assertTree([ [ 'Document Root', 'default_element', 'new_element', 'New Text Node', 'New CDATA Section', 'Instruction', 'New Comment' ] ])
 
-	select('TreeViewAttributesTable', 'TEST', 'Attribute,0')
-	select('TreeViewAttributesTable', 'TEST2', 'Value,0')
-	assertContent('TreeViewAttributesTable', [ [ 'TEST', 'TEST2' ], [ '', '' ] ])
+	treeview.addAttribute('TEST', 'TEST2')
+	treeview.assertAttributes([ [ 'TEST', 'TEST2' ] ])
+	
 	click('File')
 	click('Reload')
 
@@ -44,7 +37,7 @@ def test():
 	click('Yes')
 	close()
 
-	click('TreeViewTree', '/Document Root/default_element')
-	assertContent('TreeViewTree', [ [ 'Document Root', 'default_element', 'default_node' ] ])
-	assertContent('TreeViewAttributesTable', [ [ '', '' ] ])
+	treeview.choose('/Document Root/default_element')
+	treeview.assertTree([ [ 'Document Root', 'default_element', 'default_node' ] ])
+	treeview.assertAttributes([ ])
 	close()
