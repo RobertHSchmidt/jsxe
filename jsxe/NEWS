@@ -1,3 +1,31 @@
+07/01/2005  version 0.4 pre2
+
+    * Added Swedish translation thanks to Patrik Johansson
+    * Added German translation thanks to Bianca Schoen
+    * Better internationalization support
+    * Added a new option that allows you to show all attributes, just ID
+      attributes or no attributes in the tree.
+    * Added a new dialog when to allow a user to more easily save and discard
+      files when closing multiple dirty files. This is shown when exiting
+      jsXe or using the close-all action.
+    * Added support for showing choosing attribute values defined in the
+      Schema/DTD in the Attributes table.
+    * Fixed word wrapping in the right hand pane of the tree view
+    * Added syntax highlighting support in the source view
+        * You can set the colors used for syntax highlighting in the source
+          view options pane in the global options.
+    * Added a context menu to the source view. This allows you to execute the
+      actions in the edit menu from a right-click menu.
+      
+    * Fixed bug where user specific properties were being overwritten by
+      a plugin's default properties
+    * Added a check for the correct Xerces version.
+    * Added tooltip texts for the checkboxes/scroll panes of the Options dialog
+      box.
+    * Fixed bug that didn't mark the file as dirty when changing the indent
+      and formatting and soft indent were true.
+
+
 05/08/2005  version 0.4 pre1
 
     * Added new support for validation
