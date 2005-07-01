@@ -546,6 +546,7 @@ public class DocumentBuffer extends XMLDocument {
             JLabel encodingLabel = new JLabel(Messages.getMessage("Document.Options.Encoding"));
             encodingLabel.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
             encodingComboBox = new JComboBox(supportedEncodings);
+            encodingComboBox.setName("EncodingComboBox");
             encodingComboBox.setEditable(false);
             encodingComboBox.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
             
@@ -564,6 +565,7 @@ public class DocumentBuffer extends XMLDocument {
             sizes.add("4");
             sizes.add("8");
             indentComboBox = new JComboBox(sizes);
+            indentComboBox.setName("IndentComboBox");
             indentComboBox.setEditable(true);
             indentComboBox.setSelectedItem(getProperty(INDENT));
             indentComboBox.setToolTipText(Messages.getMessage("Document.Options.Indent.Width.ToolTip"));
