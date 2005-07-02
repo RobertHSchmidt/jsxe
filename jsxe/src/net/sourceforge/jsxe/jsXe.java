@@ -682,6 +682,8 @@ public class jsXe {
                 the dirty files dialog
                 */
                 DirtyFilesDialog dirtyDialog = new DirtyFilesDialog(view, dirtyBufferList);
+                dirtyDialog.setSize(200, 400);
+                dirtyDialog.setResizable(true);
                 closeFiles = !dirtyDialog.getCancelFlag();
                 
             } else {
