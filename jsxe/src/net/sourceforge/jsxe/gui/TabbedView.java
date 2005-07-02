@@ -425,6 +425,7 @@ public class TabbedView extends JFrame {
         set.addAction("general-options", new ToolsOptionsAction(this));
         set.addAction("plugin-manager", new ToolsPluginManagerAction(this));
         set.addAction("about-jsxe", new jsxeAboutDialog(this));
+        set.addAction("activityLogDialog-open", new ActivityLogAction(this));
         jsXe.addActionSet(set);
         //}}}
         
@@ -523,6 +524,8 @@ public class TabbedView extends JFrame {
         m_helpMenu = new JMenu(Messages.getMessage("Help.Menu"));
         m_helpMenu.setMnemonic('H');
             menuItem = new JMenuItem(jsXe.getAction("about-jsxe"));
+            m_helpMenu.add(menuItem);
+            menuItem = new JMenuItem(jsXe.getAction("activityLogDialog-open"));
             m_helpMenu.add(menuItem);
         //}}}
 
