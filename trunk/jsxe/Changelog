@@ -1,5 +1,6 @@
 07/02/2005  Trish Hartnett <trishah136@users.sourceforge.net>
 	* Added Activity Log menu option to the Help menu
+	* Edited jsXe so that when the DirtyFilesDialog appears, it's sized correctly
 
 07/01/2005  Ian Lewis   <IanLewis@member.fsf.org>
 
