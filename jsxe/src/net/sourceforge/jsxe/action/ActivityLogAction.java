@@ -1,10 +1,9 @@
 /*
-FileOpenAction.java
+ActivityLogAction.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
-Portions Copyright (C) 2005 Trish Harnett (trishah136@member.fsf.org)
+Copyright (C) 2005 Trish Harnett (trishah136@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
