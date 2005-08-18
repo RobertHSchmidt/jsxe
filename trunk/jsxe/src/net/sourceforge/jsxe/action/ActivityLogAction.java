@@ -57,24 +57,20 @@ import java.awt.event.ActionEvent;
  */
 public class ActivityLogAction extends AbstractAction {
     
-    //{{{ ActivityLogAction constructor
-    
+    //{{{ ActivityLogAction 
+	 /**
+     * @param TabbedView parent view containing the JSXE editor.
+     * Constructor for the ActivityLogActionclass
+     * @since jsXe 0.3pre15
+     */
     public ActivityLogAction(TabbedView parent) {
-        //putValue(Action.NAME, "Open...");
     	putValue(Action.NAME, Messages.getMessage("ActivityLogDialog.Open"));	
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl L"));
-       // putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
         view = parent;
     }//}}}
     
     //{{{ actionPerformed()   
     public void actionPerformed(ActionEvent e) {
-        try {
-            ActivityLogDialog dialog = new ActivityLogDialog(view);
-        } catch (Exception ioe) {
-            JOptionPane.showMessageDialog(view, ioe, "IO Error", JOptionPane.WARNING_MESSAGE);
-        }
-        
+         ActivityLogDialog dialog = new ActivityLogDialog(view);        
     }//}}}
     
     //{{{ Public members
