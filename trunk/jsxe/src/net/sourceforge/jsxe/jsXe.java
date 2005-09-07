@@ -36,16 +36,14 @@ belongs to.
 */
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.action.FileSaveAction;
 import net.sourceforge.jsxe.gui.*;
-import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.action.ActivityLogAction;
 //}}}
 
 //{{{ Swing classes
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 //}}}
 
 //{{{ AWT Components
@@ -69,20 +67,19 @@ import java.util.*;
 
 /**
  * The main class of the java simple XML editor (jsXe)
- *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
 public class jsXe {
     
     //{{{ The main() method of jsXe
-    
+	
     /**
      * The main method of jsXe
      * @param args The command line arguments
      */
     public static void main(String args[]) {
-        
+    	
         try {
             long startTime = System.currentTimeMillis();
             
@@ -175,11 +172,13 @@ public class jsXe {
             Log.init(true, Log.ERROR, debug);
             try {
                 BufferedWriter stream = new BufferedWriter(new FileWriter(new File(settingsDirectory+fileSep+"jsXe.log")));
-                
+                stream.flush();
                 stream.write("Log file created on " + new Date());
                 stream.write(System.getProperty("line.separator"));
                 
                 Log.setLogWriter(stream);
+                ActivityLogAction activityLog = (ActivityLogAction)getAction("activityLogDialog-open");
+              
             } catch (IOException ioe) {
                 Log.log(Log.ERROR, jsXe.class, ioe);
             }//}}}
@@ -291,7 +290,7 @@ public class jsXe {
                         System.exit(1);
                     }
                 }
-                
+               
             } catch (IOException ioe) {
                 Log.log(Log.ERROR, jsXe.class, ioe);
                 JOptionPane.showMessageDialog(null, ioe.getMessage()+".", Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
@@ -299,6 +298,16 @@ public class jsXe {
             }
             
             m_activeView = tabbedview;
+            int length = 5;
+            ProgressSplashScreenDialog progressScreen = new ProgressSplashScreenDialog(tabbedview, length);
+            int w = progressScreen.getSize().width;
+            int h = progressScreen.getSize().height;
+            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+            int x = (dim.width-w)/2;
+            int y = (dim.height-h)/2;
+            progressScreen.setLocation(x, y);
+            progressScreen.setVisible(true);
+            Log.log(Log.MESSAGE, jsXe.class, "309 have set up progress screen");
             //}}}
             
             //{{{ Parse files to open on the command line
@@ -309,20 +318,23 @@ public class jsXe {
                         closeDocumentBuffer(tabbedview, defaultBuffer);
                     } catch (IOException ioe) {
                         //it can't be saved. it's not dirty.
-                    }
+                    }             
                 }
             }
+            Log.log(Log.MESSAGE, jsXe.class, "line 325 updating progress screen");
+            progressScreen.updateSplashScreenDialog(2);
             //}}}
-            
+            Log.log(Log.NOTICE, jsXe.class, "line 328 updating progress screen");
+            progressScreen.updateSplashScreenDialog(3);
             tabbedview.setVisible(true);
-            
+                      
             //Show plugin error dialog
             if (pluginErrors.size() > 0) {
                 new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), true);
             }
+            progressScreen.updateSplashScreenDialog(4);
             
             Log.log(Log.NOTICE, jsXe.class, "jsXe started in "+(System.currentTimeMillis()-startTime)+" milliseconds");
-            
         } catch (Throwable e) {
             exiterror(null, e, 1);
         }
@@ -1174,5 +1186,7 @@ public class jsXe {
     
     private static OptionsPanel jsXeOptions;
     //}}}
+    
+    
     
 }
