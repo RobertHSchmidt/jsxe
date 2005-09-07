@@ -56,6 +56,12 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  */
 public class ActivityLogAction extends AbstractAction {
+		
+	//	{{{ Public members
+    private TabbedView view;
+   // private boolean activityLogUpdated = false;
+    private ActivityLogDialog dialog = new ActivityLogDialog(view);      
+    //}}}
     
     //{{{ ActivityLogAction 
 	 /**
@@ -70,10 +76,11 @@ public class ActivityLogAction extends AbstractAction {
     
     //{{{ actionPerformed()   
     public void actionPerformed(ActionEvent e) {
-         ActivityLogDialog dialog = new ActivityLogDialog(view);        
+         dialog.show();  
     }//}}}
     
-    //{{{ Public members
-    private TabbedView view;
-    //}}}
+    /*
+	public void updateDialog(){
+		dialog.refreshContents();
+	}*/
 }
