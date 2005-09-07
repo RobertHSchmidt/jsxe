@@ -48,7 +48,7 @@ import net.sourceforge.jsxe.util.Log;
 
 
 /**
- * Dialog box which appears in response to ActivityLOgaction being triggered
+ * Dialog box which appears in response to ActivityLogAction being triggered
  *
  * @author  Trish Hartnett
  * @version $Id$
@@ -56,14 +56,13 @@ import net.sourceforge.jsxe.util.Log;
 public class ActivityLogDialog  extends EnhancedDialog{
 	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton OKJButton;
-    private javax.swing.JPanel bottomJPanel;
+	private JList contentsJList;
+    private javax.swing.JButton OKJButton;  
     private javax.swing.JLabel iconJLabel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane activityLogJScrollPane;
     private javax.swing.JLabel messageJLabel;
-    private javax.swing.JPanel middleJPanel;
-    private javax.swing.JPanel topJPanel;
+    private javax.swing.JLabel holderLabel; // icon and message label will go on this
     // End of variables declaration//GEN-END:variables
 	
 //	{{{ActivityLogDialog()
@@ -73,18 +72,11 @@ public class ActivityLogDialog  extends EnhancedDialog{
      * @since jsXe 0.3pre15
      */
 	public ActivityLogDialog(TabbedView parent) {
-		super(parent, Messages.getMessage("ActivityLogDialog.Dialog.Title"), true);
-		ArrayList contents = getActivityLogContents();
-			
-		DefaultListModel contentsJListModel = new DefaultListModel();
-		JTextArea newArea = new JTextArea(5, 30);
-		for (Iterator it=contents.iterator(); it.hasNext(); ) {
-		 	String line = (String)it.next();	
-			contentsJListModel.addElement(line);
-		}
-		JList contentsJList = new JList(contentsJListModel);
-		initComponents(contentsJList);
-		this.show();
+		super(parent, Messages.getMessage("ActivityLogDialog.Dialog.Title"), true);		
+		contentsJList = getContents();
+        activityLogJScrollPane = new javax.swing.JScrollPane(contentsJList);
+		initComponents();
+		this.setModal(false);
 	}//}}}
 	
 //	{{{ initComponents()
@@ -93,34 +85,30 @@ public class ActivityLogDialog  extends EnhancedDialog{
      * Arranges all the components of the GUI
      * @since jsXe 0.3pre15
      */
-    private void initComponents(JList contentsJList) {//GEN-BEGIN:initComponents
+    private void initComponents() {//GEN-BEGIN:initComponents
         jPanel1 = new javax.swing.JPanel();
-        topJPanel = new javax.swing.JPanel();
         iconJLabel = new javax.swing.JLabel();
+        holderLabel = new javax.swing.JLabel();
         messageJLabel = new javax.swing.JLabel();
-        middleJPanel = new javax.swing.JPanel();
-        activityLogJScrollPane = new javax.swing.JScrollPane(contentsJList);
-        bottomJPanel = new javax.swing.JPanel();
         OKJButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        topJPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        getContentPane().setLayout(new java.awt.BorderLayout());
 
         iconJLabel.setIcon(new javax.swing.ImageIcon(DirtyFilesDialog.class
 				.getResource("/net/sourceforge/jsxe/icons/metal-Inform.png")));
-        topJPanel.add(iconJLabel);
+        holderLabel.add(iconJLabel);
 
         messageJLabel.setText(Messages.getMessage("ActivityLogDialog.Dialog.Message"));
-        topJPanel.add(messageJLabel);
-
-        getContentPane().add(topJPanel, java.awt.BorderLayout.NORTH);
-
+        holderLabel.add(messageJLabel);
+        
+        getContentPane().add(holderLabel, java.awt.BorderLayout.NORTH);
+        
         activityLogJScrollPane.setViewportBorder(new javax.swing.border.EtchedBorder());
         activityLogJScrollPane.setAutoscrolls(true);
         activityLogJScrollPane.setPreferredSize(new java.awt.Dimension(350, 250));
-        middleJPanel.add(activityLogJScrollPane);
 
-        getContentPane().add(middleJPanel, java.awt.BorderLayout.CENTER);
+        getContentPane().add(activityLogJScrollPane, java.awt.BorderLayout.CENTER);
 
         OKJButton.setText(Messages.getMessage("ActivityLogDialog.Button.OK.Title"));
         OKJButton.addActionListener(new java.awt.event.ActionListener() {
@@ -128,9 +116,8 @@ public class ActivityLogDialog  extends EnhancedDialog{
 				okayJButtonActionPerformed(evt);
 			}
 		});
-        bottomJPanel.add(OKJButton);
 
-        getContentPane().add(bottomJPanel, java.awt.BorderLayout.SOUTH);
+        getContentPane().add(OKJButton, java.awt.BorderLayout.SOUTH);
 
         pack();
     }//}}}
@@ -142,8 +129,6 @@ public class ActivityLogDialog  extends EnhancedDialog{
      * @since jsXe 0.3pre15
      */
 	private void okayJButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		Log.log(Log.NOTICE, DirtyFilesDialog.class,
-				"91 using the ActivityLogDialog OK button ");
 		cancel();
 		Log.closeStream();
 	}//}}}
@@ -176,7 +161,7 @@ public class ActivityLogDialog  extends EnhancedDialog{
 		return logContents;		
 	}
 	 	
-//	{{{ ok()
+	//	{{{ ok()
 	public void ok() {
 		cancel();
 	}//}}}
@@ -186,7 +171,41 @@ public class ActivityLogDialog  extends EnhancedDialog{
 		saveGeometry(this, "pluginmgr");
 		dispose();
 	}//}}}
+	
+	public JList getContents(){
+		JList contentList = new JList();
+		ArrayList contents = getActivityLogContents();
+		
+		DefaultListModel contentsJListModel = new DefaultListModel();
+		JTextArea newArea = new JTextArea(5, 30);
+		for (Iterator it=contents.iterator(); it.hasNext(); ) {
+			String line = (String)it.next();	
+			contentsJListModel.addElement(line);
+		}
+		contentList.setModel(contentsJListModel);
+		return contentList;
+	}
+	
+	/*
+	 * public void refreshContents(){
+		setContentsJList(getContents());
+		//not sure if this will work - it should tell the scrollpane to update itself
+		activityLogJScrollPane.revalidate();
+	}
+	 */
 
+	/**
+	 * @return Returns the contentsJList.
+	 */
+	public JList getContentsJList() {
+		return contentsJList;
+	}
+	/**
+	 * @param contentsJList The contentsJList to set.
+	 */
+	public void setContentsJList(JList contentsJList) {
+		this.contentsJList = contentsJList;
+	}
 }
 
 
