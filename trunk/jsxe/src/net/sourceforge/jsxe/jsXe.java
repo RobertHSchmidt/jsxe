@@ -299,7 +299,7 @@ public class jsXe {
             
             m_activeView = tabbedview;
             int length = 5;
-            ProgressSplashScreenDialog progressScreen = new ProgressSplashScreenDialog(tabbedview, length);
+            ProgressSplashScreenWindow progressScreen = new ProgressSplashScreenWindow(tabbedview, length);
             int w = progressScreen.getSize().width;
             int h = progressScreen.getSize().height;
             Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
