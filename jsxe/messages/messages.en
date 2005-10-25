@@ -160,6 +160,4 @@ DirtyFilesDialog.Button.DiscardSelected.ToolTip = Discard Selected
 ActivityLogDialog.Open = Activity Log
 ActivityLogDialog.Dialog.Title = Activity Log
 ActivityLogDialog.Dialog.Message = Activity Log contents:
-ActivityLogDialog.Button.OK.Title = OK
-ActivityLogDialog.Button.OK.ToolTip = OK
 #}}}
