@@ -679,7 +679,7 @@ public class XMLDocument {
      * thrown out and the document read in through the reader is
      * used.
      */
-    public void setModel(Reader reader) throws IOException {
+    protected void setModel(Reader reader) throws IOException {
         
         char[] buffer = new char[READ_SIZE];
         
