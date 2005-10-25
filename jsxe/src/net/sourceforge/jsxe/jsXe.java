@@ -168,6 +168,17 @@ public class jsXe {
             }
             //}}}
             
+            //{{{ start splash screen
+            ProgressSplashScreenWindow progressScreen = new ProgressSplashScreenWindow();
+            int w = progressScreen.getSize().width;
+            int h = progressScreen.getSize().height;
+            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+            int x = (dim.width-w)/2;
+            int y = (dim.height-h)/2;
+            progressScreen.setLocation(x, y);
+            progressScreen.setVisible(true);
+            //}}}
+            
             //{{{ start logging
             Log.init(true, Log.ERROR, debug);
             try {
@@ -181,7 +192,9 @@ public class jsXe {
               
             } catch (IOException ioe) {
                 Log.log(Log.ERROR, jsXe.class, ioe);
-            }//}}}
+            }
+            progressScreen.updateSplashScreenDialog(10);
+            //}}}
             
             //{{{ check Xerces version
             String xercesVersion = org.apache.xerces.impl.Version.getVersion();
@@ -191,7 +204,9 @@ public class jsXe {
                 Log.log(Log.ERROR, jsXe.class, msg);
                 JOptionPane.showMessageDialog(null, msg, Messages.getMessage("No.Xerces.Error.Title", new String[] { reqVersion }), JOptionPane.WARNING_MESSAGE);
                 System.exit(1);
-            }//}}}
+            }
+            progressScreen.updateSplashScreenDialog(20);
+            //}}}
             
             //{{{ Load the recent files list
             File recentFiles = new File(settingsDirectory, "recent.xml");
@@ -207,7 +222,9 @@ public class jsXe {
             } catch (ParserConfigurationException pce) {
                 System.err.println(getAppTitle() + ": I/O ERROR: Could not parse recent.xml");
                 System.err.println(getAppTitle() + ": I/O ERROR: "+pce.toString());
-            }//}}}
+            }
+            progressScreen.updateSplashScreenDialog(30);
+            //}}}
             
             //{{{ load plugins
             Log.log(Log.NOTICE, jsXe.class, "Loading plugins");
@@ -218,6 +235,7 @@ public class jsXe {
             //add the jsXe home to the plugins directory
             Log.log(Log.NOTICE, jsXe.class, "Adding to plugin search path: "+jsXeHome+fileSep+"jars");
             pluginMessages.addAll(m_pluginLoader.addDirectory(jsXeHome+fileSep+"jars"));
+            progressScreen.updateSplashScreenDialog(40);
             //}}}
 
             //{{{ start plugins
@@ -240,6 +258,7 @@ public class jsXe {
                     }
                 }
             }
+            progressScreen.updateSplashScreenDialog(50);
             
             Iterator pluginItr = m_pluginLoader.getAllPlugins().iterator();
             while (pluginItr.hasNext()) {
@@ -255,6 +274,7 @@ public class jsXe {
                 
                 addActionSet(plugin.getActionSet());
             }
+            progressScreen.updateSplashScreenDialog(60);
             //}}}
             
             //{{{ load user specific properties
@@ -271,6 +291,7 @@ public class jsXe {
                 System.err.println(getAppTitle() + ": I/O ERROR: Could not open settings file");
                 System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
             }
+            progressScreen.updateSplashScreenDialog(70);
             //}}}
             
             //{{{ create the TabbedView
@@ -296,18 +317,8 @@ public class jsXe {
                 JOptionPane.showMessageDialog(null, ioe.getMessage()+".", Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
                 System.exit(1);
             }
-            
             m_activeView = tabbedview;
-            int length = 5;
-            ProgressSplashScreenWindow progressScreen = new ProgressSplashScreenWindow(tabbedview, length);
-            int w = progressScreen.getSize().width;
-            int h = progressScreen.getSize().height;
-            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-            int x = (dim.width-w)/2;
-            int y = (dim.height-h)/2;
-            progressScreen.setLocation(x, y);
-            progressScreen.setVisible(true);
-            Log.log(Log.MESSAGE, jsXe.class, "309 have set up progress screen");
+            progressScreen.updateSplashScreenDialog(85);
             //}}}
             
             //{{{ Parse files to open on the command line
@@ -321,18 +332,17 @@ public class jsXe {
                     }             
                 }
             }
-            Log.log(Log.MESSAGE, jsXe.class, "line 325 updating progress screen");
-            progressScreen.updateSplashScreenDialog(2);
+            progressScreen.updateSplashScreenDialog(100);
             //}}}
-            Log.log(Log.NOTICE, jsXe.class, "line 328 updating progress screen");
-            progressScreen.updateSplashScreenDialog(3);
+            
             tabbedview.setVisible(true);
-                      
+            
+            progressScreen.dispose();
+            
             //Show plugin error dialog
             if (pluginErrors.size() > 0) {
                 new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), true);
             }
-            progressScreen.updateSplashScreenDialog(4);
             
             Log.log(Log.NOTICE, jsXe.class, "jsXe started in "+(System.currentTimeMillis()-startTime)+" milliseconds");
         } catch (Throwable e) {

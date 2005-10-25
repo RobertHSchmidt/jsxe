@@ -54,12 +54,9 @@ public class ProgressSplashScreenWindow extends JWindow {
 	private JTextArea taskOutput;
 	private JScrollPane outputScroll;
 	private JLabel imageLabel;
-	private int lengthOfTask = 0;
 
 	 //{{{ ProgressSplashScreenWindow constructor
-	public ProgressSplashScreenWindow(TabbedView parent,
-			int lengthOfTaskVariable) {
-		lengthOfTask = lengthOfTaskVariable;
+	public ProgressSplashScreenWindow() {
 		initComponents();
 		setSize(200, 200);	
 		
@@ -82,7 +79,7 @@ public class ProgressSplashScreenWindow extends JWindow {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		updateSplashScreenDialog(1); // set status to 1 initially
+		updateSplashScreenDialog(0); // set status to 1 initially
 	}
 	//	}}}
 
@@ -128,18 +125,13 @@ public class ProgressSplashScreenWindow extends JWindow {
      * @param progress The new progress setting for the progress bar. if progress is 4, splashscreen disposes itself.
      */
 	public void updateSplashScreenDialog(int progress) {
-		Log.log(Log.MESSAGE, ProgressSplashScreenWindow.class, "line 132 updating progress screen, new progress: "+ progress);
-		int percentage = progress * 100/4 ;
-		updateProgessBar(percentage);
-		updateTextArea(percentage);			
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		if(progress == 4){
-			this.dispose();
-		}
+		updateProgessBar(progress);
+		updateTextArea(progress);			
+	//	try {
+	//		Thread.sleep(1000);
+	//	} catch (InterruptedException e) {
+	//		e.printStackTrace();
+	//	}
 	}
 	//	}}}
 
@@ -150,7 +142,6 @@ public class ProgressSplashScreenWindow extends JWindow {
      * @param percentage Updates percentage completed of progressbar
      */
 	public void updateProgessBar(int percentage) {		
-		Log.log(Log.MESSAGE, ProgressSplashScreenWindow.class, "line 135 updating progress bar, new progress: "+ percentage);
 		progressBar.setValue(percentage);
 	}
 	//	}}}
@@ -165,7 +156,6 @@ public class ProgressSplashScreenWindow extends JWindow {
 		String message = "Completed " + percentage + "%";
 		taskOutput.setText(message);
 		taskOutput.setCaretPosition(taskOutput.getDocument().getLength());
-		Log.log(Log.MESSAGE, ProgressSplashScreenWindow.class, "line 158 updating text area, progress: "+percentage+", percentage: "+percentage+", text: "+ taskOutput.getText()+", message: "+message);
 	}
 	//	}}}
 

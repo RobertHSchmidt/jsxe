@@ -1,7 +1,12 @@
-12/07/2005 Trish Hartnett <trishah136@users.sourceforge.net>
+10/24/2005 Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated how the splash screen gets updated on startup to make it
+      more active.
+
+07/12/2005 Trish Hartnett <trishah136@users.sourceforge.net>
 	* Updated javadoc for ProgresSplashScreenWindow
 	
-09/07/2005 Trish Hartnett <trishah136@users.sourceforge.net>
+07/09/2005 Trish Hartnett <trishah136@users.sourceforge.net>
 	* Added splash screen for jsXE startup
 	* Changed format of Activity Log Dialog so that buttons were arranged neater.
 
