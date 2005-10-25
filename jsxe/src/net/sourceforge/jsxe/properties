@@ -4,3 +4,7 @@ pluginmgr.x=100
 pluginmgr.y=100
 pluginmgr.height=300
 pluginmgr.width=400
+dirtyfiles.x=100
+dirtyfiles.y=100
+dirtyfiles.height=300
+dirtyfiles.width=500
