@@ -47,6 +47,7 @@ import net.sourceforge.jsxe.util.Log;
 /**
  * A splashscreen that popups when the jsxe application starts
  * @author Trish Hartnett (<a href="mailto:trishah136@users.sourceforge.net">trishah136@users.sourceforge.net</a>)
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
 public class ProgressSplashScreenWindow extends JWindow {	
@@ -59,26 +60,6 @@ public class ProgressSplashScreenWindow extends JWindow {
 	public ProgressSplashScreenWindow() {
 		initComponents();
 		setSize(200, 200);	
-		
-		//start logging here
-		String homeDir = System.getProperty("user.home");
-        String fileSep = System.getProperty("file.separator");
-        
-        String settingsDirectory = homeDir+fileSep+".jsxe";
-        boolean debug = false;        
-		Log.init(true, Log.ERROR, debug);
-
-		try {
-			BufferedWriter stream = new BufferedWriter(new FileWriter(new File(
-					settingsDirectory + fileSep + "jsXe.log")));
-			stream.flush();
-			stream.write("Log file created on " + new Date());
-			stream.write(System.getProperty("line.separator"));
-
-			Log.setLogWriter(stream);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		updateSplashScreenDialog(0); // set status to 1 initially
 	}
 	//	}}}
@@ -126,7 +107,7 @@ public class ProgressSplashScreenWindow extends JWindow {
      */
 	public void updateSplashScreenDialog(int progress) {
 		updateProgessBar(progress);
-		updateTextArea(progress);			
+		updateTextArea(progress);
 	//	try {
 	//		Thread.sleep(1000);
 	//	} catch (InterruptedException e) {

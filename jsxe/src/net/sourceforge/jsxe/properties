@@ -8,3 +8,7 @@ dirtyfiles.x=100
 dirtyfiles.y=100
 dirtyfiles.height=300
 dirtyfiles.width=500
+activitylog.x=100
+activitylog.y=100
+activitylog.height=300
+activitylog.width=300

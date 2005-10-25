@@ -36,8 +36,15 @@ import java.util.*;
 import java.io.*;
 
 import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
 import javax.swing.JList;
 import javax.swing.JTextArea;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import javax.swing.border.EmptyBorder;
+import javax.swing.BoxLayout;
+import javax.swing.Box;
+import javax.swing.JButton;
 //}}}
 
 //{{{ JSXE classes
@@ -53,77 +60,71 @@ import net.sourceforge.jsxe.util.Log;
  * @author  Trish Hartnett
  * @version $Id$
  */
-public class ActivityLogDialog  extends EnhancedDialog{
+public class ActivityLogDialog  extends EnhancedDialog {
 	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private JList contentsJList;
-    private javax.swing.JButton OKJButton;  
+    private javax.swing.JButton close;  
     private javax.swing.JLabel iconJLabel;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane activityLogJScrollPane;
-    private javax.swing.JLabel messageJLabel;
-    private javax.swing.JLabel holderLabel; // icon and message label will go on this
+    private String m_geometryName = "activitylog";
     // End of variables declaration//GEN-END:variables
 	
-//	{{{ActivityLogDialog()
+    // {{{ ActivityLogDialog()
     /**
      * @param TabbedView parent view containing the JSXE editor.
      * Constructor for the ActivityLogDialog class
      * @since jsXe 0.3pre15
      */
 	public ActivityLogDialog(TabbedView parent) {
-		super(parent, Messages.getMessage("ActivityLogDialog.Dialog.Title"), true);		
-		contentsJList = getContents();
+		super(parent, Messages.getMessage("ActivityLogDialog.Dialog.Title"), false);		
+		contentsJList = new JList();
+        contentsJList.setModel(getContents());
         activityLogJScrollPane = new javax.swing.JScrollPane(contentsJList);
-		initComponents();
-		this.setModal(false);
+		loadGeometry(this, m_geometryName);
+        initComponents();
 	}//}}}
 	
-//	{{{ initComponents()
+    // {{{ initComponents()
     /**
      * @param JList containing contents of log file
      * Arranges all the components of the GUI
      * @since jsXe 0.3pre15
      */
     private void initComponents() {//GEN-BEGIN:initComponents
-        jPanel1 = new javax.swing.JPanel();
         iconJLabel = new javax.swing.JLabel();
-        holderLabel = new javax.swing.JLabel();
-        messageJLabel = new javax.swing.JLabel();
-        OKJButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.BorderLayout());
+        //setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        JPanel content = new JPanel(new BorderLayout(12,12));
+        content.setBorder(new EmptyBorder(12,12,12,12));
+        setContentPane(content);
 
+        iconJLabel.setText(Messages.getMessage("ActivityLogDialog.Dialog.Message"));
         iconJLabel.setIcon(new javax.swing.ImageIcon(DirtyFilesDialog.class
 				.getResource("/net/sourceforge/jsxe/icons/metal-Inform.png")));
-        holderLabel.add(iconJLabel);
-
-        messageJLabel.setText(Messages.getMessage("ActivityLogDialog.Dialog.Message"));
-        holderLabel.add(messageJLabel);
+        getContentPane().add(iconJLabel, BorderLayout.NORTH);
         
-        getContentPane().add(holderLabel, java.awt.BorderLayout.NORTH);
-        
-        activityLogJScrollPane.setViewportBorder(new javax.swing.border.EtchedBorder());
-        activityLogJScrollPane.setAutoscrolls(true);
-        activityLogJScrollPane.setPreferredSize(new java.awt.Dimension(350, 250));
+        getContentPane().add(activityLogJScrollPane, BorderLayout.CENTER);
 
-        getContentPane().add(activityLogJScrollPane, java.awt.BorderLayout.CENTER);
-
-        OKJButton.setText(Messages.getMessage("ActivityLogDialog.Button.OK.Title"));
-        OKJButton.addActionListener(new java.awt.event.ActionListener() {
+        JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
+		
+		buttonPanel.add(Box.createGlue());
+		close = new JButton(Messages.getMessage("common.close"));
+		close.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				okayJButtonActionPerformed(evt);
 			}
 		});
-
-        getContentPane().add(OKJButton, java.awt.BorderLayout.SOUTH);
-
-        pack();
+        
+        getRootPane().setDefaultButton(close);
+		buttonPanel.add(close);
+		buttonPanel.add(Box.createGlue());
+		getContentPane().add(BorderLayout.SOUTH,buttonPanel);
+        
     }//}}}
     
-	
-//	{{{ okayJButtonActionPerformed()
+    // {{{ okayJButtonActionPerformed()
     /**
      * Provides action for clicking on the OK button
      * @since jsXe 0.3pre15
@@ -133,13 +134,13 @@ public class ActivityLogDialog  extends EnhancedDialog{
 		Log.closeStream();
 	}//}}}
 	
-//	{{{ getActivityLogContents()
+    // {{{ getActivityLogContents()
     /**
      * Gets contents of the ativity log jsxe.log
      * @return ArrayList containing lines from the activity log
      * @since jsXe 0.3pre15
      */	
-	public ArrayList getActivityLogContents(){
+	public ArrayList getActivityLogContents() {
 		String homeDir = System.getProperty("user.home");
 		File activityLog = new File(homeDir+ System.getProperty("file.separator")+".jsxe"+System.getProperty("file.separator")+"jsXe.log");
 			
@@ -148,32 +149,33 @@ public class ActivityLogDialog  extends EnhancedDialog{
 		try {
 			BufferedReader reader = new BufferedReader( new FileReader(activityLog));			
 			try {
-				while ((line = reader.readLine()) != null){
+				while ((line = reader.readLine()) != null) {
 					logContents.add(line);
 				}
-				
+            reader.close();
 			} catch (IOException e1) {
-				e1.printStackTrace();
-			}			
+				Log.log(Log.ERROR, this, e1);
+			}
+            
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Log.log(Log.ERROR, this, e);
 		}
 		return logContents;		
-	}
+    }//}}}
 	 	
-	//	{{{ ok()
+	// {{{ ok()
 	public void ok() {
 		cancel();
 	}//}}}
 
 	//{{{ cancel()
 	public void cancel() {
-		saveGeometry(this, "pluginmgr");
+		saveGeometry(this, m_geometryName);
 		dispose();
 	}//}}}
 	
-	public JList getContents(){
-		JList contentList = new JList();
+    //{{{ getContents()
+	public ListModel getContents(){
 		ArrayList contents = getActivityLogContents();
 		
 		DefaultListModel contentsJListModel = new DefaultListModel();
@@ -182,30 +184,31 @@ public class ActivityLogDialog  extends EnhancedDialog{
 			String line = (String)it.next();	
 			contentsJListModel.addElement(line);
 		}
-		contentList.setModel(contentsJListModel);
-		return contentList;
-	}
+        return contentsJListModel;
+	}//}}}
 	
-	/*
-	 * public void refreshContents(){
-		setContentsJList(getContents());
-		//not sure if this will work - it should tell the scrollpane to update itself
-		activityLogJScrollPane.revalidate();
-	}
-	 */
+    //{{{ refreshContents()
+	public void refreshContents() {
+        Log.flushStream();
+		contentsJList.setModel(getContents());
+		//contentsJList.updateUI();
+	}//}}}
 
+    //{{{ getContentsList()
 	/**
 	 * @return Returns the contentsJList.
 	 */
 	public JList getContentsJList() {
 		return contentsJList;
-	}
+	}//}}}
+    
+    //{{{ setContentsJList()
 	/**
 	 * @param contentsJList The contentsJList to set.
 	 */
 	public void setContentsJList(JList contentsJList) {
 		this.contentsJList = contentsJList;
-	}
+	}//}}}
 }
 
 

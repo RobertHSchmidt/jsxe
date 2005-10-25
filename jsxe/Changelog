@@ -2,6 +2,10 @@
 
     * Updated how the splash screen gets updated on startup to make it
       more active.
+    * Updated the activity log dialog to display the label as well as
+      the close/ok button better. Fixed the loading and saving of the geometry.
+      Added a default size to the default properties so that it doesn't
+      have a tiny size the first time it's opened.
 
 07/12/2005 Trish Hartnett <trishah136@users.sourceforge.net>
 	* Updated javadoc for ProgresSplashScreenWindow

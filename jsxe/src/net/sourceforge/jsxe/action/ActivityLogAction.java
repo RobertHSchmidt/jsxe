@@ -35,6 +35,7 @@ belongs to.
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.ActivityLogDialog;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Swing components
@@ -76,7 +77,8 @@ public class ActivityLogAction extends AbstractAction {
     
     //{{{ actionPerformed()   
     public void actionPerformed(ActionEvent e) {
-         dialog.show();  
+        dialog.refreshContents();
+        dialog.show();  
     }//}}}
     
     /*
