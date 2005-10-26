@@ -73,13 +73,13 @@ import java.util.*;
 public class jsXe {
     
     //{{{ The main() method of jsXe
-	
+    
     /**
      * The main method of jsXe
      * @param args The command line arguments
      */
     public static void main(String args[]) {
-    	
+        
         try {
             long startTime = System.currentTimeMillis();
             
@@ -97,23 +97,23 @@ public class jsXe {
             String homeDir = System.getProperty("user.home");
             String fileSep = System.getProperty("file.separator");
             
-            String settingsDirectory = homeDir+fileSep+".jsxe";
+            m_settingsDirectory = homeDir+fileSep+".jsxe";
             
-            File _settingsDirectory = new File(settingsDirectory);
+            File _settingsDirectory = new File(m_settingsDirectory);
             if(!_settingsDirectory.exists())
                 _settingsDirectory.mkdirs();
-            String pluginsDirectory = settingsDirectory+"/jars";
+            String pluginsDirectory = m_settingsDirectory+"/jars";
             File _pluginsDirectory = new File(pluginsDirectory);
             if(!_pluginsDirectory.exists())
                 _pluginsDirectory.mkdirs();
             
             String jsXeHome = System.getProperty("jsxe.home");
-            if(jsXeHome == null) {
+            if (jsXeHome == null) {
                 String classpath = System.getProperty("java.class.path");
                 int index = classpath.toLowerCase().indexOf("jsxe.jar");
                 int start = classpath.lastIndexOf(File.pathSeparator,index) + 1;
                 // if started with java -jar jsxe.jar
-                if(classpath.equalsIgnoreCase("jsxe.jar")) {
+                if (classpath.equalsIgnoreCase("jsxe.jar")) {
                     jsXeHome = System.getProperty("user.dir");
                 } else {
                     if(index > start) {
@@ -182,7 +182,7 @@ public class jsXe {
             //{{{ start logging
             Log.init(true, Log.ERROR, debug);
             try {
-                BufferedWriter stream = new BufferedWriter(new FileWriter(new File(settingsDirectory+fileSep+"jsXe.log")));
+                BufferedWriter stream = new BufferedWriter(new FileWriter(new File(getSettingsDirectory()+fileSep+"jsXe.log")));
                 stream.flush();
                 stream.write("Log file created on " + new Date());
                 stream.write(System.getProperty("line.separator"));
@@ -209,7 +209,7 @@ public class jsXe {
             //}}}
             
             //{{{ Load the recent files list
-            File recentFiles = new File(settingsDirectory, "recent.xml");
+            File recentFiles = new File(getSettingsDirectory(), "recent.xml");
             m_bufferHistory = new BufferHistory();
             try {
                 m_bufferHistory.load(recentFiles);
@@ -278,8 +278,7 @@ public class jsXe {
             //}}}
             
             //{{{ load user specific properties
-            
-            File properties = new File(settingsDirectory,"properties");
+            File properties = new File(getSettingsDirectory(),"properties");
             try {
                 FileInputStream filestream = new FileInputStream(properties);
                 props.load(filestream);
@@ -291,6 +290,10 @@ public class jsXe {
                 System.err.println(getAppTitle() + ": I/O ERROR: Could not open settings file");
                 System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());
             }
+            
+            //init the catalog manager
+            CatalogManager.propertiesChanged();
+            
             progressScreen.updateSplashScreenDialog(70);
             //}}}
             
@@ -400,6 +403,15 @@ public class jsXe {
     public static ImageIcon getIcon() {
         return jsXeIcon;
     }//}}}
+    
+    //{{{ getSettingsDirectory() method
+    /**
+     * Returns the path of the directory where user-specific settings
+     * are stored.
+     */
+    public static String getSettingsDirectory() {
+        return m_settingsDirectory;
+    } //}}}
     
     //{{{ getAppTitle()
     /**
@@ -599,7 +611,7 @@ public class jsXe {
     public static DocumentBuffer getOpenBuffer(File file) {
         
         boolean caseInsensitiveFilesystem = (File.separatorChar == '\\'
-			|| File.separatorChar == ':' /* Windows or MacOS */);
+            || File.separatorChar == ':' /* Windows or MacOS */);
         
         for(int i=0; i < m_buffers.size();i++) {
             
@@ -628,7 +640,7 @@ public class jsXe {
      *                     because of an I/O error.
      */
     public static boolean closeDocumentBuffer(TabbedView view, DocumentBuffer buffer) throws IOException {
-    	return closeDocumentBuffer(view, buffer, true);
+        return closeDocumentBuffer(view, buffer, true);
     }//}}}
     
     //{{{ closeDocumentBuffer()
@@ -787,9 +799,11 @@ public class jsXe {
             //exit only if the view really wants to.
             if (view.close()) {
                 Log.log(Log.NOTICE, jsXe.class, "Exiting");
-                String homeDir = System.getProperty("user.home");
-                String fileSep = System.getProperty("file.separator");
-                String settingsDirectory = homeDir+fileSep+".jsxe";
+                
+                //Save the Catalog info
+                CatalogManager.save();
+                
+                String settingsDirectory = getSettingsDirectory();
                 
                 try {
                     File properties = new File(settingsDirectory,"properties");
@@ -858,7 +872,12 @@ public class jsXe {
      * @return The previous value for the key, or null if there was none.
      */
     public static Object setProperty(String key, String value) {
-        return props.setProperty(key, value);
+        if (value == null) {
+            props.remove(key);
+            return null;
+        } else {
+            return props.setProperty(key, value);
+        }
     }//}}}
     
     //{{{ getDefaultProperty()
@@ -895,24 +914,24 @@ public class jsXe {
      * @return The value associated with the key or the default value if the key is not found.
      */
     public static final String getProperty(String key, String defaultValue) {
-		return props.getProperty(key, defaultProps.getProperty(key, defaultValue));
-	} //}}}
+        return props.getProperty(key, defaultProps.getProperty(key, defaultValue));
+    } //}}}
     
     //{{{ getIntegerProperty()
     /**
-	 * Returns the value of an integer property.
-	 * @param name The property
-	 * @param def The default value
-	 * @since jsXe 0.2 pre24
-	 */
+     * Returns the value of an integer property.
+     * @param name The property
+     * @param def The default value
+     * @since jsXe 0.2 pre24
+     */
     public static final int getIntegerProperty(String key, int defaultValue) {
         int intValue = defaultValue;
         String value = getProperty(key);
-		if (value == null) {
-			return defaultValue;
+        if (value == null) {
+            return defaultValue;
         } else {
             try {
-				return Integer.parseInt(value.trim());
+                return Integer.parseInt(value.trim());
             } catch(NumberFormatException nf) {
                 return defaultValue;
             }
@@ -920,16 +939,43 @@ public class jsXe {
     }//}}}
     
     //{{{ setIntegerProperty() method
-	/**
-	 * Sets the value of an integer property.
-	 * @param name The property
-	 * @param value The value
-	 * @since jsXe 0.2 pre24
-	 */
-	public static final void setIntegerProperty(String name, int value)
-	{
-		setProperty(name, String.valueOf(value));
-	} //}}}
+    /**
+     * Sets the value of an integer property.
+     * @param name The property
+     * @param value The value
+     * @since jsXe 0.2 pre24
+     */
+    public static final void setIntegerProperty(String name, int value) {
+        setProperty(name, String.valueOf(value));
+    } //}}}
+    
+    //{{{ getBooleanProperty() method
+    /**
+     * Gets the value of an boolean property.
+     * @param name The property
+     * @param defaultValue The default value of the property
+     * @since jsXe 0.4 pre3
+     */
+    public static final boolean getBooleanProperty(String name, boolean defaultValue) {
+        boolean booleanValue = defaultValue;
+        String value = getProperty(name);
+        if (value == null) {
+            return defaultValue;
+        } else {
+            return Boolean.valueOf(value).booleanValue();
+        }
+    }//}}}
+    
+    //{{{ setBooleanProperty()
+    /**
+     * Sets the value of an boolean property.
+     * @param name The property
+     * @param value The value
+     * @since jsXe 0.4 pre3
+     */
+    public static final void setBooleanProperty(String name, boolean value) {
+        setProperty(name, String.valueOf(value));
+    }//}}}
     
     //{{{ addActionSet()
     
@@ -943,12 +989,12 @@ public class jsXe {
      */
     public static Action getAction(String name) {
         for (int i = 0; i < m_actionSets.size(); i++) {
-			Action action = ((ActionSet)m_actionSets.get(i)).getAction(name);
-			if (action != null) {
-				return action;
+            Action action = ((ActionSet)m_actionSets.get(i)).getAction(name);
+            if (action != null) {
+                return action;
             }
-		}
-		return null;
+        }
+        return null;
     }//}}}
     
     //{{{ getActionSets()
@@ -1102,6 +1148,26 @@ public class jsXe {
             
             maxRecentFilesComboBox.setToolTipText(Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
             
+            JLabel networkLabel = new JLabel(Messages.getMessage("Global.Options.network"));
+            
+            String[] networkValues = {
+                Messages.getMessage("Global.Options.network-always"),
+                Messages.getMessage("Global.Options.network-cache"),
+                Messages.getMessage("Global.Options.network-off")
+
+            };
+            
+            network = new JComboBox(networkValues);
+            if (jsXe.getBooleanProperty("xml.network", true)) {
+                if (jsXe.getBooleanProperty("xml.cache", true)) {
+                    network.setSelectedIndex(1);
+                } else {
+                    network.setSelectedIndex(2);
+                }
+            } else {
+                network.setSelectedIndex(0);
+            }
+            
             constraints.gridy      = gridY;
             constraints.gridx      = 0;
             constraints.gridheight = 1;
@@ -1113,7 +1179,7 @@ public class jsXe {
             layout.setConstraints(maxRecentFilesLabel, constraints);
             add(maxRecentFilesLabel);
             
-            constraints.gridy      = gridY;
+            constraints.gridy      = gridY++;
             constraints.gridx      = 1;
             constraints.gridheight = 1;
             constraints.gridwidth  = 1;
@@ -1123,6 +1189,28 @@ public class jsXe {
             
             layout.setConstraints(maxRecentFilesComboBox, constraints);
             add(maxRecentFilesComboBox);
+            
+            constraints.gridy      = gridY;
+            constraints.gridx      = 0;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
+            layout.setConstraints(networkLabel, constraints);
+            add(networkLabel);
+            
+            constraints.gridy      = gridY++;
+            constraints.gridx      = 1;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
+            layout.setConstraints(network, constraints);
+            add(network);
         }//}}}
         
         //{{{ getName()
@@ -1139,6 +1227,9 @@ public class jsXe {
             } catch (NumberFormatException nfe) {
                 //Bad input, don't save.
             }
+            jsXe.setBooleanProperty("xml.cache",network.getSelectedIndex() == 1);
+            jsXe.setBooleanProperty("xml.network",network.getSelectedIndex() >= 1);
+            CatalogManager.propertiesChanged();
         }//}}}
         
         //{{{ getTitle()
@@ -1155,6 +1246,7 @@ public class jsXe {
         
         //{{{ Private Members
         private JComboBox maxRecentFilesComboBox;
+        private JComboBox network;
         //}}}
         
     }//}}}
@@ -1193,10 +1285,9 @@ public class jsXe {
     private static ArrayList m_actionSets = new ArrayList();
     private static JARClassLoader m_pluginLoader;
     private static TabbedView m_activeView;
+    private static String m_settingsDirectory;
     
     private static OptionsPanel jsXeOptions;
     //}}}
-    
-    
     
 }

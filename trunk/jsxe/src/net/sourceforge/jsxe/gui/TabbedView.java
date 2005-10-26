@@ -523,9 +523,9 @@ public class TabbedView extends JFrame {
         //{{{ Create Help Menu
         m_helpMenu = new JMenu(Messages.getMessage("Help.Menu"));
         m_helpMenu.setMnemonic('H');
-            menuItem = new JMenuItem(jsXe.getAction("about-jsxe"));
-            m_helpMenu.add(menuItem);
             menuItem = new JMenuItem(jsXe.getAction("activityLogDialog-open"));
+            m_helpMenu.add(menuItem);
+            menuItem = new JMenuItem(jsXe.getAction("about-jsxe"));
             m_helpMenu.add(menuItem);
         //}}}
 
