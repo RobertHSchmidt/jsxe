@@ -42,6 +42,7 @@ import net.sourceforge.jsxe.util.Log;
 import javax.swing.Action;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 //}}}
 
 //{{{ AWT components
@@ -71,7 +72,8 @@ public class ActivityLogAction extends AbstractAction {
      * @since jsXe 0.3pre15
      */
     public ActivityLogAction(TabbedView parent) {
-    	putValue(Action.NAME, Messages.getMessage("ActivityLogDialog.Open"));	
+    	putValue(Action.NAME, Messages.getMessage("ActivityLogDialog.Open"));
+        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("L").getKeyCode()));
         view = parent;
     }//}}}
     
