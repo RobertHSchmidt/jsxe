@@ -1,3 +1,8 @@
+10/26/2005 Ian Lewis <IanLewis@member.fsf.org>
+
+    * Fixed a bug in the caching process that caused fatal IOExceptions to be
+      thrown.
+
 10/25/2005 Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated the about dialog to get it's messages in a locale specific way.
