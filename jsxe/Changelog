@@ -1,3 +1,12 @@
+10/25/2005 Ian Lewis <IanLewis@member.fsf.org>
+
+    * Updated the about dialog to get it's messages in a locale specific way.
+      Now the about dialog can be displayed in other languages.
+    * Added support for caching external files to the disk in the user's
+      settings directory. This should make load times faster for files with a
+      lot of external files. jsXe now requires the commons xml-commons resolver
+      jar file.
+
 10/24/2005 Ian Lewis <IanLewis@member.fsf.org>
 
     * Updated how the splash screen gets updated on startup to make it

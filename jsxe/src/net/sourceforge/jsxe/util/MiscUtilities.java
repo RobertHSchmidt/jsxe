@@ -257,16 +257,28 @@ public class MiscUtilities {
    //         return name.substring(0,index);
    // } //}}}
 
-   // //{{{ getParentOfPath() method
-   // /**
-   //  * Returns the parent of the specified path. This method is VFS-aware.
-   //  * @param path The path name
-   //  * @since jEdit 2.6pre5
-   //  */
-   // public static String getParentOfPath(String path)
-   // {
-   //     return VFSManager.getVFSForPath(path).getParentOfPath(path);
-   // } //}}}
+    //{{{ getParentOfPath() method
+    /**
+     * Returns the parent of the specified path.
+     * @param path The path name
+     * @since jsXe 0.4 pre3
+     */
+    public static String getParentOfPath(String path) {
+        // ignore last character of path to properly handle
+		// paths like /foo/bar/
+		int count = Math.max(0,path.length() - 2);
+		int index = path.lastIndexOf(File.separatorChar,count);
+		if(index == -1)
+			index = path.lastIndexOf('/',count);
+		if(index == -1)
+		{
+			// this ensures that getFileParent("protocol:"), for
+			// example, is "protocol:" and not "".
+			index = path.lastIndexOf(':');
+		}
+
+		return path.substring(0,index + 1);
+    } //}}}
 
     //{{{ getProtocolOfURL() method
     /**
@@ -286,8 +298,8 @@ public class MiscUtilities {
      */
     public static boolean isURL(String str)
     {
-        int fsIndex = Math.max(str.indexOf(File.separatorChar),
-            str.indexOf('/'));
+        int fsIndex = Math.max(str.indexOf(File.separatorChar), str.indexOf('/'));
+        
         if(fsIndex == 0) // /etc/passwd
             return false;
         else if(fsIndex == 2) // C:\AUTOEXEC.BAT
@@ -382,6 +394,15 @@ public class MiscUtilities {
         return name.replace('.','/').concat(".class");
     } //}}}
 
+    //{{{ resolveSymlinks() method
+    public static String resolveSymlinks(String path) {
+        try {
+            return new File(path).getCanonicalPath();
+        } catch(IOException io) {
+            return path;
+        }
+    } //}}}
+    
     //}}}
 
     //{{{ Text methods
@@ -1192,7 +1213,36 @@ loop:       for(int i = 0; i < str.length(); i++)
 
         return buf.toString();
     } //}}}
+    
+    //{{{ uriToFile() method
+	public static String uriToFile(String uri) {
+		if (uri.startsWith("file:/")) {
+			int start;
+			if (uri.startsWith("file:///") && OperatingSystem.isDOSDerived())
+				start = 8;
+			else if (uri.startsWith("file://"))
+				start = 7;
+			else
+				start = 5;
 
+			StringBuffer buf = new StringBuffer();
+			for(int i = start; i < uri.length(); i++) {
+				char ch = uri.charAt(i);
+				if (ch == '/')
+					buf.append(java.io.File.separatorChar);
+				else if(ch == '%') {
+					String str = uri.substring(i + 1,i + 3);
+					buf.append((char)Integer.parseInt(str,16));
+					i += 2;
+				}
+				else
+					buf.append(ch);
+			}
+			uri = buf.toString();
+		}
+		return uri;
+	} //}}}
+    
     //}}}
     
     //{{{ isTrue()
@@ -1225,19 +1275,5 @@ loop:       for(int i = 0; i < str.length(); i++)
     
     //{{{ Private members
     private MiscUtilities() {}
-
-    //{{{ resolveSymlinks() method
-    private static String resolveSymlinks(String path)
-    {
-        try
-        {
-            return new File(path).getCanonicalPath();
-        }
-        catch(IOException io)
-        {
-            return path;
-        }
-    } //}}}
-
     //}}}
 }

@@ -70,6 +70,7 @@ import javax.swing.event.ChangeListener;
 //{{{ DOM classes
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 //}}}
 
 //}}}
@@ -799,37 +800,43 @@ public class DocumentBuffer extends XMLDocument {
         
         //{{{ resolveEntity()
         
-        public InputSource resolveEntity(String publicId, String systemId) {
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
             
-            String entity = systemId;
-            InputSource source = null;
-            
-            if (m_file != null) {
-                
-                try {
-                    String filePathURI = m_file.toURL().toExternalForm();
-                    int index = filePathURI.lastIndexOf("/")+1;
-                    if (index != -1) {
-                        filePathURI = filePathURI.substring(0, index);
-                    }
-                    
-                    index = entity.lastIndexOf("/")+1;
-                    if (index != -1) {
-                        entity = entity.substring(index);
-                    }
-                    
-                    //create the path to the entity relative to the document
-                    filePathURI += entity;
-                    source = new InputSource((new URL(filePathURI)).openStream());
-                    
-                } catch (MalformedURLException e) {
-                    //Do nothing and try to open this entity normally
-                } catch (IOException e) {
-                    //Probobly file not found.
-                    //Do nothing and try to open this entity normally
-                }
-            }
-            return source;
+           // String entity = systemId;
+           // InputSource source = null;
+           // 
+           // if (m_file != null) {
+           //     
+           //     try {
+           //         String filePathURI = m_file.toURL().toExternalForm();
+           //         int index = filePathURI.lastIndexOf("/")+1;
+           //         if (index != -1) {
+           //             filePathURI = filePathURI.substring(0, index);
+           //         }
+           //         
+           //         index = entity.lastIndexOf("/")+1;
+           //         if (index != -1) {
+           //             entity = entity.substring(index);
+           //         }
+           //         
+           //         //create the path to the entity relative to the document
+           //         filePathURI += entity;
+           //         source = new InputSource((new URL(filePathURI)).openStream());
+           //         
+           //     } catch (MalformedURLException e) {
+           //         //Do nothing and try to open this entity normally
+           //     } catch (IOException e) {
+           //         //Probobly file not found.
+           //         //Do nothing and try to open this entity normally
+           //     }
+           // }
+           // return source;
+           try {
+               return CatalogManager.resolve(getFile().toURI().toString(), publicId, systemId);
+           } catch (Exception e) {
+               Log.log(Log.DEBUG, this, e);
+               throw new SAXException(e);
+           }
         }//}}}
         
     }//}}}

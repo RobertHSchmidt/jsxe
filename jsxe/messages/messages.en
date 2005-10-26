@@ -51,6 +51,10 @@ Global.Options.Dialog.Title=Global Options
 Global.Options.Title=jsXe Global Options
 Global.Options.Max.Recent.Files=Recent files to remember:
 Global.Options.Max.Recent.Files.ToolTip=The maximum number of files that jsXe remembers in the recent files menu.
+Global.Options.network-off=Always cache without asking
+Global.Options.network-cache=Ask first, then cache remote files
+Global.Options.network-always=Always download without asking
+Global.Options.network=DTD and schema downloading:
 Document.Options.Title=XML Document Options
 Document.Options.Encoding=Encoding:
 Document.Options.Encoding.ToolTip=The encoding that jsXe uses to write the file.
@@ -137,12 +141,29 @@ DocumentBuffer.SaveAs.Message=The file {0} already exists. Are you sure you want
 DocumentBuffer.SaveAs.Message.Title=File Exists
 DocumentBuffer.Close.Message={0} unsaved! Save it now?
 DocumentBuffer.Close.Message.Title=Unsaved Changes
-#}}}
 
 #{{{ Error Messages
 No.Xerces.Error={0} not found. jsXe requires Apache {0}.
 No.Xerces.Error.Title={0} not found.
 IO.Error.Title=I/O Error
+#}}}
+
+#}}}
+
+#{{{ Dialogs
+
+#{{{ Download resource dialog
+xml.download-resource.title=Getting resource from remote server
+xml.download-resource.message=This XML file depends on a resource which is stored at the following\n\
+	Internet address:\n\
+	\n\
+	{0}\n\
+	\n\
+	Do you want the XML plugin to download the resource and cache it\n\
+	for future use?\n\
+	\n\
+	If you want resources to be downloaded every time without prompting,\n\
+	disable the resource cache in jsXe's global options.
 #}}}
 
 #{{{ Dirty Files Dialog
@@ -160,4 +181,22 @@ DirtyFilesDialog.Button.DiscardSelected.ToolTip = Discard Selected
 ActivityLogDialog.Open = Activity Log
 ActivityLogDialog.Dialog.Title = Activity Log
 ActivityLogDialog.Dialog.Message = Activity Log contents:
+#}}}
+
+#{{{ About dialag
+about.title=About jsXe
+about.message=Released under the terms of the GNU General Public License\n\n\
+    Active Contributors:\n\
+    \ \ \ \ Ian Lewis <IanLewis@member.fsf.org>\n\
+    \ \ \ \ Trish Hartnett <trishah136@users.sourceforge.net>\n\
+    \ \ \ \ Aaron Flatten  <aflatten@users.sourceforge.net>\n\n\
+    Translators:\n\
+    \ \ \ \ German (de) - Bianca Schoen\n\
+    \ \ \ \ Swedish (sv) - Patrik Johansson <patjoh@itstud.chalmers.se>\n\n\
+    Past Contributers:\n\
+    \ \ \ \ Bilel Remmache <rbilel@users.sourceforge.net>\n\
+    \ \ \ \ SVM <svmcoranto@users.sourceforge.net>\n\n\
+    Homepage: http://jsxe.sourceforge.net/
+#}}}
+
 #}}}
