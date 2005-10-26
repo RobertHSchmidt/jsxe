@@ -564,14 +564,12 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             
             // We can rename processing instruction nodes here too.
             if (node.getNodeType() == AdapterNode.PROCESSING_INSTRUCTION_NODE) {
-                Log.log(Log.DEBUG,this,"default");
                 setIcon(m_defaultLeafIcon);
                 setLeafIcon(m_defaultLeafIcon);
                 setOpenIcon(m_defaultLeafIcon);
                 setClosedIcon(m_defaultLeafIcon);
                 setToolTipText(Messages.getMessage("xml.processing.instruction"));
             } else {
-                Log.log(Log.DEBUG,this,"element");
                 setIcon(m_elementIcon);
                 setLeafIcon(m_elementIcon);
                 setOpenIcon(m_elementIcon);
@@ -627,7 +625,6 @@ public class DefaultViewTree extends JTree implements Autoscroll {
             Container container = (Container)super.getTreeCellEditorComponent(tree, value, isSelected, expanded, leaf, row);
             JTextField field = (JTextField)container.getComponent(0);
             
-            Log.log(Log.DEBUG,this,"test");
             // We know this is an element so just use the node name.
             field.setText(((AdapterNode)value).getNodeName());
             return field;
