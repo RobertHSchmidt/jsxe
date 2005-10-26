@@ -110,17 +110,20 @@ public class CatalogManager {
 
         if (newSystemId == null)
             return null;
-
-        DocumentBuffer buf = jsXe.getOpenBuffer(new File(MiscUtilities.uriToFile(newSystemId)));
-        if (buf != null) {
-            Log.log(Log.MESSAGE, CatalogManager.class, "Found open buffer for " + newSystemId);
-            InputSource source = new InputSource(systemId);
-            
-            //TODO: loads a document as a string. May be resource intensive.
-            source.setCharacterStream(new StringReader(buf.getText(0, buf.getLength())));
-            return source;
-        } else {
-            if (newSystemId.startsWith("file:")) {
+        
+        if (newSystemId.startsWith("file:")) {
+            String filename = MiscUtilities.uriToFile(newSystemId);
+            Log.log(Log.DEBUG, CatalogManager.class, "sysId:    "+newSystemId);
+            Log.log(Log.DEBUG, CatalogManager.class, "filename: "+filename);
+            DocumentBuffer buf = jsXe.getOpenBuffer(new File(filename));
+            if (buf != null) {
+                Log.log(Log.MESSAGE, CatalogManager.class, "Found open buffer for " + newSystemId);
+                InputSource source = new InputSource(systemId);
+                
+                //TODO: loads a document as a string. May be resource intensive.
+                source.setCharacterStream(new StringReader(buf.getText(0, buf.getLength())));
+                return source;
+            } else {
                 try {
                     InputSource source = new InputSource(systemId);
                     source.setByteStream(new URL(newSystemId).openStream());
@@ -142,21 +145,21 @@ public class CatalogManager {
                     }
                     throw ioe;
                 }
+            }
+        } else {
+            if (!network) {
+                return null;
             } else {
-                if (!network) {
-                    return null;
-                } else {
-                    
-                    TabbedView view = jsXe.getActiveView();
-                    if (!cache || showDownloadResourceDialog(view, newSystemId)) {
-                        InputSource source = new InputSource(systemId);
-                        File file = copyToLocalFile(newSystemId);
-                        addUserResource(publicId,systemId,file.toURL().toString());
-                        source.setByteStream(new FileInputStream(file));
-                        return source;
-                    }//Try to open this this normally.
-                    return null;
-                }
+                
+                TabbedView view = jsXe.getActiveView();
+                if (!cache || showDownloadResourceDialog(view, newSystemId)) {
+                    InputSource source = new InputSource(systemId);
+                    File file = copyToLocalFile(newSystemId);
+                    addUserResource(publicId,systemId,file.toURL().toString());
+                    source.setByteStream(new FileInputStream(file));
+                    return source;
+                }//Try to open this this normally.
+                return null;
             }
         }
     } //}}}
@@ -283,6 +286,9 @@ public class CatalogManager {
     //{{{ Static variables
     private static boolean loadedCache;
     private static boolean loadedCatalogs;
+    
+    //TODO: Get rid of these properties and replace them with a property
+    // with 3 possible values
     private static boolean cache;
     private static boolean network;
     private static Catalog catalog;
