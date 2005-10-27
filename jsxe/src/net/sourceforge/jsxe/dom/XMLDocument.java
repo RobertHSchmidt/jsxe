@@ -446,6 +446,18 @@ public class XMLDocument {
         return m_content.getLength();
     }//}}}
     
+    //{{{ getErrors()
+    /**
+     * Gets a list of non-fatal errors that were encountered
+     * when the document was parsed last. These are normally
+     * validation errors.
+     * @return a list of Exception objects.
+     * @since jsXe 0.4 pre3
+     */
+    public List getErrors() {
+        return m_parseErrors;
+    }//}}}
+    
     //{{{ isWellFormed()
     /**
      * Indicates if the document is well formed.
@@ -818,7 +830,7 @@ public class XMLDocument {
                     }
                     m_content = content;
                     boolean formatting = Boolean.valueOf(getProperty(FORMAT_XML)).booleanValue();
-                    if (formatting != m_formattedLastTime) {
+                    if (formatting  && !m_formattedLastTime) {
                         /*
                         if we format the document then we may be changing
                         document structure.

@@ -91,6 +91,7 @@ File.Exit=Exit
 
 Tools.Options=Options...
 Tools.Plugin=Plugin Manager...
+Tools.ValidationErrors=Validation Errors...
 Plugin.Manager.Title=Plugin Manager
 Help.About=About jsXe...
 #}}}
@@ -197,6 +198,11 @@ about.message=Released under the terms of the GNU General Public License\n\n\
     \ \ \ \ Bilel Remmache <rbilel@users.sourceforge.net>\n\
     \ \ \ \ SVM <svmcoranto@users.sourceforge.net>\n\n\
     Homepage: http://jsxe.sourceforge.net/
+#}}}
+
+#{{{ Validation Errors Dialog
+ValidationErrors.title=Validation Errors
+ValidationErrors.message=Validation Errors
 #}}}
 
 #}}}

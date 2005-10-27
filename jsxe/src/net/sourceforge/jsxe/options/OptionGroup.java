@@ -157,7 +157,7 @@ public class OptionGroup {
             crash jsXe since they can add options to the dialogs.
             */
             } catch(Throwable t) {
-                Log.log(Log.ERROR, this, "Internal error during save");
+                Log.log(Log.ERROR, this, t);
             }
         }
     }//}}}

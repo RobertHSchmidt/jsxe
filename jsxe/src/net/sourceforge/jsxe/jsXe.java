@@ -1158,15 +1158,7 @@ public class jsXe {
             };
             
             network = new JComboBox(networkValues);
-            if (jsXe.getBooleanProperty("xml.network", true)) {
-                if (jsXe.getBooleanProperty("xml.cache", true)) {
-                    network.setSelectedIndex(1);
-                } else {
-                    network.setSelectedIndex(2);
-                }
-            } else {
-                network.setSelectedIndex(0);
-            }
+            network.setSelectedIndex(jsXe.getIntegerProperty("xml.cache", 1));
             
             constraints.gridy      = gridY;
             constraints.gridx      = 0;
@@ -1227,8 +1219,7 @@ public class jsXe {
             } catch (NumberFormatException nfe) {
                 //Bad input, don't save.
             }
-            jsXe.setBooleanProperty("xml.cache",network.getSelectedIndex() == 1);
-            jsXe.setBooleanProperty("xml.network",network.getSelectedIndex() >= 1);
+            jsXe.setIntegerProperty("xml.cache",network.getSelectedIndex());
             CatalogManager.propertiesChanged();
         }//}}}
         
