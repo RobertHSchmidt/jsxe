@@ -136,28 +136,30 @@ public class DefaultView extends JPanel implements DocumentView {
         tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
         
         //starts editing if the user start typing on one of the nodes
-        tree.addKeyListener(new KeyListener() {//{{{
-            
-            public void keyPressed(KeyEvent e) {}
-            
-            public void keyReleased(KeyEvent e) {}
-            
-            public void keyTyped(KeyEvent e) {
-                if (!e.isActionKey()) {
-                    AdapterNode node = (AdapterNode)tree.getLastSelectedPathComponent();
-                    if (node != null) {
-                        if (tree.isEditable(node)) {
-                            tree.startEditingAtPath(tree.getLeadSelectionPath());
-                        } else {
-                            if (canEditInJEditorPane(node)) {
-                                m_valueTextArea.requestFocus();
-                            }
-                        }
-                    }
-                }
-            }
-            
-        });//}}}
+        //seems to catch user shortcuts too. Not sure how to resolve that.
+        
+       // tree.addKeyListener(new KeyListener() {//{{{
+       //     
+       //     public void keyPressed(KeyEvent e) {}
+       //     
+       //     public void keyReleased(KeyEvent e) {}
+       //     
+       //     public void keyTyped(KeyEvent e) {
+       //         if (!e.isActionKey()) {
+       //             AdapterNode node = (AdapterNode)tree.getLastSelectedPathComponent();
+       //             if (node != null) {
+       //                 if (tree.isEditable(node)) {
+       //                     tree.startEditingAtPath(tree.getLeadSelectionPath());
+       //                 } else {
+       //                     if (canEditInJEditorPane(node)) {
+       //                         m_valueTextArea.requestFocus();
+       //                     }
+       //                 }
+       //             }
+       //         }
+       //     }
+       //     
+       // });//}}}
         //}}}
         
         //{{{ Create and set up the splitpanes

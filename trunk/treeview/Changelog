@@ -1,3 +1,9 @@
+10/26/2005  Ian Lewis <IanLewis@member.fsf.org>
+
+    * Removed feature that when you type something it begins editing the
+      current node. It would begin editing even if you typed menu shortcut or
+      something.
+
 06/28/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Set the name of components so that they can be used in test scripts
