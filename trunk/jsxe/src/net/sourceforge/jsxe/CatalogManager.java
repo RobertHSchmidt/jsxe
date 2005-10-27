@@ -113,8 +113,6 @@ public class CatalogManager {
         
         if (newSystemId.startsWith("file:")) {
             String filename = MiscUtilities.uriToFile(newSystemId);
-            Log.log(Log.DEBUG, CatalogManager.class, "sysId:    "+newSystemId);
-            Log.log(Log.DEBUG, CatalogManager.class, "filename: "+filename);
             DocumentBuffer buf = jsXe.getOpenBuffer(new File(filename));
             if (buf != null) {
                 Log.log(Log.MESSAGE, CatalogManager.class, "Found open buffer for " + newSystemId);
@@ -147,18 +145,17 @@ public class CatalogManager {
                 }
             }
         } else {
-            if (!network) {
-                return null;
-            } else {
-                
+            if (cache != 0) {
                 TabbedView view = jsXe.getActiveView();
-                if (!cache || showDownloadResourceDialog(view, newSystemId)) {
+                if (cache == 2 || showDownloadResourceDialog(view, newSystemId)) {
                     InputSource source = new InputSource(systemId);
                     File file = copyToLocalFile(newSystemId);
                     addUserResource(publicId,systemId,file.toURL().toString());
                     source.setByteStream(new FileInputStream(file));
                     return source;
                 }//Try to open this this normally.
+                return null;
+            } else {
                 return null;
             }
         }
@@ -215,14 +212,13 @@ public class CatalogManager {
     public static void propertiesChanged() {
         
         if (jsXe.getSettingsDirectory() == null) {
-            cache = false;
+            cache = 0;
         } else {
             resourceDir = jsXe.getSettingsDirectory()+System.getProperty("file.separator")+"dtds";
-            cache = jsXe.getBooleanProperty("xml.cache", true);
+            cache = jsXe.getIntegerProperty("xml.cache", 1);
         }
-        network = jsXe.getBooleanProperty("xml.network", true);
 
-        if (!cache)
+        if (cache == 0)
             clearCache();
 
         loadedCatalogs = false;
@@ -287,10 +283,12 @@ public class CatalogManager {
     private static boolean loadedCache;
     private static boolean loadedCatalogs;
     
-    //TODO: Get rid of these properties and replace them with a property
-    // with 3 possible values
-    private static boolean cache;
-    private static boolean network;
+    /**
+     * 0 = Always Download
+     * 1 = Ask before cache
+     * 2 = Always Cache
+     */
+    private static int cache;
     private static Catalog catalog;
     private static Set catalogFiles;
     private static HashMap resourceCache;
