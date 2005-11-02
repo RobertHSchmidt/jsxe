@@ -8,6 +8,7 @@
     * Added a dialog that shows validation errors (though this may not be
       working quite yet, I'm not sure I'm setting the parameters with Xerces
       correctly).
+    * Fixed validation so that it returns correct error messages.
 
 10/26/2005 Ian Lewis <IanLewis@member.fsf.org>
 
