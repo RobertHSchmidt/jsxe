@@ -162,7 +162,7 @@ public class XMLDocument {
             parseDocument();
             m_adapterNode = new AdapterNode(this, m_document);
             m_adapterNode.addAdapterNodeListener(docAdapterListener);
-            m_syncedWithContent = false;
+           // m_syncedWithContent = true;
             m_parsedMode=true;
         }
         return m_parsedMode;
@@ -202,28 +202,38 @@ public class XMLDocument {
             }
             if (key.equals(IS_VALIDATING)) {
                 //This is ugly. Need to rethink how this should happen.
-                
-                //syncContentWithDOM could change m_parsedMode
-                boolean wasParsedMode = m_parsedMode;
-                AdapterNode oldNode = m_adapterNode;
-                syncContentWithDOM();
-                //if we were in parsed mode we must make sure
-                //the AdapterNodes in the tree have the correct
-                //nodes internally.
-                if (wasParsedMode) {
-                    try {
-                        parseDocument();
-                        m_parsedMode = true;
-                        m_syncedWithContent = false;
-                        m_adapterNode = oldNode;
-                        
-                        //We don't create a new AdapterNode here because 
-                        //we want them to be as persistent as possible.
-                        m_adapterNode.updateNode(m_document);
-                    } catch (Exception e) {
-                        //If an error occurs then we're in trouble
-                        jsXe.exiterror(this, e, 1);
+                if (Boolean.valueOf(value).booleanValue()) {
+                    //syncContentWithDOM could change m_parsedMode
+                    boolean wasParsedMode = m_parsedMode;
+                    AdapterNode oldNode = m_adapterNode;
+                    syncContentWithDOM();
+                    //if we were in parsed mode we must make sure
+                    //the AdapterNodes in the tree have the correct
+                    //nodes internally.
+                    if (wasParsedMode) {
+                        try {
+                            parseDocument();
+                            m_parsedMode = true;
+                            //Why was this set to false? why would we want to
+                            //serialize the document again since nothing's changed?
+                            //m_syncedWithContent = false;
+                            m_adapterNode = oldNode;
+                            
+                            //We don't create a new AdapterNode here because 
+                            //we want them to be as persistent as possible.
+                            m_adapterNode.updateNode(m_document);
+                        } catch (Exception e) {
+                            //If an error occurs then we're in trouble
+                            jsXe.exiterror(this, e, 1);
+                        }
                     }
+                } else {
+                    /*
+                    If we are turning off validation then just clear the errors list.
+                    No need to reparse or serialize.
+                    */
+                    m_parseErrors = new ArrayList();
+                    m_parseFatalErrors = new ArrayList();
                 }
             }
             if (key.equals(INDENT)) {
@@ -818,6 +828,7 @@ public class XMLDocument {
         if (m_parsedMode) {
             if (!m_syncedWithContent) {
                 try {
+                    Log.log(Log.MESSAGE, this, "Serializing document");
                     //since we are in parsed mode let's serialize to the content
                     LSSerializer serializer = getSerializer();
                     //create a new content manager to be written to.
@@ -869,13 +880,17 @@ public class XMLDocument {
      * @since jsXe 0.4 pre1
      */
     public void parseDocument() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
+        Log.log(Log.MESSAGE, this, "Parsing document");
+        m_parseErrors = new ArrayList();
+        m_parseFatalErrors = new ArrayList();
+        
         Boolean validating = Boolean.valueOf(getProperty(IS_VALIDATING));
         
         //{{{ Parse using DocumentBuilder
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
         factory.setExpandEntityReferences(false);
-        factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", Boolean.valueOf(false));
+        factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", validating);
         factory.setAttribute("http://xml.org/sax/features/external-general-entities", Boolean.valueOf(false));
         factory.setAttribute("http://xml.org/sax/features/external-parameter-entities", Boolean.valueOf(false));
         factory.setAttribute("http://xml.org/sax/features/namespaces", Boolean.valueOf(true));
@@ -938,6 +953,7 @@ public class XMLDocument {
         //}}}
         
         m_document=doc;
+        m_syncedWithContent = true;
     }//}}}
     
     //{{{ getNoNamespaceCompletionInfo() method
@@ -1543,6 +1559,9 @@ public class XMLDocument {
             
             for(int i = 0; i < attributes.getLength(); i++) {
                 XSObject attribute = attributes.item(i);
+                //not sure what this means
+                //TODO: attribute declarations seem not to be supported for Schema
+                
                 Log.log(Log.WARNING, this, "look! " + attribute);
                 /* String name = element.getName();
                 boolean empty = true;

@@ -125,6 +125,7 @@ public class CatalogManager {
                 try {
                     InputSource source = new InputSource(systemId);
                     source.setByteStream(new URL(newSystemId).openStream());
+                    Log.log(Log.MESSAGE, CatalogManager.class, "Using local file: "+newSystemId);
                     return source;
                 } catch (IOException ioe) {
                     /*

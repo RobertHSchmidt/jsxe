@@ -131,7 +131,6 @@ public class ActivityLogDialog  extends EnhancedDialog {
      */
 	private void okayJButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		cancel();
-		Log.closeStream();
 	}//}}}
 	
     // {{{ getActivityLogContents()
@@ -152,7 +151,7 @@ public class ActivityLogDialog  extends EnhancedDialog {
 				while ((line = reader.readLine()) != null) {
 					logContents.add(line);
 				}
-            reader.close();
+                reader.close();
 			} catch (IOException e1) {
 				Log.log(Log.ERROR, this, e1);
 			}

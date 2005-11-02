@@ -182,13 +182,12 @@ public class jsXe {
             //{{{ start logging
             Log.init(true, Log.ERROR, debug);
             try {
-                BufferedWriter stream = new BufferedWriter(new FileWriter(new File(getSettingsDirectory()+fileSep+"jsXe.log")));
+                BufferedWriter stream = new BufferedWriter(new FileWriter(getSettingsDirectory()+fileSep+"jsXe.log"));
                 stream.flush();
                 stream.write("Log file created on " + new Date());
                 stream.write(System.getProperty("line.separator"));
                 
                 Log.setLogWriter(stream);
-                ActivityLogAction activityLog = (ActivityLogAction)getAction("activityLogDialog-open");
               
             } catch (IOException ioe) {
                 Log.log(Log.ERROR, jsXe.class, ioe);
