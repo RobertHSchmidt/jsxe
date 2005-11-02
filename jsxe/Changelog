@@ -1,3 +1,14 @@
+11/01/2005  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * XMLDocuments were marked as not synced with the document after they
+      were parsed in some cases. This caused the document to serialize itself
+      it some unnessary places and sometimes mark itself as dirty because of it.
+    * Fixed a bug where the Log file stream was being closed by the
+      ActivityLogDialog.
+    * Added a dialog that shows validation errors (though this may not be
+      working quite yet, I'm not sure I'm setting the parameters with Xerces
+      correctly).
+
 10/26/2005 Ian Lewis <IanLewis@member.fsf.org>
 
     * Fixed a bug in the caching process that caused fatal IOExceptions to be

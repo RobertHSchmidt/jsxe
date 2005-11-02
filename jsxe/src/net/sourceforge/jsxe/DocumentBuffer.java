@@ -489,7 +489,6 @@ public class DocumentBuffer extends XMLDocument {
     //{{{ setDirty()
     
     private void setDirty(boolean dirty) {
-       // throw new NullPointerException();
         if (dirty != m_dirty) {
             boolean oldDirty = m_dirty;
             m_dirty=dirty;
