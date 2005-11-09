@@ -163,6 +163,7 @@ public class BufferHistory {
      */
     public void load(File file) throws IOException, SAXException, ParserConfigurationException {
         // if file doesn't exist then the history is empty
+        Log.log(Log.NOTICE, this, "Loading buffer history: "+file.getName());
         m_history = new ArrayList();
         if (file.exists()) {
             try {
@@ -180,7 +181,7 @@ public class BufferHistory {
      * @param file the file to save the buffer history to
      */
     public void save(File file) throws IOException {
-        
+        Log.log(Log.NOTICE, this, "Saving buffer history: "+file.getName());
         String lineSep = System.getProperty("line.separator");
         
         BufferedWriter out = new BufferedWriter(new FileWriter(file));
@@ -321,6 +322,7 @@ public class BufferHistory {
         
         public void endElement(String uri, String localName, String qName) {
             if (qName.equals("entry")) {
+                Log.log(Log.MESSAGE, this, "Loading buffer history entry: "+m_m_path);
                 m_history.add(new BufferHistoryEntry(m_m_path, m_m_viewName, m_m_properties));
             }
             
