@@ -94,10 +94,10 @@ public class jsXe {
             }//}}}
             
             //{{{ set settings dirs
-            String homeDir = System.getProperty("user.home");
+            m_homeDirectory = System.getProperty("user.home");
             String fileSep = System.getProperty("file.separator");
             
-            m_settingsDirectory = homeDir+fileSep+".jsxe";
+            m_settingsDirectory = m_homeDirectory+fileSep+".jsxe";
             
             File _settingsDirectory = new File(m_settingsDirectory);
             if(!_settingsDirectory.exists())
@@ -446,8 +446,12 @@ public class jsXe {
     public static boolean showOpenFileDialog(TabbedView view) throws IOException {
             DocumentBuffer buffer = view.getDocumentBuffer();
             File docFile = buffer.getFile();
-            // if current file is null, defaults to home directory
-            JFileChooser loadDialog = new jsxeFileDialog(docFile);
+            JFileChooser loadDialog;
+            if (docFile == null) {
+                loadDialog = new jsxeFileDialog(m_homeDirectory);
+            } else {
+                loadDialog = new jsxeFileDialog(docFile);
+            }
             loadDialog.setMultiSelectionEnabled(true);
             
             int returnVal = loadDialog.showOpenDialog(view);
@@ -1276,6 +1280,7 @@ public class jsXe {
     private static JARClassLoader m_pluginLoader;
     private static TabbedView m_activeView;
     private static String m_settingsDirectory;
+    private static String m_homeDirectory;
     
     private static OptionsPanel jsXeOptions;
     //}}}
