@@ -1,3 +1,10 @@
+11/09/2005  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * The open file dialog now defaults to the directory specified in
+      the system parameter user.dir. This causes tho open file dialog to open
+      to the C:\Documents and Settings\user directory instead of the My
+      Documents directory in windows.
+
 11/01/2005  Ian Lewis   <IanLewis@member.fsf.org>
 
     * XMLDocuments were marked as not synced with the document after they
