@@ -390,6 +390,11 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     showpopup = true;
                 }
                 if (selectedNode.getNodeType() == Node.DOCUMENT_NODE || selectedNode.getNodeType() == Node.ELEMENT_NODE) {
+                    if (ownerDocument.getDocType() == null) {
+                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.doctype.node"));
+                        popupMenuItem.setText(Messages.getMessage("xml.doctypedef"));
+                        addNodeItem.add(popupMenuItem);
+                    }
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.processing.instruction.node"));
                     popupMenuItem.setText(Messages.getMessage("xml.processing.instruction"));
                     addNodeItem.add(popupMenuItem);
@@ -513,6 +518,13 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     setClosedIcon(m_defaultLeafIcon);
                     setToolTipText(Messages.getMessage("xml.processing.instruction"));
                     break;
+                case Node.DOCUMENT_TYPE_NODE:
+                    setIcon(m_defaultLeafIcon);
+                    setLeafIcon(m_defaultLeafIcon);
+                    setOpenIcon(m_defaultLeafIcon);
+                    setClosedIcon(m_defaultLeafIcon);
+                    setToolTipText(Messages.getMessage("xml.doctypedef"));
+                    break;
                 default:
                     if (leaf) {
                         setIcon(m_defaultLeafIcon);
@@ -527,7 +539,7 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     setLeafIcon(m_defaultLeafIcon);
                     setOpenIcon(m_defaultOpenIcon);
                     setClosedIcon(m_defaultClosedIcon);
-                    
+                    setToolTipText("Unknown node");
                     break;
             }
             
