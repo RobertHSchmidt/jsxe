@@ -43,6 +43,9 @@ xml.namespace.prefix=Namespace Prefix
 xml.namespace.prefix.short=Prefix
 xml.namespace.decl=Namespace Declaration
 xml.doctypedef=Document Type Definition
+xml.doctype.name=Name
+xml.doctype.public=Public Id
+xml.doctype.system=System Id
 xml.schema=XML Schema
 #}}}
 
@@ -132,6 +135,7 @@ TreeView.RemoveNode=Remove Node
 TreeView.AddAttribute=Add Attribute
 TreeView.RemoveAttribute=Remove Attribute
 TreeView.EditNode=Edit Node
+TreeView.EditDocType.Title=Edit Document Type Definition
 Edit.Node.Dialog.Title=Edit Node
 #}}}
 

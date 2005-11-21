@@ -271,6 +271,25 @@ public class XMLDocument {
         }
     }//}}}
     
+    //{{{ getDocType()
+    /**
+     * Returns the document type node for this XMLDocument or null if there is
+     * none.
+     */
+    public AdapterNode getDocType() {
+        AdapterNode docType = null;
+        getAdapterNode();
+        if (m_adapterNode != null) {
+            int childCount = m_adapterNode.childCount();
+            for (int i=0; i<childCount && docType == null; i++) {
+                if (m_adapterNode.child(i).getNodeType() == Node.DOCUMENT_TYPE_NODE) {
+                    docType = m_adapterNode.child(i);
+                }
+            }
+        }
+        return docType;
+    }//}}}
+    
     //{{{ getProperties()
     /**
      * Gets all properties associated with this document.
@@ -308,10 +327,14 @@ public class XMLDocument {
      * @return the root element node.
      */
     public AdapterNode getRootElementNode() {
-        int childCount = m_adapterNode.childCount();
-        AdapterNode rootElement = m_adapterNode.child(0);
-        for (int i=1; i<childCount && rootElement.getNodeType() != Node.ELEMENT_NODE; i++) {
-            rootElement = m_adapterNode.child(i);
+        AdapterNode rootElement = null;
+        getAdapterNode();
+        if (m_adapterNode != null) {
+            int childCount = m_adapterNode.childCount();
+            rootElement = m_adapterNode.child(0);
+            for (int i=1; i<childCount && rootElement.getNodeType() != Node.ELEMENT_NODE; i++) {
+                rootElement = m_adapterNode.child(i);
+            }
         }
         return rootElement;
     }//}}}
