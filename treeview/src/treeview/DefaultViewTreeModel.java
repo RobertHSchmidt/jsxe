@@ -100,7 +100,6 @@ public class DefaultViewTreeModel implements TreeModel {
      */
     protected DefaultViewTreeModel(Component parent, XMLDocument doc) {
         m_document = doc;
-        m_rootTreeNode = m_document.getAdapterNode();
         view = parent;
     }//}}}
 
@@ -157,7 +156,7 @@ public class DefaultViewTreeModel implements TreeModel {
     //{{{ getRoot()
     
     public Object getRoot() {
-        return m_rootTreeNode;
+        return m_document.getAdapterNode();
     }//}}}
     
     //{{{ isLeaf()
@@ -262,9 +261,9 @@ public class DefaultViewTreeModel implements TreeModel {
             if (!showEmpty && adapter.getNodeType()==Node.TEXT_NODE && adapter.getNodeValue().trim().equals("")) {
                 displayNode = false;
             }
-            if (adapter.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
-                displayNode = false;
-            }
+            //if (adapter.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
+            //    displayNode = false;
+            //}
         }
         return displayNode;
     }//}}}
@@ -312,7 +311,6 @@ public class DefaultViewTreeModel implements TreeModel {
     Component view;
     
     private XMLDocument m_document;
-    private AdapterNode m_rootTreeNode;
     private ArrayList treeListenerList = new ArrayList();
     //}}}
 }

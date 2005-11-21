@@ -1,3 +1,14 @@
+11/21/2005  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added a rudamentary way to add a DOCTYPE node. You add one by right
+      clicking on the document node in the tree and adding it like any other
+      node. However, adding a doc type definition displays a dialog where
+      users enter the name, public id and system id. Under the covers, the
+      DOCTYPE is added to the document as text and the document is reparsed.
+      This is done because the DOM doesn't allow editing of DOCTYPE nodes and
+      thus jsXe's interface isn't able to support it at the moment. jsXe may
+      support it in the future using this method though.
+
 10/26/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Removed feature that when you type something it begins editing the
