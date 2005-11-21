@@ -323,8 +323,7 @@ public class AdapterNode {
     
     //{{{ setLocalName()
     /**
-     * <p>Sets the local name of the node. Only element nodes are currently
-     * supported.</p>
+     * <p>Sets the local name of the node.</p>
      * @param newValue the new local name for this node
      * @throws DOMException INVALID_CHARACTER_ERR: Raised if the specified name
      *                      contains an illegal character.

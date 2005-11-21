@@ -832,7 +832,11 @@ public class DocumentBuffer extends XMLDocument {
            // }
            // return source;
            try {
-               return CatalogManager.resolve(getFile().toURI().toString(), publicId, systemId);
+               if (isUntitled()) {
+                   return CatalogManager.resolve(null, publicId, systemId);
+               } else {
+                   return CatalogManager.resolve(getFile().toURI().toString(), publicId, systemId);
+               }
            } catch (Exception e) {
                Log.log(Log.DEBUG, this, e);
                throw new SAXException(e);
