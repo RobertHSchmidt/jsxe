@@ -1,6 +1,7 @@
 11/21/2005  Ian Lewis   <IanLewis@member.fsf.org>
 
-    * A rudamentary way to add a document type definition was added.
+    * Fixed a number of bugs having to do with how and when the XML document
+      is parsed.
 
 11/09/2005  Ian Lewis   <IanLewis@member.fsf.org>
 
