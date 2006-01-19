@@ -1,3 +1,7 @@
+01/19/2005  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed how external schema files are resolved.
+
 11/21/2005  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed a number of bugs having to do with how and when the XML document

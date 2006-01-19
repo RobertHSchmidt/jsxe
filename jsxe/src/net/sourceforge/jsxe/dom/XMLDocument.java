@@ -948,17 +948,16 @@ public class XMLDocument {
         try {
             reader.setFeature("http://xml.org/sax/features/validation",validating.booleanValue());
             reader.setFeature("http://apache.org/xml/features/validation/schema",validating.booleanValue());
-            reader.setFeature("http://xml.org/sax/features/namespaces",false);
+            //namespaces needs to be true for resolver to work
+            reader.setFeature("http://xml.org/sax/features/namespaces",true);
             reader.setErrorHandler(new ParseErrorHandler());
-            reader.setEntityResolver(handler);
+            if (m_entityResolver != null) {
+                reader.setEntityResolver(m_entityResolver);
+            }
             reader.setContentHandler(handler);
             reader.setProperty("http://xml.org/sax/properties/declaration-handler",handler);
         } catch(SAXException se) {
             Log.log(Log.ERROR,this,se);
-        }
-        
-        if (m_entityResolver != null) {
-            reader.setEntityResolver(m_entityResolver);
         }
         
         m_mappings = new HashMap();
@@ -1557,7 +1556,12 @@ public class XMLDocument {
 
             getNoNamespaceCompletionInfo().addEntity(EntityDecl.EXTERNAL,name, publicId, systemId);
         } //}}}
-    
+        
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
+            Log.log(Log.DEBUG,this, "resolving entity with SchemaHandler: "+publicId+" "+systemId);
+            return null;
+        }
+        
         //{{{ Private members
         
         //{{{ grammarToCompletionInfo()
