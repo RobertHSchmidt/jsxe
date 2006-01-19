@@ -83,14 +83,14 @@ public class CatalogManager {
         if (publicId == null && systemId != null && parent != null) {
             if (systemId.startsWith(parent)) {
                 // first, try resolving a relative name,
-                // to handle jEdit built-in DTDs
+                // to handle built-in DTDs
                 newSystemId = systemId.substring(parent.length());
                 if (newSystemId.startsWith("/"))
                     newSystemId = newSystemId.substring(1);
                 newSystemId = resolveSystem(newSystemId);
             }
         }
-
+        
         // next, try resolving full path name
         if (newSystemId == null) {
             if (publicId == null)
@@ -102,17 +102,30 @@ public class CatalogManager {
         // well, the catalog can't help us, so just assume the
         // system id points to a file
         if (newSystemId == null) {
-            if (systemId == null)
+            if (systemId == null) {
                 return null;
-            else if (MiscUtilities.isURL(systemId))
-                newSystemId = systemId;
+            } else {
+                if (MiscUtilities.isURL(systemId)) {
+                    newSystemId = systemId;
+                }
+            }
         }
 
         if (newSystemId == null)
             return null;
         
+        Log.log(Log.MESSAGE, CatalogManager.class, "Attempting to load SystemId: "+newSystemId);
+        
         if (newSystemId.startsWith("file:")) {
+            //try to find the external entity in the same directory as the file
+            //systemId will default to the current directory instead of the file's directory
+            String testId = MiscUtilities.getParentOfPath(current)+MiscUtilities.getFileName(newSystemId);
+            if ((new File(new URI(testId))).exists()) {
+                newSystemId = testId;
+            }
+            
             String filename = MiscUtilities.uriToFile(newSystemId);
+            
             DocumentBuffer buf = jsXe.getOpenBuffer(new File(filename));
             if (buf != null) {
                 Log.log(Log.MESSAGE, CatalogManager.class, "Found open buffer for " + newSystemId);
@@ -370,7 +383,7 @@ public class CatalogManager {
         String uri = (String)resourceCache.get(e);
         if (uri == null)
             return catalog.resolveSystem(id);
-        else if(uri == IGNORE)
+        else if (uri == IGNORE)
             return null;
         else
             return uri;

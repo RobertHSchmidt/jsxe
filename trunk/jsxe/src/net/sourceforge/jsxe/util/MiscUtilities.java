@@ -229,16 +229,30 @@ public class MiscUtilities {
             return name.substring(index);
     } //}}}
 
-   // //{{{ getFileName() method
-   // /**
-   //  * Returns the last component of the specified path.
-   //  * This method is VFS-aware.
-   //  * @param path The path name
-   //  */
-   // public static String getFileName(String path)
-   // {
-   //     return VFSManager.getVFSForPath(path).getFileName(path);
-   // } //}}}
+    //{{{ getFileName() method
+    /**
+     * Returns the last component of the specified path.
+     * This method is VFS-aware.
+     * @param path The path name
+     */
+    public static String getFileName(String path) {
+        if (path.equals("/")) {
+            return path;
+        }
+        
+        int count = Math.max(0,path.length() - 2);
+        int index = Math.max(path.lastIndexOf('/',count), path.lastIndexOf(File.separatorChar,count));
+        if (index == -1) {
+            index = path.indexOf(':');
+        }
+        
+        // don't want getFileName("roots:") to return ""
+        if (index == -1 || index == path.length() - 1) {
+            return path;
+        }
+        
+        return path.substring(index + 1);
+    } //}}}
 
    // //{{{ getFileNameNoExtension() method
    // /**
