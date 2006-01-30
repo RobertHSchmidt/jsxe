@@ -1,3 +1,8 @@
+01/30/2005  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * jsXe now shows the correct validation errors in the validation errors
+      dialog box.
+
 01/19/2005  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed how external schema files are resolved.
