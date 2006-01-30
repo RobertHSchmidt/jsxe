@@ -1,3 +1,8 @@
+01/30/2005  Ian Lewis   <Ian Lewis@member.fsf.org>
+
+    * Added the goToLine() method to SourceView to maintain the contract for
+      DocumentView
+
 05/18/2005  Ian Lewis <IanLewis@member.fsf.org>
 
     * Enhanced the syntax highlighting to support highlighting namespace

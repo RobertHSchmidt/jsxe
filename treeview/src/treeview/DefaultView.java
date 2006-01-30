@@ -331,6 +331,12 @@ public class DefaultView extends JPanel implements DocumentView {
         m_document.addXMLDocumentListener(m_documentListener);
     } //}}}
     
+    //{{{ goToLine()
+    public boolean goToLine(int lineNo) {
+        //not supported in this view... yet.
+        return false;
+    }//}}}
+    
     //}}}
     
     //{{{ getDefaultViewTree()
