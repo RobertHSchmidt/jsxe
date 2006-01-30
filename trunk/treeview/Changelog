@@ -1,3 +1,8 @@
+01/30/2005  Ian Lewis   <Ian Lewis@member.fsf.org>
+
+    * Added the goToLine() method to DefaultView to maintain the contract for
+      DocumentView
+
 11/21/2005  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added a rudamentary way to add a DOCTYPE node. You add one by right

@@ -262,6 +262,12 @@ public class SourceView extends JPanel implements DocumentView {
         m_document.addXMLDocumentListener(docListener);
     }//}}}
     
+    //{{{ goToLine()
+    public boolean goToLine(int lineNo) {
+        //not supported yet.
+        return false;
+    }//}}}
+    
     //}}}
     
     //{{{ Private members
