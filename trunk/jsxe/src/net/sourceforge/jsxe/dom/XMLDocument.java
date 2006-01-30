@@ -488,6 +488,10 @@ public class XMLDocument {
      * @since jsXe 0.4 pre3
      */
     public List getErrors() {
+        if (m_changedSinceLastParse) {
+            syncContentWithDOM();
+            parseWithoutUpdate();
+        }
         return m_parseErrors;
     }//}}}
     
@@ -521,13 +525,16 @@ public class XMLDocument {
      */
     public boolean isValid() throws IOException {
         if (Boolean.valueOf(getProperty(IS_VALIDATING)).booleanValue()) {
-            try {
-                checkWellFormedness();
-            } catch (SAXException e) {
-                return false;
-            } catch (ParserConfigurationException e) {
-                throw new IOException(e.getMessage());
-            }
+           // try {
+                if (m_changedSinceLastParse) {
+                    syncContentWithDOM();
+                    parseWithoutUpdate();
+                }
+           // } catch (SAXException e) {
+           //     return false;
+           // } catch (ParserConfigurationException e) {
+           //     throw new IOException(e.getMessage());
+           // }
             
             return (m_parseErrors.size() == 0 && m_parseFatalErrors.size() == 0);
         } else {
@@ -799,6 +806,7 @@ public class XMLDocument {
             listener.structureChanged(this, location);
         }
         m_syncedWithContent = false;
+        m_changedSinceLastParse = true;
     }//}}}
     
     //{{{ Protected members
@@ -904,8 +912,6 @@ public class XMLDocument {
      */
     public void parseDocument() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
         Log.log(Log.MESSAGE, this, "Parsing document");
-        m_parseErrors = new ArrayList();
-        m_parseFatalErrors = new ArrayList();
         
         Boolean validating = Boolean.valueOf(getProperty(IS_VALIDATING));
         
@@ -939,9 +945,27 @@ public class XMLDocument {
         */
         
         //{{{ Parse using SAXParser to get Completion Info
+        parseWithoutUpdate();
+        //}}}
+        
+        m_document=doc;
+        m_syncedWithContent = true;
+    }//}}}
+    
+    //{{{ parseWithoutUpdate()
+    /**
+     * Parses the document without updating the DOM. This method does, however,
+     * update completion info and parse errors.
+     */
+    public void parseWithoutUpdate() {
+        m_parseErrors = new ArrayList();
+        m_parseFatalErrors = new ArrayList();
+        
+        Boolean validating = Boolean.valueOf(getProperty(IS_VALIDATING));
+        
         SymbolTable symbolTable = new SymbolTable();
         XMLGrammarPoolImpl grammarPool = new XMLGrammarPoolImpl();
-
+        
         SchemaHandler handler = new SchemaHandler(grammarPool);
 
         org.apache.xerces.parsers.SAXParser reader = new org.apache.xerces.parsers.SAXParser(symbolTable,grammarPool);
@@ -972,10 +996,7 @@ public class XMLDocument {
             Log.log(Log.WARNING,this,ie.getMessage());
             m_parseErrors.add(ie);
         }
-        //}}}
-        
-        m_document=doc;
-        m_syncedWithContent = true;
+        m_changedSinceLastParse = false;
     }//}}}
     
     //{{{ getNoNamespaceCompletionInfo() method
@@ -1357,31 +1378,37 @@ public class XMLDocument {
         
         // {{{ nodeAdded()
         public void nodeAdded(AdapterNode source, AdapterNode added) {
+            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
         //{{{ nodeRemoved()
         public void nodeRemoved(AdapterNode source, AdapterNode removed) {
+            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
         //{{{ localNameChanged()
         public void localNameChanged(AdapterNode source) {
+            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
         //{{{ namespaceChanged()
         public void namespaceChanged(AdapterNode source) {
+            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
         //{{{ nodeValueChanged()
         public void nodeValueChanged(AdapterNode source) {
+            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
         //{{{ attributeChanged()
         public void attributeChanged(AdapterNode source, String attr) {
+            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
@@ -1557,11 +1584,6 @@ public class XMLDocument {
             getNoNamespaceCompletionInfo().addEntity(EntityDecl.EXTERNAL,name, publicId, systemId);
         } //}}}
         
-        public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
-            Log.log(Log.DEBUG,this, "resolving entity with SchemaHandler: "+publicId+" "+systemId);
-            return null;
-        }
-        
         //{{{ Private members
         
         //{{{ grammarToCompletionInfo()
@@ -1638,6 +1660,13 @@ public class XMLDocument {
      * such a way that they become out of sync.
      */
     private boolean m_syncedWithContent = false;
+    
+    /**
+     * This flag indicates whether the DOM has been changed since the last
+     * parse. This is used mostly to determine if the document could contain
+     * new validation errors.
+     */
+    private boolean m_changedSinceLastParse = false;
     
     private ArrayList m_parseErrors = new ArrayList();
     private ArrayList m_parseFatalErrors = new ArrayList();

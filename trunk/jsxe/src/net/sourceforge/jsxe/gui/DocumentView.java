@@ -109,4 +109,14 @@ public interface DocumentView {
     public void setDocumentBuffer(DocumentBuffer document) throws IOException;
     //}}}
 
+    //{{{ goToLine()
+    /**
+     * Tells the view to attempt to move to the specified line in the document.
+     * The implementation of this method is not specified.
+     * @return true if the view was able to move to the specified line
+     * @since jsXe 0.4beta
+     */
+    public boolean goToLine(int lineNo);
+    //}}}
+    
 }
