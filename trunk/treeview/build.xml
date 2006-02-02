@@ -16,6 +16,8 @@
 		<property name="root.dir" value="."/>
     <property name="build.dir" value="${root.dir}/build"/>
 		<property name="src.dir" value="${root.dir}/src"/>
+    <property name="messages.dir" value="${root.dir}/messages"/>
+    <property name="build.messages" value="${build.dir}/messages"/>
 		<property name="docs.dir" value="${src.dir}/doc"/>
 		<property name="build.src" value="${build.dir}/src"/>
 		<property name="build.dest" value="${build.dir}/classes"/>
@@ -64,6 +66,13 @@
 	<!-- {{{ ============ Prepares for any type of build =================== -->
 	<target depends="init" name="prepare">
 		<mkdir dir="${build.dir}"/>
+    
+    <mkdir dir="${build.messages}"/>
+    <copy todir="${build.messages}">
+      <fileset dir="${messages.dir}">
+        <include name="**/messages.*"/>
+      </fileset>
+    </copy>
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Prepares the documentation ======================= -->
@@ -124,7 +133,10 @@
     </manifest>
     
 		<jar jarfile="${root.dir}/../${app.name}.jar" manifest="${app.name}.manifest">
-			<fileset dir="${build.dest}">
+			<fileset dir="${build.dir}">
+        <include name="messages/messages.*"/>
+      </fileset>
+      <fileset dir="${build.dest}">
 				<include name="**/*.class"/>
 				<include name="**/properties"/>
 				<include name="**/*.props"/>
@@ -158,6 +170,7 @@
 				<include name="**/*"/>
 			</fileset>
 		</copy>
+    
 		<copy file="${app.name}.jar" tofile="${distbin.dir}/${app.name}.jar"/>
 		<zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-bin/**" zipfile="${build.dir}/${app.name}-${app_version}-bin.zip"/>
 	</target>
@@ -178,11 +191,18 @@
         <include name="${app.name}.manifest"/>
       </fileset>
     </copy>
-		<!-- src -->
+    <!-- src -->
 		<mkdir dir="${distsrc.dir}/src"/>
 		<copy todir="${distsrc.dir}/src">
 			<fileset dir="${build.src}">
 				<include name="**/*"/>
+			</fileset>
+		</copy>
+    <!-- messages -->
+    <mkdir dir="${distsrc.dir}/messages"/>
+		<copy todir="${distsrc.dir}/messages">
+			<fileset dir="${build.messages}">
+				<include name="**/messages.*"/>
 			</fileset>
 		</copy>
 		<zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-src/**" zipfile="${build.dir}/${app.name}-${app_version}-src.zip"/>
