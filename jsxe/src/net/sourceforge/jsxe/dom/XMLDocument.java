@@ -207,26 +207,6 @@ public class XMLDocument {
                     boolean wasParsedMode = m_parsedMode;
                     AdapterNode oldNode = m_adapterNode;
                     syncContentWithDOM();
-                    //if we were in parsed mode we must make sure
-                    //the AdapterNodes in the tree have the correct
-                    //nodes internally.
-                    if (wasParsedMode) {
-                        try {
-                            parseDocument();
-                            m_parsedMode = true;
-                            //Why was this set to false? why would we want to
-                            //serialize the document again since nothing's changed?
-                            //m_syncedWithContent = false;
-                            m_adapterNode = oldNode;
-                            
-                            //We don't create a new AdapterNode here because 
-                            //we want them to be as persistent as possible.
-                            m_adapterNode.updateNode(m_document);
-                        } catch (Exception e) {
-                            //If an error occurs then we're in trouble
-                            jsXe.exiterror(this, e, 1);
-                        }
-                    }
                 } else {
                     /*
                     If we are turning off validation then just clear the errors list.
@@ -877,8 +857,24 @@ public class XMLDocument {
                         if we format the document then we may be changing
                         document structure.
                         */
+                        //if we were in parsed mode we must make sure
+                        //the AdapterNodes in the tree have the correct
+                        //nodes internally.
                         m_parsedMode = false;
-                        m_adapterNode = null;
+                        Log.log(Log.DEBUG, this, m_content.getText(0,m_content.getLength()));
+                        try {
+                            parseDocument();
+                            //Why was this set to false? why would we want to
+                            //serialize the document again since nothing's changed?
+                            //m_syncedWithContent = false;
+                            
+                            m_adapterNode = new AdapterNode(this, m_document);
+                            m_adapterNode.addAdapterNodeListener(docAdapterListener);
+                            m_parsedMode = true;
+                        } catch (Exception e) {
+                            //If an error occurs then we're in trouble
+                            jsXe.exiterror(this, e, 1);
+                        }
                         fireStructureChanged(null);
                     }
                     m_formattedLastTime = formatting;
@@ -1291,7 +1287,7 @@ public class XMLDocument {
     
     //{{{ ContentManagerInputStream class
     /**
-     * Input stream for parsing reading current text content.
+     * Input stream for parsing/reading current text content.
      */
     private static class ContentManagerInputStream extends InputStream {
         
@@ -1329,6 +1325,11 @@ public class XMLDocument {
             int length = len;
             int contentLength = m_m_content.getLength();
             
+            //TODO this code doesn't support multi-byte characters
+            //contentLength below is the current number of UTF-8 characters
+            //what should be used is the total number of bytes in the document
+            //furthermore m_m_index is an UTF-8 character index into the
+            //document where it needs to be a byte index
             if (m_m_index < contentLength) {
                 if (m_m_index + length >= contentLength) {
                     length = contentLength - m_m_index;
