@@ -1,4 +1,9 @@
-01/30/2005  Ian Lewis   <Ian Lewis@member.fsf.org>
+02/02/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added localized messages to the view. jsXe now supports views having their
+      own localized messages.
+
+01/30/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added the goToLine() method to DefaultView to maintain the contract for
       DocumentView
