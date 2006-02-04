@@ -117,6 +117,13 @@ public class XMLDocument {
      * document with a DTD or Schema
      */
     public static final String IS_VALIDATING = "validating";
+    /**
+     * The property key for the property defining what line separator
+     * to use when serializing a document. \n is always used for the internal
+     * text but this line separator is used when serializing using the
+     * serialize method.
+     */
+    public static final String LINE_SEPARATOR = "line-separator";
     
     //}}}
     
@@ -597,6 +604,8 @@ public class XMLDocument {
         
         boolean parsedBeforeSerialization = m_parsedMode;
         
+        String newLine = getProperty(LINE_SEPARATOR);
+        
         syncContentWithDOM();
         
         //now just write out the text.
@@ -612,6 +621,17 @@ public class XMLDocument {
             
            // out.write(m_content.getText(index, size).getBytes(getProperty(ENCODING)), index, size);
             m_content.getText(index, size, seg);
+            
+            for (int i=0;i<size;i++) {
+                if (seg.array[i]=='\n') {
+                    outbuf.write(seg.array, seg.offset, i - seg.offset);
+                    outbuf.write(newLine.toCharArray(), 0, newLine.length());
+                    seg.count -= i-seg.offset+1;
+                    seg.offset += i-seg.offset+1;
+                }
+            }
+            
+            //write the rest
             outbuf.write(seg.array, seg.offset, seg.count);
             index += size;
         }
@@ -713,21 +733,143 @@ public class XMLDocument {
      */
     protected void setModel(Reader reader) throws IOException {
         
-        char[] buffer = new char[READ_SIZE];
+        char[] buf = new char[READ_SIZE];
         
         ContentManager content = new ContentManager();
         
         //Read the document the content manager
         int bytesRead;
-        int index = 0;
+        
+        // True if a \n was read after a \r. Usually
+        // means this is a DOS/Windows file
+        boolean CRLF = false;
+
+        // A \r was read, hence a MacOS file
+        boolean CROnly = false;
+
+        // Was the previous read character a \r?
+        // If we read a \n and this is true, we assume
+        // we have a DOS/Windows file
+        boolean lastWasCR = false;
+        
         do {
-            bytesRead = reader.read(buffer, 0, READ_SIZE);
+            bytesRead = reader.read(buf, 0, READ_SIZE);
             if (bytesRead != -1) {
-                content.insert(index, new String(buffer, 0, bytesRead));
-                index+=bytesRead;
+                
+                // Offset of previous line, relative to
+                // the start of the I/O buffer (NOT
+                // relative to the start of the document)
+                int lastLine = 0;
+                for (int i = 0; i < bytesRead; i++) {
+                    // Look for line endings.
+                    switch(buf[i]) {
+                        case '\r':
+                            // If we read a \r and
+                            // lastWasCR is also true,
+                            // it is probably a Mac file
+                            // (\r\r in stream)
+                            if(lastWasCR)
+                            {
+                                CROnly = true;
+                                CRLF = false;
+                            }
+                            // Otherwise set a flag,
+                            // so that \n knows that last
+                            // was a \r
+                            else
+                            {
+                                lastWasCR = true;
+                            }
+        
+                            // Insert a line
+                            content.insert(content.getLength(), new String(buf, lastLine, i - lastLine));
+                            content.insert(content.getLength(), "\n");
+                            
+                           // seg.append(buf,lastLine,i -
+                           //     lastLine);
+                           // seg.append('\n');
+                           // endOffsets.add(seg.count);
+                           // if(trackProgress && lineCount++ % PROGRESS_INTERVAL == 0)
+                           //     setProgressValue(seg.count);
+        
+                            // This is i+1 to take the
+                            // trailing \n into account
+                            lastLine = i + 1;
+                            break;
+                        case '\n':
+                            // If lastWasCR is true,
+                            // we just read a \r followed
+                            // by a \n. We specify that
+                            // this is a Windows file,
+                            // but take no further
+                            // action and just ignore
+                            // the \r.
+                            if(lastWasCR)
+                            {
+                                CROnly = false;
+                                CRLF = true;
+                                lastWasCR = false;
+                                // Bump lastLine so
+                                // that the next line
+                                // doesn't erronously
+                                // pick up the \r
+                                lastLine = i + 1;
+                            }
+                            // Otherwise, we found a \n
+                            // that follows some other
+                            // character, hence we have
+                            // a Unix file
+                            else
+                            {
+                                CROnly = false;
+                                CRLF = false;
+                                content.insert(content.getLength(), new String(buf, lastLine, i - lastLine));
+                                content.insert(content.getLength(), "\n");
+                               // seg.append(buf,lastLine,
+                               //     i - lastLine);
+                               // seg.append('\n');
+                               // endOffsets.add(seg.count);
+                               // if(trackProgress && lineCount++ % PROGRESS_INTERVAL == 0)
+                               //     setProgressValue(seg.count);
+                                lastLine = i + 1;
+                            }
+                            break;
+                        default:
+                            // If we find some other
+                            // character that follows
+                            // a \r, so it is not a
+                            // Windows file, and probably
+                            // a Mac file
+                            if(lastWasCR)
+                            {
+                                CROnly = true;
+                                CRLF = false;
+                                lastWasCR = false;
+                            }
+                            break;
+                    }
+                }
+                
+                //insert the rest
+                content.insert(content.getLength(), new String(buf, lastLine, bytesRead - lastLine));
+                
             }
         }
         while (bytesRead != -1);
+        
+        //based on the line separators we found in the file
+        //set the line separator property
+        String lineSeparator;
+        if (CRLF) {
+            lineSeparator = "\r\n";
+        } else {
+            if (CROnly) {
+                lineSeparator = "\r";
+            } else {
+                lineSeparator = "\n";
+            }
+        }
+        setProperty(LINE_SEPARATOR, lineSeparator);
         
         m_content = content;
         
@@ -861,7 +1003,7 @@ public class XMLDocument {
                         //the AdapterNodes in the tree have the correct
                         //nodes internally.
                         m_parsedMode = false;
-                        Log.log(Log.DEBUG, this, m_content.getText(0,m_content.getLength()));
+                        
                         try {
                             parseDocument();
                             //Why was this set to false? why would we want to
@@ -897,7 +1039,9 @@ public class XMLDocument {
         config.setParameter(DOMSerializerConfiguration.ERROR_HANDLER, new SerializeErrorHandler());
         config.setFeature(IS_USING_SOFT_TABS, Boolean.valueOf(getProperty(IS_USING_SOFT_TABS)).booleanValue());
         
-        return new DOMSerializer(config);
+        DOMSerializer serializer = new DOMSerializer(config);
+        serializer.setNewLine("\n");
+        return serializer;
     }//}}}
     
     //{{{ parseDocument()

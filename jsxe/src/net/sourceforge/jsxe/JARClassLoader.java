@@ -32,6 +32,7 @@ import java.util.*;
 import java.util.jar.*;
 import java.util.zip.*;
 import java.lang.reflect.Modifier;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.ArrayListEnumeration;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
@@ -627,6 +628,24 @@ public class JARClassLoader extends ClassLoader {
             try {
                 
                 checkDependencies(jarfile);
+                
+                //load the plugin's localized messages
+                Log.log(Log.NOTICE, this, "Loading localized messages for plugin: "+pluginName);
+                Properties pluginMessages = new Properties();
+                try {
+                    InputStream stream = jarfile.getInputStream(jarfile.getEntry("messages/messages.en"));
+                    pluginMessages.load(stream);
+                    Messages.loadPluginMessages(pluginMessages);
+                } catch (IOException e) {
+                    Log.log(Log.WARNING, this, "Plugin "+pluginName+" does not have default messages.en");
+                }
+                try {
+                    InputStream stream = jarfile.getInputStream(jarfile.getEntry("messages/messages."+Messages.getLanguage()));
+                    pluginMessages.load(stream);
+                    Messages.loadPluginMessages(pluginMessages);
+                } catch (IOException e) {
+                    Log.log(Log.WARNING, this, "Plugin "+pluginName+" does not have localized messages."+Messages.getLanguage());
+                }
                 
                 Class pluginClass = loadClass(mainPluginClass);
                 

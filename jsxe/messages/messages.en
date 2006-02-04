@@ -99,46 +99,6 @@ Plugin.Manager.Title=Plugin Manager
 Help.About=About jsXe...
 #}}}
 
-#{{{ Source View
-
-SourceView.Cut=Cut
-SourceView.Copy=Copy
-SourceView.Paste=Paste
-SourceView.Find=Find...
-SourceView.FindNext=Find Next
-
-#{{{ Source View Options
-SourceView.Options.Title=Source View Options
-SourceView.Syntax.Object=Node Type
-SourceView.Syntax.Style=Text Style
-SourceView.ColorChooser.Title=Color Chooser
-SourceView.Markup=Markup
-SourceView.Invalid=Invalid
-#}}}
-
-#{{{ Style Editor
-SourceView.StyleEditor.Title=Style Editor
-SourceView.StyleEditor.Color=Text Color
-SourceView.StyleEditor.Bold=Bold
-SourceView.StyleEditor.Italics=Italics
-#}}}
-
-#}}}
-
-#{{{ TreeView
-TreeView.Options.Title=Tree View Options
-TreeView.Options.Show.Comments=Show comment nodes
-TreeView.Options.Continuous.Layout=Continuous layout for split-panes
-TreeView.Options.Show.Attributes=Show element attributes in tree:
-TreeView.RenameNode=Rename Node
-TreeView.RemoveNode=Remove Node
-TreeView.AddAttribute=Add Attribute
-TreeView.RemoveAttribute=Remove Attribute
-TreeView.EditNode=Edit Node
-TreeView.EditDocType.Title=Edit Document Type Definition
-Edit.Node.Dialog.Title=Edit Node
-#}}}
-
 #{{{ Messages
 DocumentBuffer.Reload.Message={0} unsaved!\n You will lose all unsaved changes if you reload!\n\nContinue?
 DocumentBuffer.Reload.Message.Title=Document Modified

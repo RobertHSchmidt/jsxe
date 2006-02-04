@@ -226,13 +226,15 @@ public class BufferHistory {
             Enumeration propertyItr = props.keys();
             while (propertyItr.hasMoreElements()) {
                 String key = propertyItr.nextElement().toString();
-                String value = props.getProperty(key);
-                out.write("<property name=\"");
-                out.write(key);
-                out.write("\" value=\"");
-                out.write(value);
-                out.write("\"/>");
-                out.write(lineSep);
+                if (!m_excludeKeys.contains(key)) {
+                    String value = props.getProperty(key);
+                    out.write("<property name=\"");
+                    out.write(key);
+                    out.write("\" value=\"");
+                    out.write(value);
+                    out.write("\"/>");
+                    out.write(lineSep);
+                }
             }
             
             out.write("</entry>");
@@ -357,7 +359,7 @@ public class BufferHistory {
                         propValue = attributes.getValue(i);
                     }
                 }
-                if (propName != null && propValue != null) {
+                if (!m_excludeKeys.contains(propName) && propName != null && propValue != null) {
                     m_m_properties.setProperty(propName, propValue);
                 }
             }
@@ -373,6 +375,12 @@ public class BufferHistory {
     }//}}}
     
     private ArrayList m_history = new ArrayList();
+    private static ArrayList m_excludeKeys;
+    
+    static {
+        m_excludeKeys = new ArrayList();
+        m_excludeKeys.add(DocumentBuffer.LINE_SEPARATOR);
+    }
     //}}}
     
 }
