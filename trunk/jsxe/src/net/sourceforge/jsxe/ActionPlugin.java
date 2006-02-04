@@ -123,54 +123,6 @@ public abstract class ActionPlugin {
         return m_actionSet;
     }//}}}
     
-    //{{{ getMessages()
-    /**
-     * Gets the localized messages for the plugin for the ISO-639 language code
-     * given. The default behavior is to load the messages from a properties
-     * file in plugin jar file in the messages/ directory of the form 
-     * messages.&lt;ISO-639 language code&gt;. For example, the english messages
-     * file would be messages.en
-     *
-     * This method can be overidden but in most cases it shouldn't be necessary.
-     *
-     * @param lang the ISO-639 language code
-     * @since jsXe 0.4 pre3
-     */
-    public Properties getMessages(String lang) {
-        Log.log(Log.DEBUG,this, "Getting messages for plugin: "+this.toString());
-        Properties messages = new Properties();
-        try {
-            //get default english language messages
-            InputStream stream = getClass().getResourceAsStream("/messages/messages.en");
-            if (stream != null) {
-                messages.load(stream);
-                Log.log(Log.DEBUG,this, "loaded /messages/messages.en");
-            } else {
-                Log.log(Log.WARNING, this, "Plugin does have default messages file messages.en");
-            }
-            
-            //get localized messages
-            Properties localMessages = new Properties();
-            stream = getClass().getResourceAsStream("/messages/messages."+lang);
-            if (stream != null) {
-                localMessages.load(stream);
-                Log.log(Log.DEBUG,this, "loaded /messages/messages."+lang);
-                Enumeration names = localMessages.propertyNames();
-                while (names.hasMoreElements()) {
-                    String name = names.nextElement().toString();
-                    String message = localMessages.getProperty(name);
-                    messages.setProperty(name, message);
-                }
-            } else {
-                Log.log(Log.WARNING, this, "Plugin does not contain messages file for current locale: "+lang);
-            }
-        } catch (IOException e) {
-            Log.log(Log.ERROR, this, e);
-        }
-        Log.log(Log.DEBUG,this,"messages: "+messages.toString());
-        return messages;
-    }//}}}
-    
     //{{{ Broken class
     
     public static class Broken extends ActionPlugin {
