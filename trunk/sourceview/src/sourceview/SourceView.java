@@ -126,6 +126,8 @@ public class SourceView extends JPanel implements DocumentView {
         //for test scripts
         textarea.setName("SourceTextArea");
         
+        textarea.putClientProperty(InputHandler.SMART_HOME_END_PROPERTY, Boolean.TRUE);
+        
         //{{{ create popup menu
         
         JPopupMenu popup = new JPopupMenu();

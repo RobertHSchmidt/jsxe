@@ -34,6 +34,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ jEdit Syntax classes
@@ -93,10 +94,11 @@ public class SourceViewDocument extends SyntaxDocument {
                 //getting the whole document as a string will have to do for now
                 //should make this better so that only the visable portion of the
                 //buffer is actually loaded in the text area at any
-                //given time.
-                super.insertString(0, document.getText(0, document.getLength()), new SimpleAttributeSet());
-                
-            } catch (BadLocationException ble) {}
+                //given time(?)
+                super.insertString(0, document.getText(0,document.getLength()), null);
+            } catch (BadLocationException ble) {
+                Log.log(Log.ERROR, this, ble);
+            }
         }
     }//}}}
 
