@@ -281,10 +281,9 @@ public class jsXe {
             try {
                 FileInputStream filestream = new FileInputStream(properties);
                 props.load(filestream);
-            } catch (FileNotFoundException fnfe) {
-                
+            } catch (FileNotFoundException fnfe) {                
                 //Don't do anything right now
-                
+                Log.log(Log.MESSAGE, jsXe.class, "User has no properties file. Running jsXe for the first time?");
             } catch (IOException ioe) {
                 System.err.println(getAppTitle() + ": I/O ERROR: Could not open settings file");
                 System.err.println(getAppTitle() + ": I/O ERROR: "+ioe.toString());

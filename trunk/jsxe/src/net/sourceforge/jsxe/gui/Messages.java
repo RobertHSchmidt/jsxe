@@ -36,10 +36,13 @@ belongs to.
 import java.io.*;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.text.MessageFormat;
 //}}}
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
@@ -54,27 +57,31 @@ import net.sourceforge.jsxe.util.Log;
  */
 public class Messages {
     
-     //{{{ Private static members
+    //{{{ Private static members
     private static Properties m_propertiesObject = new Properties();
+    private static Properties m_pluginMessages = new Properties();
     private static Properties m_defaultProperties = new Properties();
     private static String m_language;
     private static String m_directory = "."; //default to current directory
-     //}}}
+    //}}}
     
+    //{{{ getLanguage()
     /**
      * @return Returns the language.
      */
     public static String getLanguage() {
         return m_language;
-    }
+    }//}}}
     
+    //{{{ setLanguage()
     /**
      * @param newLanguage The language to set.
      */
     public static void setLanguage(String newLanguage) {
         initializePropertiesObject(newLanguage, m_directory);
-    }
+    }//}}}
 
+    //{{{ getMessage()
     /**
      * @param String propertyName - the name of the property you want the value for
      * @return Returns the value of a property from the propertiesObject.
@@ -83,13 +90,15 @@ public class Messages {
         if (m_language == null) {
             //setLanguage("en");
             Locale newLocal = Locale.getDefault();
-            String isoLanguage =newLocal.getLanguage();
+            String isoLanguage = newLocal.getLanguage();
             setLanguage(isoLanguage);
         }
-        return m_propertiesObject.getProperty(propertyName, m_defaultProperties.getProperty(propertyName));
-    }
+        
+        //search in order, localized messages->default messages->plugin messages
+        return m_propertiesObject.getProperty(propertyName, m_defaultProperties.getProperty(propertyName, m_pluginMessages.getProperty(propertyName)));
+    }//}}}
     
-    //{{{ getMessage() method
+    //{{{ getMessage()
     /**
      * Returns the message with the specified name.<p>
      *
@@ -120,10 +129,12 @@ public class Messages {
                 return MessageFormat.format(value,args);
             }
         }
-    } //}}}
+    }//}}}
     
+    //{{{ initializePropertiesObject()
     /**
-    
+     * Initializes the localized messages for jsXe. 
+     * This method should only be called on jsXe startup.
      * @param language The language for the propertiesObject.
      */
     public static void initializePropertiesObject(String language, String directory) {
@@ -133,14 +144,17 @@ public class Messages {
             Locale newLocal = Locale.getDefault();
             isoLanguage = newLocal.getLanguage();
         }
+        
+        Log.log(Log.MESSAGE, Messages.class, "Loading messages for language: "+isoLanguage);
+        
         File messagesFile =  new File(directory+System.getProperty("file.separator")+"messages."+isoLanguage);
         if (!messagesFile.exists()) {
             Log.log(Log.WARNING, Messages.class, "Default messages file for current language not found");
         } else {
+            loadMessages(m_propertiesObject, messagesFile);
             m_language = isoLanguage;
         }
         m_directory = directory;
-        loadMessages(m_propertiesObject, messagesFile);
         
         //load default english
         messagesFile = new File(directory+System.getProperty("file.separator")+"messages.en");
@@ -152,24 +166,39 @@ public class Messages {
             }
         }
         loadMessages(m_defaultProperties, messagesFile);
-    }
+    }//}}}
     
+    //{{{ loadMessages()
     /**
      * 
      * @param propertiesObject The propertiesObject which will store the values from the messages file.
      * @param messssagesFile The name of the messages file to be used.
      */
-    public static void loadMessages(Properties propertiesObject, File messagesFile) {
+    private static void loadMessages(Properties propertiesObject, File messagesFile) {
         try {
             //create input stream from messages file 
              FileInputStream in = new FileInputStream(messagesFile);    
              propertiesObject.load(in);
         } catch (FileNotFoundException e) {
             Log.log(Log.ERROR, Messages.class, e);
-        }catch(IOException e){
+        } catch(IOException e) {
             Log.log(Log.ERROR, Messages.class, e);
         }       
-    }
-    
+    }//}}}
 
+    //{{{ loadPluginMessages()
+    /**
+     * Loads the localized messages from installed plugins and merges them into
+     * the plugin messages.
+     * This method should only be called on jsXe startup.
+     */
+    public static void loadPluginMessages(Properties pluginMessages) {
+        Log.log(Log.MESSAGE, Messages.class, "Loading plugin messages");
+        Enumeration names = pluginMessages.propertyNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement().toString();
+            String message = pluginMessages.getProperty(name);
+            m_pluginMessages.setProperty(name, message);
+        }
+    }//}}}
 }

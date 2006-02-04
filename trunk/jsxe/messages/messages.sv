@@ -44,13 +44,4 @@ Tools.Options=Inställningar...
 Tools.Plugin=Hanterare för insticksprogram...
 Plugin.Manager.Title=Hanterare för insticksprogram
 Help.About=Om jsXe...
-SourceView.Cut=Klipp ut
-SourceView.Copy=Kopiera
-SourceView.Paste=Klistra in
-SourceView.Find=Sök...
-SourceView.FindNext=Sök nästa
-TreeView.RenameNode=Ta bort nod
-TreeView.RemoveNode=Ta bort nod
-TreeView.AddAttribute=Lägg till attribut
-TreeView.RemoveAttribute=Ta bort attribut
-TreeView.EditNode=Redigera nod
+

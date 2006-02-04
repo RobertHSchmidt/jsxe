@@ -91,54 +91,6 @@ Plugin.Manager.Title=Plugin Manager
 Help.About=�ber jsXe...
 #}}}
 
-#{{{ Source View
-
-SourceView.Cut=Ausschneiden
-SourceView.Copy=Kopieren
-SourceView.Paste=Einf�gen
-SourceView.Find=Suchen...
-SourceView.FindNext=N�chsten suchen
-
-#{{{ Source View Options
-SourceView.Options.Title=Source View Optionen
-SourceView.Syntax.Object=Knoten Typ
-SourceView.Syntax.Style=Text Stil
-SourceView.Syntax.ToolTip=Dieses Tool erm�glicht es, den Font f�r verschiedene Knoten zu setzen.
-SourceView.ColorChooser.Title=Farbw�hler
-SourceView.Markup=Markup
-SourceView.Invalid=Ung�ltig
-#}}}
-
-#{{{ Style Editor
-SourceView.StyleEditor.Title=Stil Editor
-SourceView.StyleEditor.Color=Textfarbe
-SourceView.StyleEditor.Color.ToolTip=<HTML>Die Farbe dieses Knoten Typs kann hier ge�ndert werden. <BR>H�ckchen dieser Box entfernen setzten die Farbe zu schwarz zur�ck. <BR>Die rechteckige Box neben diesr Auswahl, kann<BR> benutzt werden um verschiedene Farben auszuw�hlen.</HTML>
-SourceView.StyleEditor.Bold=Fett
-SourceView.StyleEditor.Bold.ToolTip=schaltet Fettdruck an/aus
-SourceView.StyleEditor.Italics=Kursiv
-SourceView.StyleEditor.Italics.ToolTip=schaltet Kursivdruck an/aus
-
-#}}}
-
-#}}}
-
-#{{{ TreeView
-TreeView.Options.Title=Tree View Optionen
-TreeView.Options.Show.Comments=Kommentar Knoten anzeigen
-TreeView.Options.Show.Comments.ToolTip =Beim Deaktivieren werden s�mtliche Kommentare in der momentan ge�ffneten XML Datei ausgeblendet.
-TreeView.Options.Continuous.Layout=Durchg�ngiges Layout f�r split-panes
-TreeView.Options.Continuous.Layout.ToolTip =<HTML>Dies beeinflusst das Aussehen des vertikalen Balkens in der Mitte des jsXE Screens.<BR>Ist dieses Auswahlk�stchen nicht ausgew�hlt w�hrend der vertikale Balken vor und zur�ck �ber den Screen <BR>gezogen wird, bewegt er sich ohne Umst�nde.<BR>Ist dieses Auswahlk�stchen nicht aktiviert w�hrend der vertikale Balken verschoben wird, ver�ndert er sich in <BR>eine dicke schwarze Linie.</HTML>
-TreeView.Options.Show.Attributes=Show element attributes in tree:
-TreeView.Options.Show.Attributes.ToolTip =<HTML>Diese Option verlaubt es, die XML Datei auf verschiedene Arten anzuzeigen. <BR><ul><li><strong>Keine</strong> - blendet alle Attribut-Informationen der Datei aus. </li><li><strong>Nur ID</strong> - nur Attribut-Informationen, die zu einem XML Element mit ID geh�ren, werden angezeigt.</li><li><strong>Alle</strong> - alle Attribut-Informationen werden angezeigt.</li></ul><HTML>
-TreeView.RenameNode=Knoten umbenennen
-TreeView.RemoveNode=Knoten entfernen
-TreeView.AddAttribute=Attribut hinzuf�gen
-TreeView.RemoveAttribute=Attribut entfernen
-TreeView.EditNode=Knoten bearbeiten
-Edit.Node.Dialog.Title=Knoten bearbeitenn
-#}}}
-
-
 #{{{ Messages
 DocumentBuffer.Reload.Message={0} Nicht gespeichert!\n Sie verlieren alle ungesicherten Ver�nderungen wenn sie neu laden!\n\nWeiter?
 DocumentBuffer.Reload.Message.Title=Dokument Ver�ndert

@@ -133,6 +133,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
     //{{{ DOMSerializerConfiguration constructor
     
     public DOMSerializerConfiguration(DOMConfiguration config) throws DOMException {
+        this();
         Iterator iterator = m_supportedParameters.iterator();
         while (iterator.hasNext()) {
             String param = iterator.next().toString();
