@@ -542,10 +542,14 @@ public class AdapterNode {
      */
     public void remove(AdapterNode child) throws DOMException {
         if (child != null) {
-            m_domNode.removeChild(child.getNode());
-            m_children.remove(child);
-            child.setParent(null);
-            fireNodeRemoved(this, child);
+            if (child.getNodeType() != Node.DOCUMENT_TYPE_NODE) {
+                m_domNode.removeChild(child.getNode());
+                m_children.remove(child);
+                child.setParent(null);
+                fireNodeRemoved(this, child);
+            } else {
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Cannot remove Document Type Nodes");
+            }
         }
     }//}}}
     
@@ -851,8 +855,7 @@ public class AdapterNode {
     
     //{{{ removeChild()
     /**
-     * <p>Ensures an AdapterNode is not in the list of children
-     * children 
+     * <p>Ensures an AdapterNode is not in the list of children</p>
      */
     /*
     This is required to help maintain sync between the AdapterNode tree

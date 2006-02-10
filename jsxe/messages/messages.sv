@@ -37,11 +37,7 @@ File.CloseAll=Stäng alla
 File.Exit=Avsluta
 #}}}
 
-Edit.Node.Dialog.Title=Redigera nod
-View.Tree=Trädvy
-View.Source=Källkodsvy
 Tools.Options=Inställningar...
 Tools.Plugin=Hanterare för insticksprogram...
 Plugin.Manager.Title=Hanterare för insticksprogram
 Help.About=Om jsXe...
-

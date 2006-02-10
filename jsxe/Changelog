@@ -1,3 +1,7 @@
+02/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Disabled removing document type nodes
+
 02/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added support for detecting a file's line separator and preserving it for
