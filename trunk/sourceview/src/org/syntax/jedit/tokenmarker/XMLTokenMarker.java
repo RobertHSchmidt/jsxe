@@ -78,6 +78,10 @@ public class XMLTokenMarker extends TokenMarker {
       // Ugly hack to handle multi-line tags
       boolean sk1 = token == Token.KEYWORD1;
       
+      //hack to handle DTD internal subsets and multi-line internal DTD subsets
+      //doesn't work right for multi-line internal DTDs with no subset
+      boolean internalSubset = token == Token.COMMENT2;
+      
       for ( int i = offset; i < length; i++ ) {
          int ip1 = i+1;
          char c = array[i];
@@ -258,15 +262,21 @@ public class XMLTokenMarker extends TokenMarker {
                break;
 
             case Token.COMMENT2: // Inside a declaration
-               if ( SyntaxUtilities.regionMatches(false, line, i, ">") ) {
-                  addToken(ip1-lastOffset, token);
-                  lastOffset = ip1;
-                  token = Token.NULL;
-               }
-               if (SyntaxUtilities.regionMatches(false, line, i, "[CDATA[") ) {
-                  token = Token.LITERAL3;
-               }
-               break;
+                if ( SyntaxUtilities.regionMatches(false, line, i, "[") ) {
+                    internalSubset = true;
+                }
+                if ( SyntaxUtilities.regionMatches(false, line, i, "]") ) {
+                    internalSubset = false;
+                }
+                if ( SyntaxUtilities.regionMatches(false, line, i, ">") && !internalSubset) {
+                    addToken(ip1-lastOffset, token);
+                    lastOffset = ip1;
+                    token = Token.NULL;
+                }
+                if (SyntaxUtilities.regionMatches(false, line, i, "[CDATA[") ) {
+                    token = Token.LITERAL3;
+                }
+                break;
 
             case Token.KEYWORD3: // Inside a processor instruction
                if ( SyntaxUtilities.regionMatches(false, line, i, "?>") ) {
