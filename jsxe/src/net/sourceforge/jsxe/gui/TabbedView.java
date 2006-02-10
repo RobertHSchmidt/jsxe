@@ -34,7 +34,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.action.*;
-//import net.sourceforge.jsxe.action.ToolsViewSourceAction;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Swing components
@@ -607,6 +607,7 @@ public class TabbedView extends JFrame {
                 DocumentView view = m_view.newDocumentView(buffer);
                 setDocumentView(view);
             } catch (IOException ioe) {
+                Log.log(Log.WARNING, TabbedView.this, ioe.getMessage());
                 JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
             }
         }//}}}
