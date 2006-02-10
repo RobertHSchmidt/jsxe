@@ -390,11 +390,6 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     showpopup = true;
                 }
                 if (selectedNode.getNodeType() == Node.DOCUMENT_NODE || selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                    if (ownerDocument.getDocType() == null) {
-                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.doctype.node"));
-                        popupMenuItem.setText(Messages.getMessage("xml.doctypedef"));
-                        addNodeItem.add(popupMenuItem);
-                    }
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.processing.instruction.node"));
                     popupMenuItem.setText(Messages.getMessage("xml.processing.instruction"));
                     addNodeItem.add(popupMenuItem);
@@ -404,6 +399,14 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     addNodeShown = true;
                     showpopup = true;
                 }
+                if (selectedNode.getNodeType() == Node.DOCUMENT_NODE) {
+                    if (ownerDocument.getDocType() == null) {
+                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.doctype.node"));
+                        popupMenuItem.setText(Messages.getMessage("xml.doctypedef"));
+                        addNodeItem.add(popupMenuItem);
+                    }
+                }
+                
                 if (addNodeShown) {
                     popup.add(addNodeItem);
                 }
