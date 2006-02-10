@@ -389,6 +389,17 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     addNodeShown = true;
                     showpopup = true;
                 }
+                
+                
+                if (selectedNode.getNodeType() == Node.DOCUMENT_NODE) {
+                    if (ownerDocument.getDocType() == null) {
+                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.doctype.node"));
+                        popupMenuItem.setText(Messages.getMessage("xml.doctypedef"));
+                        addNodeItem.add(popupMenuItem);
+                        showpopup = true;
+                    }
+                }
+                
                 if (selectedNode.getNodeType() == Node.DOCUMENT_NODE || selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.processing.instruction.node"));
                     popupMenuItem.setText(Messages.getMessage("xml.processing.instruction"));
@@ -398,13 +409,6 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     addNodeItem.add(popupMenuItem);
                     addNodeShown = true;
                     showpopup = true;
-                }
-                if (selectedNode.getNodeType() == Node.DOCUMENT_NODE) {
-                    if (ownerDocument.getDocType() == null) {
-                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.doctype.node"));
-                        popupMenuItem.setText(Messages.getMessage("xml.doctypedef"));
-                        addNodeItem.add(popupMenuItem);
-                    }
                 }
                 
                 if (addNodeShown) {
@@ -422,8 +426,12 @@ public class DefaultViewTree extends JTree implements Autoscroll {
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
-                //if the node is not the document or the document root.
-                if (selectedNode.getNodeType() != Node.DOCUMENT_NODE && !(selectedNode.getNodeType() == Node.ELEMENT_NODE && selectedNode.getParentNode().getNodeType() == Node.DOCUMENT_NODE)) {
+                //if the node is not the document, document type, or the document root.
+                if (selectedNode.getNodeType() != Node.DOCUMENT_NODE && 
+                    selectedNode.getNodeType() != Node.DOCUMENT_TYPE_NODE &&
+                    !(selectedNode.getNodeType() == Node.ELEMENT_NODE &&
+                    selectedNode.getParentNode().getNodeType() == Node.DOCUMENT_NODE))
+                {
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.remove.node"));
                     popup.add(popupMenuItem);
                     showpopup = true;
