@@ -1068,7 +1068,10 @@ public class XMLDocument {
             builder.setEntityResolver(m_entityResolver);
         }
         
-        Document doc = builder.parse(new ContentManagerInputStream(m_content));
+        //Temporary fix to allow parsing of documnts with multi-byte characters
+       // Document doc = builder.parse(new ContentManagerInputStream(m_content));
+        String text = getText(0, getLength());
+        Document doc = builder.parse(new InputSource(new StringReader(text)));
         doc.getDocumentElement().normalize();
         //}}}
         
@@ -1077,9 +1080,8 @@ public class XMLDocument {
         Need to fix this in the somewhat near future.
         */
         
-        //{{{ Parse using SAXParser to get Completion Info
+        // Parse using SAXParser to get Completion Info
         parseWithoutUpdate();
-        //}}}
         
         m_document=doc;
         m_syncedWithContent = true;
@@ -1121,7 +1123,10 @@ public class XMLDocument {
         
         m_mappings = new HashMap();
         try {
-            reader.parse(new InputSource(new ContentManagerInputStream(m_content)));
+            //Temporary fix to allow parsing of documnts with multi-byte characters
+           // reader.parse(new InputSource(new ContentManagerInputStream(m_content)));
+            String text = getText(0, getLength());
+            reader.parse(new InputSource(new StringReader(text)));
         } catch(SAXException se) {
             //validation errors
             Log.log(Log.WARNING,this,se.getMessage());
@@ -1464,9 +1469,9 @@ public class XMLDocument {
             int contentLength = m_m_content.getLength();
             
             //TODO this code doesn't support multi-byte characters
-            //contentLength below is the current number of UTF-8 characters
+            //contentLength below is the current number of characters
             //what should be used is the total number of bytes in the document
-            //furthermore m_m_index is an UTF-8 character index into the
+            //furthermore m_m_index is an character index into the
             //document where it needs to be a byte index
             if (m_m_index < contentLength) {
                 if (m_m_index + length >= contentLength) {

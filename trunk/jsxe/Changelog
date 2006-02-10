@@ -1,3 +1,14 @@
+02/10/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Made a fix to XMLDocument to allow it to parse documents that
+      have multi-byte characters. The current implementation of the
+      ContentManagerInputStream is inadequate to deal with multi-byte
+      characters. The solution is to extract the document as a string and
+      parse it using a StringReader. This is a bit inefficient as the whole
+      document has to be copied into a String object but it will probably be
+      adequate for at least the immediate future since jsXe doesn't deal
+      _really_ well with large files anyway.
+
 02/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Disabled removing document type nodes
