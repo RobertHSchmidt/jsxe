@@ -473,10 +473,8 @@ public class XMLDocument {
      * @since jsXe 0.4 pre3
      */
     public List getErrors() {
-        if (m_changedSinceLastParse) {
-            syncContentWithDOM();
-            parseWithoutUpdate();
-        }
+        syncContentWithDOM();
+        parseWithoutUpdate();
         return m_parseErrors;
     }//}}}
     
@@ -510,16 +508,14 @@ public class XMLDocument {
      */
     public boolean isValid() throws IOException {
         if (Boolean.valueOf(getProperty(IS_VALIDATING)).booleanValue()) {
-           // try {
-                if (m_changedSinceLastParse) {
-                    syncContentWithDOM();
-                    parseWithoutUpdate();
-                }
-           // } catch (SAXException e) {
-           //     return false;
-           // } catch (ParserConfigurationException e) {
-           //     throw new IOException(e.getMessage());
-           // }
+            /*
+            This needs to be done every time we check for validity even
+            if this document hasn't changed since the DTD or Schema document
+            we are validating against may have changed in the meantime.
+            */
+            
+            syncContentWithDOM();
+            parseWithoutUpdate();
             
             return (m_parseErrors.size() == 0 && m_parseFatalErrors.size() == 0);
         } else {
@@ -926,7 +922,6 @@ public class XMLDocument {
             listener.structureChanged(this, location);
         }
         m_syncedWithContent = false;
-        m_changedSinceLastParse = true;
     }//}}}
     
     //{{{ Protected members
@@ -1096,6 +1091,8 @@ public class XMLDocument {
      * update completion info and parse errors.
      */
     public void parseWithoutUpdate() {
+        Log.log(Log.MESSAGE, this, "Validating Document");
+        
         m_parseErrors = new ArrayList();
         m_parseFatalErrors = new ArrayList();
         
@@ -1134,7 +1131,6 @@ public class XMLDocument {
             Log.log(Log.WARNING,this,ie.getMessage());
             m_parseErrors.add(ie);
         }
-        m_changedSinceLastParse = false;
     }//}}}
     
     //{{{ getNoNamespaceCompletionInfo() method
@@ -1521,37 +1517,31 @@ public class XMLDocument {
         
         // {{{ nodeAdded()
         public void nodeAdded(AdapterNode source, AdapterNode added) {
-            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
         //{{{ nodeRemoved()
         public void nodeRemoved(AdapterNode source, AdapterNode removed) {
-            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
         //{{{ localNameChanged()
         public void localNameChanged(AdapterNode source) {
-            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
         //{{{ namespaceChanged()
         public void namespaceChanged(AdapterNode source) {
-            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
         //{{{ nodeValueChanged()
         public void nodeValueChanged(AdapterNode source) {
-            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
         //{{{ attributeChanged()
         public void attributeChanged(AdapterNode source, String attr) {
-            m_changedSinceLastParse = true;
             fireStructureChanged(source);
         }//}}}
         
@@ -1803,13 +1793,6 @@ public class XMLDocument {
      * such a way that they become out of sync.
      */
     private boolean m_syncedWithContent = false;
-    
-    /**
-     * This flag indicates whether the DOM has been changed since the last
-     * parse. This is used mostly to determine if the document could contain
-     * new validation errors.
-     */
-    private boolean m_changedSinceLastParse = false;
     
     private ArrayList m_parseErrors = new ArrayList();
     private ArrayList m_parseFatalErrors = new ArrayList();
