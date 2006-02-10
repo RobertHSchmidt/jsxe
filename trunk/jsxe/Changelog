@@ -1,6 +1,10 @@
 02/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Disabled removing document type nodes
+    * Whenever requesting validation errors from an XMLDocument the document
+      will now check the validity of the document regardless of whether the
+      document itself has been changed because the DTD or Schema it is
+      validated againtst may have changed (e.g. in another open tab in jsXe).
 
 02/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
