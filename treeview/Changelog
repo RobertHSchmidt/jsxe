@@ -2,6 +2,7 @@
 
     * Fixed bug where adding a DTD node was shown as an option for element
       nodes.
+    * Updated the edit DTD node dialog
 
 02/02/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
