@@ -211,8 +211,6 @@ public class XMLDocument {
                 //This is ugly. Need to rethink how this should happen.
                 if (Boolean.valueOf(value).booleanValue()) {
                     //syncContentWithDOM could change m_parsedMode
-                    boolean wasParsedMode = m_parsedMode;
-                    AdapterNode oldNode = m_adapterNode;
                     syncContentWithDOM();
                 } else {
                     /*
