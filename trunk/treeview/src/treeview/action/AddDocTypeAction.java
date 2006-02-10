@@ -77,63 +77,20 @@ public class AddDocTypeAction extends AbstractAction {
         TabbedView tabbedview = jsXe.getActiveView();
         DocumentView view = tabbedview.getDocumentView();
         if (view instanceof DefaultView) {
-            DefaultView defView = (DefaultView)view;
-            DefaultViewTree tree = defView.getDefaultViewTree();
+            m_defView = (DefaultView)view;
+            m_tree = m_defView.getDefaultViewTree();
             
             /*
             Show a dialog to prompt for name and PUBLIC and SYSTEM identifiers.
             */
             EditDocTypeDialog dialog = new EditDocTypeDialog(tabbedview, null, null, null);
-            String name = dialog.getName();
-            String systemId = dialog.getSystemId();
-            String publicId = dialog.getPublicId();
-            
-            if (name != null && !name.equals("") && systemId != null && !systemId.equals("")) {
-            
-                DocumentBuffer document = defView.getDocumentBuffer();
-                /*
-                DocumentType nodes are not modifiable so we need to insert the
-                XML text. The DocumentBuffer will re-parse as necessary.
-                */
-                
-                /*
-                We need to find the end of the XML declaration. So we know where to
-                insert the DocType
-                */
-                try {
-                    boolean found = false;
-                    for (int i=1; !found; i++) {
-                        String text = document.getText(0, Math.min(100, document.getLength())*i);
-                        int end = text.indexOf("?>");
-                        if (end != -1) {
-                            found = true;
-                            end += 2; //We want the index after the 2 ?> characters
-                            
-                            StringBuffer docType = new StringBuffer("\n<!DOCTYPE "+name);
-                            if (publicId != null && !publicId.equals("")) {
-                                docType.append(" PUBLIC \""+publicId+"\"");
-                            }
-                            if ((publicId == null || publicId.equals("")) && systemId != null && !systemId.equals("")) {
-                                docType.append(" SYSTEM");
-                            }
-                            if (systemId != null && !systemId.equals("")) {
-                                docType.append(" \""+systemId+"\"");
-                            }
-                            docType.append(">\n");
-                            document.insertText(end,docType.toString());
-                        }
-                    }
-                    tree.updateUI();
-                } catch (IOException ioe) {
-                    jsXe.exiterror(this, ioe, 1);
-                }
-            } else {
-                JOptionPane.showMessageDialog(dialog, "A Document Type Definition must have a name and SYSTEM Identifier", "Error", JOptionPane.WARNING_MESSAGE);
-            }
         }
     }//}}}
     
     //{{{ Private members
+    
+    DefaultView m_defView;
+    DefaultViewTree m_tree;
     
     //{{{ EditDocTypeDialog
     
@@ -143,8 +100,6 @@ public class AddDocTypeAction extends AbstractAction {
         
         public EditDocTypeDialog(TabbedView parent, String name, String publicId, String systemId) {
             super(parent, Messages.getMessage("TreeView.EditDocType.Title"), true);
-            
-            loadGeometry(this, m_geometryName);
             
             GridBagLayout layout = new GridBagLayout();
             GridBagConstraints constraints = new GridBagConstraints();
@@ -233,15 +188,23 @@ public class AddDocTypeAction extends AbstractAction {
             buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.X_AXIS));
             
             buttonPanel.add(Box.createGlue());
-            JButton close = new JButton(Messages.getMessage("common.close"));
+            JButton close = new JButton(Messages.getMessage("common.ok"));
             close.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     ok();
                 }
             });
+            JButton cancel = new JButton(Messages.getMessage("common.cancel"));
+            cancel.addActionListener(new java.awt.event.ActionListener() {
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    cancel();
+                }
+            });
             
             getRootPane().setDefaultButton(close);
             buttonPanel.add(close);
+            buttonPanel.add(Box.createGlue());
+            buttonPanel.add(cancel);
             buttonPanel.add(Box.createGlue());
             
             constraints.gridy      = gridY++;
@@ -254,6 +217,8 @@ public class AddDocTypeAction extends AbstractAction {
             
             layout.setConstraints(buttonPanel, constraints);
             getContentPane().add(buttonPanel);
+            
+            loadGeometry(this, m_geometryName);
             
             show();
             
@@ -276,6 +241,53 @@ public class AddDocTypeAction extends AbstractAction {
         
         //{{{ ok()
         public void ok() {
+            String name = getName();
+            String systemId = getSystemId();
+            String publicId = getPublicId();
+            
+            if (name != null && !name.equals("") && systemId != null && !systemId.equals("")) {
+            
+                DocumentBuffer document = m_defView.getDocumentBuffer();
+                /*
+                DocumentType nodes are not modifiable so we need to insert the
+                XML text. The DocumentBuffer will re-parse as necessary.
+                */
+                
+                /*
+                We need to find the end of the XML declaration. So we know where to
+                insert the DocType
+                */
+                try {
+                    boolean found = false;
+                    for (int i=1; !found; i++) {
+                        String text = document.getText(0, Math.min(100, document.getLength())*i);
+                        int end = text.indexOf("?>");
+                        if (end != -1) {
+                            found = true;
+                            end += 2; //We want the index after the 2 ?> characters
+                            
+                            StringBuffer docType = new StringBuffer("\n<!DOCTYPE "+name);
+                            if (publicId != null && !publicId.equals("")) {
+                                docType.append(" PUBLIC \""+publicId+"\"");
+                            }
+                            if ((publicId == null || publicId.equals("")) && systemId != null && !systemId.equals("")) {
+                                docType.append(" SYSTEM");
+                            }
+                            if (systemId != null && !systemId.equals("")) {
+                                docType.append(" \""+systemId+"\"");
+                            }
+                            docType.append(">\n");
+                            document.insertText(end,docType.toString());
+                        }
+                    }
+                    m_tree.updateUI();
+                } catch (IOException ioe) {
+                    jsXe.exiterror(this, ioe, 1);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "A Document Type Definition must have a name and SYSTEM Identifier", "Error", JOptionPane.WARNING_MESSAGE);
+            }
+            
             cancel();
         }//}}}
         
