@@ -18,6 +18,8 @@ import javax.swing.JComponent;
 import java.awt.event.MouseEvent;
 import java.awt.*;
 
+import net.sourceforge.jsxe.jsXe;
+
 /**
  * The text area repaint manager. It performs double buffering and paints
  * lines of text.
@@ -533,6 +535,16 @@ public class TextAreaPainter extends JComponent implements TabExpander
 		paintHighlight(gfx,line,y);
 		textArea.getLineText(line,currentLine);
 
+        //add end of line marker
+        if (jsXe.getBooleanProperty("source.end-of-line-markers", true)) {
+            char[] array = new char[currentLine.count+1];
+            System.arraycopy(currentLine.array, currentLine.offset, array, 0, currentLine.count);
+            array[currentLine.count] = '.';
+            currentLine.array = array;
+            currentLine.count = currentLine.count + 1;
+            currentLine.offset = 0;
+        }
+        
 		gfx.setFont(defaultFont);
 		gfx.setColor(defaultColor);
 
@@ -550,9 +562,20 @@ public class TextAreaPainter extends JComponent implements TabExpander
 		int line, Font defaultFont, Color defaultColor, int x, int y)
 	{
 		textArea.getLineText(currentLineIndex,currentLine);
-		currentLineTokens = tokenMarker.markTokens(currentLine,
+		
+        //add end of line marker
+        if (jsXe.getBooleanProperty("source.end-of-line-markers", true)) {
+            char[] array = new char[currentLine.count+1];
+            System.arraycopy(currentLine.array, currentLine.offset, array, 0, currentLine.count);
+            array[currentLine.count] = '.';
+            currentLine.array = array;
+            currentLine.count = currentLine.count + 1;
+            currentLine.offset = 0;
+        }
+        
+        currentLineTokens = tokenMarker.markTokens(currentLine,
 			currentLineIndex);
-
+        
 		paintHighlight(gfx,line,y);
 
 		gfx.setFont(defaultFont);

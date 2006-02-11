@@ -1,3 +1,7 @@
+02/11/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added end of line markers and and option to turn them on or off.
+
 02/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed some syntax highlighting problems with DTDs that have internal
