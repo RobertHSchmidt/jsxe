@@ -14,6 +14,7 @@ SourceView.FindNext=Find Next
 
 #{{{ Source View Options
 SourceView.Options.Title=Source View Options
+SourceView.Options.EndOfLineMarker=End of line markers
 SourceView.Syntax.Object=Node Type
 SourceView.Syntax.Style=Text Style
 SourceView.ColorChooser.Title=Color Chooser

@@ -60,6 +60,29 @@ public class SourceViewOptionsPanel extends OptionsPanel {
 
         add(BorderLayout.CENTER,createStyleTableScroller());
         
+        JPanel panel = new JPanel();
+        
+        GridBagLayout layout = new GridBagLayout();
+        GridBagConstraints constraints = new GridBagConstraints();
+        panel.setLayout(layout);
+        
+        int gridY = 0;
+        
+        m_endOfLineMarkCheckBox = new JCheckBox(Messages.getMessage("SourceView.Options.EndOfLineMarker"),jsXe.getBooleanProperty("source.end-of-line-markers",true));
+        
+        constraints.gridy      = gridY++;
+        constraints.gridx      = 1;
+        constraints.gridheight = 1;
+        constraints.gridwidth  = 2;
+        constraints.weightx    = 1.0f;
+        constraints.fill       = GridBagConstraints.BOTH;
+        constraints.insets     = new Insets(1,0,1,0);
+        
+        layout.setConstraints(m_endOfLineMarkCheckBox, constraints);
+        panel.add(m_endOfLineMarkCheckBox);
+        
+        add(BorderLayout.SOUTH, panel);
+        
     }//}}}
     
     //{{{ getName()
@@ -90,6 +113,7 @@ public class SourceViewOptionsPanel extends OptionsPanel {
                                 parseStyle(jsXe.getProperty("source.invalid.color")),
                                 });
         }
+        jsXe.setBooleanProperty("source.end-of-line-markers",m_endOfLineMarkCheckBox.isSelected());
     }//}}}
     
     //{{{ getTitle()
@@ -700,6 +724,7 @@ public class SourceViewOptionsPanel extends OptionsPanel {
     private StyleTableModel styleModel;
     private JTable styleTable;
     private DocumentBuffer m_document;
+    private JCheckBox m_endOfLineMarkCheckBox;
     //}}}
     
 }//}}}
