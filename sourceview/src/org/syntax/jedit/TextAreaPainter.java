@@ -18,6 +18,7 @@ import javax.swing.JComponent;
 import java.awt.event.MouseEvent;
 import java.awt.*;
 
+import sourceview.SourceView;
 import net.sourceforge.jsxe.jsXe;
 
 /**
@@ -536,7 +537,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
 		textArea.getLineText(line,currentLine);
 
         //add end of line marker
-        if (jsXe.getBooleanProperty("source.end-of-line-markers", true)) {
+        if (jsXe.getBooleanProperty(SourceView.END_OF_LINE_MARKS, true)) {
             char[] array = new char[currentLine.count+1];
             System.arraycopy(currentLine.array, currentLine.offset, array, 0, currentLine.count);
             array[currentLine.count] = '.';
@@ -564,7 +565,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
 		textArea.getLineText(currentLineIndex,currentLine);
 		
         //add end of line marker
-        if (jsXe.getBooleanProperty("source.end-of-line-markers", true)) {
+        if (jsXe.getBooleanProperty(SourceView.END_OF_LINE_MARKS, true)) {
             char[] array = new char[currentLine.count+1];
             System.arraycopy(currentLine.array, currentLine.offset, array, 0, currentLine.count);
             array[currentLine.count] = '.';

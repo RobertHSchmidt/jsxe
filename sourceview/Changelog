@@ -1,6 +1,10 @@
 02/11/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added end of line markers and and option to turn them on or off.
+    * Added support for maintaining indent when adding new lines
+    * Implemented maintaining indent when adding new lines and soft tabs
+      by adding key bindings to the input handler rather than overriding
+      processKeyEvent or whatever
 
 02/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
