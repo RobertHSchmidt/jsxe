@@ -195,6 +195,19 @@ public class AdapterNode {
         return -1;
     }//}}}
     
+    //{{{ copy()
+    /**
+     * Copies this node into a new AdapterNode. The copy will have no parent
+     * node.
+     * @param deep if true then the subtree is copied as well.
+     * @since jsXe 0.4 pre3
+     */
+    public AdapterNode copy(boolean deep) {
+        Node newNode = m_domNode.cloneNode(deep);
+        AdapterNode node = new AdapterNode(newNode);
+        return node;
+    }//}}}
+    
     //{{{ child()
     /**
      * <p>Gets the child node at the given index.</p>
