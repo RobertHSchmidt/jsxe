@@ -200,15 +200,21 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
      */
     public boolean cut() throws DOMException {
         AdapterNode selectedNode = getSelectedNode();
+        Clipboard clipBoard = getToolkit().getSystemClipboard();
         if (selectedNode != null) {
             try {
-                Clipboard clipBoard = getToolkit().getSystemClipboard();
                 clipBoard.setContents(new TransferableNode(selectedNode), this);
                 selectedNode.getParentNode().remove(selectedNode);
                 updateUI();
                 return true;
             } catch (IllegalStateException e) {
-            } catch (HeadlessException e) {}
+                Log.log(Log.ERROR, this, e);
+            } catch (HeadlessException e) {
+                Log.log(Log.ERROR, this, e);
+            } catch (DOMException e) {
+                clipBoard.setContents(null, this);
+                throw e;
+            }
         }
         return false;
     }//}}}
@@ -219,7 +225,19 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
      * @return true if the node was copied successfully
      */
     public boolean copy() {
-        //TODO: Implement copy
+        AdapterNode selectedNode = getSelectedNode();
+        if (selectedNode != null) {
+            try {
+                Clipboard clipBoard = getToolkit().getSystemClipboard();
+                AdapterNode newNode = selectedNode.copy(true);
+                clipBoard.setContents(new TransferableNode(newNode), this);
+                return true;
+            } catch (IllegalStateException e) {
+                Log.log(Log.ERROR, this, e);
+            } catch (HeadlessException e) {
+                Log.log(Log.ERROR, this, e);
+            }
+        }
         return false;
     }//}}}
     
@@ -232,7 +250,37 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
      *                      location.
      */
     public boolean paste() throws DOMException {
-        //TODO: implement paste
+        AdapterNode selectedNode = getSelectedNode();
+        if (selectedNode != null) {
+            try {
+                Clipboard clipBoard = getToolkit().getSystemClipboard();
+                Transferable contents = clipBoard.getContents(this);
+                if (contents != null) {
+                    if (contents.isDataFlavorSupported(TransferableNode.nodeFlavor)) {
+                        AdapterNode node = (AdapterNode)contents.getTransferData(TransferableNode.nodeFlavor);
+                        TreePath pastePath = getLeadSelectionPath();
+                        selectedNode.addAdapterNode(node);
+                        
+                        //reset the clipboard
+                        StringSelection sel = new StringSelection("");
+                        clipBoard.setContents(sel, sel);
+                        
+                        refreshExpandedStates(pastePath);
+                        addSelectionPath(pastePath.pathByAddingChild(node));
+                        updateUI();
+                        return true;
+                    }
+                }
+            } catch (IllegalStateException e) {
+                Log.log(Log.ERROR, this, e);
+            } catch (HeadlessException e) {
+                Log.log(Log.ERROR, this, e);
+            } catch (UnsupportedFlavorException e) {
+                Log.log(Log.ERROR, this, e);
+            } catch (IOException e) {
+                Log.log(Log.ERROR, this, e);
+            }
+        }
         return false;
     }//}}}
     
@@ -375,7 +423,7 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
     }//}}}
     
     //{{{ TreePopupListener class
-    
+    //TODO: rework this class
     private class TreePopupListener extends MouseAdapter {
         
         //{{{ mousePressed()
@@ -444,7 +492,6 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                     showpopup = true;
                 }
                 
-                
                 if (selectedNode.getNodeType() == Node.DOCUMENT_NODE) {
                     if (ownerDocument.getDocType() == null) {
                         popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.doctype.node"));
@@ -468,11 +515,12 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                 if (addNodeShown) {
                     popup.add(addNodeItem);
                 }
+                
                 //Add the edit node action
-                //EditTagDialog needs to be reworked. disabled for now.
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE && ownerDocument.getElementDecl(selectedNode.getNodeName()) != null) {
                     popupMenuItem = new JMenuItem(jsXe.getAction("treeview.edit.node"));
                     popup.add(popupMenuItem);
+                    showpopup = true;
                 }
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE || selectedNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
@@ -490,6 +538,28 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
+                
+                if (selectedNode.getNodeType() != Node.DOCUMENT_NODE && 
+                    selectedNode.getNodeType() != Node.DOCUMENT_TYPE_NODE)
+                {
+                    popup.addSeparator();
+                    if(!(selectedNode.getNodeType() == Node.ELEMENT_NODE &&
+                       selectedNode.getParentNode().getNodeType() == Node.DOCUMENT_NODE))
+                    {
+                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.cut.node"));
+                        popup.add(popupMenuItem);
+                    }
+                    
+                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.copy.node"));
+                    popup.add(popupMenuItem);
+                    
+                    if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
+                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.paste.node"));
+                        popup.add(popupMenuItem);
+                    }
+                    showpopup = true;
+                }
+                
                 if (showpopup) {
                     popup.show(e.getComponent(), e.getX(), e.getY());
                 }

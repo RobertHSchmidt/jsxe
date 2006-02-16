@@ -164,17 +164,15 @@ public class DefaultView extends JPanel implements DocumentView {
         //}}}
         
         //{{{ Construct Edit Menu
+        //TODO: get the keyboard shortcuts to work,
+        //TODO: get cut/copy/paste to work in the right hand text window
         m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
         m_editMenu.setMnemonic('E');
         JMenuItem menuItem = new JMenuItem(jsXe.getAction("treeview.cut.node"));
         m_editMenu.add(menuItem);
         menuItem = new JMenuItem(jsXe.getAction("treeview.copy.node"));
-        //TODO: implement copy
-        menuItem.setEnabled(false);
         m_editMenu.add(menuItem);
         menuItem = new JMenuItem(jsXe.getAction("treeview.paste.node"));
-        //TODO: implement paste
-        menuItem.setEnabled(false);
         m_editMenu.add(menuItem);
         //}}}
         
