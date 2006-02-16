@@ -36,6 +36,7 @@ import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.DocumentView;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
@@ -162,6 +163,21 @@ public class DefaultView extends JPanel implements DocumentView {
        // });//}}}
         //}}}
         
+        //{{{ Construct Edit Menu
+        m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
+        m_editMenu.setMnemonic('E');
+        JMenuItem menuItem = new JMenuItem(jsXe.getAction("treeview.cut.node"));
+        m_editMenu.add(menuItem);
+        menuItem = new JMenuItem(jsXe.getAction("treeview.copy.node"));
+        //TODO: implement copy
+        menuItem.setEnabled(false);
+        m_editMenu.add(menuItem);
+        menuItem = new JMenuItem(jsXe.getAction("treeview.paste.node"));
+        //TODO: implement paste
+        menuItem.setEnabled(false);
+        m_editMenu.add(menuItem);
+        //}}}
+        
         //{{{ Create and set up the splitpanes
         vertSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treeView, attrView);
         vertSplitPane.setContinuousLayout(false);
@@ -247,30 +263,7 @@ public class DefaultView extends JPanel implements DocumentView {
     //{{{ getMenus()
     
     public JMenu[] getMenus() {
-        //Edit Menu doesn't work yet.
-       // JMenu[] menus = new JMenu[1];
-       // //{{{ Create Edit Menu
-       // JMenu editMenu = new JMenu("Edit");
-       //     JMenuItem menuItem = new JMenuItem("Undo");
-       //    // menuItem.addActionListener( new EditUndoAction() );
-       //     editMenu.add( menuItem );
-       //     menuItem = new JMenuItem("Redo");
-       //    // menuItem.addActionListener( new EditRedoAction() );
-       //     editMenu.add( menuItem );
-       //     editMenu.addSeparator();
-       //     menuItem = new JMenuItem("Cut");
-       //    // menuItem.addActionListener( new EditCutAction() );
-       //     editMenu.add( menuItem );
-       //     menuItem = new JMenuItem("Copy");
-       //    // menuItem.addActionListener( new EditCopyAction() );
-       //     editMenu.add( menuItem );
-       //     menuItem = new JMenuItem("Paste");
-       //    // menuItem.addActionListener( new EditPasteAction() );
-       //     editMenu.add( menuItem );
-       // //}}}
-       // menus[0] = editMenu;
-       // return menus;
-        return new JMenu[] {};
+        return new JMenu[] { m_editMenu };
     }//}}}
     
     //{{{ getDocumentBuffer()
@@ -541,6 +534,7 @@ public class DefaultView extends JPanel implements DocumentView {
     private DocumentBuffer m_document;
     private boolean m_viewShown = false;
     private TreeViewPlugin m_plugin;
+    private JMenu m_editMenu;
     
     private EditTagDialog.ComboValueRenderer m_comboRenderer = new EditTagDialog.ComboValueRenderer();
     
