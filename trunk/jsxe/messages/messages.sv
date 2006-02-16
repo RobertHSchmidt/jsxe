@@ -17,6 +17,11 @@ common.add=Lägg till
 common.remove=Ta bort
 common.moveUp=Flytta upp
 common.moveDown=Flytta ner
+common.cut=Klipp ut
+common.copy=Kopiera
+common.paste=Klistra in
+common.find=Sök...
+common.findnext=Sök nästa
 
 #}}}
 
