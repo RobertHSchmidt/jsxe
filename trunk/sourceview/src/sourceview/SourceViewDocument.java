@@ -111,10 +111,12 @@ public class SourceViewDocument extends SyntaxDocument {
         try {
             super.insertString(offs, str, a);
             m_document.insertText(offs, str);
-            
         } catch (DOMException dome) {
+            Log.log(Log.ERROR, this, dome);
             Toolkit.getDefaultToolkit().beep();
-        } catch (IOException ioe) {}
+        } catch (IOException ioe) {
+            Log.log(Log.ERROR, this, ioe);
+        }
 
     }//}}}
 
@@ -126,8 +128,11 @@ public class SourceViewDocument extends SyntaxDocument {
             super.remove(offs, len);
             m_document.removeText(offs, len);
         } catch (DOMException dome) {
+            Log.log(Log.ERROR, this, dome);
             Toolkit.getDefaultToolkit().beep();
-        } catch (IOException ioe) {}
+        } catch (IOException ioe) {
+            Log.log(Log.ERROR, this, ioe);
+        }
         
     }//}}}
 

@@ -60,7 +60,7 @@ public class EditCopyAction extends AbstractAction {
     
     public EditCopyAction() {
         //putValue(Action.NAME, "Copy");
-        putValue(Action.NAME, Messages.getMessage("SourceView.Copy"));
+        putValue(Action.NAME, Messages.getMessage("common.copy"));
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl C"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
     }//}}}

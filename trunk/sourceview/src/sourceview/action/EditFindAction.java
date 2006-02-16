@@ -60,7 +60,7 @@ public class EditFindAction extends AbstractAction {
     
     public EditFindAction() {
         //putValue(Action.NAME, "Find...");
-        putValue(Action.NAME, Messages.getMessage("SourceView.Find"));
+        putValue(Action.NAME, Messages.getMessage("common.find"));
         putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl F"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("F").getKeyCode()));
     }//}}}

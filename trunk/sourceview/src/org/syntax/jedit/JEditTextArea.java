@@ -1496,7 +1496,7 @@ public class JEditTextArea extends JComponent
 			}
 			catch(Exception e)
 			{
-				getToolkit().beep();
+                getToolkit().beep();
 				System.err.println("Clipboard does not"
 					+ " contain a string");
 			}

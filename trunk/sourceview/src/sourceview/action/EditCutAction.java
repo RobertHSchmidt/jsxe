@@ -60,7 +60,7 @@ public class EditCutAction extends AbstractAction {
     
     public EditCutAction() {
        //putValue(Action.NAME, "Cut");
-       putValue(Action.NAME, Messages.getMessage("SourceView.Cut"));
+       putValue(Action.NAME, Messages.getMessage("common.cut"));
        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("C").getKeyCode()));
     }//}}}

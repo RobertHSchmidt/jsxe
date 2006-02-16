@@ -7,12 +7,6 @@
 
 #{{{ Source View
 
-SourceView.Cut=Ausschneiden
-SourceView.Copy=Kopieren
-SourceView.Paste=Einf�gen
-SourceView.Find=Suchen...
-SourceView.FindNext=N�chsten suchen
-
 #{{{ Source View Options
 SourceView.Options.Title=Source View Optionen
 SourceView.Syntax.Object=Knoten Typ
