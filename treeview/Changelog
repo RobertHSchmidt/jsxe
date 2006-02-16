@@ -1,6 +1,8 @@
 02/16/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
-    * Added the beginnings of cut/copy/paste support for nodes in the tree view.
+    * Added cut/copy/paste support for nodes in the tree view. There are still
+      some limitations like the keyboard shortcuts don't work, and the actions
+      don't work when focused on the right hand side pane.
 
 02/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
