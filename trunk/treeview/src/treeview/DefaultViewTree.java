@@ -80,7 +80,7 @@ import java.util.*;
  * @version $Id$
  * @see DefaultView
  */
-public class DefaultViewTree extends JTree implements Autoscroll {
+public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner {
     
     //{{{ Properties
     private final String NODE_EXPANDED = "tree.expandedstate";
@@ -191,6 +191,51 @@ public class DefaultViewTree extends JTree implements Autoscroll {
         return selectedNode;
     }//}}}
     
+    //{{{ cut()
+    /**
+     * Cuts the currently selected node out of the tree and places it in the
+     * clipboard.
+     * @return true if the node was successfully cut
+     * @throws DOMException if the node cannot be removed from the tree.
+     */
+    public boolean cut() throws DOMException {
+        AdapterNode selectedNode = getSelectedNode();
+        if (selectedNode != null) {
+            try {
+                Clipboard clipBoard = getToolkit().getSystemClipboard();
+                clipBoard.setContents(new TransferableNode(selectedNode), this);
+                selectedNode.getParentNode().remove(selectedNode);
+                updateUI();
+                return true;
+            } catch (IllegalStateException e) {
+            } catch (HeadlessException e) {}
+        }
+        return false;
+    }//}}}
+    
+    //{{{ copy()
+    /**
+     * Copies the currently selected node to the clipboard.
+     * @return true if the node was copied successfully
+     */
+    public boolean copy() {
+        //TODO: Implement copy
+        return false;
+    }//}}}
+    
+    //{{{ paste()
+    /**
+     * Pastes the contents of the clipboard into the currently selected node
+     * in the document tree.
+     * @return true if the node was pasted successfully
+     * @throws DOMException if the node cannot be inserted in the current
+     *                      location.
+     */
+    public boolean paste() throws DOMException {
+        //TODO: implement paste
+        return false;
+    }//}}}
+    
     //{{{ Autoscroll methods
     
     //{{{ autoscroll()
@@ -233,6 +278,16 @@ public class DefaultViewTree extends JTree implements Autoscroll {
     
     //}}}
     
+    //{{{ ClipboardOwner methods
+    
+    //{{{ lostOwnership()
+    
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {
+        // Nothing right now.
+    }//}}}
+    
+    //}}}
+    
     //{{{ Private static members
     private static final ImageIcon m_elementIcon = new ImageIcon(DefaultView.class.getResource("/net/sourceforge/jsxe/icons/Element.png"), "Element");
     private static final ImageIcon m_textIcon = new ImageIcon(DefaultView.class.getResource("/net/sourceforge/jsxe/icons/Text.png"), "Text");
@@ -242,7 +297,6 @@ public class DefaultViewTree extends JTree implements Autoscroll {
     private static final ImageIcon m_internalEntityIcon = new ImageIcon(DefaultView.class.getResource("/net/sourceforge/jsxe/icons/InternalEntity.png"), "Internal Entity");
     
     private static final int m_AUTOSCROLL_MARGIN = 12;
-    
     //}}}
     
     //{{{ Private members
@@ -986,7 +1040,9 @@ public class DefaultViewTree extends JTree implements Autoscroll {
     //the node that is being dragged over.
     private Object m_dragOverTarget = null;
     //the color used to highlight the drop target when dragging
-    //Use RED for now
+    //Use light grey for now. 
+    // TODO: This should probably be based on the
+    //current look and feel or customizable in an option.
     private Color m_dragSelectionColor = Color.lightGray;
     //}}}
 
