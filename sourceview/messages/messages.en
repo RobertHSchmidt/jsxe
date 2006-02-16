@@ -6,12 +6,6 @@
 
 #{{{ Source View
 
-SourceView.Cut=Cut
-SourceView.Copy=Copy
-SourceView.Paste=Paste
-SourceView.Find=Find...
-SourceView.FindNext=Find Next
-
 #{{{ Source View Options
 SourceView.Options.Title=Source View Options
 SourceView.Options.EndOfLineMarker=End of line markers

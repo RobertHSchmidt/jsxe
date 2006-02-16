@@ -156,7 +156,7 @@ public class SourceView extends JPanel implements DocumentView {
         add(textarea, BorderLayout.CENTER);
         
         //{{{ Construct Edit Menu
-        m_editMenu = new JMenu("Edit");
+        m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
         m_editMenu.setMnemonic('E');
        // These don't do anything yet.
        // JMenuItem menuItem = new JMenuItem("Undo");

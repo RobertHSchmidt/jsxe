@@ -5,8 +5,3 @@
 #:tabSize=4:indentSize=4:noTabs=true:
 #:folding=explicit:collapseFolds=1:
 
-SourceView.Cut=Klipp ut
-SourceView.Copy=Kopiera
-SourceView.Paste=Klistra in
-SourceView.Find=Sök...
-SourceView.FindNext=Sök nästa
