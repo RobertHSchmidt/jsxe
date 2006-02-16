@@ -95,7 +95,7 @@ public class ValidationErrorsAction extends AbstractAction {
             errors.add(formatError(document.getName(), (Exception)itr.next()));
         }
         
-        ErrorListDialog dialog = new ErrorListDialog(view, 
+        ErrorListDialog dialog = new ErrorListDialog(view,
                                                      Messages.getMessage("ValidationErrors.title"),
                                                      Messages.getMessage("ValidationErrors.message"),
                                                      errors,

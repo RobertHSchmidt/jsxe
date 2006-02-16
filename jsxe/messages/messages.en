@@ -16,6 +16,11 @@ common.add=Add
 common.remove=Remove
 common.moveUp=Move Up
 common.moveDown=Move Down
+common.cut=Cut
+common.copy=Copy
+common.paste=Paste
+common.find=Find...
+common.findnext=Find Next
 
 #}}}
 
@@ -75,6 +80,7 @@ Document.Options.Soft.Tabs.ToolTip=If this box is checked then tab characters ar
 #{{{ Menu Items
 
 File.Menu=File
+Edit.Menu=Edit
 View.Menu=View
 Tools.Menu=Tools
 Help.Menu=Help

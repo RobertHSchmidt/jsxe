@@ -542,6 +542,9 @@ public class AdapterNode {
      */
     public void remove(AdapterNode child) throws DOMException {
         if (child != null) {
+            if (getNodeType() == Node.DOCUMENT_NODE && child.getNodeType() == Node.ELEMENT_NODE) {
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "You cannot remove the root element node.");
+            }
             if (child.getNodeType() != Node.DOCUMENT_TYPE_NODE) {
                 m_domNode.removeChild(child.getNode());
                 m_children.remove(child);
@@ -815,12 +818,30 @@ public class AdapterNode {
     
     //{{{ serializeToString()
     /**
-     * Serializes this Node to a string based on the owning XMLDocument's
-     * properties.
+     * Serializes this Node to a string based on the last owning
+     * XMLDocument's properties.
      * @return the string representation of this node.
      */
     public String serializeToString() {
-        return getOwnerDocument().serializeNodeToString(this);
+        XMLDocument owner = getOwnerDocument();
+        if (owner != null) {
+            return owner.serializeNodeToString(this);
+        } else {
+            if (m_lastRootDocument != null) {
+                return m_lastRootDocument.serializeNodeToString(this);
+            } else {
+                //node was never owned? write it out using the default config
+                String value = null;
+                try {
+                    DOMSerializer serializer = new DOMSerializer();
+                    serializer.setNewLine("\n");
+                    value = serializer.writeToString(m_domNode);
+                } catch (DOMException e) {
+                    Log.log(Log.WARNING, this, "Could not write node to string");
+                }
+                return value;
+            }
+        }
     }//}}}
     
     //{{{ toString()
@@ -874,36 +895,37 @@ public class AdapterNode {
     void setParent(AdapterNode parent) {
         m_parentNode = parent;
         if (parent != null) {
+            m_lastRootDocument = m_rootDocument;
             m_rootDocument = m_parentNode.getOwnerDocument();
         } else {
+            m_lastRootDocument = m_rootDocument;
             m_rootDocument = null;
         }
     }//}}}
     
-    //{{{ updateNode()
-    /**
-     * Sets the node that this AdapterNode wraps. And
-     * updates the AdapterNode children. This should only
-     * be used when no change in document structure has
-     * been made. Only a change that requires reparsing.
-     */
-    protected void updateNode(Node node) {
-        Iterator itr = m_children.iterator();
-        int index = 0;
-        while (itr.hasNext()) {
-            AdapterNode child = (AdapterNode)itr.next();
-            
-            //node could be null if we haven't needed it yet.
-            //It's ok to do nothing in this case since the
-            //AdapterNode object will be created when it is
-            //needed.
-            if (child != null) {
-                child.updateNode(node.getChildNodes().item(index));
-            }
-            ++index;
-        }
-        m_domNode = node;
-    }//}}}
+   // //{{{ updateNode()
+   // /**
+   //  * Sets the node that this AdapterNode wraps. And
+   //  * updates the AdapterNode children. This should only
+   //  * be used when no change in document structure has
+   //  * been made. Only a change that requires reparsing.
+   //  */
+   // protected void updateNode(Node node) {
+   //     Iterator itr = m_children.iterator();
+   //     int index = 0;
+   //     while (itr.hasNext()) {
+   //         AdapterNode child = (AdapterNode)itr.next();
+   //         //node could be null if we haven't needed it yet.
+   //         //It's ok to do nothing in this case since the
+   //         //AdapterNode object will be created when it is
+   //         //needed.
+   //         if (child != null) {
+   //             child.updateNode(node.getChildNodes().item(index));
+   //         }
+   //         ++index;
+   //     }
+   //     m_domNode = node;
+   // }//}}}
     
     //}}}
     
@@ -1051,6 +1073,7 @@ public class AdapterNode {
     
     private AdapterNode m_parentNode;
     private XMLDocument m_rootDocument;
+    private XMLDocument m_lastRootDocument;
     
     private ArrayList m_children = new ArrayList();
     

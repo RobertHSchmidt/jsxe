@@ -17,6 +17,11 @@ common.add=Hinzuf�gen
 common.remove=Entfernen
 common.moveUp=Move Up
 common.moveDown=Move Down
+common.cut=Ausschneiden
+common.copy=Kopieren
+common.paste=Einf�gen
+common.find=Suchen...
+common.findnext=N�chsten suchen
 
 #}}}
 
