@@ -1,3 +1,8 @@
+02/17/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed a bug where indeces weren't being kept properly when serializing a
+      document that was larger than the write buffer size.
+
 02/16/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed a bug in AdapterNode that allowed you to remove the root document
