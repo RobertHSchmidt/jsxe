@@ -26,6 +26,7 @@
 		<property name="build.lib" value="${build.dir}/lib"/>
 		<property name="build.bin" value="${build.dir}/bin"/>
 		<property name="build.bin" value="${build.dir}/bin"/>
+    <property name="date.format" value="MM.dd.yyyy HH:mm:ss z"/>
 		<property name="build.javadocs" value="${build.docs}/api"/>
 		<property name="build.help" value="${build.docs}/help"/>
     <property name="javac.debug" value="on"/>
@@ -125,8 +126,8 @@
     <!-- set the build properties -->
     <propertyfile comment="${app.name}&apos;s build properties" file="${build.dest}/net/sourceforge/jsxe/build.properties">
 			<entry key="application.name" value="${app.name}"/>
-			<entry key="build.time" pattern="dd/MM/yyyy HH:mm" type="date" value="now"/>
-			<entry key="major.version" value="${major.version}"/>
+			<entry key="build.time" pattern="${date.format}" type="date" value="now"/>
+      <entry key="major.version" value="${major.version}"/>
 			<entry key="minor.version" value="${minor.version}"/>
 			<entry key="beta.version" value="${beta.version}"/>
       <entry key="build.version" value="${bugfix.version}"/>

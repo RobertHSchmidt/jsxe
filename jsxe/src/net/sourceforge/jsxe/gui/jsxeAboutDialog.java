@@ -73,9 +73,11 @@ public class jsxeAboutDialog extends AbstractAction {
      */
     public void actionPerformed(ActionEvent e) {
         String aboutMsg = 
-        jsXe.getAppTitle() + " " + jsXe.getVersion()+"\n"+
+        jsXe.getAppTitle() + " " + jsXe.getVersion()+" "+"\n"+
         "Java Simple XML Editor\n"+
-        "Copyright (C) 2002 Ian Lewis\n\n"+Messages.getMessage("about.message");
+        "Copyright (C) 2002 Ian Lewis\n"+
+        "Build Date:  "+jsXe.getBuildDate().toString()+"\n\n"+ 
+        Messages.getMessage("about.message");
         
         Object[] okButton = {Messages.getMessage("common.close")};
         JOptionPane.showOptionDialog(
