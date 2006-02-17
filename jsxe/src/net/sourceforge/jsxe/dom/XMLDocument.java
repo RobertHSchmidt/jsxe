@@ -607,19 +607,27 @@ public class XMLDocument {
         int index = 0;
         java.io.BufferedWriter outbuf = new java.io.BufferedWriter(new java.io.OutputStreamWriter(out, getProperty(ENCODING)), IO_BUFFER_SIZE);
         Segment seg = new Segment();
+        
         while (index < length) {
             int size = WRITE_SIZE;
             try {
                 size = Math.min(length - index, WRITE_SIZE);
-            } catch(NumberFormatException nf) {}
+            } catch(NumberFormatException nf) {
+                Log.log(Log.ERROR, this, nf);
+            }
             
            // out.write(m_content.getText(index, size).getBytes(getProperty(ENCODING)), index, size);
             m_content.getText(index, size, seg);
             
-            for (int i=0;i<size;i++) {
+            int startOffset = seg.offset;
+            int endOffset = size + seg.offset;
+            
+            for (int i=startOffset; i<endOffset; i++) {
                 if (seg.array[i]=='\n') {
                     outbuf.write(seg.array, seg.offset, i - seg.offset);
                     outbuf.write(newLine.toCharArray(), 0, newLine.length());
+                    
+                    //add 1 because of \n character,
                     seg.count -= i-seg.offset+1;
                     seg.offset += i-seg.offset+1;
                 }
