@@ -29,11 +29,10 @@ package sourceview.action;
 import sourceview.*;
 
 //{{{ jsXe classes
-
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.DocumentView;
-
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ AWT classes
@@ -67,7 +66,8 @@ public class EditPasteAction extends AbstractAction {
     //{{{ actionPerformed()
     
     public void actionPerformed(ActionEvent e) {
-                DocumentView view = jsXe.getActiveView().getDocumentView();
+        Log.log(Log.DEBUG, this, "sourceview paste");
+        DocumentView view = jsXe.getActiveView().getDocumentView();
         if (view instanceof SourceView) {
             SourceView sourceView = (SourceView)view;
             sourceView.getTextArea().paste();

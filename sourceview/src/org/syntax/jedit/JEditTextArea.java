@@ -99,6 +99,7 @@ public class JEditTextArea extends JComponent
 		painter.addMouseListener(new MouseHandler());
 		painter.addMouseMotionListener(new DragHandler());
 		addFocusListener(new FocusHandler());
+        addMouseWheelListener(new MouseWheelHandler());
 
 		// Load the defaults
 		setInputHandler(defaults.inputHandler);
@@ -2129,6 +2130,56 @@ public class JEditTextArea extends JComponent
 				return false;
 		}
 	}
+
+    //{{{ WheelScrollListener class
+    static class MouseWheelHandler implements MouseWheelListener {
+        
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            JEditTextArea textArea = (JEditTextArea)e.getSource();
+
+            /****************************************************
+             * move caret depending on pressed control-keys:
+             * - Alt: move cursor, do not select
+             * - Alt+(shift or control): move cursor, select
+             * - shift: scroll page
+             * - control: scroll single line
+             * - <else>: scroll 3 lines
+             ****************************************************/
+           // if (e.isAltDown()) {
+           //     moveCaret(textArea,e.getWheelRotation(),
+           //         e.isShiftDown() || e.isControlDown());
+           // }
+           // else if(e.isShiftDown())
+           //     scrollPage(textArea,e.getWheelRotation());
+           // else if(e.isControlDown())
+           //     scrollLine(textArea,e.getWheelRotation());
+           // else if(e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL)
+           //     scrollLine(textArea,e.getUnitsToScroll());
+           // else
+                scrollLine(textArea,3 * e.getWheelRotation());
+        }
+
+        private void scrollLine(JEditTextArea textArea, int amt) {
+            int newpos = textArea.getFirstLine() + amt;
+            newpos = Math.max(newpos, 0);
+            newpos = Math.min(newpos, textArea.getLineCount()-textArea.visibleLines);
+            textArea.setFirstLine(newpos);
+        }
+
+       // private void scrollPage(JEditTextArea textArea, int amt) {
+       //     if(amt > 0)
+       //         textArea.scrollDownPage();
+       //     else
+       //         textArea.scrollUpPage();
+       // }
+       // 
+       // private void moveCaret(JEditTextArea textArea, int amt, boolean select) {
+       //     if (amt < 0)
+       //         textArea.goToPrevLine(select);
+       //     else
+       //         textArea.goToNextLine(select);
+       // }
+    } //}}}
 
 	static
 	{
