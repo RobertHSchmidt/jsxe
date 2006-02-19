@@ -67,7 +67,6 @@ public class EditCopyAction extends AbstractAction {
     //{{{ actionPerformed()
     
     public void actionPerformed(ActionEvent e) {
-        Log.log(Log.DEBUG, this, "sourceview copy");
         DocumentView view = jsXe.getActiveView().getDocumentView();
         if (view instanceof SourceView) {
             SourceView sourceView = (SourceView)view;

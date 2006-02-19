@@ -107,14 +107,14 @@ public class SourceView extends JPanel implements DocumentView {
         
         m_plugin = plugin;
         
-        textarea = new JEditTextArea();
+        m_textarea = new JEditTextArea();
         
-        InputHandler handler = textarea.getInputHandler();
+        InputHandler handler = m_textarea.getInputHandler();
         handler.addKeyBinding("ENTER",new SourceViewEnter());
         handler.addKeyBinding("TAB",new SourceViewTab());
-        textarea.setInputHandler(handler);
+        m_textarea.setInputHandler(handler);
         
-        textarea.getPainter().setStyles(
+        m_textarea.getPainter().setStyles(
             new SyntaxStyle[] { SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.text.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.comment.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.doctype.color")),
@@ -130,11 +130,11 @@ public class SourceView extends JPanel implements DocumentView {
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.invalid.color")),
                                 });
        // textarea.setFont(new Font("Monospaced", 0, 12));
-        textarea.setCaretPosition(0);
+        m_textarea.setCaretPosition(0);
         //for test scripts
-        textarea.setName("SourceTextArea");
+        m_textarea.setName("SourceTextArea");
         
-        textarea.putClientProperty(InputHandler.SMART_HOME_END_PROPERTY, Boolean.TRUE);
+        m_textarea.putClientProperty(InputHandler.SMART_HOME_END_PROPERTY, Boolean.TRUE);
         
         //{{{ create popup menu
         
@@ -149,11 +149,11 @@ public class SourceView extends JPanel implements DocumentView {
         menuItem = new JMenuItem(jsXe.getAction("sourceview.find"));
         popup.add(menuItem);
         
-        textarea.setRightClickPopup(popup);
+        m_textarea.setRightClickPopup(popup);
         //}}}
         
         setLayout(new BorderLayout());
-        add(textarea, BorderLayout.CENTER);
+        add(m_textarea, BorderLayout.CENTER);
         
         //{{{ Construct Edit Menu
         m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
@@ -193,7 +193,7 @@ public class SourceView extends JPanel implements DocumentView {
             public void componentResized(ComponentEvent e) {}
             
             public void componentShown(ComponentEvent e) {
-                textarea.requestFocus();
+                m_textarea.requestFocus();
                 removeComponentListener(this);
             }
             
@@ -204,7 +204,7 @@ public class SourceView extends JPanel implements DocumentView {
     //{{{ getTextArea()
     
     public JEditTextArea getTextArea() {
-        return textarea;
+        return m_textarea;
     }//}}}
     
     //{{{ getHumanReadableName()
@@ -262,10 +262,10 @@ public class SourceView extends JPanel implements DocumentView {
         ensureDefaultProps(document);
         
         m_document = document;
-        textarea.setDocument(new SourceViewDocument(m_document));
-        textarea.setTokenMarker(new XMLTokenMarker());
+        m_textarea.setDocument(new SourceViewDocument(m_document));
+        m_textarea.setTokenMarker(new XMLTokenMarker());
         try {
-            textarea.getDocument().putProperty(PlainDocument.tabSizeAttribute, Integer.valueOf(document.getProperty(XMLDocument.INDENT, "4")));
+            m_textarea.getDocument().putProperty(PlainDocument.tabSizeAttribute, Integer.valueOf(document.getProperty(XMLDocument.INDENT, "4")));
         } catch (NumberFormatException e) {
             Log.log(Log.WARNING, this, e.getMessage());
         }
@@ -337,8 +337,8 @@ public class SourceView extends JPanel implements DocumentView {
         public void propertyChanged(XMLDocument source, String key, String oldValue) {
             if (key.equals(XMLDocument.INDENT)) {
                 try {
-                    textarea.getDocument().putProperty(PlainDocument.tabSizeAttribute, Integer.valueOf(source.getProperty(XMLDocument.INDENT, "4")));
-                    textarea.updateUI();
+                    m_textarea.getDocument().putProperty(PlainDocument.tabSizeAttribute, Integer.valueOf(source.getProperty(XMLDocument.INDENT, "4")));
+                    m_textarea.updateUI();
                 } catch (NumberFormatException e) {
                     Log.log(Log.WARNING, this, e.getMessage());
                 }
@@ -359,12 +359,12 @@ public class SourceView extends JPanel implements DocumentView {
         
         public void actionPerformed(ActionEvent evt) {
             
-            if (!textarea.isEditable()) {
-                textarea.getToolkit().beep();
+            if (!m_textarea.isEditable()) {
+                m_textarea.getToolkit().beep();
                 return;
             }
             
-            textarea.setSelectedText("\n"+getLastIndent());
+            m_textarea.setSelectedText("\n"+getLastIndent());
         }//}}}
         
         //{{{ getLastIndent()
@@ -373,10 +373,10 @@ public class SourceView extends JPanel implements DocumentView {
             boolean softTabs = Boolean.valueOf(m_document.getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
             int tabWidth = Integer.parseInt(m_document.getProperty(XMLDocument.INDENT));
             
-            int line = textarea.getCaretLine();
+            int line = m_textarea.getCaretLine();
 			StringBuffer indent = new StringBuffer();
             while (line >= 1) {
-                String text = textarea.getLineText(line);
+                String text = m_textarea.getLineText(line);
                 for (int i=0; i<text.length(); i++) {
                     char current = text.charAt(i);
                     if (!(current == ' ' ||
@@ -402,8 +402,8 @@ public class SourceView extends JPanel implements DocumentView {
         
         public void actionPerformed(ActionEvent evt) {
             
-            if (!textarea.isEditable())  {
-                textarea.getToolkit().beep();
+            if (!m_textarea.isEditable())  {
+                m_textarea.getToolkit().beep();
                 return;
             }
             
@@ -416,12 +416,12 @@ public class SourceView extends JPanel implements DocumentView {
                     for (int i=0; i<indent; i++) {
                         tab.append(" ");
                     }
-                    textarea.overwriteSetSelectedText(tab.toString());
+                    m_textarea.overwriteSetSelectedText(tab.toString());
                 } catch (NumberFormatException nfe) {
                     Log.log(Log.ERROR, this, nfe);
                 }
             } else {
-                textarea.overwriteSetSelectedText("\t");
+                m_textarea.overwriteSetSelectedText("\t");
             }
         }//}}}
         
@@ -436,7 +436,7 @@ public class SourceView extends JPanel implements DocumentView {
     private SourceViewXMLDocumentListener docListener = new SourceViewXMLDocumentListener();
     
     private DocumentBuffer m_document;
-    private JEditTextArea textarea;
+    private JEditTextArea m_textarea;
     
     private String m_searchString;
     private String m_replaceString;
