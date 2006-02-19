@@ -46,7 +46,20 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 //}}}
 
+//{{{ DOM classes
+import org.w3c.dom.*;
+import org.apache.xerces.dom3.DOMErrorHandler;
+import org.apache.xerces.dom3.DOMError;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+//}}}
+
+//{{{ jsXe classes
+import net.sourceforge.jsxe.dom.DOMOutput;
+import net.sourceforge.jsxe.dom.DOMSerializer;
+import net.sourceforge.jsxe.dom.DOMSerializerConfiguration;
 import net.sourceforge.jsxe.util.Log;
+//}}}
 
 //}}}
 
@@ -175,75 +188,156 @@ public class BufferHistory {
         }
     }//}}}
 
+   // //{{{ save()
+   // /**
+   //  * Saves the buffer history to a file on disk
+   //  * @param file the file to save the buffer history to
+   //  */
+   // public void save(File file) throws IOException {
+   //     Log.log(Log.NOTICE, this, "Saving buffer history: "+file.getName());
+   //     String lineSep = System.getProperty("line.separator");
+   //     
+   //     BufferedWriter out = new BufferedWriter(new FileWriter(file));
+   //     
+   //     out.write("<?xml version=\"1.0\"?>");
+   //     out.write(lineSep);
+   //     out.write("<recent>");
+   //     out.write(lineSep);
+   //     
+   //     int maxRecentFiles = 20;
+   //     try {
+   //         maxRecentFiles = Integer.parseInt(jsXe.getProperty("max.recent.files"));
+   //     } catch (NumberFormatException nfe) {
+   //         try {
+   //             maxRecentFiles = Integer.parseInt(jsXe.getDefaultProperty("max.recent.files"));
+   //         } catch (NumberFormatException nfe2) {}
+   //     }
+   //     
+   //     int index = 0;
+   //     Iterator historyItr = m_history.iterator();
+   //     while (historyItr.hasNext() && index < maxRecentFiles) {
+   //         
+   //         ++index;
+   //         
+   //         BufferHistoryEntry entry = (BufferHistoryEntry) historyItr.next();
+   //         out.write("<entry>");
+   //         out.write(lineSep);
+   //         
+   //         String path = entry.getPath();
+   //         out.write("<path><![CDATA[");
+   //         out.write(path);
+   //         out.write("]]></path>");
+   //         out.write(lineSep);
+   //         
+   //         String viewName = entry.getViewName();
+   //         out.write("<view>");
+   //         out.write(viewName);
+   //         out.write("</view>");
+   //         out.write(lineSep);
+   //         
+   //         Properties props = entry.getProperties();
+   //         Enumeration propertyItr = props.keys();
+   //         while (propertyItr.hasMoreElements()) {
+   //             String key = propertyItr.nextElement().toString();
+   //             if (!m_excludeKeys.contains(key)) {
+   //                 String value = props.getProperty(key);
+   //                 out.write("<property name=\"");
+   //                 out.write(key);
+   //                 out.write("\" value=\"");
+   //                 out.write(value);
+   //                 out.write("\"/>");
+   //                 out.write(lineSep);
+   //             }
+   //         }
+   //         
+   //         out.write("</entry>");
+   //         out.write(lineSep);
+   //     }
+   //     
+   //     out.write("</recent>");
+   //     out.close();
+   //     
+   // }//}}}
+    
     //{{{ save()
     /**
      * Saves the buffer history to a file on disk
      * @param file the file to save the buffer history to
      */
     public void save(File file) throws IOException {
-        Log.log(Log.NOTICE, this, "Saving buffer history: "+file.getName());
-        String lineSep = System.getProperty("line.separator");
-        
-        BufferedWriter out = new BufferedWriter(new FileWriter(file));
-        
-        out.write("<?xml version=\"1.0\"?>");
-        out.write(lineSep);
-        out.write("<recent>");
-        out.write(lineSep);
-        
-        int maxRecentFiles = 20;
         try {
-            maxRecentFiles = Integer.parseInt(jsXe.getProperty("max.recent.files"));
-        } catch (NumberFormatException nfe) {
+            Log.log(Log.NOTICE, this, "Saving buffer history: "+file.getName());
+            String lineSep = System.getProperty("line.separator");
+            
+            BufferedWriter out = new BufferedWriter(new FileWriter(file));
+            
+            Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            Node recent = document.appendChild(document.createElement("recent"));
+            
+            int maxRecentFiles = 20;
             try {
-                maxRecentFiles = Integer.parseInt(jsXe.getDefaultProperty("max.recent.files"));
-            } catch (NumberFormatException nfe2) {}
-        }
-        
-        int index = 0;
-        Iterator historyItr = m_history.iterator();
-        while (historyItr.hasNext() && index < maxRecentFiles) {
+                maxRecentFiles = Integer.parseInt(jsXe.getProperty("max.recent.files"));
+            } catch (NumberFormatException nfe) {
+                try {
+                    maxRecentFiles = Integer.parseInt(jsXe.getDefaultProperty("max.recent.files"));
+                } catch (NumberFormatException nfe2) {}
+            }
             
-            ++index;
-            
-            BufferHistoryEntry entry = (BufferHistoryEntry) historyItr.next();
-            out.write("<entry>");
-            out.write(lineSep);
-            
-            String path = entry.getPath();
-            out.write("<path><![CDATA[");
-            out.write(path);
-            out.write("]]></path>");
-            out.write(lineSep);
-            
-            String viewName = entry.getViewName();
-            out.write("<view>");
-            out.write(viewName);
-            out.write("</view>");
-            out.write(lineSep);
-            
-            Properties props = entry.getProperties();
-            Enumeration propertyItr = props.keys();
-            while (propertyItr.hasMoreElements()) {
-                String key = propertyItr.nextElement().toString();
-                if (!m_excludeKeys.contains(key)) {
-                    String value = props.getProperty(key);
-                    out.write("<property name=\"");
-                    out.write(key);
-                    out.write("\" value=\"");
-                    out.write(value);
-                    out.write("\"/>");
-                    out.write(lineSep);
+            int index = 0;
+            Iterator historyItr = m_history.iterator();
+            while (historyItr.hasNext() && index < maxRecentFiles) {
+                
+                ++index;
+                
+                BufferHistoryEntry entry = (BufferHistoryEntry) historyItr.next();
+                Node entryNode = recent.appendChild(document.createElement("entry"));
+                
+                String path = entry.getPath();
+                Node pathNode = entryNode.appendChild(document.createElement("path"));
+                pathNode.appendChild(document.createCDATASection(path));
+                
+                String viewName = entry.getViewName();
+                Node view = entryNode.appendChild(document.createElement("view"));
+                view.appendChild(document.createTextNode(viewName));
+                
+                Properties props = entry.getProperties();
+                Enumeration propertyItr = props.keys();
+                while (propertyItr.hasMoreElements()) {
+                    String key = propertyItr.nextElement().toString();
+                    if (!m_excludeKeys.contains(key)) {
+                        try {
+                            String value = props.getProperty(key);
+                            Element property = (Element)entryNode.appendChild(document.createElement("property"));
+                            property.setAttribute("name", key);
+                            property.setAttribute("value", value);
+                        } catch (ClassCastException e) {
+                            Log.log(Log.ERROR, this, e);
+                        }
+                    }
                 }
             }
             
-            out.write("</entry>");
-            out.write(lineSep);
+            //write the recent files
+            DOMSerializerConfiguration config = new DOMSerializerConfiguration();
+            config.setFeature(DOMSerializerConfiguration.SOFT_TABS, true);
+            config.setParameter(DOMSerializerConfiguration.INDENT,  new Integer(2));
+            config.setFeature(DOMSerializerConfiguration.FORMAT_XML, true);
+            config.setParameter(DOMSerializerConfiguration.ERROR_HANDLER, new DOMErrorHandler() {
+                public boolean handleError(DOMError error) {
+                    Log.log(Log.ERROR, this, error.getMessage());
+                    return true;
+                }
+            });
+            
+            
+            DOMSerializer serializer = new DOMSerializer(config);
+            serializer.setNewLine(lineSep);
+            serializer.write(document, new DOMOutput(out));
+            
+            out.close();
+        } catch (ParserConfigurationException e) {
+            Log.log(Log.ERROR, this, e);
         }
-        
-        out.write("</recent>");
-        out.close();
-        
     }//}}}
     
     //{{{ BufferHistoryEntry class
@@ -329,10 +423,12 @@ public class BufferHistory {
             }
             
             if (qName.equals("path")) {
+                Log.log(Log.DEBUG, this, "path: "+m_m_charData);
                 m_m_path = m_m_charData;
             }
             
             if (qName.equals("view")) {
+                Log.log(Log.DEBUG, this, "view: "+m_m_charData);
                 m_m_viewName = m_m_charData;
             }
             
