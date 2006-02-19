@@ -1,3 +1,10 @@
+02/19/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed bug 1433918. The JEditTextArea now creates a new set of defaults
+      for each instance of JEditTextArea. Each new text area was using the same
+      InputHandler instance so the key bindings for each text area were being
+      overridden.
+
 02/11/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added end of line markers and and option to turn them on or off.

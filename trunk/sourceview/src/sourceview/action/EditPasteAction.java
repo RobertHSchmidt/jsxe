@@ -66,7 +66,6 @@ public class EditPasteAction extends AbstractAction {
     //{{{ actionPerformed()
     
     public void actionPerformed(ActionEvent e) {
-        Log.log(Log.DEBUG, this, "sourceview paste");
         DocumentView view = jsXe.getActiveView().getDocumentView();
         if (view instanceof SourceView) {
             SourceView sourceView = (SourceView)view;

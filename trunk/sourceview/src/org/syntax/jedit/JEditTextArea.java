@@ -65,15 +65,14 @@ public class JEditTextArea extends JComponent
 	 */
 	public JEditTextArea()
 	{
-		this(TextAreaDefaults.getDefaults());
+		this(new TextAreaDefaults());
 	}
 
 	/**
 	 * Creates a new JEditTextArea with the specified settings.
 	 * @param defaults The default settings
 	 */
-	public JEditTextArea(TextAreaDefaults defaults)
-	{
+	public JEditTextArea(TextAreaDefaults defaults) {
 		// Enable the necessary events
 		enableEvents(AWTEvent.KEY_EVENT_MASK);
 
