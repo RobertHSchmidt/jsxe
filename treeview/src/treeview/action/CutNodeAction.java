@@ -51,6 +51,7 @@ import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.dom.AdapterNode;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //}}}
@@ -78,6 +79,7 @@ public class CutNodeAction extends AbstractAction {
     //{{{ actionPerformed()
   
     public void actionPerformed(ActionEvent e) {
+        Log.log(Log.DEBUG, this, "cut");
         DocumentView view = jsXe.getActiveView().getDocumentView();
         if (view instanceof DefaultView) {
             DefaultView defView = (DefaultView)view;
