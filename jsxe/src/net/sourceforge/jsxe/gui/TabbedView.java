@@ -60,6 +60,8 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
 //}}}
 
 //{{{ Java base classes
@@ -166,6 +168,7 @@ public class TabbedView extends JFrame {
             
             m_documentViews.add(newDocView);
             Component comp = newDocView.getDocumentViewComponent();
+            
             tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), comp);
             tabbedPane.setSelectedComponent(comp);
             

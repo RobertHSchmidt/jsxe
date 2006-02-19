@@ -386,6 +386,9 @@ public class DOMSerializer implements LSSerializer {
                 case Node.ELEMENT_NODE://{{{
                     String nodeName   = node.getLocalName();
                     String nodePrefix = node.getPrefix();
+                    if (nodeName == null) {
+                        nodeName = node.getNodeName();
+                    }
                     
                     if (formatting) {
                         //set to zero here for error handling (if doWrite throws exception).
@@ -482,7 +485,10 @@ public class DOMSerializer implements LSSerializer {
                             }
                             
                             //don't add a new line if there is only one text node child.
-                            if (formatting && !(children.getLength() == 1 && children.item(0).getNodeType() == Node.TEXT_NODE)) {
+                            if (formatting && !(children.getLength() == 1 &&
+                               (children.item(0).getNodeType() == Node.TEXT_NODE ||
+                                children.item(0).getNodeType() == Node.CDATA_SECTION_NODE)))
+                            {
                                 //set to zero here for error handling (if doWrite throws exception).
                                 column = 0;
                                 str = m_newLine + currentIndent;
@@ -563,14 +569,15 @@ public class DOMSerializer implements LSSerializer {
                     break;//}}}
                 case Node.CDATA_SECTION_NODE://{{{
                     if (config.getFeature(DOMSerializerConfiguration.CDATA_SECTIONS)) {
-                        if (formatting) {
-                            //set to zero here for error handling (if doWrite throws exception)
-                            column = 0;
-                            str = m_newLine + currentIndent;
-                            doWrite(writer, str, node, line, column, offset);
-                            column += currentIndent.length();
-                            offset += str.length();
-                        }
+                        //shouldn't add newlines for 
+                       // if (formatting) {
+                       //     //set to zero here for error handling (if doWrite throws exception)
+                       //     column = 0;
+                       //     str = m_newLine + currentIndent;
+                       //     doWrite(writer, str, node, line, column, offset);
+                       //     column += currentIndent.length();
+                       //     offset += str.length();
+                       // }
                         str = "<![CDATA[";
                         doWrite(writer, str, node, line, column, offset);
                         column += str.length();
