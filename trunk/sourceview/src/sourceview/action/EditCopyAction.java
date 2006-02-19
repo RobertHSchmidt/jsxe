@@ -29,11 +29,10 @@ package sourceview.action;
 import sourceview.*;
 
 //{{{ jsXe classes
-
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.DocumentView;
-
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ AWT classes
@@ -68,6 +67,7 @@ public class EditCopyAction extends AbstractAction {
     //{{{ actionPerformed()
     
     public void actionPerformed(ActionEvent e) {
+        Log.log(Log.DEBUG, this, "sourceview copy");
         DocumentView view = jsXe.getActiveView().getDocumentView();
         if (view instanceof SourceView) {
             SourceView sourceView = (SourceView)view;
