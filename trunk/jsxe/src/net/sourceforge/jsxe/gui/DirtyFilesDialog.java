@@ -73,7 +73,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 	private JList dirtyFilesJList;
 	private DefaultListModel dirtyFilesJListModel;
 	private ArrayList newDirtyBuffers;
-	private String[] dirtyFiles;	
+	private String[] dirtyFiles;
 	private JPanel bottomJPanel;
 	private JButton cancelJButton;
 	private JPanel centerJPanel;
@@ -87,24 +87,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 	private boolean cancelFlag = false;  //if someone hits the cancel button, the exit doesn't go ahead
 	private static final String m_geometryName = "dirtyfiles";
 	
-	 //{{{ getCancelFlag()
-    /**
-     * Gets the current value of the cancelFlag
-     * @return a boolean which stores the current value of cancelFlag
-     */
-	public boolean  getCancelFlag(){
-		return cancelFlag;
-	}//}}}
 		
-	//{{{ setCancelFlag()
-    /**
-     * Sets the current value of the cancelFlag
-     * @param newValue The new value for the cancelFlag
-     */
-	public void setCancelFlag(boolean newValue){
-		cancelFlag = newValue;
-	}//}}}
-
 	//{{{ DirtyFilesDialog constructor
     /**
      * Constructor for the DirtyFilesDialog class
@@ -126,8 +109,27 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		dirtyFilesJList = new JList(dirtyFilesJListModel);
 		dirtyFilesJList.setLayoutOrientation(JList.VERTICAL);
 		initComponents(dirtyFilesJList);
+		selectAllJButtonActionPerformed(); // select all the files for convenience
 	}//}}}
-
+	
+	//{{{ setCancelFlag()
+    /**
+     * Sets the current value of the cancelFlag
+     * @param newValue The new value for the cancelFlag
+     */
+	public void setCancelFlag(boolean newValue){
+		cancelFlag = newValue;
+	}//}}}
+	
+	//{{{ getCancelFlag()
+    /**
+     * Gets the current value of the cancelFlag
+     * @return a boolean which stores the current value of cancelFlag
+     */
+	public boolean  getCancelFlag(){
+		return cancelFlag;
+	}//}}}
+	
 	//{{{ getDirtyFileNames()
     /**
      * Gets array of dirty file names from the dirty buffers list
@@ -189,7 +191,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		selectAllJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.SelectAll.Title"));
 		selectAllJButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				selectAllJButtonActionPerformed(evt);
+				selectAllJButtonActionPerformed();
 			}
 		});
 		buttons.add(selectAllJButton);
@@ -197,7 +199,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		saveSelectedJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.SaveSelected.Title"));
 		saveSelectedJButton	.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				saveSelectedJButtonActionPerformed(evt);
+				saveSelectedJButtonActionPerformed();
 			}
 		});
 		buttons.add(saveSelectedJButton);
@@ -206,7 +208,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		
 		discardSelectedJButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				discardSelectedJButtonActionPerformed(evt);
+				discardSelectedJButtonActionPerformed();
 			}
 		});
 		buttons.add(discardSelectedJButton);
@@ -214,7 +216,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		cancelJButton.setText(Messages.getMessage("common.cancel"));
 		cancelJButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				cancelJButtonActionPerformed(evt);
+				cancelJButtonActionPerformed();
 			}
 		});
 		buttons.add(cancelJButton);
@@ -232,7 +234,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
      * Does actions for clicking on the Select All JButton
      * @param evt ActionEvent of user clicking on Select All
      */
-	private void selectAllJButtonActionPerformed(ActionEvent evt) {
+	private void selectAllJButtonActionPerformed() {
 		int size = dirtyFilesJListModel.getSize();
 		int [] selectedIndices = new int[size];
 		for(int i= 0; i< size; i++){
@@ -247,12 +249,15 @@ public class DirtyFilesDialog extends EnhancedDialog {
      * Does actions for clicking on the Save Selected JButton
      * @param evt ActionEvent of user clicking on Save Selected JButton
      */
-	private void saveSelectedJButtonActionPerformed(ActionEvent evt) {
+	private void saveSelectedJButtonActionPerformed() {
 		try {
+			boolean allDiscardFlag = false;
 			Object[] selected = dirtyFilesJList.getSelectedValues();
 			int counter = 0;
 			boolean closeSuccessful = true;
 			boolean stillOK = true;
+			
+			boolean saveAll = (selected.length == dirtyFiles.length);
 			
 			for (Iterator it = newDirtyBuffers.iterator(); it.hasNext() && closeSuccessful;) {
 				DocumentBuffer db = (DocumentBuffer) it.next();
@@ -278,8 +283,8 @@ public class DirtyFilesDialog extends EnhancedDialog {
 					}
 					counter++;
 				}
-			}
-			if (selected.length == (dirtyFiles.length+1) && stillOK) {
+			} 
+			if (saveAll) {
 				ok();
 			}
 		} catch (IOException e) {
@@ -293,42 +298,39 @@ public class DirtyFilesDialog extends EnhancedDialog {
      * Does actions for clicking on the Discard Selected JButton
      * @param evt ActionEvent of user clicking on Discard Selected JButton
      */
-	private void discardSelectedJButtonActionPerformed(ActionEvent evt) {
+	private void discardSelectedJButtonActionPerformed() {
 			
 		boolean allDiscardFlag = false;
 		
 		Object[] selected = dirtyFilesJList.getSelectedValues();
 		
-		if (selected.length == dirtyFiles.length){allDiscardFlag = true;}
-
+		boolean discardAll = (selected.length == dirtyFiles.length);
+		
 		for (int i = 0; i < selected.length ; i++) {
 			test:
 				for (Iterator it = newDirtyBuffers.iterator(); it.hasNext() && selected[i]!=null;) {
-				DocumentBuffer db = (DocumentBuffer) it.next();
-				String unsavedName = db.getName();	
-				
-				//match the relevant unsaved file name from the list with it's buffer
-				if (selected[i].equals(unsavedName)) {					
-					//removeUnsavedFileFromList(counter, newDirtyBuffers.size(),
-					//		unsavedName);
-					try {
-						if (jsXe.closeDocumentBuffer(newTabbedView, db, false)) {
-							removeUnsavedFileFromList(unsavedName);
-							removeUnsavedFileFromDirtyBufferList(unsavedName);
+					DocumentBuffer db = (DocumentBuffer) it.next();
+					String unsavedName = db.getName();	
+					
+					//match the relevant unsaved file name from the list with it's buffer
+					if (selected[i].equals(unsavedName)) {					
+						//removeUnsavedFileFromList(counter, newDirtyBuffers.size(),
+						//		unsavedName);
+						try {
+							if (jsXe.closeDocumentBuffer(newTabbedView, db, false)) {
+								removeUnsavedFileFromList(unsavedName);
+								removeUnsavedFileFromDirtyBufferList(unsavedName);
+							}
+						} catch (IOException e) {
+							Log.log(Log.ERROR, this, e);
+							JOptionPane.showMessageDialog(newTabbedView, e.getMessage(), Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
 						}
-					} catch (IOException e) {
-						Log.log(Log.ERROR, this, e);
-						JOptionPane.showMessageDialog(newTabbedView, e.getMessage(), Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+						continue test;
 					}
-					continue test;
 				}
-			}
 		}
 		
-		if(selected.length == (dirtyFiles.length+1)){
-			ok();
-		}
-		if(allDiscardFlag == true){
+		if (discardAll) {
 			ok();
 		}
 	}//}}}
@@ -338,7 +340,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
      * Does actions for clicking on the Cancel JButton
      * @param evt ActionEvent of user clicking on Cancel JButton
      */ 
-	private void cancelJButtonActionPerformed(ActionEvent evt) {
+	private void cancelJButtonActionPerformed() {
 	//	Log.log(Log.NOTICE, DirtyFilesDialog.class,
 	//			"351 using the dirtyFilesDialog cancel button ");
 		setCancelFlag(true);

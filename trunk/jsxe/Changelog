@@ -3,6 +3,8 @@
     * Fixed bug 143401802. BufferHistory now builds a dom and writes it out
       using DOMSerializer which ensures that the document will be well-formed
       and that special characters will be written out properly.
+    * Fixed bug 1434017. The dirty files dialog wasn't closing the dialog
+      properly when you save all the files.
 
 02/17/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
