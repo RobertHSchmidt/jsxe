@@ -33,11 +33,11 @@ package net.sourceforge.jsxe.dom;
 
 //{{{ DOM classes
 import org.w3c.dom.DOMException;
-import org.apache.xerces.dom3.DOMConfiguration;
-import org.apache.xerces.dom3.DOMError;
-import org.apache.xerces.dom3.DOMErrorHandler;
-import org.apache.xerces.dom3.DOMLocator;
-import org.apache.xerces.dom3.DOMStringList;
+import org.w3c.dom.DOMConfiguration;
+import org.w3c.dom.DOMError;
+import org.w3c.dom.DOMErrorHandler;
+import org.w3c.dom.DOMLocator;
+import org.w3c.dom.DOMStringList;
 //}}}
 
 //{{{ Java classes

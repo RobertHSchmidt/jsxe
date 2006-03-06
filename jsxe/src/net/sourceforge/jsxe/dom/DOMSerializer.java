@@ -49,10 +49,10 @@ import org.w3c.dom.Notation;
 import org.w3c.dom.ls.LSSerializer;
 import org.w3c.dom.ls.LSSerializerFilter;
 import org.w3c.dom.ls.LSOutput;
-import org.apache.xerces.dom3.DOMConfiguration;
-import org.apache.xerces.dom3.DOMLocator;
-import org.apache.xerces.dom3.DOMError;
-import org.apache.xerces.dom3.DOMErrorHandler;
+import org.w3c.dom.DOMConfiguration;
+import org.w3c.dom.DOMLocator;
+import org.w3c.dom.DOMError;
+import org.w3c.dom.DOMErrorHandler;
 //}}}
 
 //{{{ Java base classes
