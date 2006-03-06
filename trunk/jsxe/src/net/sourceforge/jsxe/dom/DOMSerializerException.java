@@ -32,7 +32,7 @@ belongs to.
 */
 
 //{{{ DOM classes
-import org.apache.xerces.dom3.DOMError;
+import org.w3c.dom.DOMError;
 //}}}
 
 //}}}

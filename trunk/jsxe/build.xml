@@ -184,7 +184,7 @@
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Generates the documentation ====================== -->
-	<target depends="prepare-doc, prepare-src" name="doc">
+	<target depends="prepare-doc, prepare-src" name="doc" description="Build documentation">
 		<copy file="COPYING" tofile="${build.dir}/doc/COPYING"/>
 		<copy file="README" tofile="${build.dir}/doc/README"/>
 		<copy file="TODO" tofile="${build.dir}/doc/TODO"/>

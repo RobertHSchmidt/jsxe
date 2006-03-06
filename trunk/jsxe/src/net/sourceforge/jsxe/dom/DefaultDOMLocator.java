@@ -33,7 +33,7 @@ belongs to.
 
 //{{{ DOM classes
 import org.w3c.dom.Node;
-import org.apache.xerces.dom3.DOMLocator;
+import org.w3c.dom.DOMLocator;
 //}}}
 
 //}}}

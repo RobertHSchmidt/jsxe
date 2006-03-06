@@ -48,8 +48,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 //{{{ DOM classes
 import org.w3c.dom.*;
-import org.apache.xerces.dom3.DOMErrorHandler;
-import org.apache.xerces.dom3.DOMError;
+import org.w3c.dom.DOMErrorHandler;
+import org.w3c.dom.DOMError;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 //}}}
@@ -323,7 +323,7 @@ public class BufferHistory {
             config.setParameter(DOMSerializerConfiguration.INDENT,  new Integer(2));
             config.setFeature(DOMSerializerConfiguration.FORMAT_XML, true);
             config.setParameter(DOMSerializerConfiguration.ERROR_HANDLER, new DOMErrorHandler() {
-                public boolean handleError(DOMError error) {
+                public boolean handleError(DOMError error) {               
                     Log.log(Log.ERROR, this, error.getMessage());
                     return true;
                 }

@@ -74,6 +74,11 @@ import java.text.ParseException;
  */
 public class jsXe {
     
+    //{{{ static instance variables
+    public static final String MIN_JAVA_VERSION = "1.4.2";
+    public static final String MIN_XERCES_VERSION = "Xerces-J 2.7.0";
+    //}}}
+    
     //{{{ The main() method of jsXe
     
     /**
@@ -87,11 +92,10 @@ public class jsXe {
             
             //{{{ Check the java version
             String javaVersion = System.getProperty("java.version");
-            if(javaVersion.compareTo("1.4.2") < 0)
+            if(javaVersion.compareTo(MIN_JAVA_VERSION) < 0)
             {
-                System.err.println(getAppTitle() + ": ERROR: " + getAppTitle() + getVersion());
                 System.err.println(getAppTitle() + ": ERROR: You are running Java version " + javaVersion + ".");
-                System.err.println(getAppTitle() + ": ERROR:" + getAppTitle()+" requires Java 1.4.2 or later.");
+                System.err.println(getAppTitle() + ": ERROR:" + getAppTitle()+" requires Java "+MIN_JAVA_VERSION+" or later.");
                 System.exit(1);
             }//}}}
             
@@ -199,11 +203,10 @@ public class jsXe {
             
             //{{{ check Xerces version
             String xercesVersion = org.apache.xerces.impl.Version.getVersion();
-            String reqVersion = "Xerces-J 2.6.2";
-            if (MiscUtilities.compareStrings(xercesVersion, reqVersion, false) != 0) {
-                String msg = Messages.getMessage("No.Xerces.Error", new String[] { reqVersion });
+            if (MiscUtilities.compareStrings(xercesVersion, MIN_XERCES_VERSION, false) < 0) {
+                String msg = Messages.getMessage("No.Xerces.Error", new String[] { MIN_XERCES_VERSION });
                 Log.log(Log.ERROR, jsXe.class, msg);
-                JOptionPane.showMessageDialog(null, msg, Messages.getMessage("No.Xerces.Error.Title", new String[] { reqVersion }), JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, msg, Messages.getMessage("No.Xerces.Error.Title", new String[] { MIN_XERCES_VERSION }), JOptionPane.WARNING_MESSAGE);
                 System.exit(1);
             }
             progressScreen.updateSplashScreenDialog(20);

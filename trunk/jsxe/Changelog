@@ -1,3 +1,7 @@
+02/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated to work with xerces 2.8.0
+
 02/19/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed bug 143401802. BufferHistory now builds a dom and writes it out
