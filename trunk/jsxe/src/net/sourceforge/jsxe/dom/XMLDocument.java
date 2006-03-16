@@ -68,6 +68,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.util.*;
 import javax.swing.text.Segment;
+import java.net.URI;
 //}}}
 
 //}}}
@@ -131,11 +132,12 @@ public class XMLDocument {
     /**
      * Creates a new XMLDocument for a document that can be read by the given
      * Reader.
+     * @param uri the uri for the location of this document. Can be null.
      * @param reader the Reader object to read the XML document from.
      * @throws IOException if there was a problem reading the document
      */
-    public XMLDocument(Reader reader) throws IOException {
-        this(reader, null);
+    public XMLDocument(URI uri, Reader reader) throws IOException {
+        this(uri, reader, null);
     }//}}}
     
     //{{{ XMLDocument constructor
@@ -147,9 +149,10 @@ public class XMLDocument {
      *                 entities.
      * @throws IOException if there was a problem reading the document
      */
-    public XMLDocument(Reader reader, EntityResolver resolver) throws IOException {
+    public XMLDocument(URI uri, Reader reader, EntityResolver resolver) throws IOException {
         m_entityResolver = resolver;
         setDefaultProperties();
+        setURI(uri);
         setModel(reader);
         reader.close();
     }//}}}
@@ -689,6 +692,26 @@ public class XMLDocument {
         m_entityResolver = resolver;
     }//}}}
     
+    //{{{ setURI()
+    /**
+     * Sets the URI for the location of this document.
+     * @param uri the uri specifying the location of this document. Can be null.
+     * @since jsXe 0.4 pre4
+     */
+    public void setURI(URI uri) {
+        m_uri = uri;
+    }//}}}
+    
+    //{{{ getURI()
+    /**
+     * Gets the URI for the location of this document.
+     * @return the uri specifying the location of this document. Can be null.
+     * @since jsXe 0.4 pre4
+     */
+    public URI getURI() {
+        return m_uri;
+    }//}}}
+    
     //{{{ insertText()
     /**
      * Inserts text into the document at the specified location
@@ -1052,7 +1075,7 @@ public class XMLDocument {
      * @since jsXe 0.4 pre1
      */
     public void parseDocument() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
-        Log.log(Log.MESSAGE, this, "Parsing document");
+        Log.log(Log.MESSAGE, this, (m_uri != null ? "Parsing Document: "+m_uri.toString() : "Parsing Document"));
         
         Boolean validating = Boolean.valueOf(getProperty(IS_VALIDATING));
         
@@ -1084,7 +1107,7 @@ public class XMLDocument {
         //}}}
         
         /*
-        Parsing the document twice stinks.
+        TODO: Parsing the document twice stinks.
         Need to fix this in the somewhat near future.
         */
         
@@ -1101,7 +1124,7 @@ public class XMLDocument {
      * update completion info and parse errors.
      */
     public void parseWithoutUpdate() {
-        Log.log(Log.MESSAGE, this, "Validating Document");
+        Log.log(Log.MESSAGE, this, (m_uri != null ? "Validating Document: "+m_uri.toString() : "Validating Document"));
         
         m_parseErrors = new ArrayList();
         m_parseFatalErrors = new ArrayList();
@@ -1814,6 +1837,8 @@ public class XMLDocument {
     private EntityResolver m_entityResolver;
     private ArrayList listeners = new ArrayList();
     private Properties props = new Properties();
+    
+    private URI m_uri = null;
     
     private boolean m_formattedLastTime = false;
     

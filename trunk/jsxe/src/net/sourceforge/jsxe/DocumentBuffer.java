@@ -104,7 +104,7 @@ public class DocumentBuffer extends XMLDocument {
      * @throws IOException if there was a problem reading the file
      */
     DocumentBuffer(File file) throws IOException {
-        super(new FileReader(file));
+        super(file.toURI(), new FileReader(file));
         setEntityResolver(new DocumentBufferResolver());
         m_file = file;
         m_name = file.getName();
@@ -119,7 +119,7 @@ public class DocumentBuffer extends XMLDocument {
      * @throws IOException if there is a problem using the reader
      */
     DocumentBuffer(Reader reader) throws IOException {
-        super(reader);
+        super(null, reader);
         setEntityResolver(new DocumentBufferResolver());
         m_file = null;
         m_name = getUntitledLabel();
@@ -408,6 +408,7 @@ public class DocumentBuffer extends XMLDocument {
                 }
                 
                 m_file = file;
+                setURI(m_file.toURI());
                 setDirty(false);
                 
                 fireBufferSaved();
