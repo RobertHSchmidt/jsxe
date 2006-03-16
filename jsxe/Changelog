@@ -1,3 +1,10 @@
+03/16/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added a URI to the XMLDocument class to allow the XMLDocument to know
+      where the document is located.
+    * Added some framework for support introspection for built in document
+      types.
+
 02/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated to work with xerces 2.8.0
