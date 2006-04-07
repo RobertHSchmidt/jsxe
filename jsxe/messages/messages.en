@@ -64,6 +64,7 @@ Global.Options.network-cache=Ask first, then cache remote files
 Global.Options.network-always=Always download without asking
 Global.Options.network=DTD and schema downloading:
 Document.Options.Title=XML Document Options
+Document.Options.Line.Separator=Line Separator:
 Document.Options.Encoding=Encoding:
 Document.Options.Encoding.ToolTip=The encoding that jsXe uses to write the file.
 Document.Options.Indent.Width=Indent width:

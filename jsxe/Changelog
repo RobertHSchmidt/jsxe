@@ -2,6 +2,7 @@
 
     * Added a null menu item to the recent files menu for when there are
       no recent files in the list.
+    * Added an option to allow the user to specify the line separator.
 
 03/16/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
