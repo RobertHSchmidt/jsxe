@@ -52,8 +52,6 @@ import org.xml.sax.helpers.DefaultHandler;
 //}}}
 
 //{{{ Xerces classes
-import org.apache.xerces.dom3.DOMError;
-import org.apache.xerces.dom3.DOMErrorHandler;
 import org.apache.xerces.impl.xs.XSDDescription;
 import org.apache.xerces.impl.xs.XSParticleDecl;
 import org.apache.xerces.xs.*;
