@@ -537,22 +537,41 @@ public class DocumentBuffer extends XMLDocument {
             
             setLayout(layout);
             
+            //Set up line separator combo-box
+            m_m_lineSeparators.put("Unix (\\n)", "\n");
+            m_m_lineSeparators.put("DOS/Windows (\\r\\n)", "\r\n");
+            m_m_lineSeparators.put("MacOS (\\r)", "\r");
+            JLabel lineSeparatorLabel = new JLabel(Messages.getMessage("Document.Options.Line.Separator"));
+            lineSeparatorLabel.setToolTipText(Messages.getMessage("Document.Options.Line.Separator.ToolTip"));
+            m_m_lineSeparatorComboBox = new JComboBox(new Vector(m_m_lineSeparators.keySet()));
+            m_m_lineSeparatorComboBox.setName("LineSeparatorComboBox");
+            m_m_lineSeparatorComboBox.setToolTipText(Messages.getMessage("Document.Options.Line.Separator.ToolTip"));
+            
+            String lineSep = getProperty(LINE_SEPARATOR);
+            if (lineSep.equals("\r\n")) {
+                m_m_lineSeparatorComboBox.setSelectedItem("DOS/Windows (\\r\\n)");
+            } else if (lineSep.equals("\r")) {
+                m_m_lineSeparatorComboBox.setSelectedItem("MacOS (\\r)");
+            } else {
+                m_m_lineSeparatorComboBox.setSelectedItem("Unix (\\n)");
+            }
+            
             //set up the encoding combo-box.
-            supportedEncodings.add("US-ASCII");
-            supportedEncodings.add("ISO-8859-1");
-            supportedEncodings.add("UTF-8");
+            m_m_supportedEncodings.add("US-ASCII");
+            m_m_supportedEncodings.add("ISO-8859-1");
+            m_m_supportedEncodings.add("UTF-8");
            // supportedEncodings.add("UTF-16BE");
            // supportedEncodings.add("UTF-16LE");
            // supportedEncodings.add("UTF-16");
             
             JLabel encodingLabel = new JLabel(Messages.getMessage("Document.Options.Encoding"));
             encodingLabel.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
-            encodingComboBox = new JComboBox(supportedEncodings);
+            encodingComboBox = new JComboBox(m_m_supportedEncodings);
             encodingComboBox.setName("EncodingComboBox");
             encodingComboBox.setEditable(false);
             encodingComboBox.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
             
-            Enumeration encodings = supportedEncodings.elements();
+            Enumeration encodings = m_m_supportedEncodings.elements();
             while (encodings.hasMoreElements()) {
                 String nextEncoding = (String)encodings.nextElement();
                 if (getProperty(ENCODING).equals(nextEncoding)) {
@@ -585,6 +604,28 @@ public class DocumentBuffer extends XMLDocument {
             m_m_validatingCheckBox = new JCheckBox(Messages.getMessage("Document.Options.Validate"), validating);
             
            // formatCheckBox.setEnabled(!whitespace);
+            
+            constraints.gridy      = gridY;
+            constraints.gridx      = 0;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
+            layout.setConstraints(lineSeparatorLabel, constraints);
+            add(lineSeparatorLabel);
+            
+            constraints.gridy      = gridY++;
+            constraints.gridx      = 1;
+            constraints.gridheight = 1;
+            constraints.gridwidth  = 1;
+            constraints.weightx    = 1.0f;
+            constraints.fill       = GridBagConstraints.BOTH;
+            constraints.insets     = new Insets(1,0,1,0);
+            
+            layout.setConstraints(m_m_lineSeparatorComboBox, constraints);
+            add(m_m_lineSeparatorComboBox);
             
             constraints.gridy      = gridY;
             constraints.gridx      = 0;
@@ -686,6 +727,11 @@ public class DocumentBuffer extends XMLDocument {
         //{{{ save()
         
         public void save() {
+            if (!(m_m_lineSeparators.get(m_m_lineSeparatorComboBox.getSelectedItem()).toString().equals(getProperty(LINE_SEPARATOR)))) {
+                setDirty(true);
+                setProperty(LINE_SEPARATOR, m_m_lineSeparators.get(m_m_lineSeparatorComboBox.getSelectedItem()).toString());
+            }
+            
             if (!String.valueOf(formatCheckBox.isSelected()).equals(getProperty(XMLDocument.FORMAT_XML))) {
                 setDirty(true);
                 setProperty(XMLDocument.FORMAT_XML, String.valueOf(formatCheckBox.isSelected()));
@@ -756,10 +802,12 @@ public class DocumentBuffer extends XMLDocument {
         private DocumentBuffer m_buffer;
         private JCheckBox m_m_softTabsCheckBox;
         private JComboBox encodingComboBox;
+        private JComboBox m_m_lineSeparatorComboBox;
         private JComboBox indentComboBox;
         private JCheckBox whitespaceCheckBox;
         private JCheckBox m_m_validatingCheckBox;
-        private final Vector supportedEncodings = new Vector(6);
+        private final Vector m_m_supportedEncodings = new Vector(6);
+        private final HashMap m_m_lineSeparators = new HashMap(3);
         private JCheckBox formatCheckBox;
         //}}}
     
