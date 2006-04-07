@@ -398,6 +398,11 @@ public class TabbedView extends JFrame {
             addMenu.add(new JMenuItem(new OpenRecentFileAction(this, entry)));
             index++;
         }
+        if (addMenu.getItemCount() == 0) {
+            JMenuItem nullItem = new JMenuItem(Messages.getMessage("File.Recent.None"));
+            nullItem.setEnabled(false);
+            addMenu.add(nullItem);
+        }
     }//}}}
     
     //{{{ init()
