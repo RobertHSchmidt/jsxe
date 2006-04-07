@@ -74,7 +74,6 @@ Document.Options.Validate=Validate if DTD or Schema Available
 Document.Options.Validate.ToolTip=If this box is checked jsXe will validate the XML document.
 Document.Options.Soft.Tabs=Soft tabs (emulated with spaces)
 Document.Options.Soft.Tabs.ToolTip=If this box is checked then tab characters are replaced by spaces.
-
 #}}}
 
 #{{{ Menu Items
@@ -89,6 +88,7 @@ Help.Menu=Help
 File.New=New
 File.Open=Open...
 File.Recent=Recent Files
+File.Recent.None=No Recent Files
 File.Save=Save
 File.SaveAs=Save As...
 File.Reload=Reload
