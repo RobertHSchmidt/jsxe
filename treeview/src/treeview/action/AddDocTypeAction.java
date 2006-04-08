@@ -220,6 +220,8 @@ public class AddDocTypeAction extends AbstractAction {
             
             loadGeometry(this, m_geometryName);
             
+            updateSize();
+            
             show();
             
         }//}}}
@@ -298,6 +300,23 @@ public class AddDocTypeAction extends AbstractAction {
         }//}}}
         
         //{{{ Private Members
+        
+        //updateSize()
+        private void updateSize() {
+            Dimension currentSize = getSize();
+            Dimension requestedSize = getPreferredSize();
+            Dimension newSize = new Dimension(
+                Math.max(currentSize.width,requestedSize.width),
+                Math.max(currentSize.height,requestedSize.height)
+            );
+            if(newSize.width < 300)
+                newSize.width = 300;
+            if(newSize.height < 150)
+                newSize.height = 150;
+            setSize(newSize);
+            validate();
+        } //}}}
+        
         private JTextField m_nameField;
         private JTextField m_publicIDField;
         private JTextField m_systemIDField;
