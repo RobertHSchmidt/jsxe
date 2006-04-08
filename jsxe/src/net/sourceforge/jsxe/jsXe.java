@@ -305,7 +305,7 @@ public class jsXe {
             TabbedView tabbedview = null;
             DocumentBuffer defaultBuffer = null;
             try {
-                defaultBuffer = new DocumentBuffer(new StringReader(getDefaultDocument()));
+                defaultBuffer = new DocumentBuffer();
                 m_buffers.add(defaultBuffer);
                 if (viewname == null) {
                     tabbedview = new TabbedView(defaultBuffer);
@@ -600,7 +600,7 @@ public class jsXe {
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
     public static boolean openXMLDocument(TabbedView view, String doc) throws IOException {
-        return openXMLDocument(view, new StringReader(doc));
+        return openXMLDocument(view, new ByteArrayInputStream(doc.getBytes("UTF-8")));
     }//}}}
     
     //{{{ openXMLDocument()
@@ -608,13 +608,13 @@ public class jsXe {
      * Attempts to open an XML document in the form of a Reader object as an
      * untitled document.
      * @param view The view to open the document in.
-     * @param reader The Reader document to open.
+     * @param stream The stream to the document.
      * @return true if the file is opened successfully.
      * @throws IOException if the document does not validate or cannot be opened for some reason.
      */
-    public static boolean openXMLDocument(TabbedView view, Reader reader) throws IOException {
+    public static boolean openXMLDocument(TabbedView view, InputStream stream) throws IOException {
         Log.log(Log.NOTICE, jsXe.class, "Loading Untitled Document");
-        DocumentBuffer buffer = new DocumentBuffer(reader);
+        DocumentBuffer buffer = new DocumentBuffer(stream);
         try {
             m_buffers.add(buffer);
             view.addDocumentBuffer(buffer);
@@ -778,8 +778,14 @@ public class jsXe {
      * as XML documents cannot be blank files.
      * @return jsXe's default XML document.
      */
-    public static String getDefaultDocument() {
-        return DefaultDocument;
+    public static InputStream getDefaultDocument() {
+        try {
+            return new ByteArrayInputStream(DefaultDocument.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            Log.log(Log.ERROR, jsXe.class, "Broken JVM doesn't support UTF-8");
+            Log.log(Log.ERROR, jsXe.class, e);
+            return null;
+        }
     }//}}}
     
     //{{{ getDocumentBuffers()
@@ -1163,10 +1169,11 @@ public class jsXe {
             JLabel maxRecentFilesLabel = new JLabel(Messages.getMessage("Global.Options.Max.Recent.Files"));
             maxRecentFilesLabel.setToolTipText(Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
             
-            Vector sizes = new Vector(3);
+            Vector sizes = new Vector(4);
             sizes.add("10");
             sizes.add("20");
             sizes.add("30");
+            sizes.add("40");
             maxRecentFilesComboBox = new JComboBox(sizes);
             maxRecentFilesComboBox.setEditable(true);
             maxRecentFilesComboBox.setSelectedItem(Integer.toString(maxRecentFiles));

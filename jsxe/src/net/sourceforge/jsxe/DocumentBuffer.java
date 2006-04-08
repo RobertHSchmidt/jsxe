@@ -93,7 +93,7 @@ public class DocumentBuffer extends XMLDocument {
      * @throws IOException if there was a problem reading the document
      */
     DocumentBuffer() throws IOException {
-        this(new StringReader(jsXe.getDefaultDocument()));
+        this(jsXe.getDefaultDocument());
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -104,7 +104,7 @@ public class DocumentBuffer extends XMLDocument {
      * @throws IOException if there was a problem reading the file
      */
     DocumentBuffer(File file) throws IOException {
-        super(file.toURI(), new FileReader(file));
+        super(file.toURI(), new FileInputStream(file));
         setEntityResolver(new DocumentBufferResolver());
         m_file = file;
         m_name = file.getName();
@@ -118,8 +118,8 @@ public class DocumentBuffer extends XMLDocument {
      * @param reader the reader used to read the XML document.
      * @throws IOException if there is a problem using the reader
      */
-    DocumentBuffer(Reader reader) throws IOException {
-        super(null, reader);
+    DocumentBuffer(InputStream stream) throws IOException {
+        super(null, stream);
         setEntityResolver(new DocumentBufferResolver());
         m_file = null;
         m_name = getUntitledLabel();
@@ -135,14 +135,10 @@ public class DocumentBuffer extends XMLDocument {
      * @throws IOException if the there was a problem reading the file
      */
     DocumentBuffer(File file, Properties properties) throws IOException {
-        this(file);
-        
-        //add properties one by one
-        Enumeration propertyNames = properties.propertyNames();
-        while (propertyNames.hasMoreElements()) {
-            String key = propertyNames.nextElement().toString();
-            setProperty(key, properties.getProperty(key));
-        }
+        super(file.toURI(), new FileInputStream(file), null, properties);
+        setEntityResolver(new DocumentBufferResolver());
+        m_file = file;
+        m_name = file.getName();
     }//}}}
     
     //{{{ close()
@@ -288,11 +284,11 @@ public class DocumentBuffer extends XMLDocument {
         if (stillReload) {
             Log.log(Log.NOTICE, this, "Reloading "+getName());
             if (isUntitled()) {
-                StringReader reader = new StringReader(jsXe.getDefaultDocument());
-                setModel(reader);
-                reader.close();
+                InputStream stream = jsXe.getDefaultDocument();
+                setModel(stream);
+                stream.close();
             } else {
-                FileReader reader = new FileReader(m_file);
+                FileInputStream reader = new FileInputStream(m_file);
                 setModel(reader);
                 reader.close();
             }
@@ -557,25 +553,17 @@ public class DocumentBuffer extends XMLDocument {
             }
             
             //set up the encoding combo-box.
-            m_m_supportedEncodings.add("US-ASCII");
-            m_m_supportedEncodings.add("ISO-8859-1");
-            m_m_supportedEncodings.add("UTF-8");
-           // supportedEncodings.add("UTF-16BE");
-           // supportedEncodings.add("UTF-16LE");
-           // supportedEncodings.add("UTF-16");
-            
+            String[] encodings = MiscUtilities.getSupportedEncodings();
             JLabel encodingLabel = new JLabel(Messages.getMessage("Document.Options.Encoding"));
             encodingLabel.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
-            encodingComboBox = new JComboBox(m_m_supportedEncodings);
+            encodingComboBox = new JComboBox(encodings);
             encodingComboBox.setName("EncodingComboBox");
             encodingComboBox.setEditable(false);
             encodingComboBox.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
             
-            Enumeration encodings = m_m_supportedEncodings.elements();
-            while (encodings.hasMoreElements()) {
-                String nextEncoding = (String)encodings.nextElement();
-                if (getProperty(ENCODING).equals(nextEncoding)) {
-                    encodingComboBox.setSelectedItem(nextEncoding);
+            for (int i=0; i<encodings.length; i++) {
+                if (getProperty(ENCODING).equals(encodings[i])) {
+                    encodingComboBox.setSelectedItem(encodings[i]);
                 }
             }
             
@@ -806,7 +794,6 @@ public class DocumentBuffer extends XMLDocument {
         private JComboBox indentComboBox;
         private JCheckBox whitespaceCheckBox;
         private JCheckBox m_m_validatingCheckBox;
-        private final Vector m_m_supportedEncodings = new Vector(6);
         private final HashMap m_m_lineSeparators = new HashMap(3);
         private JCheckBox formatCheckBox;
         //}}}

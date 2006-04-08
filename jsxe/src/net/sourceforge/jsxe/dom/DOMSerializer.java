@@ -359,20 +359,27 @@ public class DOMSerializer implements LSSerializer {
         if (m_filter == null || m_filter.acceptNode(node) == 1) {
             switch (node.getNodeType()) {
                 case Node.DOCUMENT_NODE://{{{
-                    String header = "<?xml version=\"1.0\"";
-                    if (encoding != null)
-                        header += " encoding=\""+encoding+"\"";
-                    header +="?>";
-                    doWrite(writer, header, node, line, column, offset);
-                    offset += header.length();
-                    column += header.length();
-                    
-                    //if not formatting write newLine here.
-                    if (!formatting) {
-                        column = 0;
-                        line += 1;
-                        doWrite(writer, m_newLine, node, line, column, offset);
-                        offset += m_newLine.length();
+                    if (config.getFeature(DOMSerializerConfiguration.XML_DECLARATION)) {
+                        String header = "<?xml version=\"1.0\"";
+                        String realEncoding = (String)config.getParameter(DOMSerializerConfiguration.XML_ENCODING);
+                        if (realEncoding == null) {
+                            realEncoding = encoding;
+                        }
+                        if (realEncoding != null)
+                            header += " encoding=\""+realEncoding+"\"";
+                        header +="?>";
+                        doWrite(writer, header, node, line, column, offset);
+                        offset += header.length();
+                        column += header.length();
+                        
+                        
+                        //if not formatting write newLine here.
+                        if (!formatting) {
+                            column = 0;
+                            line += 1;
+                            doWrite(writer, m_newLine, node, line, column, offset);
+                            offset += m_newLine.length();
+                        }
                     }
                     
                     NodeList nodes = node.getChildNodes();
