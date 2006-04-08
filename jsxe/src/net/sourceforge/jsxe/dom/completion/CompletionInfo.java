@@ -53,9 +53,11 @@ public class CompletionInfo {
         //{{{ CompletionInfo constructor
         public CompletionInfo()
         {
-                this(new ArrayList(), new HashMap(),
-                        new ArrayList(), new HashMap(),
-                        new ArrayList());
+                this(new ArrayList(), 
+                     new HashMap(),
+                     new ArrayList(),
+                     new HashMap(),
+                     new ArrayList());
 
                 addEntity(EntityDecl.INTERNAL,"lt","<");
                 addEntity(EntityDecl.INTERNAL,"gt",">");
@@ -191,34 +193,36 @@ public class CompletionInfo {
             return (CompletionInfo)obj;
         } //}}}
 
-       // //{{{ getCompletionInfoFromResource() method
-       // public static CompletionInfo getCompletionInfoFromResource(String resource) {
-       //     synchronized(lock) {
-       //         CompletionInfo info = (CompletionInfo)completionInfoResources.get(resource);
-       //         if(info != null)
-       //             return info;
-       //         Log.log(Log.DEBUG,CompletionInfo.class,"Loading " + resource);
-       //         CompletionInfoHandler handler = new CompletionInfoHandler();
-       //         try {
-       //             XMLReader parser = new org.apache.xerces.parsers.SAXParser();
-       //             parser.setFeature("http://apache.org/xml/features/validation/dynamic",true);
-       //             parser.setErrorHandler(handler);
-       //             parser.setEntityResolver(handler);
-       //             parser.setContentHandler(handler);
-       //             parser.parse(resource);
-       //         } catch(SAXException se) {
-       //             Throwable e = se.getException();
-       //             if(e == null)
-       //                 e = se;
-       //             Log.log(Log.ERROR,CompletionInfo.class,e);
-       //         } catch(Exception e) {
-       //             Log.log(Log.ERROR,CompletionInfo.class,e);
-       //         }
-       //         info = handler.getCompletionInfo();
-       //         completionInfoResources.put(resource,info);
-       //         return info;
-       //     }
-       // } //}}}
+        //{{{ getCompletionInfoFromResource() method
+        /*
+        public static CompletionInfo getCompletionInfoFromResource(String resource) {
+            synchronized(lock) {
+                CompletionInfo info = (CompletionInfo)completionInfoResources.get(resource);
+                if(info != null)
+                    return info;
+                Log.log(Log.NOTICE,CompletionInfo.class,"Loading " + resource);
+                CompletionInfoHandler handler = new CompletionInfoHandler();
+                try {
+                    XMLReader parser = new org.apache.xerces.parsers.SAXParser();
+                    parser.setFeature("http://apache.org/xml/features/validation/dynamic",true);
+                    parser.setErrorHandler(handler);
+                    parser.setEntityResolver(handler);
+                    parser.setContentHandler(handler);
+                    
+                    parser.parse(new InputSource(jsXe.class.getResource(resource)));
+                } catch(SAXException se) {
+                    Throwable e = se.getException();
+                    if (e == null)
+                        e = se;
+                    Log.log(Log.ERROR,CompletionInfo.class,e);
+                } catch(Exception e) {
+                    Log.log(Log.ERROR,CompletionInfo.class,e);
+                }
+                info = handler.getCompletionInfo();
+                completionInfoResources.put(resource,info);
+                return info;
+            }
+        }*/ //}}}
 
         //{{{ clone() method
         //marked final since this violates standard contract for clone()
@@ -234,118 +238,106 @@ public class CompletionInfo {
         
         //{{{ Private Members
         
-       // //{{{ CompletionInfoHandler class
-        
-       // public class CompletionInfoHandler extends DefaultHandler {
+        //{{{ CompletionInfoHandler class
+        /*
+        public class CompletionInfoHandler extends DefaultHandler {
             
-       //     //{{{ CompletionInfoHandler constructor
-       //     public CompletionInfoHandler() {
-       //         completionInfo = new CompletionInfo();
-        
-       //         addEntity(new EntityDecl(EntityDecl.INTERNAL,"lt","<"));
-       //         addEntity(new EntityDecl(EntityDecl.INTERNAL,"gt",">"));
-       //         addEntity(new EntityDecl(EntityDecl.INTERNAL,"amp","&"));
-       //         addEntity(new EntityDecl(EntityDecl.INTERNAL,"quot","\""));
-       //         addEntity(new EntityDecl(EntityDecl.INTERNAL,"apos","'"));
-       //     } //}}}
+            //{{{ CompletionInfoHandler constructor
+            public CompletionInfoHandler() {
+                completionInfo = new CompletionInfo();
+                addEntity(new EntityDecl(EntityDecl.INTERNAL,"lt","<"));
+                addEntity(new EntityDecl(EntityDecl.INTERNAL,"gt",">"));
+                addEntity(new EntityDecl(EntityDecl.INTERNAL,"amp","&"));
+                addEntity(new EntityDecl(EntityDecl.INTERNAL,"quot","\""));
+                addEntity(new EntityDecl(EntityDecl.INTERNAL,"apos","'"));
+            } //}}}
             
-       //     //{{{ getCompletionInfo() method
-       //     public CompletionInfo getCompletionInfo() {
-       //         return completionInfo;
-       //     } //}}}
+            //{{{ getCompletionInfo() method
+            public CompletionInfo getCompletionInfo() {
+                return completionInfo;
+            } //}}}
             
-       //     //{{{ setDocumentLocator() method
-       //     public void setDocumentLocator(Locator loc) {
-       //         this.loc = loc;
-       //     } //}}}
+            //{{{ setDocumentLocator() method
+            public void setDocumentLocator(Locator loc) {
+                this.loc = loc;
+            } //}}}
             
-       //     //{{{ resolveEntity() method
-       //     public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
-       //         try {
-       //             return CatalogManager.resolve(loc.getSystemId(),publicId,systemId);
-       //         } catch(Exception e) {
-       //             throw new SAXException(e);
-       //         }
-       //     } //}}}
+            //{{{ resolveEntity() method
             
-       //     //{{{ startElement() method
-       //     public void startElement(String namespaceURI,
-       //         String sName, // simple name
-       //         String qName, // qualified name
-       //         Attributes attrs) throws SAXException
-       //     {
-       //         if(sName.equals("dtd"))
-       //         {
-       //             String extend = attrs.getValue("extend");
-       //             if(extend != null)
-       //             {
-       //                 String infoURI = jEdit.getProperty(
-       //                     "mode." + extend
-       //                     + ".xml.completion-info");
-       //                 if(infoURI != null)
-       //                 {
-       //                     CompletionInfo extendInfo = CompletionInfo
-       //                         .getCompletionInfoFromResource(infoURI);
-       //                     if(extendInfo != null)
-       //                         completionInfo = (CompletionInfo)extendInfo.clone();
-       //                 }
-       //             }
-       //         }
-       //         else if(sName.equals("entity"))
-       //         {
-       //             addEntity(new EntityDecl(
-       //                 EntityDecl.INTERNAL,
-       //                 attrs.getValue("name"),
-       //                 attrs.getValue("value")));
-       //         }
-       //         else if(sName.equals("element"))
-       //         {
-       //             element = new ElementDecl(
-       //                 completionInfo,
-       //                 attrs.getValue("name"),
-       //                 attrs.getValue("content"));
-        
-       //             completionInfo.elements.add(element);
-       //             completionInfo.elementHash.put(element.name,element);
-        
-       //             if("true".equals(attrs.getValue("anywhere")))
-       //                 completionInfo.elementsAllowedAnywhere.add(element);
-       //         }
-       //         else if(sName.equals("attribute"))
-       //         {
-       //             String name = attrs.getValue("name");
-       //             String value = attrs.getValue("value");
-       //             String type = attrs.getValue("type");
-        
-       //             ArrayList values;
-        
-       //             if(type.startsWith("("))
-       //             {
-       //                 values = new ArrayList();
-        
-       //                 StringTokenizer st = new StringTokenizer(
-       //                     type.substring(1,type.length() - 1),"|");
-       //                 while(st.hasMoreTokens())
-       //                 {
-       //                     values.add(st.nextToken());
-       //                 }
-       //             }
-       //             else
-       //                 values = null;
-        
-       //             boolean required = "true".equals(attrs.getValue("required"));
-        
-       //             element.addAttribute(new ElementDecl.AttributeDecl(
-       //                 name,value,values,type,required));
-       //         }
-       //     } //}}}
+            public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
+                try {
+                    return CatalogManager.resolve(loc.getSystemId(),publicId,systemId);
+                } catch(Exception e) {
+                    throw new SAXException(e);
+                }
+            } //}}}
             
-       //     //{{{ Private members
-       //     private CompletionInfo completionInfo;
-       //     private Locator loc;
-       //     private ElementDecl element;
-       //     //}}}
-       // }//}}}
+            //{{{ startElement() method
+            public void startElement(String namespaceURI,
+                                     String sName, // simple name
+                                     String qName, // qualified name
+                                     Attributes attrs) throws SAXException
+            {
+                if (sName.equals("dtd")) {
+                    String extend = attrs.getValue("extend");
+                    
+                    if (extend != null) {
+                        String infoURI = jsXe.getProperty("mode."+extend+".xml.completion-info");
+                        if (infoURI != null) {
+                            CompletionInfo extendInfo = CompletionInfo.getCompletionInfoFromResource(infoURI);
+                            if (extendInfo != null)
+                                completionInfo = (CompletionInfo)extendInfo.clone();
+                        }
+                    }
+                } else if (sName.equals("entity")) {
+                    
+                    addEntity(new EntityDecl(
+                        EntityDecl.INTERNAL,
+                        attrs.getValue("name"),
+                        attrs.getValue("value")));
+                    
+                } else if(sName.equals("element")) {
+                    
+                    element = new ElementDecl(completionInfo, attrs.getValue("name"), attrs.getValue("content"));
+       
+                    completionInfo.elements.add(element);
+                    completionInfo.elementHash.put(element.name,element);
+       
+                    if ("true".equals(attrs.getValue("anywhere"))) {
+                        completionInfo.elementsAllowedAnywhere.add(element);
+                    }
+                
+                } else if(sName.equals("attribute")) {
+                    String name = attrs.getValue("name");
+                    String value = attrs.getValue("value");
+                    String type = attrs.getValue("type");
+       
+                    ArrayList values;
+       
+                    if(type.startsWith("(")) {
+                        values = new ArrayList();
+       
+                        StringTokenizer st = new StringTokenizer(
+                            type.substring(1,type.length() - 1),"|");
+                        while (st.hasMoreTokens()) {
+                            values.add(st.nextToken());
+                        }
+                    } else
+                        values = null;
+       
+                    boolean required = "true".equals(attrs.getValue("required"));
+       
+                    element.addAttribute(new ElementDecl.AttributeDecl(name, value, values, type, required));
+                }
+            } //}}}
+            
+            //{{{ Private members
+            private CompletionInfo completionInfo;
+            private Locator loc;
+            private ElementDecl element;
+            //}}}
+        }*///}}}
+        
         
         //}}}
 }

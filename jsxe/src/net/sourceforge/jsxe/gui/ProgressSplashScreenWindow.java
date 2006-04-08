@@ -43,6 +43,7 @@ import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 
 import net.sourceforge.jsxe.util.Log;
+import net.sourceforge.jsxe.jsXe;
 
 /**
  * A splashscreen that popups when the jsxe application starts
@@ -50,94 +51,98 @@ import net.sourceforge.jsxe.util.Log;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class ProgressSplashScreenWindow extends JWindow {	
-	private JProgressBar progressBar;
-	private JTextArea taskOutput;
-	private JScrollPane outputScroll;
-	private JLabel imageLabel;
+public class ProgressSplashScreenWindow extends JWindow {   
+    private JProgressBar progressBar;
+    private JTextArea versionOutput;
+    private JScrollPane outputScroll;
+    private JLabel imageLabel;
 
-	 //{{{ ProgressSplashScreenWindow constructor
-	public ProgressSplashScreenWindow() {
-		initComponents();
-		setSize(200, 200);	
-		updateSplashScreenDialog(0); // set status to 1 initially
-	}
-	//	}}}
+     //{{{ ProgressSplashScreenWindow constructor
+    public ProgressSplashScreenWindow() {
+        initComponents();
+        setSize(200, 200);  
+        updateSplashScreenDialog(0); // set status to 1 initially
+    }
+    //  }}}
 
-	 //{{{ initComponents()
+     //{{{ initComponents()
     /**
      * Initializes the components for the splash screen.
      *
      */
-	public void initComponents() {
-		imageLabel = new JLabel();
-		imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		imageLabel.setVerticalAlignment(SwingConstants.TOP);
-		imageLabel.setIcon(new javax.swing.ImageIcon(
-				ProgressSplashScreenWindow.class
-						.getResource("/net/sourceforge/jsxe/icons/jsxeBig.jpg")));
+    public void initComponents() {
+        imageLabel = new JLabel();
+        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        imageLabel.setVerticalAlignment(SwingConstants.TOP);
+        imageLabel.setIcon(new javax.swing.ImageIcon(
+                ProgressSplashScreenWindow.class
+                        .getResource("/net/sourceforge/jsxe/icons/jsxeBig.jpg")));
 
-		JPanel middlePanel = new JPanel();
-		int barLength = 100; 
-		progressBar = new JProgressBar(0, barLength);
-		progressBar.setSize(100, 20);
-		progressBar.setValue(0);
-		middlePanel.setLayout(new BorderLayout());
-		middlePanel.add(progressBar, java.awt.BorderLayout.CENTER);
+        JPanel middlePanel = new JPanel();
+        //m_versionOutput = new JTextArea(1,20);
+        //m_versionOutput.setText(jsXe.getAppTitle() + " " + jsXe.getVersion());
+        //m_versionOutput.setEditable(false);
+        
+        int barLength = 100; 
+        progressBar = new JProgressBar(0, barLength);
+        progressBar.setSize(100, 20);
+        progressBar.setValue(0);
+        progressBar.setString("0%");
+        progressBar.setStringPainted(true);
+        middlePanel.setLayout(new BorderLayout());
+        //middlePanel.add(m_versionOutput, BorderLayout.NORTH);
+        middlePanel.add(progressBar, BorderLayout.CENTER);
 
-		taskOutput = new JTextArea(1, 20);
-		taskOutput.setMargin(new Insets(5, 5, 5, 5));
-		taskOutput.setEditable(false);
-		
-		JPanel contentPane = new JPanel();
-		contentPane.setLayout(new BorderLayout());
-		contentPane.add(imageLabel, java.awt.BorderLayout.NORTH);
-		contentPane.add(middlePanel, java.awt.BorderLayout.CENTER);
-		contentPane.add(taskOutput, java.awt.BorderLayout.SOUTH);
-		contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        versionOutput = new JTextArea(1, 20);
+        versionOutput.setMargin(new Insets(5, 5, 5, 5));
+        versionOutput.setEditable(false);
+        versionOutput.setFont(new java.awt.Font("Monospaced", 0, 12));
+        
+        String version = jsXe.getAppTitle() + " " + jsXe.getVersion();
+        StringBuffer buf = new StringBuffer();
+        int spaces = (int)((25 - version.length())/2);
+        for (int i=0;i<spaces;i++) {
+            buf.append(" ");
+        }
+        version = buf.toString()+version;
+        versionOutput.setText(version);
+        
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(new BorderLayout());
+        contentPane.add(imageLabel, BorderLayout.NORTH);
+        contentPane.add(versionOutput, BorderLayout.CENTER);
+        contentPane.add(middlePanel, BorderLayout.SOUTH);
+        contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
-	}
-	//	}}}
+    }
+    //  }}}
 
-	 //{{{ updateSplashScreenDialog()
+     //{{{ updateSplashScreenDialog()
     /**
      * Updates the progress bar displayed by the splashscreen
      *
      * @param progress The new progress setting for the progress bar. if progress is 4, splashscreen disposes itself.
      */
-	public void updateSplashScreenDialog(int progress) {
-		updateProgessBar(progress);
-		updateTextArea(progress);
-	//	try {
-	//		Thread.sleep(1000);
-	//	} catch (InterruptedException e) {
-	//		e.printStackTrace();
-	//	}
-	}
-	//	}}}
+    public void updateSplashScreenDialog(int progress) {
+        updateProgessBar(progress);
+        //updateTextArea(progress);
+    //  try {
+    //      Thread.sleep(1000);
+    //  } catch (InterruptedException e) {
+    //      e.printStackTrace();
+    //  }
+    }
+    //  }}}
 
-	 //{{{ updateProgessBar()
+     //{{{ updateProgessBar()
     /**
      * Updates the progress bar displayed by the splashscreen
      *
      * @param percentage Updates percentage completed of progressbar
      */
-	public void updateProgessBar(int percentage) {		
-		progressBar.setValue(percentage);
-	}
-	//	}}}
-	
-	 //{{{ updateTextArea()
-    /**
-     * Updates the progress bar displayed by the splashscreen
-     *
-     * @param percentage Updates message displayed in text area.
-     */
-	public void updateTextArea(int percentage) {;
-		String message = "Completed " + percentage + "%";
-		taskOutput.setText(message);
-		taskOutput.setCaretPosition(taskOutput.getDocument().getLength());
-	}
-	//	}}}
+    public void updateProgessBar(int percentage) {      
+        progressBar.setValue(percentage);
+        progressBar.setString(percentage + "%");
+    } //}}}
 
 }
