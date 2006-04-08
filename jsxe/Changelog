@@ -25,6 +25,7 @@
 
 02/19/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
+    * Released 0.4 pre3
     * Fixed bug 143401802. BufferHistory now builds a dom and writes it out
       using DOMSerializer which ensures that the document will be well-formed
       and that special characters will be written out properly.
