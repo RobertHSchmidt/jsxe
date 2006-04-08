@@ -1,3 +1,11 @@
+04/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated support for different encodings. Now jsXe will support all
+      encodings that the JVM being used supports. jsXe now opens documents
+      properly by examining the files for UTF file markers or the encoding
+      in the XML declaration. jsXe will now save files properly and write
+      the correct encoding in the xml declaration.
+
 04/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added a null menu item to the recent files menu for when there are

@@ -64,6 +64,13 @@ import java.util.*;
  * @version $Id$
  */
 public class MiscUtilities {
+    
+    /**
+     * This encoding is not supported by Java, yet it is useful.
+     * A UTF-8 file that begins with 0xEFBBBF.
+     */
+    public static final String UTF_8_Y = "UTF-8Y";
+    
     //{{{ Path name methods
 
     //{{{ canonPath() method
@@ -279,19 +286,19 @@ public class MiscUtilities {
      */
     public static String getParentOfPath(String path) {
         // ignore last character of path to properly handle
-		// paths like /foo/bar/
-		int count = Math.max(0,path.length() - 2);
-		int index = path.lastIndexOf(File.separatorChar,count);
-		if(index == -1)
-			index = path.lastIndexOf('/',count);
-		if(index == -1)
-		{
-			// this ensures that getFileParent("protocol:"), for
-			// example, is "protocol:" and not "".
-			index = path.lastIndexOf(':');
-		}
+        // paths like /foo/bar/
+        int count = Math.max(0,path.length() - 2);
+        int index = path.lastIndexOf(File.separatorChar,count);
+        if(index == -1)
+            index = path.lastIndexOf('/',count);
+        if(index == -1)
+        {
+            // this ensures that getFileParent("protocol:"), for
+            // example, is "protocol:" and not "".
+            index = path.lastIndexOf(':');
+        }
 
-		return path.substring(0,index + 1);
+        return path.substring(0,index + 1);
     } //}}}
 
     //{{{ getProtocolOfURL() method
@@ -1229,33 +1236,69 @@ loop:       for(int i = 0; i < str.length(); i++)
     } //}}}
     
     //{{{ uriToFile() method
-	public static String uriToFile(String uri) {
-		if (uri.startsWith("file:/")) {
-			int start;
-			if (uri.startsWith("file:///") && OperatingSystem.isDOSDerived())
-				start = 8;
-			else if (uri.startsWith("file://"))
-				start = 7;
-			else
-				start = 5;
+    public static String uriToFile(String uri) {
+        if (uri.startsWith("file:/")) {
+            int start;
+            if (uri.startsWith("file:///") && OperatingSystem.isDOSDerived())
+                start = 8;
+            else if (uri.startsWith("file://"))
+                start = 7;
+            else
+                start = 5;
 
-			StringBuffer buf = new StringBuffer();
-			for(int i = start; i < uri.length(); i++) {
-				char ch = uri.charAt(i);
-				if (ch == '/')
-					buf.append(java.io.File.separatorChar);
-				else if(ch == '%') {
-					String str = uri.substring(i + 1,i + 3);
-					buf.append((char)Integer.parseInt(str,16));
-					i += 2;
-				}
-				else
-					buf.append(ch);
-			}
-			uri = buf.toString();
-		}
-		return uri;
-	} //}}}
+            StringBuffer buf = new StringBuffer();
+            for(int i = start; i < uri.length(); i++) {
+                char ch = uri.charAt(i);
+                if (ch == '/')
+                    buf.append(java.io.File.separatorChar);
+                else if(ch == '%') {
+                    String str = uri.substring(i + 1,i + 3);
+                    buf.append((char)Integer.parseInt(str,16));
+                    i += 2;
+                }
+                else
+                    buf.append(ch);
+            }
+            uri = buf.toString();
+        }
+        return uri;
+    } //}}}
+    
+    //}}}
+    
+    //{{{ Encoding methods
+    
+    //{{{ isSupportedEncoding() method
+    /**
+     * Returns if the given character encoding is supported.
+     * @since jsXe 0.4pre4
+     */
+    public static boolean isSupportedEncoding(String encoding) {
+        if (UTF_8_Y.equals(encoding)) {
+            return true;
+        }
+        return java.nio.charset.Charset.isSupported(encoding);
+    }//}}}
+    
+    //{{{ getSupportedEncodings() method
+    /**
+     * Returns a list of supported character encodings.
+     * @since jsXe 0.4pre4
+     */
+    public static String[] getSupportedEncodings() {
+        List returnValue = new ArrayList();
+
+        Map map = (Map)java.nio.charset.Charset.availableCharsets();
+        Iterator iter = map.keySet().iterator();
+
+        returnValue.add(UTF_8_Y);
+
+        while(iter.hasNext()) {
+            returnValue.add(iter.next());
+        }
+
+        return (String[])returnValue.toArray(new String[returnValue.size()]);
+    } //}}}
     
     //}}}
     

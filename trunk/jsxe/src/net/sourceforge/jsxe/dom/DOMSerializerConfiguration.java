@@ -46,6 +46,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 //}}}
 
+import net.sourceforge.jsxe.util.Log;
+
 //}}}
 
 /**
@@ -93,8 +95,18 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
     //}}}
     
     //{{{ Additional parameters supported by DOMSerializerConfiguration
-    public static final String SOFT_TABS = "soft-tabs";
-    public static final String INDENT    = "indent";
+    /**
+     * Use spaces instead of tabs if this is true.
+     */
+    public static final String SOFT_TABS    = "soft-tabs";
+    /**
+     * The number of spaces to use as an tab when SOFT_TABS is true.
+     */
+    public static final String INDENT       = "indent";
+    /**
+     * The encoding to use in the XML declaration.
+     */
+    public static final String XML_ENCODING = "encoding";
     //}}}
     
     //{{{ DOMSerializerConfiguration constructor
@@ -128,6 +140,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         //DOMSerializer parameters
         setFeature(SOFT_TABS,                   false);
         setParameter(INDENT,                    new Integer(4));
+        setParameter(XML_ENCODING,              null);
     }//}}}
     
     //{{{ DOMSerializerConfiguration constructor
@@ -231,6 +244,11 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
                     return true;
                 }
             }
+            if (name.equals(XML_ENCODING)) {
+                if (value instanceof String) {
+                    return true;
+                }
+            }
         }
         return false;
     }//}}}
@@ -281,9 +299,11 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
     
     public void setParameter(String name, Object value) throws DOMException {
         
-        //if a string, attempt to use it as a boolean value.
-        if (value instanceof String) {
-            value = Boolean.valueOf((String)value);
+        if (value instanceof String &&
+            (value.toString().equalsIgnoreCase("true") ||
+             value.toString().equalsIgnoreCase("false")))
+        {
+            Log.log(Log.WARNING,this, "Possibly setting XML serializer config boolean feature "+name+" with string value");
         }
         
         if (m_supportedParameters.indexOf(name) != -1) {
@@ -408,6 +428,7 @@ public class DOMSerializerConfiguration implements DOMConfiguration {
         //Additional parameters supported by DOMSerializerConfiguration
         m_supportedParameters.add(SOFT_TABS);
         m_supportedParameters.add(INDENT);
+        m_supportedParameters.add(XML_ENCODING);
     }//}}}
     
     //{{{ Private members

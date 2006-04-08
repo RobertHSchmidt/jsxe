@@ -88,7 +88,7 @@ public class XMLDocument {
     /**
      * The property key for the encoding of this XML document
      */
-    public static final String ENCODING = "encoding";
+    public static final String ENCODING = DOMSerializerConfiguration.XML_ENCODING;
     /**
      * The property key for the boolean property specifying if whitespace
      * is allowed in element content.
@@ -126,6 +126,17 @@ public class XMLDocument {
     
     //}}}
     
+    /**
+     * Magic numbers used for auto-detecting Unicode and GZIP files.
+     */
+    private static final int GZIP_MAGIC_1 = 0x1f;
+    private static final int GZIP_MAGIC_2 = 0x8b;
+    private static final int UNICODE_MAGIC_1 = 0xfe;
+    private static final int UNICODE_MAGIC_2 = 0xff;
+    private static final int UTF8_MAGIC_1 = 0xef;
+    private static final int UTF8_MAGIC_2 = 0xbb;
+    private static final int UTF8_MAGIC_3 = 0xbf;
+    
     //{{{ XMLDocument constructor
     /**
      * Creates a new XMLDocument for a document that can be read by the given
@@ -134,7 +145,7 @@ public class XMLDocument {
      * @param reader the Reader object to read the XML document from.
      * @throws IOException if there was a problem reading the document
      */
-    public XMLDocument(URI uri, Reader reader) throws IOException {
+    public XMLDocument(URI uri, InputStream reader) throws IOException {
         this(uri, reader, null);
     }//}}}
     
@@ -147,10 +158,35 @@ public class XMLDocument {
      *                 entities.
      * @throws IOException if there was a problem reading the document
      */
-    public XMLDocument(URI uri, Reader reader, EntityResolver resolver) throws IOException {
+    public XMLDocument(URI uri, InputStream reader, EntityResolver resolver) throws IOException {
         m_entityResolver = resolver;
         setDefaultProperties();
         setURI(uri);
+        setModel(reader);
+        reader.close();
+    }//}}}
+    
+    //{{{ XMLDocument constructor
+    /**
+     * Creates a new XMLDocument for a document that can be read by the given
+     * Reader.
+     * @param reader the Reader object to read the XML document from.
+     * @param resolver the EntityResolver to use when resolving external
+     *                 entities.
+     * @throws IOException if there was a problem reading the document
+     */
+    public XMLDocument(URI uri, InputStream reader, EntityResolver resolver, Properties properties) throws IOException {
+        m_entityResolver = resolver;
+        setDefaultProperties();
+        setURI(uri);
+        
+        //add properties one by one
+        Enumeration propertyNames = properties.propertyNames();
+        while (propertyNames.hasMoreElements()) {
+            String key = propertyNames.nextElement().toString();
+            setProperty(key, properties.getProperty(key));
+        }
+        
         setModel(reader);
         reader.close();
     }//}}}
@@ -603,10 +639,20 @@ public class XMLDocument {
         
         syncContentWithDOM();
         
+        String encoding = getProperty(ENCODING);
+        if (encoding.equals(MiscUtilities.UTF_8_Y)) {
+            // not supported by Java...
+            out.write(UTF8_MAGIC_1);
+            out.write(UTF8_MAGIC_2);
+            out.write(UTF8_MAGIC_3);
+            out.flush();
+            encoding = "UTF-8";
+        }
+        
         //now just write out the text.
         int length = m_content.getLength();
         int index = 0;
-        java.io.BufferedWriter outbuf = new java.io.BufferedWriter(new java.io.OutputStreamWriter(out, getProperty(ENCODING)), IO_BUFFER_SIZE);
+        BufferedWriter outbuf = new BufferedWriter(new OutputStreamWriter(out, encoding), IO_BUFFER_SIZE);
         Segment seg = new Segment();
         
         while (index < length) {
@@ -754,7 +800,9 @@ public class XMLDocument {
      * thrown out and the document read in through the reader is
      * used.
      */
-    protected void setModel(Reader reader) throws IOException {
+    protected void setModel(InputStream stream) throws IOException {
+        
+        Reader reader = autodetect(stream);
         
         char[] buf = new char[READ_SIZE];
         
@@ -1009,11 +1057,13 @@ public class XMLDocument {
                     //create a new content manager to be written to.
                     ContentManager content = new ContentManager();
                     //create the content manager's output stream
-                    ContentManagerOutputStream output = new ContentManagerOutputStream(content);
-                    DOMOutput out = new DOMOutput(output, getProperty(ENCODING));
+                    //ContentManagerOutputStream output = new ContentManagerOutputStream(content);
+                    ContentManagerWriter writer = new ContentManagerWriter(content);
+                    DOMOutput out = new DOMOutput(writer);
                     if (!serializer.write(m_document, out)) {
                         throw new IOException("Could not serialize XML document.");
                     }
+                    writer.close();
                     m_content = content;
                     boolean formatting = Boolean.valueOf(getProperty(FORMAT_XML)).booleanValue();
                     if (formatting  && !m_formattedLastTime) {
@@ -1060,6 +1110,9 @@ public class XMLDocument {
         config.setParameter(INDENT, new Integer(getProperty(INDENT)));
         config.setParameter(DOMSerializerConfiguration.ERROR_HANDLER, new SerializeErrorHandler());
         config.setFeature(IS_USING_SOFT_TABS, Boolean.valueOf(getProperty(IS_USING_SOFT_TABS)).booleanValue());
+        
+        //set the encoding to use in the XML header
+        config.setParameter(ENCODING, getProperty(ENCODING));
         
         DOMSerializer serializer = new DOMSerializer(config);
         serializer.setNewLine("\n");
@@ -1264,6 +1317,105 @@ public class XMLDocument {
     }
     //}}}
     
+    //{{{ autodetect() method
+    /**
+     * Tries to detect if the stream is gzipped, and if it has an encoding
+     * specified with an XML PI.
+     */
+    private Reader autodetect(InputStream in) throws IOException {
+        in = new BufferedInputStream(in);
+        
+        int XML_PI_LENGTH = 50;
+        
+        String encoding = getProperty(ENCODING);
+        
+        if (!in.markSupported()) {
+            Log.log(Log.WARNING,this,"Mark not supported: " + in);
+        } else {
+            
+            in.mark(XML_PI_LENGTH);
+            int b1 = in.read();
+            int b2 = in.read();
+            int b3 = in.read();
+
+            if (encoding.equals(MiscUtilities.UTF_8_Y)) {
+                // Java does not support this encoding so
+                // we have to handle it manually.
+                if (b1 != UTF8_MAGIC_1 || b2 != UTF8_MAGIC_2 || b3 != UTF8_MAGIC_3) {
+                    // file does not begin with UTF-8-Y
+                    // signature. reset stream, read as
+                    // UTF-8.
+                    in.reset();
+                } else {
+                    // file begins with UTF-8-Y signature.
+                    // discard the signature, and read
+                    // the remainder as UTF-8.
+                }
+
+                encoding = "UTF-8";
+            } else {
+                /*
+                if (b1 == GZIP_MAGIC_1 && b2 == GZIP_MAGIC_2) {
+                    in.reset();
+                    in = new GZIPInputStream(in);
+                    buffer.setBooleanProperty(Buffer.GZIPPED,true);
+                    // auto-detect encoding within the gzip stream.
+                    return autodetect(in);
+                } else {
+                */
+                    if ((b1 == UNICODE_MAGIC_1 && b2 == UNICODE_MAGIC_2) ||
+                        (b1 == UNICODE_MAGIC_2 && b2 == UNICODE_MAGIC_1))
+                    {
+                        in.reset();
+                        encoding = "UTF-16";
+                        setProperty(ENCODING,encoding);
+                    } else {
+                        if (b1 == UTF8_MAGIC_1 &&
+                            b2 == UTF8_MAGIC_2 &&
+                            b3 == UTF8_MAGIC_3)
+                        {
+                            // do not reset the stream and just treat it
+                            // like a normal UTF-8 file.
+                            setProperty(ENCODING, MiscUtilities.UTF_8_Y);
+                            encoding = "UTF-8";
+                        } else {
+                            in.reset();
+
+                            byte[] _xmlPI = new byte[XML_PI_LENGTH];
+                            int offset = 0;
+                            int count;
+                            while ((count = in.read(_xmlPI,offset,XML_PI_LENGTH - offset)) != -1) {
+                                offset += count;
+                                if (offset == XML_PI_LENGTH)
+                                    break;
+                            }
+
+                            String xmlPI = new String(_xmlPI,0,offset,"ASCII");
+                            if (xmlPI.startsWith("<?xml")) {
+                                int index = xmlPI.indexOf("encoding=");
+                                if (index != -1 && index + 9 != xmlPI.length()) {
+                                    char ch = xmlPI.charAt(index + 9);
+                                    int endIndex = xmlPI.indexOf(ch,index + 10);
+                                    encoding = xmlPI.substring(index + 10,endIndex);
+
+                                    if (MiscUtilities.isSupportedEncoding(encoding)) {
+                                        setProperty(ENCODING,encoding);
+                                    } else {
+                                        Log.log(Log.WARNING,this,"XML PI specifies unsupported encoding: " + encoding);
+                                    }
+                                }
+                            }
+
+                            in.reset();
+                        }
+                    }
+                //}
+            }
+        }
+
+        return new InputStreamReader(in,encoding);
+    } //}}}
+    
     //{{{ ContentManager class
     /**
      * Text content manager based off of jEdit's ContentManager class.
@@ -1428,7 +1580,9 @@ public class XMLDocument {
     /**
      * output stream to write to the content manager when the serialized. Used
      * when syncing the source with the current Document.
+     * Currently not used.
      */
+    /*
     private static class ContentManagerOutputStream extends OutputStream {
         
         //{{{ ContentManagerOutputStream constructor
@@ -1455,12 +1609,79 @@ public class XMLDocument {
         //{{{ Private members
         private ContentManager m_m_content;
         //}}}
+    }*///}}}
+    
+    //{{{ ContentManagerWriter class
+    /**
+     * Character Stream used to write to the content manager when
+     * serialized. Used when syncing the source with the current Document.
+     */
+    private static class ContentManagerWriter extends Writer {
+        
+        //{{{ ContentManagerWriter constructor
+        public ContentManagerWriter(ContentManager content) {
+            m_m_content = content;
+        }//}}}
+        
+        //{{{ write()
+        public void write(char[] cbuf) throws IOException {
+            if (m_m_closed) {
+                throw new IOException("ContentManagerWriter is closed");
+            }
+            m_m_content.insert(m_m_content.getLength(), new String(cbuf));
+        }//}}}
+        
+        //{{{ write()
+        public void write(char[] cbuf, int off, int len) throws IOException {
+            if (m_m_closed) {
+                throw new IOException("ContentManagerWriter is closed");
+            }
+            m_m_content.insert(m_m_content.getLength(), new String(cbuf, off, len));
+        }//}}}
+        
+        //{{{ write()
+        public void write(int b) throws IOException {
+            if (m_m_closed) {
+                throw new IOException("ContentManagerWriter is closed");
+            }
+            char []carray = { (char)b };
+            m_m_content.insert(m_m_content.getLength(), new String(carray));
+        }//}}}
+        
+        //{{{ write()
+        public void write(String str) throws IOException {
+            if (m_m_closed) {
+                throw new IOException("ContentManagerWriter is closed");
+            }
+            m_m_content.insert(m_m_content.getLength(), str);
+        }//}}}
+        
+        //{{{ flush()
+        public void flush() throws IOException {
+            if (m_m_closed) {
+                throw new IOException("ContentManagerWriter is closed");
+            }
+            //writes happen immediately so this does nothing.
+        }//}}}
+        
+        //{{{ close()
+        public void close() {
+            //honoring the contract for Writer class
+            m_m_closed = true;
+        }//}}}
+        
+        //{{{ Private members
+        private ContentManager m_m_content;
+        private boolean m_m_closed = false;
+        //}}}
     }//}}}
     
     //{{{ ContentManagerInputStream class
     /**
-     * Input stream for parsing/reading current text content.
+     * Input stream for parsing/reading current text content. Currently not
+     * used.
      */
+    /*
     private static class ContentManagerInputStream extends InputStream {
         
         //{{{ ContentManagerInputStream constructor
@@ -1540,7 +1761,8 @@ public class XMLDocument {
         private int m_m_index = 0;
         private ContentManager m_m_content;
         //}}}
-    }//}}}
+    
+    }*///}}}
     
     //{{{ XMLDocAdapterListener class
     /**
