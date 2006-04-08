@@ -423,12 +423,10 @@ public class BufferHistory {
             }
             
             if (qName.equals("path")) {
-                Log.log(Log.DEBUG, this, "path: "+m_m_charData);
                 m_m_path = m_m_charData;
             }
             
             if (qName.equals("view")) {
-                Log.log(Log.DEBUG, this, "view: "+m_m_charData);
                 m_m_viewName = m_m_charData;
             }
             

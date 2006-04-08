@@ -887,7 +887,6 @@ public class DocumentBuffer extends XMLDocument {
                    return CatalogManager.resolve(getFile().toURI().toString(), publicId, systemId);
                }
            } catch (Exception e) {
-               Log.log(Log.DEBUG, this, e);
                throw new SAXException(e);
            }
         }//}}}
