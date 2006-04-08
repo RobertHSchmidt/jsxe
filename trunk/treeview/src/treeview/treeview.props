@@ -16,3 +16,7 @@ tree.splitpane.vert.loc=40
 tree.splitpane.horiz.loc=40
 
 tree.show.attributes=ID only
+
+#default size for edit doc type dialog
+treeview.editdoctypenode.width=200
+treeview.editdoctypenode.height=100
