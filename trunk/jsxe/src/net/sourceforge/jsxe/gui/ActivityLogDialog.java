@@ -77,7 +77,7 @@ public class ActivityLogDialog  extends EnhancedDialog {
      * @since jsXe 0.3pre15
      */
 	public ActivityLogDialog(TabbedView parent) {
-		super(parent, Messages.getMessage("ActivityLogDialog.Dialog.Title"), false);		
+		super(parent, Messages.getMessage("ActivityLogDialog.Dialog.Title"), true);		
 		contentsJList = new JList();
         contentsJList.setModel(getContents());
         activityLogJScrollPane = new javax.swing.JScrollPane(contentsJList);
