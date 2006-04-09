@@ -114,7 +114,9 @@ public class SourceView extends JPanel implements DocumentView {
         handler.addKeyBinding("TAB",new SourceViewTab());
         m_textarea.setInputHandler(handler);
         
-        m_textarea.getPainter().setStyles(
+        TextAreaPainter painter = m_textarea.getPainter();
+        painter.setEOLMarkersPainted(jsXe.getBooleanProperty(SourceView.END_OF_LINE_MARKS, true));
+        painter.setStyles(
             new SyntaxStyle[] { SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.text.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.comment.color")),
                                 SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.doctype.color")),

@@ -537,6 +537,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
 		textArea.getLineText(line,currentLine);
 
         //add end of line marker
+        /*
         if (jsXe.getBooleanProperty(SourceView.END_OF_LINE_MARKS, true)) {
             char[] array = new char[currentLine.count+1];
             System.arraycopy(currentLine.array, currentLine.offset, array, 0, currentLine.count);
@@ -544,7 +545,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
             currentLine.array = array;
             currentLine.count = currentLine.count + 1;
             currentLine.offset = 0;
-        }
+        }*/
         
 		gfx.setFont(defaultFont);
 		gfx.setColor(defaultColor);
@@ -565,6 +566,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
 		textArea.getLineText(currentLineIndex,currentLine);
 		
         //add end of line marker
+        /*
         if (jsXe.getBooleanProperty(SourceView.END_OF_LINE_MARKS, true)) {
             char[] array = new char[currentLine.count+1];
             System.arraycopy(currentLine.array, currentLine.offset, array, 0, currentLine.count);
@@ -572,7 +574,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
             currentLine.array = array;
             currentLine.count = currentLine.count + 1;
             currentLine.offset = 0;
-        }
+        }*/
         
         currentLineTokens = tokenMarker.markTokens(currentLine,
 			currentLineIndex);
