@@ -99,6 +99,7 @@ public class SyntaxStyle
 			(bold ? Font.BOLD : 0)
 			| (italic ? Font.ITALIC : 0),
 			font.getSize());
+        //TODO: this is deprecated, figure out how to do it the right way.
 		fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(
 			lastStyledFont);
 		return fontMetrics;
