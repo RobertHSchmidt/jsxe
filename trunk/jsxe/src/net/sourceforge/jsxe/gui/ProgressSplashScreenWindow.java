@@ -98,7 +98,7 @@ public class ProgressSplashScreenWindow extends JWindow {
         versionOutput.setEditable(false);
         versionOutput.setFont(new java.awt.Font("Monospaced", 0, 12));
         
-        String version = jsXe.getAppTitle() + " " + jsXe.getVersion();
+        String version = "Version " + jsXe.getVersion();
         StringBuffer buf = new StringBuffer();
         int spaces = (int)((25 - version.length())/2);
         for (int i=0;i<spaces;i++) {
