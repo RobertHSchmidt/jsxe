@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-     This is a build.xml file for building jsXe.
-     Version: $Id$
+    :tabSize=2:indentSize=2:noTabs=true:
+    :folding=explicit:collapseFolds=1:
+    
+    This is a build.xml file for building jsXe.
+    Version: $Id$
 -->
 <project basedir="." default="usage" name="jsXe">
 	
@@ -94,6 +97,9 @@
 				<include name="**/*.props"/>
 				<include name="**/*.properties"/>
 				<include name="**/properties"/>
+        <include name="**/*.xml"/>
+        <!-- internal xml docs are not validated -->
+        <!--<include name="**/*.dtd"/>-->
 				<include name="**/*.jpg"/>
 				<include name="**/*.png"/>
 			</fileset>
@@ -118,6 +124,9 @@
 				<include name="**/*.props"/>
 				<include name="**/*.properties"/>
 				<include name="**/properties"/>
+        <include name="**/*.xml"/>
+        <!-- internal xml docs are not validated -->
+        <!--<include name="**/*.dtd"/>-->
 				<include name="**/*.jpg"/>
 				<include name="**/*.png"/>
 			</fileset>
@@ -149,6 +158,9 @@
 				<include name="**/properties"/>
 				<include name="**/*.props"/>
 				<include name="**/*.properties"/>
+        <include name="**/*.xml"/>
+        <!-- internal xml docs are not validated -->
+        <!--<include name="**/*.dtd"/>-->
 				<include name="**/*.jpg"/>
 				<include name="**/*.png"/>
 			</fileset>
@@ -187,7 +199,7 @@
 	<target depends="prepare-doc, prepare-src" name="doc" description="Build documentation">
 		<copy file="COPYING" tofile="${build.dir}/doc/COPYING"/>
 		<copy file="README" tofile="${build.dir}/doc/README"/>
-		<copy file="TODO" tofile="${build.dir}/doc/TODO"/>
+		<copy file="AUTHORS" tofile="${build.dir}/doc/AUTHORS"/>
 		<copy file="ISSUES" tofile="${build.dir}/doc/ISSUES"/>
 		<copy file="Changelog" tofile="${build.dir}/doc/Changelog"/>
 		<copy file="INSTALL" tofile="${build.dir}/doc/INSTALL"/>
