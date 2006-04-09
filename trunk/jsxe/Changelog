@@ -5,6 +5,7 @@
       properly by examining the files for UTF file markers or the encoding
       in the XML declaration. jsXe will now save files properly and write
       the correct encoding in the xml declaration.
+    * Added built-in completion support for XML Schema, XHTML, XSLT, and XSL:FO
 
 04/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
