@@ -95,25 +95,30 @@ public class SourceViewOptionsPanel extends OptionsPanel {
     
     public void save() {
         styleModel.save();
+        jsXe.setBooleanProperty("source.end-of-line-markers",m_endOfLineMarkCheckBox.isSelected());
+        
         Iterator itr = SourceView.m_sourceviews.iterator();
         while (itr.hasNext()) {
-        ((SourceView)itr.next()).getTextArea().getPainter().setStyles(
-            new SyntaxStyle[] { parseStyle(jsXe.getProperty("source.text.color")),
-                                parseStyle(jsXe.getProperty("source.comment.color")),
-                                parseStyle(jsXe.getProperty("source.doctype.color")),
-                                parseStyle(jsXe.getProperty("source.attribute.value.color")),
-                                parseStyle(jsXe.getProperty("source.attribute.value.color")),
-                                parseStyle(jsXe.getProperty("source.cdata.color")),
-                                parseStyle(jsXe.getProperty("source.entity.reference.color")),
-                                parseStyle(jsXe.getProperty("source.element.color")),
-                                parseStyle(jsXe.getProperty("source.attribute.color")),
-                                parseStyle(jsXe.getProperty("source.processing.instruction.color")),
-                                parseStyle(jsXe.getProperty("source.namespace.prefix.color")),
-                                parseStyle(jsXe.getProperty("source.markup.color")),
-                                parseStyle(jsXe.getProperty("source.invalid.color")),
-                                });
+            TextAreaPainter painter = ((SourceView)itr.next()).getTextArea().getPainter();
+            painter.setEOLMarkersPainted(m_endOfLineMarkCheckBox.isSelected());
+            painter.setStyles(
+                new SyntaxStyle[] { parseStyle(jsXe.getProperty("source.text.color")),
+                                    parseStyle(jsXe.getProperty("source.comment.color")),
+                                    parseStyle(jsXe.getProperty("source.doctype.color")),
+                                    parseStyle(jsXe.getProperty("source.attribute.value.color")),
+                                    parseStyle(jsXe.getProperty("source.attribute.value.color")),
+                                    parseStyle(jsXe.getProperty("source.cdata.color")),
+                                    parseStyle(jsXe.getProperty("source.entity.reference.color")),
+                                    parseStyle(jsXe.getProperty("source.element.color")),
+                                    parseStyle(jsXe.getProperty("source.attribute.color")),
+                                    parseStyle(jsXe.getProperty("source.processing.instruction.color")),
+                                    parseStyle(jsXe.getProperty("source.namespace.prefix.color")),
+                                    parseStyle(jsXe.getProperty("source.markup.color")),
+                                    parseStyle(jsXe.getProperty("source.invalid.color")),
+                                  });
         }
-        jsXe.setBooleanProperty("source.end-of-line-markers",m_endOfLineMarkCheckBox.isSelected());
+        
+        
     }//}}}
     
     //{{{ getTitle()

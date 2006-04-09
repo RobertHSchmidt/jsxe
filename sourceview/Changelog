@@ -1,3 +1,8 @@
+04/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed bug 1433905. I implemented end of line markers when I didn't need
+      to. And I implemented them wrong, introducing this bug.
+
 02/19/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed bug 1433918. The JEditTextArea now creates a new set of defaults
