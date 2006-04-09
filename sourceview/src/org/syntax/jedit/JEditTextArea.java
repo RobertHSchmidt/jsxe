@@ -140,9 +140,9 @@ public class JEditTextArea extends JComponent
     /**
      * Returns if this component can be traversed by pressing
      * the Tab key. This returns false.
+     * TODO: Remove this
      */
-    public final boolean isManagingFocus()
-    {
+    public final boolean isManagingFocus() {
         return true;
     }
 
