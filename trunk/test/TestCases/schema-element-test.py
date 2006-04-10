@@ -1,13 +1,13 @@
 #:tabSize=4:indentSize=4:noTabs=false:
 #:folding=explicit:collapseFolds=1:
 
-useFixture(schema)
+useFixture(schema-test)
 
 # Tests the completion info feature for schema
 def test():
 	window('jsXe - schema-test.xml')
-	doubleclick('DefaultViewTree', '/Document Root/doc')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'doc', 'para' ] ])
+	doubleclick('TreeViewTree', '/Document Root/doc')
+	assertContent('TreeViewTree', [ [ 'Document Root', 'doc', 'para' ] ])
 
 	click('Tools')
 	click('Options...')
@@ -19,22 +19,23 @@ def test():
 	click('OK')
 	close()
 
-	rightclick('DefaultViewTree', '/Document Root/doc/para')
+	doubleclick('TreeViewTree', '/Document Root/doc')
+	rightclick('TreeViewTree', '/Document Root/doc/para')
 	click('Remove Node')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'doc' ] ])
+	assertContent('TreeViewTree', [ [ 'Document Root', 'doc' ] ])
 
-	rightclick('DefaultViewTree', '/Document Root/doc')
+	rightclick('TreeViewTree', '/Document Root/doc')
 	click("Add")
 	click("Element")
 	click('para')
 
-	window('Edit Tag')
+	window('Edit Node')
 	select('EditTagDialog$AttributeTable', 'true', 'Set,0')
 	select('EditTagDialog$AttributeTable', 'center', 'Value,0')
 	click('OK')
 	close()
 
-	click('DefaultViewTree', '/Document Root/doc/para')
-	assertContent('DefaultViewTree', [ [ 'Document Root', 'doc', 'para' ] ])
-	assertContent('AttributesTable', [ [ 'align', 'center'], [ '', '' ] ])
+	click('TreeViewTree', '/Document Root/doc/para')
+	assertContent('TreeViewTree', [ [ 'Document Root', 'doc', 'para' ] ])
+	assertContent('TreeViewAttributesTable', [ [ 'align', 'center'], [ '', '' ] ])
 	close()
