@@ -82,6 +82,7 @@ def test():
 	window('Global Options')
 	click('JTree', '//jsxe/XML Document Options')
 	select('Format XML output', 'true')
+	select('Soft tabs #{emulated with spaces#}', 'false')
 	click('OK')
 	close()
 
@@ -92,9 +93,7 @@ def test():
 <default_element test="junk" test2="test Attribute">
 	<element1>New Text Node</element1>
 	<element2>New Text Node</element2>
-	<element3>
-		<![CDATA[Test CDATA]]>
-	</element3>
+	<element3><![CDATA[Test CDATA]]></element3>
 	<?Instruction Test Instruction?>
 	<!--TEST COMMENT-->
 	<element4>
