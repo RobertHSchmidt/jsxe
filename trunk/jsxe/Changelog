@@ -1,6 +1,8 @@
 04/18/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Made some GUI tweaks to the splash screen.
+    * Made some tweaks to how the serializer formats XML Documents
+    * Fixed bug 1467968: Splitting CDATA tags doesn't work
 
 04/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
 

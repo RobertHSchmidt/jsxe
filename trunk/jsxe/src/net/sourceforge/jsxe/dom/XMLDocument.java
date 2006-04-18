@@ -1066,7 +1066,9 @@ public class XMLDocument {
                     writer.close();
                     m_content = content;
                     boolean formatting = Boolean.valueOf(getProperty(FORMAT_XML)).booleanValue();
-                    if (formatting  && !m_formattedLastTime) {
+                    
+                    //If m_parsedMode has changed we changed document structure too
+                    if ((formatting  && !m_formattedLastTime) || !m_parsedMode) {
                         /*
                         if we format the document then we may be changing
                         document structure.
@@ -1091,6 +1093,7 @@ public class XMLDocument {
                         }
                         fireStructureChanged(null);
                     }
+                    
                     m_formattedLastTime = formatting;
                 } catch (IOException ioe) {
                     //If an error occurs then we're in trouble
@@ -1153,6 +1156,7 @@ public class XMLDocument {
         //Temporary fix to allow parsing of documnts with multi-byte characters
        // Document doc = builder.parse(new ContentManagerInputStream(m_content));
         String text = getText(0, getLength());
+        Log.log(Log.DEBUG, this, text);
         Document doc = builder.parse(new InputSource(new StringReader(text)));
         doc.getDocumentElement().normalize();
         //}}}
@@ -1815,6 +1819,7 @@ public class XMLDocument {
         
         public boolean handleError(DOMError error) {
             if (error.getType() == "cdata-sections-splitted") {
+                Log.log(Log.DEBUG, this, "ctag split");
                 /*
                 make the source the valid model and
                 force reparsing when DOM objects are
@@ -1823,7 +1828,8 @@ public class XMLDocument {
                 m_syncedWithContent = true;
                 m_parsedMode = false;
                 m_adapterNode = null;
-                fireStructureChanged(null);
+                //don't do this here. do it after we are finished serializing
+               // fireStructureChanged(null);
                 return true;
             }
             return false;
