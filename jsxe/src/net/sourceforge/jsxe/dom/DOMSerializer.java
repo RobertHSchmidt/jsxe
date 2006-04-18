@@ -491,17 +491,27 @@ public class DOMSerializer implements LSSerializer {
                                 rSerializeNode(writer, children.item(i), encoding, currentIndent + indentUnit, line, column, offset);
                             }
                             
-                            //don't add a new line if there is only one text node child.
-                            if (formatting && !(children.getLength() == 1 &&
-                               (children.item(0).getNodeType() == Node.TEXT_NODE ||
-                                children.item(0).getNodeType() == Node.CDATA_SECTION_NODE)))
-                            {
-                                //set to zero here for error handling (if doWrite throws exception).
-                                column = 0;
-                                str = m_newLine + currentIndent;
-                                doWrite(writer, str, node, line, column, offset);
-                                column += currentIndent.length();
-                                offset += str.length();
+                            //don't add a new line if there is only text node children
+                            if (formatting) {
+                                
+                                boolean allText = true;
+                                for(int i=0; i<children.getLength();i++) {
+                                    if (!(children.item(i).getNodeType()==Node.TEXT_NODE) &&
+                                        !(children.item(i).getNodeType()==Node.CDATA_SECTION_NODE))
+                                    {
+                                        allText = false;
+                                        break;
+                                    }
+                                }
+                                
+                                if (!allText) {
+                                    //set to zero here for error handling (if doWrite throws exception).
+                                    column = 0;
+                                    str = m_newLine + currentIndent;
+                                    doWrite(writer, str, node, line, column, offset);
+                                    column += currentIndent.length();
+                                    offset += str.length();
+                                }
                             }
                             if (config.getFeature(DOMSerializerConfiguration.NAMESPACES) && nodePrefix != null) {
                                 str = "</" + nodePrefix + ":" +nodeName + ">";
@@ -533,15 +543,19 @@ public class DOMSerializer implements LSSerializer {
                                 //ignore this whitespace only text if formatting
                                 return;
                             }
+                            
+                            /*
+                            don't format text nodes
                             if (node.getNextSibling() != null || node.getPreviousSibling() != null) {
                                 line++;
                                 column=0;
                                 doWrite(writer, m_newLine, node, line, column, offset);
                                 offset += m_newLine.length();
                             }
+                            */
                         }
                         
-                        //This is a dumb quick fix and should be changed.
+                        //TODO: This is a dumb quick fix and should probably be changed.
                         for (int i=0; i<text.length();i++) {
                             //this must be first or it picks up the other
                             //entities.
@@ -600,11 +614,13 @@ public class DOMSerializer implements LSSerializer {
                                 if (config.getFeature(DOMSerializerConfiguration.SPLIT_CDATA)) {
                                     i+=2;
                                     str = "]]]]>";
+                                    /*
                                     if (formatting) {
                                         str += (m_newLine + currentIndent);
                                         column = currentIndent.length();
                                         offset += (m_newLine.length() + currentIndent.length());
                                     }
+                                    */
                                     str += "<![CDATA[>";
                                     throwError(loc, "cdata-sections-splitted", DOMError.SEVERITY_WARNING, null);
                                 } else {
