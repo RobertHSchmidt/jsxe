@@ -24,7 +24,7 @@ from http://www.fsf.org/copyleft/gpl.txt
 */
 package net.sourceforge.jsxe.gui;
 
-
+import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.io.BufferedWriter;
@@ -53,14 +53,14 @@ import net.sourceforge.jsxe.jsXe;
  */
 public class ProgressSplashScreenWindow extends JWindow {   
     private JProgressBar progressBar;
-    private JTextArea versionOutput;
+    //private JTextArea versionOutput;
     private JScrollPane outputScroll;
     private JLabel imageLabel;
 
      //{{{ ProgressSplashScreenWindow constructor
     public ProgressSplashScreenWindow() {
         initComponents();
-        setSize(200, 200);  
+        setSize(200, 185);  
         updateSplashScreenDialog(0); // set status to 1 initially
     }
     //  }}}
@@ -71,6 +71,7 @@ public class ProgressSplashScreenWindow extends JWindow {
      *
      */
     public void initComponents() {
+        
         imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imageLabel.setVerticalAlignment(SwingConstants.TOP);
@@ -78,7 +79,7 @@ public class ProgressSplashScreenWindow extends JWindow {
                 ProgressSplashScreenWindow.class
                         .getResource("/net/sourceforge/jsxe/icons/jsxeBig.jpg")));
 
-        JPanel middlePanel = new JPanel();
+        //JPanel middlePanel = new JPanel();
         //m_versionOutput = new JTextArea(1,20);
         //m_versionOutput.setText(jsXe.getAppTitle() + " " + jsXe.getVersion());
         //m_versionOutput.setEditable(false);
@@ -87,12 +88,14 @@ public class ProgressSplashScreenWindow extends JWindow {
         progressBar = new JProgressBar(0, barLength);
         progressBar.setSize(100, 20);
         progressBar.setValue(0);
-        progressBar.setString("0%");
+        //progressBar.setString("0%");
+        progressBar.setString(jsXe.getVersion());
         progressBar.setStringPainted(true);
-        middlePanel.setLayout(new BorderLayout());
+        //middlePanel.setLayout(new BorderLayout());
         //middlePanel.add(m_versionOutput, BorderLayout.NORTH);
-        middlePanel.add(progressBar, BorderLayout.CENTER);
+        //middlePanel.add(progressBar, BorderLayout.CENTER);
 
+        /*
         versionOutput = new JTextArea(1, 20);
         versionOutput.setMargin(new Insets(5, 5, 5, 5));
         versionOutput.setEditable(false);
@@ -106,12 +109,14 @@ public class ProgressSplashScreenWindow extends JWindow {
         }
         version = buf.toString()+version;
         versionOutput.setText(version);
+        */
         
         JPanel contentPane = new JPanel();
+        contentPane.setBackground(Color.WHITE);
         contentPane.setLayout(new BorderLayout());
         contentPane.add(imageLabel, BorderLayout.NORTH);
-        contentPane.add(versionOutput, BorderLayout.CENTER);
-        contentPane.add(middlePanel, BorderLayout.SOUTH);
+        //contentPane.add(versionOutput, BorderLayout.CENTER);
+        contentPane.add(progressBar, BorderLayout.SOUTH);
         contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
     }
@@ -142,7 +147,7 @@ public class ProgressSplashScreenWindow extends JWindow {
      */
     public void updateProgessBar(int percentage) {      
         progressBar.setValue(percentage);
-        progressBar.setString(percentage + "%");
+        //progressBar.setString(percentage + "%");
     } //}}}
 
 }
