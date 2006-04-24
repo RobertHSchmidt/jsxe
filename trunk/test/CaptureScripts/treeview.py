@@ -15,10 +15,13 @@ def choose(location):
 	click(treeName, location)
 
 def addElementNode(location):
+	addElementNodeByName(location, 'Add Element Node') #hack
+
+def addElementNodeByName(location, name):
 	rightclick(treeName, location)
 	click('Add')
 	click('Element')
-	click('Add Element Node')
+	click(name)
 
 def addCDATANode(location):
 	rightclick(treeName, location)

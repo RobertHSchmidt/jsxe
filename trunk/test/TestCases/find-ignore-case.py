@@ -1,13 +1,13 @@
 #:tabSize=4:indentSize=4:noTabs=false:
 #:folding=explicit:collapseFolds=1:
 
-import treeview, sourceview
+import treeview, sourceview, jsxe
 
 useFixture(default)
 
 # Tests the find dialog's find ignoring case feature
 def test():
-	window('jsXe - Untitled-1')
+	jsxe.setStartingFiles([['Untitled-1']])
 	
 	treeview.expand('/Document Root/default_element')
 	treeview.removeNode('/Document Root/default_element/default_node')
@@ -19,8 +19,8 @@ def test():
 	
 	treeview.renameNode('/Document Root/default_element/new_element', 'default')
 	
-	click('View')
-	click('Source View')
+	jsxe.setView('Source View')
+	
 	click('Edit')
 	click('Find...')
 
@@ -37,7 +37,7 @@ def test():
 	select('Ignore Case', 'false')
 	click('Replace&Find')
 
-	window('jsXe - Untitled-1')
+	jsxe.jsxewindow('Untitled-1')
 	sourceview.assertText("""<?xml version="1.0" encoding="UTF-8"?>
 <test1_element><Default/><default/></default_element>""")
 
@@ -48,7 +48,7 @@ def test():
 	select('Ignore Case', 'true')
 	click('Replace&Find')
 
-	window('jsXe - Untitled-1')
+	jsxe.jsxewindow('Untitled-1')
 	sourceview.assertText("""<?xml version="1.0" encoding="UTF-8"?>
 <test1_element><Default/><test2/></default_element>""")
 
@@ -58,7 +58,7 @@ def test():
 
 	click('Replace&Find')
 
-	window('jsXe - Untitled-1')
+	jsxe.jsxewindow('Untitled-1')
 	
 	sourceview.assertText("""<?xml version="1.0" encoding="UTF-8"?>
 <test1_element><Default/><test2/></test3_element>""")

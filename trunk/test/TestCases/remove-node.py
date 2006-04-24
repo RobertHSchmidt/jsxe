@@ -1,14 +1,15 @@
 #:tabSize=4:indentSize=4:noTabs=false:
 #:folding=explicit:collapseFolds=1:
 
-import treeview
+import treeview, jsxe
 
 useFixture(default)
 
 # Tests removing nodes from the tree.
 def test():
-	window('jsXe - Untitled-1')
-	doubleclick('TreeViewTree', '/Document Root/default_element')
+	jsxe.setStartingFiles([['Untitled-1']])
+	
+	treeview.expand('/Document Root/default_element')
 	treeview.addElementNode('/Document Root/default_element')
 	treeview.assertTree([ [ 'Document Root', 'default_element', 'default_node', 'new_element' ] ])
 

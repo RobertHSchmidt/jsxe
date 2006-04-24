@@ -1,13 +1,16 @@
 #:tabSize=4:indentSize=4:noTabs=false:
 #:folding=explicit:collapseFolds=1:
 
-useFixture(schema-test)
+import treeview, jsxe
+
+useFixture(schema)
 
 # Tests the completion info feature for schema
 def test():
-	window('jsXe - schema-test.xml')
-	doubleclick('TreeViewTree', '/Document Root/doc')
-	assertContent('TreeViewTree', [ [ 'Document Root', 'doc', 'para' ] ])
+	jsxe.setStartingFiles([['schema-test.xml']])
+	treeview.assertTree([ [ 'Document Root', 'doc', 'para' ] ])
+	treeview.expand('/Document Root/doc')
+	
 
 	click('Tools')
 	click('Options...')
@@ -19,15 +22,11 @@ def test():
 	click('OK')
 	close()
 
-	doubleclick('TreeViewTree', '/Document Root/doc')
-	rightclick('TreeViewTree', '/Document Root/doc/para')
-	click('Remove Node')
-	assertContent('TreeViewTree', [ [ 'Document Root', 'doc' ] ])
+	treeview.expand('/Document Root/doc')
+	treeview.removeNode('/Document Root/doc/para')
+	treeview.assertTree([ [ 'Document Root', 'doc' ] ])
 
-	rightclick('TreeViewTree', '/Document Root/doc')
-	click("Add")
-	click("Element")
-	click('para')
+	treeview.addElementNodeByName('/Document Root/doc', "para")
 
 	window('Edit Node')
 	select('EditTagDialog$AttributeTable', 'true', 'Set,0')
@@ -35,7 +34,7 @@ def test():
 	click('OK')
 	close()
 
-	click('TreeViewTree', '/Document Root/doc/para')
-	assertContent('TreeViewTree', [ [ 'Document Root', 'doc', 'para' ] ])
-	assertContent('TreeViewAttributesTable', [ [ 'align', 'center'], [ '', '' ] ])
+	treeview.choose('/Document Root/doc/para')
+	treeview.assertTree([ [ 'Document Root', 'doc', 'para' ] ])
+	treeview.assertAttributes([ ['align', 'center'] ])
 	close()

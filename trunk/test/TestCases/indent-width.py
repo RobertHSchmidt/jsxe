@@ -1,15 +1,14 @@
 #:tabSize=4:indentSize=4:noTabs=false:
 #:folding=explicit:collapseFolds=1:
 
-import sourceview, combobox
+import sourceview, combobox, jsxe
 
 useFixture(default)
 
 # Tests the soft-tabs and indent width options
 def test():
-	window('jsXe - Untitled-1')
-	click('View')
-	click('Source View')
+	jsxe.setStartingFiles([['Untitled-1']])
+	jsxe.setView('Source View')
 	click('Tools')
 	click('Options...')
 

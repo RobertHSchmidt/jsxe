@@ -1,3 +1,5 @@
+#:tabSize=4:indentSize=4:noTabs=false:
+#:folding=explicit:collapseFolds=1:
 from net.sourceforge.jsxe import jsXe
 
 class Fixture:
@@ -10,4 +12,3 @@ class Fixture:
 
 	def setup(self):
 		self.start_application()
-

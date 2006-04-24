@@ -1,15 +1,15 @@
 #:tabSize=4:indentSize=4:noTabs=false:
 #:folding=explicit:collapseFolds=1:
 
-import treeview
+import treeview, jsxe
 
 useFixture(default)
 
 # Tests adding and removing and editing attributes
 # in the attributes table
 def test():
-	window('jsXe - Untitled-1')
-	click('TreeViewTree', '/Document Root/default_element')
+	jsxe.setStartingFiles([['Untitled-1']])
+	treeview.choose('/Document Root/default_element')
 	treeview.addAttribute('test1', '123')
 	treeview.assertAttributes([ [ 'test1', '123' ] ])
 
