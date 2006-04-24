@@ -1,13 +1,13 @@
 #:tabSize=4:indentSize=4:noTabs=false:
 #:folding=explicit:collapseFolds=1:
 
-import treeview
+import treeview, jsxe
 
 useFixture(default)
 
 # Tests reloading an untitled file
 def test():
-	window('jsXe - Untitled-1')
+	jsxe.setStartingFiles([['Untitled-1']])
 	treeview.expand('/Document Root/default_element')
 	treeview.removeNode('/Document Root/default_element/default_node')
 	treeview.assertTree([ [ 'Document Root', 'default_element' ] ])

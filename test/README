@@ -24,7 +24,7 @@ set the working directory to where you exported the 'jsxe' module from CVS
 
 On the Classpath Tab:
 Click add archives and add all jars from the jsxe/lib directory from the CVS
-module. 
+module. Also add the jsXe.jar file from the jsxe module.
 
 On the Python Path Tab:
 (you shouldn't have to do this one but I did for some reason)

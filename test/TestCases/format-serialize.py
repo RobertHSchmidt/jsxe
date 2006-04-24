@@ -1,14 +1,14 @@
 #:tabSize=4:indentSize=4:noTabs=false:
 #:folding=explicit:collapseFolds=1:
 
-import treeview, sourceview
+import treeview, sourceview,jsxe
 
 useFixture(default)
 
 # tests the format-pretty-print feature
 def test():
-    
-	window('jsXe - Untitled-1')
+	jsxe.setStartingFiles([['Untitled-1']])
+	
 	treeview.expand('/Document Root/default_element')
 	treeview.removeNode('/Document Root/default_element/default_node')
 	treeview.assertTree([ [ 'Document Root', 'default_element' ] ])
@@ -86,8 +86,7 @@ def test():
 	click('OK')
 	close()
 
-	click('View')
-	click('Source View')
+	jsxe.setView('Source View')
 	
 	sourceview.assertText("""<?xml version="1.0" encoding="UTF-8"?>
 <default_element test="junk" test2="test Attribute">

@@ -1,1 +1,1 @@
-__all__ = [ "CVS", "default", "schema" ];
+__all__ = [ "CVS", "default", "multi", "recent", "schema" ];

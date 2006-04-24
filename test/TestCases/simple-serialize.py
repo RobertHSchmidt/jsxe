@@ -1,13 +1,13 @@
 #:tabSize=4:indentSize=4:noTabs=false:
 #:folding=explicit:collapseFolds=1:
 
-import treeview, sourceview
+import treeview, sourceview, jsxe
 
 useFixture(default)
 
 # Tests simple non-formatted serialization
 def test():
-	window('jsXe - Untitled-1')
+	jsxe.setStartingFiles([['Untitled-1']])
 	
 	treeview.expand('/Document Root/default_element')
 	treeview.removeNode('/Document Root/default_element/default_node')
@@ -66,8 +66,7 @@ def test():
 
 	#doubleclick('JScrollPane$ScrollBar.')
 
-	click('View')
-	click('Source View')
+	jsxe.setView('Source View')
 	sourceview.assertText('''<?xml version="1.0" encoding="UTF-8"?>
 <default_element><element1><element2/></element1><element3>New Text Node</element3><element4><![CDATA[New CDATA Section]]></element4><element5><?Instruction New Processing Instruction?></element5><element6><!--New Comment--></element6></default_element>''')
 	
