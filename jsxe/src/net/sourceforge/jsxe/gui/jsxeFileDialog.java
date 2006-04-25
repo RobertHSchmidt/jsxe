@@ -92,6 +92,8 @@ public class jsxeFileDialog extends JFileChooser {
     //{{{ init()
     
     private void init() {
+        setName("jsxeFileDialog");
+        
         //Add a filter to display only XML files
         ArrayList extentionList = new ArrayList();
         extentionList.add("xml");

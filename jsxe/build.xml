@@ -41,7 +41,7 @@
     <property name="main.class" value="net.sourceforge.jsxe.jsXe"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="4"/>
-		<property name="beta.version" value="4"/>
+		<property name="beta.version" value="99"/>
     <property name="bugfix.version" value="0"/>
 		<property name="app.version" value="${major.version}.${minor.version}.${beta.version}.${bugfix.version}"/>
 		<property name="app_version" value="${major.version}_${minor.version}_${beta.version}_${bugfix.version}"/>
