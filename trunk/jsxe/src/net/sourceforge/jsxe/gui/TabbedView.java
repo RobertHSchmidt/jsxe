@@ -409,6 +409,8 @@ public class TabbedView extends JFrame {
     
     private void init() {
         
+        tabbedPane.setName("TabbedView");
+        
         //{{{ load global properties
         
         int width = jsXe.getIntegerProperty(_WIDTH, -1);

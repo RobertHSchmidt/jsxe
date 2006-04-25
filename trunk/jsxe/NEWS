@@ -1,3 +1,56 @@
+04/25/2006  version 0.4 beta
+
+    * Updated to work with xerces 2.8.0 (jsXe now requires xerces 2.8.0)
+    * Updated support for different encodings. Now jsXe will support all
+      encodings that the JVM being used supports. jsXe now opens documents
+      properly by examining the files for UTF file markers or the encoding
+      in the XML declaration. jsXe will now save files properly and write
+      the correct encoding in the xml declaration.
+    * Added built-in completion and introspection support for XML Schema, XHTML,
+      XSLT, and XSL:FO
+    * Added a null menu item to the recent files menu for when there are
+      no recent files in the list.
+    * Added an option to allow the user to specify the line separator.
+    * Made some GUI tweaks to the splash screen.
+    * Made some tweaks to how the serializer formats XML Documents
+
+02/19/2006  version 0.4 pre3
+
+    * Added Activity Log menu option to the Help menu
+    * Added splash screen for jsXE startup
+    * Added support for caching external files to the disk in the user's
+      settings directory. This should make load times faster for files with a
+      lot of external files that are downloaded. jsXe now requires the commons
+      xml-commons resolver jar file.
+    * Added a dialog that shows a document's validation errors.
+    * The open file dialog now defaults to the directory specified in
+      the system parameter user.dir. This causes tho open file dialog to open
+      to the C:\Documents and Settings\user directory instead of the My
+      Documents directory in windows. This makes the open file dialogs
+      consistent.
+    * jsXe now allows plugins to specify their own localized messages. These
+      messages are stored in properties files in the plugin jar file under the
+      'messages' directory. The files are named identically to jsXe's messages
+      files (messages.en, messages.de).
+    * Added support for detecting a file's line separator and preserving it for
+      later during write. This preserves the correct line separator for a file.
+      This will added as an option later.
+    * Fixed a bug allow jsXe to parse documents that have multi-byte characters.
+    * Removed feature that when you type something it begins editing the
+      current node in the tree view. It would begin editing even if you typed
+      menu shortcut.
+    * Added a feature to add Document Type nodes. This is pretty basic but it
+      allows you to add new DOCTYPE nodes to the tree.
+    * Added cut/copy/paste support for nodes in the tree view. There are still
+      some limitations like the keyboard shortcuts don't work, and the actions
+      don't work when focused on the right hand side pane.
+    * Added support for smart HOME/END in the source view. HOME and END will now
+      take you to the first/last non-whitespace characters.
+    * Fixed some syntax highlighting problems with DTDs that have internal
+      subsets.
+    * Added end of line markers and and option to turn them on or off.
+    * Added support for maintaining indent when adding new lines
+
 07/01/2005  version 0.4 pre2
 
     * Added Swedish translation thanks to Patrik Johansson
