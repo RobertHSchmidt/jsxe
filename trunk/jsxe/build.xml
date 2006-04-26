@@ -43,8 +43,10 @@
 		<property name="minor.version" value="4"/>
 		<property name="beta.version" value="99"/>
     <property name="bugfix.version" value="0"/>
-		<property name="app.version" value="${major.version}.${minor.version}.${beta.version}.${bugfix.version}"/>
-		<property name="app_version" value="${major.version}_${minor.version}_${beta.version}_${bugfix.version}"/>
+    <!-- Human Readable -->
+		<property name="app.version" value="0.4 beta"/>
+    <!-- Used in filenames -->
+		<property name="app_version" value="04_beta"/>
     <!--<property name="app.version" value="${major.version}.${minor.version} beta"/>-->
     <!--<property name="app_version" value="${major.version}_${minor.version}beta"/>-->
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
@@ -62,6 +64,7 @@
     <!-- set whether we have the source for the default views -->
     <available file="${plugin.dir}/treeview/build.xml" property="treeview.avail"/>
     <available file="${plugin.dir}/sourceview/build.xml" property="sourceview.avail"/>
+    <available file="${root.dir}/../web" property="web.avail"/>
     
 		<echo message="${app.name} ${app.version}"/>
 		<echo message="----------------------------------------------------------"/>
@@ -71,10 +74,14 @@
 	<target depends="init" name="usage" description="Prints available targets">
 		<echo message=" available targets are:"/>
 		<echo message=""/>
-		<echo message=" compile   --&gt; generates the ${app.name}.jar file"/>
+		<echo message=" compile   --&gt; generates the ${app.name}.jar file."/>
+    <echo message="               also generates the jars for the tree view"/>
+    <echo message="               and source view plugins if available."/>
 		<echo message=" bin       --&gt; generates a binary distribution"/>
 		<echo message=" src       --&gt; generates a source distribution"/>
 		<echo message=" doc       --&gt; generates all documentation"/>
+    <echo message="               also updates the web api if the web module"/>
+    <echo message="               is available."/>
 		<echo message=" clean     --&gt; cleans everything up"/>
 	</target>
 	<!-- }}} -->
@@ -197,16 +204,21 @@
 	<!-- }}} -->
 	<!-- {{{ ============ Generates the documentation ====================== -->
 	<target depends="prepare-doc, prepare-src" name="doc" description="Build documentation">
-		<copy file="COPYING" tofile="${build.dir}/doc/COPYING"/>
-		<copy file="README" tofile="${build.dir}/doc/README"/>
-		<copy file="AUTHORS" tofile="${build.dir}/doc/AUTHORS"/>
-		<copy file="ISSUES" tofile="${build.dir}/doc/ISSUES"/>
-		<copy file="Changelog" tofile="${build.dir}/doc/Changelog"/>
-		<copy file="INSTALL" tofile="${build.dir}/doc/INSTALL"/>
-		<copy file="THANKS" tofile="${build.dir}/doc/THANKS"/>
-		<copy file="NEWS" tofile="${build.dir}/doc/NEWS"/>
+		<copy file="COPYING" tofile="${build.docs}/COPYING"/>
+		<copy file="README" tofile="${build.docs}/README"/>
+		<copy file="AUTHORS" tofile="${build.docs}/AUTHORS"/>
+		<copy file="ISSUES" tofile="${build.docs}/ISSUES"/>
+		<copy file="Changelog" tofile="${build.docs}/Changelog"/>
+		<copy file="INSTALL" tofile="${build.docs}/INSTALL"/>
+		<copy file="THANKS" tofile="${build.docs}/THANKS"/>
+		<copy file="NEWS" tofile="${build.docs}/NEWS"/>
 		<javadoc author="true" destdir="${build.javadocs}" doctitle="${app.name} ${app.version} API" link="${javadoc.link}" locale="en_US" packagenames="*" sourcepath="${build.src}" version="true" windowtitle="${app.name} ${app.version} API"/>
+    <zip basedir="${build.docs}" includes="api/**" zipfile="${build.dir}/${app.name}-${app_version}-api.zip"/>
+    <antcall target="copy-doc-to-web"/>
 	</target>
+  <target depends="" name="copy-doc-to-web" if="web.avail">
+    <copy file="${build.dir}/${app.name}-${app_version}-api.zip" tofile="${root.dir}/../web/api.zip"/>
+  </target>
 	<!-- }}} -->
 	<!-- {{{ ============ Generates the binary distribution ================ -->
 	<target depends="compile, prepare-build, doc" name="bin" description="Build binary distribution">
