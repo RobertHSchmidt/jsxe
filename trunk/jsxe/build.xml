@@ -5,6 +5,14 @@
     
     This is a build.xml file for building jsXe.
     Version: $Id$
+    
+    You should check out jsxe to make a structure like this. This ensures that
+    when compiling jsXe the other views will be compiled as well.
+    
+    jsxe module         => jsxe/
+    treeview module     => jsxe/jars/treeview
+    sourceview module   => jsxe/jars/sourceview
+    jsxe web module     => web/
 -->
 <project basedir="." default="usage" name="jsXe">
 	
