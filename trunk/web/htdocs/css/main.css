@@ -56,7 +56,11 @@ a.hover {
    /* white-space:nowrap;*/
 }
 
-#sidebar a:link, a:visited, a:hover {
+#sidebar a:link, a:visited {
+  text-decoration: underline;
+}
+
+#sidebar a:hover {
   text-decoration: none;
 }
 
