@@ -19,9 +19,9 @@
     </div>
     <div id="mainBody">
       
-      <?php if (isset($_POST['ssid']) { 
-          echo '<img alt="screenshot" src="http://sourceforge.net/project/screenshots.php?group_id=58584&ssid='
-          print_r($_POST['ssid'])
+      <?php if (isset($_GET['id'])) {
+          echo '<img alt="screenshot" src="http://sourceforge.net/dbimage.php?id=';
+          print_r($_GET['id']);
           echo '"/>';
         } else {
       ?>
@@ -31,7 +31,7 @@
         <table border="0" cellpadding="0" cellspacing="15" width="100%">
           <tr>
             <td>
-              <a href="screenshot1.xhtml">
+              <a href="screenshots.php?id=34495">
                 <img alt="screenshot1" border="0" src="https://sourceforge.net/dbimage.php?id=34495"/>
               </a>
             </td>
@@ -44,12 +44,12 @@
           </tr>
           <tr>
             <td>
-              <a href="screenshot2.xhtml">
+              <a href="screenshots.php?id=34498">
                 <img alt="screenshot2" border="0" src="https://sourceforge.net/dbimage.php?id=34497"/>
               </a>
             </td>
             <td>
-              A screenshot showing the upcoming syntax highlighted source view.
+              A screenshot showing the syntax highlighted source view.
               <br/>
   
               (jsXe 0.4 pre2 running on Windows XP)
@@ -57,7 +57,7 @@
           </tr>
           <tr>
             <td>
-              <a href="screenshot3.xhtml">
+              <a href="screenshots.php?id=34500">
                 <img alt="screenshot3" border="0" src="https://sourceforge.net/dbimage.php?id=34499"/>
               </a>
             </td>
@@ -70,7 +70,7 @@
           </tr>
           <tr>
             <td>
-              <a href="screenshot4.xhtml">
+              <a href="screenshots.php?id=34502">
                 <img alt="screenshot4" border="0" src="https://sourceforge.net/dbimage.php?id=34501"/>
               </a>
             </td>
@@ -83,7 +83,7 @@
           </tr>
           <tr>
             <td>
-              <a href="screenshot5.xhtml">
+              <a href="screenshots.php?id=34504">
                 <img alt="screenshot5" border="0" src="https://sourceforge.net/dbimage.php?id=34503"/>
               </a>
             </td>
