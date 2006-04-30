@@ -20,9 +20,9 @@
     <div id="mainBody">
       
       <?php if (isset($_GET['id'])) {
-          echo '<img alt="screenshot" src="http://sourceforge.net/dbimage.php?id=';
+          echo '<center><img alt="screenshot" src="http://sourceforge.net/dbimage.php?id=';
           print_r($_GET['id']);
-          echo '"/>';
+          echo '"/></center>';
         } else {
       ?>
       
@@ -31,7 +31,7 @@
         <table border="0" cellpadding="0" cellspacing="15" width="100%">
           <tr>
             <td>
-              <a href="screenshots.php?id=34495">
+              <a href="screenshots.php?id=34496">
                 <img alt="screenshot1" border="0" src="https://sourceforge.net/dbimage.php?id=34495"/>
               </a>
             </td>
