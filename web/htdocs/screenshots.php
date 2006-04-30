@@ -18,75 +18,84 @@
       <?php include("sidebar.php") ?>
     </div>
     <div id="mainBody">
-      <h2>Screenshots</h2>
       
-      <table border="0" cellpadding="0" cellspacing="15" width="100%">
-        <tr>
-          <td>
-            <a href="screenshot1.xhtml">
-              <img alt="screenshot1" border="0" src="https://sourceforge.net/dbimage.php?id=34495"/>
-            </a>
-          </td>
-          <td>
-            A screenshot showing validation features. jsXe allows you to add nodes defined by DTD/Schema
-            <br/>
-
-            (jsXe 0.4 pre1 running on Windows XP)
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <a href="screenshot2.xhtml">
-              <img alt="screenshot2" border="0" src="https://sourceforge.net/dbimage.php?id=34497"/>
-            </a>
-          </td>
-          <td>
-            A screenshot showing the upcoming syntax highlighted source view.
-            <br/>
-
-            (jsXe 0.4 pre2 running on Windows XP)
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <a href="screenshot3.xhtml">
-              <img alt="screenshot3" border="0" src="https://sourceforge.net/dbimage.php?id=34499"/>
-            </a>
-          </td>
-          <td>
-            A screenshot of jsXe&apos;s options panel.
-            <br/>
-
-            (jsXe 0.4 pre1 running on Windows XP)
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <a href="screenshot4.xhtml">
-              <img alt="screenshot4" border="0" src="https://sourceforge.net/dbimage.php?id=34501"/>
-            </a>
-          </td>
-          <td>
-            A screenshot of the edit node dialog. This dialog can be used to edit nodes defined in DTD/Schema
-            <br/>
-
-            (jsXe 0.4 pre1 running on Windows XP)
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <a href="screenshot5.xhtml">
-              <img alt="screenshot5" border="0" src="https://sourceforge.net/dbimage.php?id=34503"/>
-            </a>
-          </td>
-          <td>
-            An early look at the schema view running as a plugin.
-            <br/>
-
-            (jsXe 0.3pre16 running on Linux)
-          </td>
-        </tr>
-      </table>
+      <?php if (isset($_POST['ssid']) { 
+          echo '<img alt="screenshot" src="http://sourceforge.net/project/screenshots.php?group_id=58584&ssid='
+          print_r($_POST['ssid'])
+          echo '"/>';
+        } else {
+      ?>
+      
+        <h2>Screenshots</h2>
+        
+        <table border="0" cellpadding="0" cellspacing="15" width="100%">
+          <tr>
+            <td>
+              <a href="screenshot1.xhtml">
+                <img alt="screenshot1" border="0" src="https://sourceforge.net/dbimage.php?id=34495"/>
+              </a>
+            </td>
+            <td>
+              A screenshot showing validation features. jsXe allows you to add nodes defined by DTD/Schema
+              <br/>
+  
+              (jsXe 0.4 pre1 running on Windows XP)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="screenshot2.xhtml">
+                <img alt="screenshot2" border="0" src="https://sourceforge.net/dbimage.php?id=34497"/>
+              </a>
+            </td>
+            <td>
+              A screenshot showing the upcoming syntax highlighted source view.
+              <br/>
+  
+              (jsXe 0.4 pre2 running on Windows XP)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="screenshot3.xhtml">
+                <img alt="screenshot3" border="0" src="https://sourceforge.net/dbimage.php?id=34499"/>
+              </a>
+            </td>
+            <td>
+              A screenshot of jsXe&apos;s options panel.
+              <br/>
+  
+              (jsXe 0.4 pre1 running on Windows XP)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="screenshot4.xhtml">
+                <img alt="screenshot4" border="0" src="https://sourceforge.net/dbimage.php?id=34501"/>
+              </a>
+            </td>
+            <td>
+              A screenshot of the edit node dialog. This dialog can be used to edit nodes defined in DTD/Schema
+              <br/>
+  
+              (jsXe 0.4 pre1 running on Windows XP)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="screenshot5.xhtml">
+                <img alt="screenshot5" border="0" src="https://sourceforge.net/dbimage.php?id=34503"/>
+              </a>
+            </td>
+            <td>
+              An early look at the schema view running as a plugin.
+              <br/>
+  
+              (jsXe 0.3pre16 running on Linux)
+            </td>
+          </tr>
+        </table>
+        <?php } ?>
       <div id="images">
         <a href="http://sourceforge.net/"><img alt="SourceForge Logo" src="http://sourceforge.net/sflogo.php?group_id=58584"/></a>
         <a href="http://validator.w3.org/check/referer"><img alt="Valid XHTML 1.0 Transitional" src="http://www.w3.org/Icons/valid-xhtml10"/></a>
