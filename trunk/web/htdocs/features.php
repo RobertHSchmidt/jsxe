@@ -16,20 +16,7 @@
     <div id="title"><h1>jsXe: The Java Simple XML Editor</h1></div>
     
     <div id="sidebar">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="features.xhtml" >Features</a></li>
-        <li><a href="screenshots.xhtml">Screenshots</a></li>
-        <li><a href="downloads.xhtml">Downloads</a></li>
-        <li><a href="links.xhtml">Get Involved</a></li>
-      </ul>
-      
-      <ul>
-        <li><a href="http://sourceforge.net/news/?group_id=58584">News</a></li>
-        <li><a href="api/">API Docs</a></li>
-        <li><a href="http://www.sourceforge.net/projects/jsxe/">SourceForge Project</a></li>
-      </ul>
-      
+      <?php include("sidebar.php") ?>
     </div>
     <div id="mainBody">
       <h2>Features</h2>

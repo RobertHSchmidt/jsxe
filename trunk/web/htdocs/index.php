@@ -16,20 +16,7 @@
     <div id="title"><h1>jsXe: The Java Simple XML Editor</h1></div>
     
     <div id="sidebar">
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="features.xhtml" >Features</a></li>
-        <li><a href="screenshots.xhtml">Screenshots</a></li>
-        <li><a href="downloads.xhtml">Downloads</a></li>
-        <li><a href="links.xhtml">Get Involved</a></li>
-      </ul>
-      
-      <ul>
-        <li><a href="http://sourceforge.net/news/?group_id=58584">News</a></li>
-        <li><a href="api/">API Docs</a></li>
-        <li><a href="http://www.sourceforge.net/projects/jsxe/">SourceForge Project</a></li>
-      </ul>
-      
+      <?php include("sidebar.php") ?>
     </div>
     <div id="mainBody">
       
@@ -49,6 +36,8 @@
          make jsXe a great editor by contributing your suggestions and needs or
          if you are a developer and would like to contribute time and code check
          out <a href="links.html">how to get involved</a></p>
+         
+      
       <div id="images">
         <a href="http://sourceforge.net/"><img alt="SourceForge Logo" src="http://sourceforge.net/sflogo.php?group_id=58584"/></a>
         <a href="http://validator.w3.org/check/referer"><img alt="Valid XHTML 1.0 Transitional" src="http://www.w3.org/Icons/valid-xhtml10"/></a>
