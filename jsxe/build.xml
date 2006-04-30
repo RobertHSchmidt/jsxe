@@ -222,10 +222,6 @@
 		<copy file="NEWS" tofile="${build.docs}/NEWS"/>
 		<javadoc author="true" destdir="${build.javadocs}" doctitle="${app.name} ${app.version} API" link="${javadoc.link}" locale="en_US" packagenames="*" sourcepath="${build.src}" version="true" windowtitle="${app.name} ${app.version} API"/>
     <zip basedir="${build.docs}" includes="api/**" zipfile="${build.dir}/${app.name}-${app_version}-api.zip"/>
-    <antcall target="copy-doc-to-web"/>
-	</target>
-  <target depends="" name="copy-doc-to-web" if="web.avail">
-    <copy file="${build.dir}/${app.name}-${app_version}-api.zip" tofile="${root.dir}/../web/api.zip"/>
   </target>
 	<!-- }}} -->
 	<!-- {{{ ============ Generates the binary distribution ================ -->
@@ -344,7 +340,12 @@
     </copy>
   </target>
 	<!-- }}} -->
-	<!-- {{{ ============ Cleans everything up ============================= -->
+	<!-- {{{ ============ Deploys documentation to the web module ========== -->
+  <target depends="doc" name="deploy-web-doc" if="web.avail" description="Deploy documentation to the web module">
+    <copy file="${build.dir}/${app.name}-${app_version}-api.zip" tofile="${root.dir}/../web/api.zip"/>
+  </target>
+  <!-- }}} -->
+  <!-- {{{ ============ Cleans everything up ============================= -->
 	<target depends="init" name="clean" description="Clean up distribution tree">
 		<delete dir="${build.dir}"/>
 		<delete>
