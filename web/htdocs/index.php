@@ -34,7 +34,7 @@
          are not currently implemented. If you are interesting in helping to
          make jsXe a great editor by contributing your suggestions and needs or
          if you are a developer and would like to contribute time and code check
-         out <a href="links.html">how to get involved</a></p>
+         out <a href="links.php">how to get involved</a></p>
          
       
       <div id="images">
