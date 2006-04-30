@@ -11,6 +11,7 @@ RELEASE CHECKLIST
 * Update the README if needed
 * Update the jsXe website in CVS to reference the new versions
 * Update the jsXe website in CVS to have the correct help and documentation.
+    * Run 'ant deploy-web-doc'
 
 Build the project
     * Make sure the major.version, minor.version, beta.version, bugfix.version,
