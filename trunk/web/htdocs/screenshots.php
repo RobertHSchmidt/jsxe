@@ -31,8 +31,22 @@
         <table border="0" cellpadding="0" cellspacing="15" width="100%">
           <tr>
             <td>
+              <a href="screenshots.php?id=34495">
+                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=59764"/>
+              </a>
+            </td>
+            <td>
+              A screenshot showing the context dialog including cut/paste
+              <br/>
+  
+              (jsXe 0.4 pre3 running on Windows XP)
+            </td>
+          </tr>
+          
+          <tr>
+            <td>
               <a href="screenshots.php?id=34496">
-                <img alt="screenshot1" border="0" src="https://sourceforge.net/dbimage.php?id=34495"/>
+                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34495"/>
               </a>
             </td>
             <td>
@@ -45,7 +59,7 @@
           <tr>
             <td>
               <a href="screenshots.php?id=34498">
-                <img alt="screenshot2" border="0" src="https://sourceforge.net/dbimage.php?id=34497"/>
+                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34497"/>
               </a>
             </td>
             <td>
@@ -58,7 +72,7 @@
           <tr>
             <td>
               <a href="screenshots.php?id=34500">
-                <img alt="screenshot3" border="0" src="https://sourceforge.net/dbimage.php?id=34499"/>
+                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34499"/>
               </a>
             </td>
             <td>
@@ -71,7 +85,7 @@
           <tr>
             <td>
               <a href="screenshots.php?id=34502">
-                <img alt="screenshot4" border="0" src="https://sourceforge.net/dbimage.php?id=34501"/>
+                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34501"/>
               </a>
             </td>
             <td>
@@ -84,7 +98,7 @@
           <tr>
             <td>
               <a href="screenshots.php?id=34504">
-                <img alt="screenshot5" border="0" src="https://sourceforge.net/dbimage.php?id=34503"/>
+                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34503"/>
               </a>
             </td>
             <td>
