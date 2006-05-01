@@ -28,6 +28,7 @@
         <li>Written in Java, so it runs on Mac OS X, OS/2, Unix, VMS and Windows.</li>
         <li>XML documents are edited using views. jsXe allows for
             multiple views.</li>
+        <li>Syntax highlighted source view (version 0.4 beta)</li>
         <li>Plugin interface that allows the addition of views
             without re-compiling</li>
         <li>Relatively good serialization of XML documents.
@@ -36,6 +37,19 @@
             whitespace in text.</li>
         <li>Allows opening and editing of multiple XML documents in
             one open window.</li>
+        <li>Incremental parsing. Parsing the document and validation
+            will be done automatically without having to
+            continuously hit a validate/parse button.</li>
+        <li>Support for validation of an XML document using DTDs and
+            other forms of Schema.</li>
+        <li>DTD/Schema introspection. Information in the DTD/Schema is used to
+            allow users to add and edit nodes based on defined
+            within the DTD/Schema.</li>
+        <li>Internationalization. jsXe has support to easily
+            create translations of menus and messages into your native
+            language.</li>
+        <li>Built-in completion support for XML Schema, XHTML, XSLT, and
+            XSL:FO</li>
       </ul>
         
       <h3>Tree View</h3>
@@ -60,30 +74,14 @@
           
       <ul>
         <li>A schema designer view that uses <a href="http://www.jgraph.com/">JGraph</a></li>
-        <li>Incremental parsing. Parsing the document and validation
-            will be done automatically without having to
-            continuously hit a validate/parse button. (version 0.4 beta)</li>
         <li>Support for transforming XML documents using XSLT
             stylesheets.</li>
-        <li>Support for validation of an XML document using DTDs and
-            other forms of Schema. This information will be used to
-            allow users to add and edit nodes based on definitions
-            within the DTD/Schema. (version 0.4 beta)</li>
-        <li>Support for Unlimited Undo</li>
-        <li>Syntax highlighted source view (version 0.4 beta)</li>
-        <li>Additional features for editing source of XML
-            documents such as closing tag completion and marking of
-            matching opening/closing tags (version 0.4 beta)</li>
-        <li>Internationalization. jsXe will have support to easily
-            create translations of menus and messages into your native
-            language. (version 0.4 beta)</li>
+        <li>Support for Unlimited Undo (version 0.5 beta)</li>
+        <li>Tag completion using DTD/Schema introspection (version 0.5 beta)</li>
+        <li>Automatic insertion of closing tags (version 0.5 beta)</li>
       </ul>
-      <div id="images">
-        <a href="http://sourceforge.net/"><img alt="SourceForge Logo" src="http://sourceforge.net/sflogo.php?group_id=58584"/></a>
-        <a href="http://validator.w3.org/check/referer"><img alt="Valid XHTML 1.0 Transitional" src="http://www.w3.org/Icons/valid-xhtml10"/></a>
-        <a href="http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2Fjsxe.sourceforge.net%2Fcss%2Fmain.css&amp;usermedium=all"><img alt="Valid CSS" src="http://jigsaw.w3.org/css-validator/images/vcss"/></a>
-        <a href="http://www.jedit.org"><img alt="Made with jEdit" src="images/made-with-jedit-6.png"/></a>
-      </div>
+      
+      <?php include("footer.php") ?>
     </div>
   </body>
 </html>
