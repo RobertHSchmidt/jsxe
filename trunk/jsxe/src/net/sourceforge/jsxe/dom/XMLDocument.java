@@ -205,7 +205,7 @@ public class XMLDocument {
         if (!m_parsedMode) {
             parseDocument();
             m_adapterNode = new AdapterNode(this, m_document);
-            m_adapterNode.addAdapterNodeListener(docAdapterListener);
+           // m_adapterNode.addAdapterNodeListener(docAdapterListener);
            // m_syncedWithContent = true;
             m_parsedMode=true;
         }
@@ -985,6 +985,8 @@ public class XMLDocument {
         }
     }//}}}
     
+    //{{{ Protected members
+    
     //{{{ fireStructureChanged()
     /**
      * Called when the structure of the document has changed. This may be called
@@ -1000,8 +1002,6 @@ public class XMLDocument {
         }
         m_syncedWithContent = false;
     }//}}}
-    
-    //{{{ Protected members
     
     //{{{ getCompletionInfoMappings()
     /**
@@ -1085,7 +1085,7 @@ public class XMLDocument {
                             //m_syncedWithContent = false;
                             
                             m_adapterNode = new AdapterNode(this, m_document);
-                            m_adapterNode.addAdapterNodeListener(docAdapterListener);
+                           // m_adapterNode.addAdapterNodeListener(docAdapterListener);
                             m_parsedMode = true;
                         } catch (Exception e) {
                             //If an error occurs then we're in trouble
@@ -1773,6 +1773,7 @@ public class XMLDocument {
      * An AdapterNodeListener is added to each AdapterNode in the tree so that
      * the XMLDocument is notified when the structure changes.
      */
+    /*
     private class XMLDocAdapterListener implements AdapterNodeListener {
         
         // {{{ nodeAdded()
@@ -1805,7 +1806,7 @@ public class XMLDocument {
             fireStructureChanged(source);
         }//}}}
         
-    }//}}}
+    }//}}}*/
     
     //{{{ SerializeErrorHandler class
     /**
@@ -2074,7 +2075,7 @@ public class XMLDocument {
      */
     private HashMap m_mappings;
     
-    private XMLDocAdapterListener docAdapterListener = new XMLDocAdapterListener();
+   // private XMLDocAdapterListener docAdapterListener = new XMLDocAdapterListener();
     
     //}}}
 }
