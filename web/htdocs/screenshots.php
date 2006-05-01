@@ -38,7 +38,7 @@
             <td>
               A screenshot showing the context dialog including cut/paste
               <br/>
-  
+              
               (jsXe 0.4 pre3 running on Windows XP)
             </td>
           </tr>
@@ -52,7 +52,7 @@
             <td>
               A screenshot showing validation features. jsXe allows you to add nodes defined by DTD/Schema
               <br/>
-  
+              
               (jsXe 0.4 pre1 running on Windows XP)
             </td>
           </tr>
@@ -65,7 +65,7 @@
             <td>
               A screenshot showing the syntax highlighted source view.
               <br/>
-  
+              
               (jsXe 0.4 pre2 running on Windows XP)
             </td>
           </tr>
@@ -78,7 +78,7 @@
             <td>
               A screenshot of jsXe&apos;s options panel.
               <br/>
-  
+              
               (jsXe 0.4 pre1 running on Windows XP)
             </td>
           </tr>
@@ -91,7 +91,7 @@
             <td>
               A screenshot of the edit node dialog. This dialog can be used to edit nodes defined in DTD/Schema
               <br/>
-  
+              
               (jsXe 0.4 pre1 running on Windows XP)
             </td>
           </tr>
@@ -104,18 +104,14 @@
             <td>
               An early look at the schema view running as a plugin.
               <br/>
-  
+              
               (jsXe 0.3pre16 running on Linux)
             </td>
           </tr>
         </table>
-        <?php } ?>
-      <div id="images">
-        <a href="http://sourceforge.net/"><img alt="SourceForge Logo" src="http://sourceforge.net/sflogo.php?group_id=58584"/></a>
-        <a href="http://validator.w3.org/check/referer"><img alt="Valid XHTML 1.0 Transitional" src="http://www.w3.org/Icons/valid-xhtml10"/></a>
-        <a href="http://jigsaw.w3.org/css-validator/validator?uri=http%3A%2F%2Fjsxe.sourceforge.net%2Fcss%2Fmain.css&amp;usermedium=all"><img alt="Valid CSS" src="http://jigsaw.w3.org/css-validator/images/vcss"/></a>
-        <a href="http://www.jedit.org"><img alt="Made with jEdit" src="images/made-with-jedit-6.png"/></a>
-      </div>
+      <?php } ?>
+      
+      <?php include("footer.php") ?>
     </div>
   </body>
 </html>
