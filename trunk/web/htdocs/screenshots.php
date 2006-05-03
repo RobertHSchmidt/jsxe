@@ -31,7 +31,7 @@
         <table border="0" cellpadding="0" cellspacing="15" width="100%">
           <tr>
             <td>
-              <a href="screenshots.php?id=34495">
+              <a href="screenshots.php?id=59765">
                 <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=59764"/>
               </a>
             </td>
