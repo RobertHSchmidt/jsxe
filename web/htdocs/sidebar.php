@@ -11,3 +11,5 @@
  <li><a href="api/">API Docs</a></li>
  <li><a href="http://www.sourceforge.net/projects/jsxe/">SourceForge Project</a></li>
 </ul>
+
+<a href="http://sourceforge.net/"><img alt="SourceForge Logo" src="http://sourceforge.net/sflogo.php?group_id=58584"/></a>
