@@ -166,6 +166,7 @@ public class TabbedView extends JFrame {
         
             buffer.addDocumentBufferListener(m_docBufListener);
             buffer.addDocumentBufferListener(m_statusBar);
+            m_statusBar.setCenterMessage(Messages.getMessage("DocumentBuffer.Loaded.Message", new Object[] { buffer.getName() }));
             
             m_documentViews.add(newDocView);
             Component comp = newDocView.getDocumentViewComponent();
@@ -254,6 +255,7 @@ public class TabbedView extends JFrame {
                     if (docView.close()) {
                         buffer.removeDocumentBufferListener(m_docBufListener);
                         buffer.removeDocumentBufferListener(m_statusBar);
+                        m_statusBar.setCenterMessage(Messages.getMessage("DocumentBuffer.Closed.Message", new Object[] { buffer.getName() }));
                         tabbedPane.remove(i);
                         m_documentViews.remove(docView);
                         //if the tab removed is not the rightmost tab

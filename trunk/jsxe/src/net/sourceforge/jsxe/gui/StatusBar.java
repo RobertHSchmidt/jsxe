@@ -62,8 +62,8 @@ public class StatusBar extends JPanel implements DocumentBufferListener {
             (OperatingSystem.isMacOS() ? 18 : 0)),
             UIManager.getBorder("TextField.border")));
         
-        m_centerLabel = new JLabel("test");
-        m_leftLabel = new JLabel("testme test me");
+        m_centerLabel = new JLabel(" ");
+        m_leftLabel = new JLabel(" ");
         
         m_mainPanel = new JPanel(new BorderLayout());
         m_mainPanel.add(BorderLayout.CENTER, m_centerLabel);
@@ -119,7 +119,6 @@ public class StatusBar extends JPanel implements DocumentBufferListener {
     //{{{ bufferSaved()
     public void bufferSaved(DocumentBuffer source) {
         setCenterMessage(Messages.getMessage("DocumentBuffer.Saved.Message", new String[] { source.getName() }));
-        setLeftMessage("test");
     }//}}}
     
     //{{{ statusChanged()
