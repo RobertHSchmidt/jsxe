@@ -62,50 +62,78 @@ public class StatusBar extends JPanel implements DocumentBufferListener {
             (OperatingSystem.isMacOS() ? 18 : 0)),
             UIManager.getBorder("TextField.border")));
         
-        m_mainLabel = new JLabel();
+        m_centerLabel = new JLabel("test");
+        m_leftLabel = new JLabel("testme test me");
         
         m_mainPanel = new JPanel(new BorderLayout());
-        m_mainPanel.add(BorderLayout.CENTER, m_mainLabel);
+        m_mainPanel.add(BorderLayout.CENTER, m_centerLabel);
+        m_mainPanel.add(BorderLayout.WEST, m_leftLabel);
         
         m_mainPanel.setBackground(Color.WHITE);
         m_mainPanel.setForeground(Color.BLACK);
-        m_mainLabel.setBackground(Color.WHITE);
-        m_mainLabel.setForeground(Color.BLACK);
+        m_centerLabel.setBackground(Color.WHITE);
+        m_centerLabel.setForeground(Color.BLACK);
         
         add(BorderLayout.CENTER, m_mainPanel);
     }//}}}
     
-    //{{{ setMessage()
-    
-    public void setMessage(String message) {
-        m_mainLabel.setText(message);
-    }//}}}
-    
-    //{{{ getMessage()
+    //{{{ setCenterMessage()
     /**
-     * Gets the current message being displayed in the status bar
+     * Sets the currently displayed message in the center of the status bar.
+     * The maximum size of this message is 50 characters.
      */
-     public String getMessage() {
-         return m_mainLabel.getText();
+    public void setCenterMessage(String message) {
+        m_centerLabel.setText(message);
     }//}}}
+    
+    //{{{ getCenterMessage()
+    /**
+     * Gets the current message being displayed in the center of the status bar
+     */
+     public String getCenterMessage() {
+         return m_centerLabel.getText();
+    }//}}}
+    
+    //{{{ setLeftMessage()
+    /**
+     * Sets the currently displayed message on the left of the status bar.
+     * The maximum size of this message is 25 characters.
+     */
+    public void setLeftMessage(String message) {
+        m_leftLabel.setText(message);
+    }//}}}
+    
+    //{{{ getLeftMessage()
+    /**
+     * Gets the current message being displayed on the left of the status bar
+     */
+     public String getLeftMessage() {
+         return m_leftLabel.getText();
+    }//}}}
+    
+    //{{{ DocumentBufferListener methods
     
     //{{{ nameChanged()
     public void nameChanged(DocumentBuffer source, String newName) {}//}}}
     
     //{{{ bufferSaved()
     public void bufferSaved(DocumentBuffer source) {
-        setMessage(Messages.getMessage("DocumentBuffer.Saved.Message", new String[] { source.getName() }));
+        setCenterMessage(Messages.getMessage("DocumentBuffer.Saved.Message", new String[] { source.getName() }));
+        setLeftMessage("test");
     }//}}}
     
     //{{{ statusChanged()
     
     public void statusChanged(DocumentBuffer source, int statusType, boolean oldStatus) {}//}}}
     
+    //}}}
+    
     //{{{ Private members
     /**
      * The main status bar label
      */
-    private JLabel m_mainLabel;
+    private JLabel m_centerLabel;
+    private JLabel m_leftLabel;
     private JPanel m_mainPanel;
     //}}}
 }

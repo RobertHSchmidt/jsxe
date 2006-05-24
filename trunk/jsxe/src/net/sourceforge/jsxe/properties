@@ -1,28 +1,48 @@
 #jsXe default properties
+# Copyright (C) 2006 Ian Lewis
+#
+# :tabSize=2:indentSize=2:noTabs=true:
+# :folding=explicit:collapseFolds=1:
+
 max.recent.files=20
 
 # Enable network operations
 xml.network=true
 
-# Resource cache
+# Resource Eache
 xml.cache=true
 
-#plugin manager default dimensions
+#{{{ Plugin Manager Default Dimensions
 pluginmgr.x=100
 pluginmgr.y=100
 pluginmgr.height=300
 pluginmgr.width=400
+#}}}
 
-#Dirty Files Dialog default dimensions
+#{{{ Dirty Files Dialog Default Dimensions
 dirtyfiles.x=100
 dirtyfiles.y=100
 dirtyfiles.height=300
 dirtyfiles.width=500
+#}}}
 
-#Activity Log default dimensions
+#{{{ Activity Log default dimensions
 activitylog.x=100
 activitylog.y=100
 activitylog.height=300
 activitylog.width=300
+#}}}
+
+#{{{ Metal control and menu font
+metal.primary.font=Dialog
+metal.primary.fontsize=12
+metal.primary.fontstyle=0
+#}}}
+
+#{{{ Metal system and user text font
+metal.secondary.font=Dialog
+metal.secondary.fontsize=12
+metal.secondary.fontstyle=0
+#}}}
 
 

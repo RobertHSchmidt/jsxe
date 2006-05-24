@@ -307,6 +307,10 @@ public class jsXe {
             progressScreen.updateSplashScreenDialog(70);
             //}}}
             
+            //{{{ Set the look and feel
+            initPLAF();
+            //}}}
+            
             //{{{ create the TabbedView
             Log.log(Log.NOTICE, jsXe.class, "Starting the main window");
             TabbedView tabbedview = null;
@@ -1015,6 +1019,86 @@ public class jsXe {
         setProperty(name, String.valueOf(value));
     }//}}}
     
+    //{{{ getFontProperty() method
+	/**
+	 * Returns the value of a font property. The family is stored
+	 * in the <code><i>name</i></code> property, the font size is stored
+	 * in the <code><i>name</i>size</code> property, and the font style is
+	 * stored in <code><i>name</i>style</code>. For example, if
+	 * <code><i>name</i></code> is <code>view.gutter.font</code>, the
+	 * properties will be named <code>view.gutter.font</code>,
+	 * <code>view.gutter.fontsize</code>, and
+	 * <code>view.gutter.fontstyle</code>.
+	 *
+	 * @param name The property
+	 * @since jsXe 0.5 pre1
+	 */
+	public static final Font getFontProperty(String name) {
+		return getFontProperty(name,null);
+	} //}}}
+
+	//{{{ getFontProperty() method
+	/**
+	 * Returns the value of a font property. The family is stored
+	 * in the <code><i>name</i></code> property, the font size is stored
+	 * in the <code><i>name</i>size</code> property, and the font style is
+	 * stored in <code><i>name</i>style</code>. For example, if
+	 * <code><i>name</i></code> is <code>view.gutter.font</code>, the
+	 * properties will be named <code>view.gutter.font</code>,
+	 * <code>view.gutter.fontsize</code>, and
+	 * <code>view.gutter.fontstyle</code>.
+	 *
+	 * @param name The property
+	 * @param def The default value
+	 * @since jsXe 0.5 pre1
+	 */
+	public static final Font getFontProperty(String name, Font def) {
+		String family = getProperty(name);
+		String sizeString = getProperty(name + "size");
+		String styleString = getProperty(name + "style");
+
+		if (family == null || sizeString == null || styleString == null) {
+			return def;
+		} else {
+			int size, style;
+
+			try {
+				size = Integer.parseInt(sizeString);
+			} catch(NumberFormatException nf) {
+				return def;
+			}
+
+			try {
+				style = Integer.parseInt(styleString);
+			} catch(NumberFormatException nf) {
+				return def;
+			}
+
+			return new Font(family,style,size);
+		}
+	} //}}}
+    
+	//{{{ setFontProperty() method
+	/**
+	 * Sets the value of a font property. The family is stored
+	 * in the <code><i>name</i></code> property, the font size is stored
+	 * in the <code><i>name</i>size</code> property, and the font style is
+	 * stored in <code><i>name</i>style</code>. For example, if
+	 * <code><i>name</i></code> is <code>view.gutter.font</code>, the
+	 * properties will be named <code>view.gutter.font</code>,
+	 * <code>view.gutter.fontsize</code>, and
+	 * <code>view.gutter.fontstyle</code>.
+	 *
+	 * @param name The property
+	 * @param value The value
+	 * @since jsXe 0.5 pre1
+	 */
+	public static final void setFontProperty(String name, Font value) {
+		setProperty(name,value.getFamily());
+		setIntegerProperty(name + "size",value.getSize());
+		setIntegerProperty(name + "style",value.getStyle());
+	} //}}}
+    
     //{{{ addActionSet()
     
     public static void addActionSet(ActionSet set) {
@@ -1081,6 +1165,67 @@ public class jsXe {
     
     // {{{ Private static members
 
+    //{{{ fontStyleToString() method
+	private static String fontStyleToString(int style) {
+		if (style == 0)
+			return "PLAIN";
+		else if (style == Font.BOLD)
+			return "BOLD";
+		else if (style == Font.ITALIC)
+			return "ITALIC";
+		else if (style == (Font.BOLD | Font.ITALIC))
+			return "BOLDITALIC";
+		else
+			throw new RuntimeException("Invalid style: " + style);
+	} //}}}
+    
+    //{{{ fontToString() method
+	private static String fontToString(Font font) {
+		return font.getFamily()
+			+ "-"
+			+ fontStyleToString(font.getStyle())
+			+ "-"
+			+ font.getSize();
+	} //}}}
+    
+    //{{{ initPLAF()
+	/**
+	 * Sets the Swing look and feel.
+	 */
+	private static void initPLAF() {
+		Font primaryFont = jsXe.getFontProperty("metal.primary.font");
+		if (primaryFont != null) {
+			String primaryFontString =
+				fontToString(primaryFont);
+
+			System.getProperties().put("swing.plaf.metal.controlFont",primaryFontString);
+			System.getProperties().put("swing.plaf.metal.menuFont",primaryFontString);
+		}
+
+		Font secondaryFont = jsXe.getFontProperty("metal.secondary.font");
+		if (secondaryFont != null) {
+			String secondaryFontString = fontToString(secondaryFont);
+
+			System.getProperties().put("swing.plaf.metal.systemFont", secondaryFontString);
+			System.getProperties().put("swing.plaf.metal.userFont", secondaryFontString);
+		}
+
+		try {
+			String lf = getProperty("lookAndFeel");
+			if (lf != null && lf.length() != 0) {
+				UIManager.setLookAndFeel(lf);
+			} else {
+                if(OperatingSystem.isMacOS()) {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } else {
+                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                }
+            }
+		} catch(Exception e) {
+			Log.log(Log.ERROR,jsXe.class,e);
+		}
+    }//}}}
+    
     //{{{ openXMLDocuments()
     /**
      * Open the XML documents in the command line arguments.
