@@ -4,6 +4,7 @@
       Previously jsXe had been checking for 2.7
     * Added a status bar to jsXe. This can be used in the future to show info
       and messages to the user and can be used by plugins.
+    * Added properties for setting the fonts used in jsXe's appearance.
 
 04/18/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
