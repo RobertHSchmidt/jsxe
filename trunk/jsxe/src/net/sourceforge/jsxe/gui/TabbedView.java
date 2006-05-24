@@ -165,6 +165,7 @@ public class TabbedView extends JFrame {
             DocumentView newDocView = plugin.newDocumentView(buffer);
         
             buffer.addDocumentBufferListener(m_docBufListener);
+            buffer.addDocumentBufferListener(m_statusBar);
             
             m_documentViews.add(newDocView);
             Component comp = newDocView.getDocumentViewComponent();
@@ -252,6 +253,7 @@ public class TabbedView extends JFrame {
                     //only close if we _mean_ it.
                     if (docView.close()) {
                         buffer.removeDocumentBufferListener(m_docBufListener);
+                        buffer.removeDocumentBufferListener(m_statusBar);
                         tabbedPane.remove(i);
                         m_documentViews.remove(docView);
                         //if the tab removed is not the rightmost tab
@@ -276,6 +278,16 @@ public class TabbedView extends JFrame {
      */
     public int getBufferCount() {
         return tabbedPane.getTabCount();
+    }//}}}
+    
+    //{{{ getStatusBar()
+    /** 
+     * Gets the status bar for this view.
+     * @return the status bar for this view
+     * @since jsXe 0.5 pre1
+     */
+    public StatusBar getStatusBar() {
+        return m_statusBar;
     }//}}}
     
     //{{{ close()
@@ -455,6 +467,7 @@ public class TabbedView extends JFrame {
         
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(tabbedPane, BorderLayout.CENTER);
+        getContentPane().add(m_statusBar, BorderLayout.SOUTH);
         pack();
         
         //Set window options
@@ -644,6 +657,7 @@ public class TabbedView extends JFrame {
     private ArrayList m_documentViews = new ArrayList();
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+    private StatusBar m_statusBar = new StatusBar();
     //The current document
     private JPanel panel;
     
