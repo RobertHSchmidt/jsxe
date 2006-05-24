@@ -113,6 +113,8 @@ DocumentBuffer.SaveAs.Message=The file {0} already exists. Are you sure you want
 DocumentBuffer.SaveAs.Message.Title=File Exists
 DocumentBuffer.Close.Message={0} unsaved! Save it now?
 DocumentBuffer.Close.Message.Title=Unsaved Changes
+DocumentBuffer.Saved.Message={0} Saved
+DocumentBuffer.Reloaded.Message=Document Reloaded
 
 #{{{ Error Messages
 No.Xerces.Error={0} not found. jsXe requires Apache {0}.

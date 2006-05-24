@@ -1,3 +1,10 @@
+05/24/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the minimum version of xerces needed to run jsXe to 2.8.
+      Previously jsXe had been checking for 2.7
+    * Added a status bar to jsXe. This can be used in the future to show info
+      and messages to the user and can be used by plugins.
+
 04/18/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Made some GUI tweaks to the splash screen.
