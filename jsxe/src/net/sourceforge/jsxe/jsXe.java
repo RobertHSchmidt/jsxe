@@ -74,9 +74,16 @@ import java.text.ParseException;
  */
 public class jsXe {
     
-    //{{{ static instance variables
+    //{{{ static instance variables\
+    /**
+     * The minimum version of the Java Runtime Environment needed to run
+     * and compile jsXe
+     */
     public static final String MIN_JAVA_VERSION = "1.4.2";
-    public static final String MIN_XERCES_VERSION = "Xerces-J 2.7.0";
+    /** 
+     * The minimum version of Xerces that is needed to run jsXe
+     */
+    public static final String MIN_XERCES_VERSION = "Xerces-J 2.8.0";
     //}}}
     
     //{{{ The main() method of jsXe
