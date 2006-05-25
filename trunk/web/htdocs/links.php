@@ -32,7 +32,7 @@
       <ul>
         <li>jsXe-users: <a href="http://lists.sourceforge.net/mailman/listinfo/jsxe-users">Subscribe/Unsubscribe/Preferences</a>: a general discussion list for users of jsXe.</li>
         <li>jsXe-devel: <a href="http://lists.sourceforge.net/mailman/listinfo/jsxe-devel">Subscribe/Unsubscribe/Preferences</a>: a list for technical discussion regarding jsXe development.</li>
-        <li>jsXe-cvs: <a href="http://lists.sourceforge.net/mailman/listinfo/jsxe-cvs">Subscribe/Unsubscribe/Preferences</a>: a list where cvs commits are posted. Anyone subscribing to this list will be notified when changes are commited to cvs.</li>
+        <li>jsXe-cvs: <a href="http://lists.sourceforge.net/mailman/listinfo/jsxe-cvs">Subscribe/Unsubscribe/Preferences</a>: a list where SVN commits are posted. Anyone subscribing to this list will be notified when changes are commited to SVN.</li>
       </ul>
       
       <h3>Forums</h3>
@@ -69,7 +69,7 @@
          <a href="http://sourceforge.net/tracker/?atid=488270&amp;group_id=58584&amp;func=browse">jsXe&apos;s Sourceforge Patch Tracker</a>.
          Just provide the patch or code change itself and a discription of what
          it does when you submit it. If your work is good then we&apos;ll add
-         you as developer with cvs access.</p>
+         you as developer with SVN access.</p>
       
       <?php include("footer.php") ?>
     </div>
