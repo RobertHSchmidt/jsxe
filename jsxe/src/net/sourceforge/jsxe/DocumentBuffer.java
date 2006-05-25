@@ -39,6 +39,7 @@ import net.sourceforge.jsxe.options.OptionPane;
 import net.sourceforge.jsxe.gui.*;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.msg.DocumentBufferUpdate;
 //}}}
 
 //{{{ Java base classes
@@ -94,6 +95,7 @@ public class DocumentBuffer extends XMLDocument {
      */
     DocumentBuffer() throws IOException {
         this(jsXe.getDefaultDocument());
+        EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.LOADED));
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -108,6 +110,7 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = file;
         m_name = file.getName();
+        EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.LOADED));
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -123,6 +126,7 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = null;
         m_name = getUntitledLabel();
+        EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.LOADED));
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -139,6 +143,7 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = file;
         m_name = file.getName();
+        EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.LOADED));
     }//}}}
     
     //{{{ close()
@@ -151,7 +156,8 @@ public class DocumentBuffer extends XMLDocument {
      * @throws IOException if the user chooses to save and the file could not be saved
      */
     public boolean close(TabbedView view, boolean confirmClose) throws IOException {
-    	
+    	boolean reallyClose = true;
+        
         if (getStatus(DIRTY) && confirmClose) {
             //If it's dirty ask if you want to save.
             String msg = Messages.getMessage("DocumentBuffer.Close.Message", new String[] { getName() });
@@ -166,13 +172,17 @@ public class DocumentBuffer extends XMLDocument {
                                 messageType);
             
             if (returnVal == JOptionPane.YES_OPTION) {
-                return save(view);
+                reallyClose = save(view);
             } else {
-                return !(returnVal == JOptionPane.CANCEL_OPTION);
+                reallyClose = !(returnVal == JOptionPane.CANCEL_OPTION);
             }
-        } else {
-            return true;
         }
+        
+        if (reallyClose) {
+            EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.CLOSED));
+        }
+        
+        return reallyClose;
     }//}}}
     
     //{{{ addDocumentBufferListener()
@@ -396,6 +406,8 @@ public class DocumentBuffer extends XMLDocument {
         if (file != null) {
             try {
                 Log.log(Log.NOTICE, this, "Saving file "+getName());
+                EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.SAVING));
+                
                 FileOutputStream out = new FileOutputStream(file);
                 serialize(out);
                 
@@ -490,6 +502,7 @@ public class DocumentBuffer extends XMLDocument {
             boolean oldDirty = m_dirty;
             m_dirty=dirty;
             fireStatusChanged(DIRTY, oldDirty);
+            EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.DIRTY_CHANGED));
         }
     }//}}}
     
@@ -813,6 +826,7 @@ public class DocumentBuffer extends XMLDocument {
     //{{{ fireBufferSaved()
     
     private void fireBufferSaved() {
+        EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.SAVED));
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
             DocumentBufferListener listener = (DocumentBufferListener)iterator.next();
