@@ -122,7 +122,7 @@ public class EditBus {
      * @param message The message
      */
     public static void send(EBMessage message) {
-        Log.log(Log.DEBUG,EditBus.class,message.toString());
+        Log.log(Log.MESSAGE,EditBus.class,message.toString());
 
         // To avoid any problems if components are added or removed
         // while the message is being sent
