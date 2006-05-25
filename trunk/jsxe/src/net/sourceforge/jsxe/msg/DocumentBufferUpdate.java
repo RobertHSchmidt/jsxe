@@ -32,7 +32,7 @@ import net.sourceforge.jsxe.*;
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @author Slava Pestov
- * @version $Id: BufferUpdate.java,v 1.8 2002/12/24 17:35:23 spestov Exp $
+ * @version $Id$
  *
  * @since jsXe 0.5 pre1
  */
