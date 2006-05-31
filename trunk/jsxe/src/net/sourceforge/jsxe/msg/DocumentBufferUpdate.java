@@ -77,7 +77,7 @@ public class DocumentBufferUpdate extends EBMessage {
     /**
      * Properties changed.
      */
-    public static final Object PROPERTIES_CHANGED = "PROPERTIES_CHANGED";
+   // public static final Object PROPERTIES_CHANGED = "PROPERTIES_CHANGED";
     //}}}
 
     //{{{ BufferUpdate constructor
