@@ -95,7 +95,6 @@ public class DocumentBuffer extends XMLDocument {
      */
     DocumentBuffer() throws IOException {
         this(jsXe.getDefaultDocument());
-        EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.LOADED));
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -303,6 +302,7 @@ public class DocumentBuffer extends XMLDocument {
                 reader.close();
             }
             setDirty(false);
+            EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.LOADED));
             return true;
         } else {
             return false;
