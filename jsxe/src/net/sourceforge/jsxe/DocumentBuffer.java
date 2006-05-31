@@ -84,6 +84,9 @@ import org.xml.sax.SAXException;
  */
 public class DocumentBuffer extends XMLDocument {
     
+    /**
+     * A status that indicates the file is dirty.
+     */
     public static final int DIRTY = 1;
     
     //{{{ DocumentBuffer constructor
