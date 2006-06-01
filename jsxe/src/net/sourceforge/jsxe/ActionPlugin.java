@@ -57,7 +57,7 @@ import java.util.Enumeration;
  * @since jsXe 0.3 beta
  * @version $Id$
  */
-public abstract class ActionPlugin {
+public abstract class ActionPlugin implements EBListener {
     
     //{{{ Private members
     private ActionSet m_actionSet;
@@ -122,6 +122,9 @@ public abstract class ActionPlugin {
     public ActionSet getActionSet() {
         return m_actionSet;
     }//}}}
+    
+    //{{{ handleMessage()
+    public void handleMessage(EBMessage message) {}//}}}
     
     //{{{ Broken class
     

@@ -1,3 +1,8 @@
+05/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * All plugins now implement EBListener and are added to the EditBus
+    * Updated the use of EditBus messages
+
 05/24/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated the minimum version of xerces needed to run jsXe to 2.8.
