@@ -284,6 +284,9 @@ public class jsXe {
                 }
                 
                 addActionSet(plugin.getActionSet());
+                
+                //add the plugin to the editbus
+                EditBus.addToBus(plugin);
             }
             progressScreen.updateSplashScreenDialog(60);
             //}}}
