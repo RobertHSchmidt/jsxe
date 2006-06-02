@@ -36,6 +36,7 @@ import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.dom.completion.*;
+import net.sourceforge.jsxe.dom.event.*;
 //}}}
 
 //{{{ DOM classes
@@ -80,6 +81,9 @@ import java.net.URI;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @see AdapterNode
+ */
+ /*
+ TODO: XMLDocument should extend AdapterNode
  */
 public class XMLDocument {
     
@@ -271,27 +275,27 @@ public class XMLDocument {
     }//}}}
     
     //{{{ getDocumentCopy()
-    /**
-     * Gets a copy of the underlying Document object.
-     * @return a deep copy of the underlying document object
-     */
-    public Document getDocumentCopy() {
-        //makes a deep copy of the document node
-        try {
-            checkWellFormedness();
-        } catch (SAXParseException e) {
-        } catch (SAXException e) {
-        } catch (ParserConfigurationException e) {
-        } catch (IOException e) {
-            //If an error occurs then we're in trouble
-            jsXe.exiterror(this, e, 1);
-        }
-        if (m_document != null) {
-            return (Document)m_document.cloneNode(true);
-        } else {
-            return null;
-        }
-    }//}}}
+   // /**
+   //  * Gets a copy of the underlying Document object.
+   //  * @return a deep copy of the underlying document object
+   //  */
+   // public Document getDocumentCopy() {
+   //     //makes a deep copy of the document node
+   //     try {
+   //         checkWellFormedness();
+   //     } catch (SAXParseException e) {
+   //     } catch (SAXException e) {
+   //     } catch (ParserConfigurationException e) {
+   //     } catch (IOException e) {
+   //         //If an error occurs then we're in trouble
+   //         jsXe.exiterror(this, e, 1);
+   //     }
+   //     if (m_document != null) {
+   //         return (Document)m_document.cloneNode(true);
+   //     } else {
+   //         return null;
+   //     }
+   // }//}}}
     
     //{{{ getDocType()
     /**
@@ -407,7 +411,7 @@ public class XMLDocument {
      */
     public AdapterNode newAdapterNode(AdapterNode parent, String name, String value, short type) {
         Node newNode = null;
-        
+        //TODO: creating adapter nodes needs to be reworked.
         //Only handle text and element nodes right now.
         switch(type) {
             case Node.ELEMENT_NODE:
@@ -721,6 +725,7 @@ public class XMLDocument {
         String value = null;
         try {
             LSSerializer serializer = getSerializer();
+            //TODO: this call to writeToString() should change 
             value = serializer.writeToString(node.getNode());
         } catch (DOMException e) {}
         return value;
@@ -771,7 +776,7 @@ public class XMLDocument {
             m_adapterNode = null;
             //may have some algorithm to determine the modified node(s) in the
             //future
-            fireStructureChanged(null);
+            fireInsert(offset, text);
         }
     }//}}}
     
@@ -785,12 +790,13 @@ public class XMLDocument {
     public void removeText(int offset, int length) throws IOException {
         if (length > 0) {
             syncContentWithDOM();
+            String text = getText(offset, length);
             m_content.remove(offset, length);
             m_parsedMode = false;
             m_adapterNode = null;
             //may have some algorithm to determine the modified node(s) in the
             //future
-            fireStructureChanged(null);
+            fireRemove(offset, text);
         }
     }//}}}
     
@@ -993,6 +999,7 @@ public class XMLDocument {
      * in the event that specs that will alter how the document is serialized or
      * parsed are changed.
      * @param location the location of the change. null if unknown
+     * @deprecated structureCHange
      */
     protected void fireStructureChanged(AdapterNode location) {
         ListIterator iterator = listeners.listIterator();
@@ -1001,6 +1008,38 @@ public class XMLDocument {
             listener.structureChanged(this, location);
         }
         m_syncedWithContent = false;
+    }//}}}
+    
+    //{{{ fireInsert()
+    /**
+     * Called when the a text insert into the document has been made. This
+     * can occur when structural changes have been made as well, such as a
+     * node insertion.
+     * @param offset the offset into the document where the text was inserted
+     * @param text the text that was inserted
+     */
+    protected void fireInsert(int offset, String text) {
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
+            listener.insertUpdate(new XMLDocumentInsertEvent(this, offset, text));
+        }
+    }//}}}
+    
+    //{{{ fireRemove()
+    /**
+     * Called when text is removed from the document. This
+     * can occur when structural changes have been made as well, such as a
+     * node removal.
+     * @param offset the offset into the document where the text was inserted
+     * @param text the text that was inserted
+     */
+    protected void fireRemove(int offset, String text) {
+        ListIterator iterator = listeners.listIterator();
+        while (iterator.hasNext()) {
+            XMLDocumentListener listener = (XMLDocumentListener)iterator.next();
+            listener.removeUpdate(new XMLDocumentRemoveEvent(this, offset, text));
+        }
     }//}}}
     
     //{{{ getCompletionInfoMappings()
@@ -1047,6 +1086,9 @@ public class XMLDocument {
      * Write the DOM to the content manager given the current serialization and
      * formatting options.
      */
+    /*
+    TODO: update serialization
+    */
     private void syncContentWithDOM() {
         if (m_parsedMode) {
             if (!m_syncedWithContent) {
@@ -1127,6 +1169,9 @@ public class XMLDocument {
      * Parses the document with the current options. After this is called
      * m_adapterNode and m_parsedMode must be updated.
      * @since jsXe 0.4 pre1
+     */
+    /*
+     * TODO: Update parsing
      */
     public void parseDocument() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
         Log.log(Log.MESSAGE, this, (m_uri != null ? "Parsing Document: "+m_uri.toString() : "Parsing Document"));
