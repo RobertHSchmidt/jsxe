@@ -1,3 +1,8 @@
+06/01/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added insertUpdate and removeUpdate methods to the XMLDocumentListener
+    * Updated XMLDocument to notify listeners on insert and remove events.
+
 05/24/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated the minimum version of xerces needed to run jsXe to 2.8.
