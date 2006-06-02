@@ -481,6 +481,35 @@ public class DocumentBuffer extends XMLDocument {
         super.fireStructureChanged(location);
     }//}}}
     
+    //{{{ DocumentBufferResolver class
+    /**
+     * <p>The DocumentBufferResolver class is the default class that is used
+     * for resolving external entities in documents that jsXe is editing.
+     * It implements caching external entities to the local disk and finding
+     * the cached version later for faster retrieval.</p>
+     * <p>The external entities are searched for in locations relative to the
+     * opened document or if they are URLs then they are retrieved from the
+     * network resource.</p>
+     * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+     * @since jsXe 0.5 pre1
+     */
+    public class DocumentBufferResolver implements EntityResolver {
+        
+        //{{{ resolveEntity()
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
+            try {
+                if (isUntitled()) {
+                    return CatalogManager.resolve(null, publicId, systemId);
+                } else {
+                    return CatalogManager.resolve(getFile().toURI().toString(), publicId, systemId);
+                }
+            } catch (Exception e) {
+                throw new SAXException(e);
+            }
+        }//}}}
+        
+    }//}}}
+    
     //{{{ Private members
     
     //{{{ setDirty()
@@ -828,56 +857,6 @@ public class DocumentBuffer extends XMLDocument {
             DocumentBufferListener listener = (DocumentBufferListener)iterator.next();
             listener.statusChanged(this, status, oldStatus);
         }
-    }//}}}
-    
-    //{{{ DocumentBufferResolver class
-    
-    private class DocumentBufferResolver implements EntityResolver {
-        
-        //{{{ resolveEntity()
-        
-        public InputSource resolveEntity(String publicId, String systemId) throws SAXException {
-            
-           // String entity = systemId;
-           // InputSource source = null;
-           // 
-           // if (m_file != null) {
-           //     
-           //     try {
-           //         String filePathURI = m_file.toURL().toExternalForm();
-           //         int index = filePathURI.lastIndexOf("/")+1;
-           //         if (index != -1) {
-           //             filePathURI = filePathURI.substring(0, index);
-           //         }
-           //         
-           //         index = entity.lastIndexOf("/")+1;
-           //         if (index != -1) {
-           //             entity = entity.substring(index);
-           //         }
-           //         
-           //         //create the path to the entity relative to the document
-           //         filePathURI += entity;
-           //         source = new InputSource((new URL(filePathURI)).openStream());
-           //         
-           //     } catch (MalformedURLException e) {
-           //         //Do nothing and try to open this entity normally
-           //     } catch (IOException e) {
-           //         //Probobly file not found.
-           //         //Do nothing and try to open this entity normally
-           //     }
-           // }
-           // return source;
-           try {
-               if (isUntitled()) {
-                   return CatalogManager.resolve(null, publicId, systemId);
-               } else {
-                   return CatalogManager.resolve(getFile().toURI().toString(), publicId, systemId);
-               }
-           } catch (Exception e) {
-               throw new SAXException(e);
-           }
-        }//}}}
-        
     }//}}}
     
     private String m_name;
