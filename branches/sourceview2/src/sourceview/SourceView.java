@@ -39,6 +39,7 @@ import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
+import net.sourceforge.jsxe.dom.XMLDocumentEvent;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
@@ -335,7 +336,6 @@ public class SourceView extends JPanel implements DocumentView {
     private class SourceViewXMLDocumentListener implements XMLDocumentListener {
         
         //{{{ propertyChanged()
-        
         public void propertyChanged(XMLDocument source, String key, String oldValue) {
             if (key.equals(XMLDocument.INDENT)) {
                 try {
@@ -347,10 +347,17 @@ public class SourceView extends JPanel implements DocumentView {
             }
         }//}}}
         
-        //{{{ structureChanged
-        
+        //{{{ structureChanged()
         public void structureChanged(XMLDocument source, AdapterNode location) {}//}}}
         
+        //{{{ insertUpdate()
+        public void insertUpdate(XMLDocumentEvent event) {}//}}}
+        
+        //{{{ removeUpdate()
+        public void removeUpdate(XMLDocumentEvent event) {}//}}}
+        
+        //{{{ changeUpdate()
+        public void changeUpdate(XMLDocumentEvent event) {}//}}}
     }//}}}
     
     //{{{ SourceViewEnter

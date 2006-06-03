@@ -1,3 +1,7 @@
+06/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the SourceView to use the new XMLDocumentListener interface
+
 04/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed bug 1433905. I implemented end of line markers when I didn't need
