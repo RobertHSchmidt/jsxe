@@ -578,7 +578,6 @@ public class DefaultView extends JPanel implements DocumentView {
     private XMLDocumentListener m_documentListener = new XMLDocumentListener() {///{{{
         
         //{{{ propertiesChanged
-        
         public void propertyChanged(XMLDocument source, String key, String oldValue) {
             if (CONTINUOUS_LAYOUT.equals(key)) {
                 boolean layout = Boolean.valueOf(source.getProperty(CONTINUOUS_LAYOUT)).booleanValue();
@@ -591,7 +590,6 @@ public class DefaultView extends JPanel implements DocumentView {
         }//}}}
         
         //{{{ structureChanged()
-        
         public void structureChanged(XMLDocument source, AdapterNode location) {
             /*
             need to reload since saving can change the structure,
@@ -601,6 +599,21 @@ public class DefaultView extends JPanel implements DocumentView {
             //TODO: update the attributes table to handle this
             ((DefaultViewTableModel)attributesTable.getModel()).updateTable();
             attributesTable.updateUI();
+        }//}}}
+        
+        //{{{ insertUpdate()
+        public void insertUpdate(XMLDocumentEvent event) {
+            structureChanged(event.getXMLDocument(), null);
+        }//}}}
+        
+        //{{{ removeUpdate()
+        public void removeUpdate(XMLDocumentEvent event) {
+            structureChanged(event.getXMLDocument(), null);
+        }//}}}
+        
+        //{{{ changeUpdate()
+        public void changeUpdate(XMLDocumentEvent event) {
+            structureChanged(event.getXMLDocument(), null);
         }//}}}
         
     };//}}}
