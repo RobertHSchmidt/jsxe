@@ -1,3 +1,7 @@
+06/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the Tree View to use the new XMLDocumentListener interface
+
 02/16/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added cut/copy/paste support for nodes in the tree view. There are still
