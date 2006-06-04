@@ -43,7 +43,7 @@ import java.util.*;
 /**
  * <p>The XMLNode class is meant to represent an XMLNode in a XMLDocument tree
  *    but also as a section of text within that document tree. It
- *    allows tree and attribute modifications only, however these modifications
+ *    allows tree modifications only, however these modifications
  *    will correspond to text modifications to the XMLDocument. Direct text
  *    modifications are only allowed at the XMLDocument level.</p>
  * 
