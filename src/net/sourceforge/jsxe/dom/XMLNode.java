@@ -31,6 +31,7 @@ import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.dom.completion.*;
+import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
 //{{{ Java Base Classes
@@ -119,7 +120,7 @@ public abstract class XMLNode {
      * <p>Adds an XMLNodeListener to be notified when this node changes</p>
      * @param listener the listener to add
      */
-    public void addAdapterNodeListener(XMLNodeListener listener) {
+    public void addXMLNodeListener(XMLNodeListener listener) {
         m_listeners.add(listener);
     }//}}}
     
@@ -128,7 +129,7 @@ public abstract class XMLNode {
      * <p>Removes a listener from this node if it exists</p>
      * @param listener the listener to remove
      */
-    public void removeAdapterNodeListener(XMLNodeListener listener) {
+    public void removeXMLNodeListener(XMLNodeListener listener) {
         m_listeners.remove(m_listeners.indexOf(listener));
     }//}}}
     
@@ -194,23 +195,24 @@ public abstract class XMLNode {
      * @param type the type of the new child node
      * @param index the index where to add the new child node.
      * @return the new child that was created
-     * @throws DOMException INVALID_CHARACTER_ERR: Raised if the specified name
+     * @throws XMLException INVALID_CHARACTER_ERR: Raised if the specified name
      *                      or value contains an illegal character.
-     * @throws DOMException NOT_SUPPORTED_ERR: Raised if the node type is not
+     * @throws XMLException NOT_SUPPORTED_ERR: Raised if the node type is not
      *                      supported.
-     * @throws DOMException HIERARCHY_REQUEST_ERR: Raised if this node is of a
+     * @throws XMLException HIERARCHY_REQUEST_ERR: Raised if this node is of a
      *                      type that does not allow children of the type of the
      *                      newChild node, or if the node to append is one of this
      *                      node's ancestors or this node itself.
-     * @throws DOMException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
+     * @throws XMLException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
      *                      readonly or if the previous parent of the node being
      *                      inserted is readonly.
      */
-    public XMLNode addAdapterNode(String name, String value, short type, int index) throws DOMException {
+    public XMLNode addChildNode(String name, String value, short type, int index) throws XMLException {
         //TODO: error checking
         //TODO: update the XMLDocument text
         //TODO: create node and add it to m_children.
         //TODO: notify listeners that the document has changed.
+        return null;
     }//}}}
     
     //{{{ addChildNode()
@@ -219,22 +221,22 @@ public abstract class XMLNode {
      * is added after all child nodes that this node contains.
      * @param node the node to be added.
      * @return a reference to the node that was added.
-     * @throws DOMException HIERARCHY_REQUEST_ERR: Raised if this node is of a
+     * @throws XMLException HIERARCHY_REQUEST_ERR: Raised if this node is of a
      *                      type that does not allow children of the type of the
      *                      newChild node, or if the node to append is one of this
      *                      node's ancestors or this node itself.
-     * @throws DOMException WRONG_DOCUMENT_ERR: Raised if newChild was created
+     * @throws XMLException WRONG_DOCUMENT_ERR: Raised if newChild was created
      *                      from a different document than the one that created
      *                      this node.
-     * @throws DOMException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
+     * @throws XMLException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
      *                      readonly or if the previous parent of the node being
      *                      inserted is readonly.
      */
-    public XMLNode addXMLNode(XMLNode node) throws DOMException {
+    public XMLNode addChildNode(XMLNode node) throws XMLException {
         //TODO: error checking
         //TODO: updated XMLDocument text
         //TODO: update listeners that the doc has changed
-        m_children.add(node);
+        return addChildNodeAt(node, getChildCount());
     }//}}}
     
     //{{{ addChildNodeAt()
@@ -248,47 +250,47 @@ public abstract class XMLNode {
      * @param node the node to add to this parent node.
      * @param index the index to add it at.
      * @return the node added.
-     * @throws DOMException HIERARCHY_REQUEST_ERR: Raised if this node is of a
+     * @throws XMLException HIERARCHY_REQUEST_ERR: Raised if this node is of a
      *                      type that does not allow children of the type of the
      *                      newChild node, or if the node to append is one of this
      *                      node's ancestors or this node itself.
-     * @throws DOMException WRONG_DOCUMENT_ERR: Raised if newChild was created
+     * @throws XMLException WRONG_DOCUMENT_ERR: Raised if newChild was created
      *                      from a different document than the one that created
      *                      this node.
-     * @throws DOMException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
+     * @throws XMLException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
      *                      readonly or if the previous parent of the node being
      *                      inserted is readonly.
      */
-    public XMLNode addChildNodeAt(XMLNode node, int index) throws DOMException {
+    public XMLNode addChildNodeAt(XMLNode node, int index) throws XMLException {
         //TODO: error checking
         //TODO: updated XMLDocument text
         //TODO: update listeners that the doc has changed
-        m_children.add(index, node);
+        if (index >= 0 && index < getChildCount()) {
+            m_children.add(index, node);
+        } else {
+             if (index == getChildCount()) { 
+                 m_children.add(node);
+             } else {
+                 throw new XMLException(XMLException.INDEX_SIZE_ERR, Messages.getMessage("Index.Out.Of.Bounds.Error"));
+             }
+        }
+        return node;
     }//}}}
     
     //{{{ remove()
     /**
      * <p>Removes a child from this node.</p>
      * @param child the child node to remove from this node
-     * @throws DOMException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
+     * @throws XMLException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
      *                      readonly.
-     * @throws DOMException NOT_FOUND_ERR: Raised if oldChild is not
+     * @throws XMLException NOT_FOUND_ERR: Raised if oldChild is not
      *                      a child of this node.
      */
-    public void remove(XMLNode child) throws DOMException {
-        if (child != null) {
-            if (getNodeType() == DOCUMENT_NODE && getNodeType() == Node.ELEMENT_NODE) {
-                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "You cannot remove the root element node.");
-            }
-            if (child.getNodeType() != Node.DOCUMENT_TYPE_NODE) {
-                m_domNode.removeChild(child.getNode());
-                m_children.remove(child);
-                child.setParent(null);
-                fireNodeRemoved(this, child);
-            } else {
-                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Cannot remove Document Type Nodes");
-            }
-        }
+    public void remove(XMLNode child) throws XMLException {
+        //TODO: error checking
+        //TODO: updated XMLDocument text
+        //TODO: update listeners that the doc has changed
+        m_children.remove(child);
     }//}}}
     
     //{{{ getNodeName()
@@ -314,14 +316,14 @@ public abstract class XMLNode {
     /**
      * <p>Sets the local name of the node.</p>
      * @param newValue the new local name for this node
-     * @throws DOMException INVALID_CHARACTER_ERR: Raised if the specified name
+     * @throws XMLException INVALID_CHARACTER_ERR: Raised if the specified name
      *                      contains an illegal character.
      */
-    public void setLocalName(String localName) throws DOMException {
+    public void setLocalName(String localName) throws XMLException {
         //checking for illegal characters etc will be done by subclasses.
-        m_localName = localName;
         //TODO: Notify listeners that the local name has changed
         //TODO: Update XMLDocument text with the change.
+        m_localName = localName;
     }//}}}
     
     //{{{ getNSPrefix()
@@ -339,12 +341,12 @@ public abstract class XMLNode {
      * Sets the namespace prefix for this node. To remove this node from a
      * namespace this method should be passed null.
      * @param prefix The new prefix for this node
-     * @throws DOMException INVALID_CHARACTER_ERR: Raised if the specified
+     * @throws XMLException INVALID_CHARACTER_ERR: Raised if the specified
      *                      prefix contains an illegal character, per the 
      *                      XML 1.0 specification .
-     * @throws DOMException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
+     * @throws XMLException NO_MODIFICATION_ALLOWED_ERR: Raised if this node is
      *                      readonly. 
-     * @throws DOMException NAMESPACE_ERR: Raised if the specified prefix is
+     * @throws XMLException NAMESPACE_ERR: Raised if the specified prefix is
      *                      malformed per the Namespaces in XML specification,
      *                      if the namespaceURI of this node is null, if the
      *                      specified prefix is "xml" and the namespaceURI of
@@ -356,11 +358,11 @@ public abstract class XMLNode {
      *                      an attribute and the qualifiedName of this node is
      *                      "xmlns" .
      */
-    public void setNSPrefix(String prefix) throws DOMException {
+    public void setNSPrefix(String prefix) throws XMLException {
         //TODO: Error checking
-        m_namespacePrefix = prefix;
         //TODO: Notify listeners that the namespaces has changed
         //TODO: Updated XMLDocument text with the change
+        m_namespacePrefix = prefix;
     }//}}}
     
     //{{{ getProperty()
