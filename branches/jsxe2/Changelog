@@ -1,3 +1,7 @@
+06/04/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * XMLElement was added to model element nodes
+
 06/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added the XMLException class for use in handling XML errors
