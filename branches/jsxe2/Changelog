@@ -1,3 +1,8 @@
+06/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added the XMLException class for use in handling XML errors
+    * Updated the XMLNode class to support a simple interface for Node editing.
+
 06/01/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added insertUpdate and removeUpdate methods to the XMLDocumentListener
