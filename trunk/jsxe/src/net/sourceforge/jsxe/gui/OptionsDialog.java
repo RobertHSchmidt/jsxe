@@ -191,21 +191,20 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
     protected abstract OptionGroup getDefaultGroup();
 
     //{{{ addOptionGroup() method
-    protected void addOptionGroup(OptionGroup child, OptionGroup parent)
-    {
-        Enumeration enum = child.getMembers();
+    protected void addOptionGroup(OptionGroup child, OptionGroup parent) {
+        
+        Enumeration members = child.getMembers();
 
-        while (enum.hasMoreElements())
-        {
-            Object elem = enum.nextElement();
+        while (members.hasMoreElements()) {
+            
+            Object elem = members.nextElement();
 
-            if (elem instanceof OptionPane)
-            {
+            if (elem instanceof OptionPane) {
                 addOptionPane((OptionPane) elem, child);
-            }
-            else if (elem instanceof OptionGroup)
-            {
-                addOptionGroup((OptionGroup) elem, child);
+            } else {
+                if (elem instanceof OptionGroup) {
+                    addOptionGroup((OptionGroup) elem, child);
+                }
             }
         }
 
@@ -328,19 +327,18 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
     } //}}}
 
     //{{{ selectPane() method
-    private boolean selectPane(OptionGroup node, String name, ArrayList path)
-    {
+    private boolean selectPane(OptionGroup node, String name, ArrayList path) {
+        
         path.add(node);
 
-        Enumeration enum = node.getMembers();
-        while(enum.hasMoreElements())
-        {
-            Object obj = enum.nextElement();
-            if(obj instanceof OptionGroup)
-            {
+        Enumeration members = node.getMembers();
+        while (members.hasMoreElements()) {
+            
+            Object obj = members.nextElement();
+            if (obj instanceof OptionGroup) {
+                
                 OptionGroup grp = (OptionGroup)obj;
-                if(grp.getName().equals(name))
-                {
+                if (grp.getName().equals(name)) {
                     path.add(grp);
                     path.add(grp.getMember(0));
                     TreePath treePath = new TreePath(
@@ -348,18 +346,16 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
                     paneTree.scrollPathToVisible(treePath);
                     paneTree.setSelectionPath(treePath);
                     return true;
+                } else {
+                    if (selectPane((OptionGroup)obj,name,path)) {
+                        return true;
+                    }
                 }
-                else if(selectPane((OptionGroup)obj,name,path))
-                    return true;
-            }
-            else
-            {
+            } else {
                 OptionPane pane = (OptionPane)obj;
-                if(pane.getName().equals(name))
-                {
+                if (pane.getName().equals(name)) {
                     path.add(pane);
-                    TreePath treePath = new TreePath(
-                        path.toArray());
+                    TreePath treePath = new TreePath(path.toArray());
                     paneTree.scrollPathToVisible(treePath);
                     paneTree.setSelectionPath(treePath);
                     return true;
