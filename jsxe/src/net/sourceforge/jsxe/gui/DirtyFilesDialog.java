@@ -236,7 +236,6 @@ public class DirtyFilesDialog extends EnhancedDialog {
      * @param evt ActionEvent of user clicking on Select All
      */
 	private void selectAllJButtonActionPerformed() {
-		Log.log(Log.DEBUG, this, "select all");
 		int size = dirtyFilesJListModel.getSize();
 		int [] selectedIndices = new int[size];
 		for(int i= 0; i< size; i++){
