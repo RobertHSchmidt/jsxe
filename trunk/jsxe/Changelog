@@ -1,3 +1,13 @@
+06/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added a new Document Options Dialog which handles settings on a per
+      document basis.
+    * Updated the Global Options so that they don't include the per document
+      options anymore.
+    * Updated the DirtyFilesDialog so that it selects the first entry by
+      default.
+    * Updated EnhancedDialogs to be resizable by default.
+
 05/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * All plugins now implement EBListener and are added to the EditBus

@@ -157,8 +157,21 @@ public abstract class EnhancedDialog extends JDialog {
         jsXe.setIntegerProperty(name + ".height",bounds.height);
     } //}}}
 
-    public abstract void ok();
-    public abstract void cancel();
+    //{{{ ok()
+    /**
+     * The method that is called when enter is pressed when viewing the dialog.
+     * In options dialogs this would corresponding to when the OK button is
+     * pressed.
+     */
+    public abstract void ok();//}}}
+    
+    //{{{ cancel()
+    /**
+     * The method that is called when escape is pressed when viewing the dialog.
+     * In options dialogs this would corresponding to when the Cancel button is
+     * pressed.
+     */
+    public abstract void cancel();//}}}
 
     //{{{ Private members
     

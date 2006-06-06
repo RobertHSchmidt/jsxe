@@ -63,7 +63,11 @@ Global.Options.network-off=Always cache without asking
 Global.Options.network-cache=Ask first, then cache remote files
 Global.Options.network-always=Always download without asking
 Global.Options.network=DTD and schema downloading:
+#}}}
+
+#{{{ Document Options
 Document.Options.Title=XML Document Options
+Document.Options.Message=This dialog changes settings for the current\n document only. To change settings on an\n editor-wide basis, see the\n Tools->Global Options dialog box.
 Document.Options.Line.Separator=Line Separator:
 Document.Options.Encoding=Encoding:
 Document.Options.Encoding.ToolTip=The encoding that jsXe uses to write the file.
@@ -99,7 +103,8 @@ File.CloseAll=Close All
 File.Exit=Exit
 #}}}
 
-Tools.Options=Options...
+Tools.Options=Global Options...
+Tools.Document.Options=Document Options...
 Tools.Plugin=Plugin Manager...
 Tools.ValidationErrors=Validation Errors...
 Plugin.Manager.Title=Plugin Manager

@@ -196,7 +196,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		buttons.add(selectAllJButton);
 
 		saveSelectedJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.SaveSelected.Title"));
-		saveSelectedJButton	.addActionListener(new ActionListener() {
+		saveSelectedJButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				saveSelectedJButtonActionPerformed();
 			}
