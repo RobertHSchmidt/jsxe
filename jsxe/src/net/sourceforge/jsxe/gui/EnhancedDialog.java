@@ -171,7 +171,7 @@ public abstract class EnhancedDialog extends JDialog {
         keyHandler = new KeyHandler();
         addKeyListener(keyHandler);
         addWindowListener(new WindowHandler());
-
+        setResizable(true);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }//}}}
 
