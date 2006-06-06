@@ -99,7 +99,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		newTabbedView = parent;
 		newDirtyBuffers = dirtyBuffers;
 		
-		loadGeometry(this, m_geometryName);
+		loadGeometry(this, m_geometryName); 
 		
 		dirtyFiles = getDirtyFileNames(dirtyBuffers);
 		dirtyFilesJListModel = new DefaultListModel();
@@ -109,7 +109,6 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		dirtyFilesJList = new JList(dirtyFilesJListModel);
 		dirtyFilesJList.setLayoutOrientation(JList.VERTICAL);
 		initComponents(dirtyFilesJList);
-		selectAllJButtonActionPerformed(); // select all the files for convenience
 	}//}}}
 	
 	//{{{ setCancelFlag()
@@ -225,6 +224,8 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		
 		getContentPane().add(buttons, BorderLayout.SOUTH);
 
+		dirtyFilesJList.setSelectedIndex(0);
+		
 	//	pack();
 		setVisible(true);
 	}//}}}
@@ -235,6 +236,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
      * @param evt ActionEvent of user clicking on Select All
      */
 	private void selectAllJButtonActionPerformed() {
+		Log.log(Log.DEBUG, this, "select all");
 		int size = dirtyFilesJListModel.getSize();
 		int [] selectedIndices = new int[size];
 		for(int i= 0; i< size; i++){
