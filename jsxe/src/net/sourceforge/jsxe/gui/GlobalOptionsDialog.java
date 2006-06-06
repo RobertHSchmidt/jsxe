@@ -78,10 +78,6 @@ public class GlobalOptionsDialog extends OptionsDialog {
             }
         }
         
-        pane = buffer.getOptionsPanel();
-        if (pane != null) {
-            addOptionPane(pane);
-        }
         addOptionGroup(m_defaultGroup, rootGroup);
         
         return paneTreeModel;

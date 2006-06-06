@@ -64,7 +64,7 @@ public class ToolsOptionsAction extends AbstractAction {
     public ToolsOptionsAction(TabbedView parent) {
         //putValue(Action.NAME, "Options...");
     	putValue(Action.NAME, Messages.getMessage("Tools.Options"));	
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
+        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("G").getKeyCode()));
         view = parent;
     }//}}}
     
