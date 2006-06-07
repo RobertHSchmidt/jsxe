@@ -49,11 +49,21 @@ import net.sourceforge.jsxe.util.Log;
 //}}}
 
 /**
- * Gets the messages for the current locale according to the JVM.
+ * Messages is the mechanism that jsXe uses to localize messages into the
+ * locale of the user. This class will automatically use the current default
+ * locale of the system but this can be overridden by calling the
+ * {@link #setLanguage(String)} method.
+ *
+ * Messages are automatically loaded from the properties files located in the
+ * 'messages' directory in the jsXe install. These files are named
+ * <code>message.<i>language</i></code>. Where language is the ISO-639 language
+ * code. The default being english.
+ *
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @since jsXe 0.4 pre1
+ * @see java.util.Locale
  */
 public class Messages {
     
@@ -67,7 +77,7 @@ public class Messages {
     
     //{{{ getLanguage()
     /**
-     * @return Returns the language.
+     * @return Returns the ISO-639 language code.
      */
     public static String getLanguage() {
         return m_language;
@@ -75,14 +85,20 @@ public class Messages {
     
     //{{{ setLanguage()
     /**
-     * @param newLanguage The language to set.
+     * @param newLanguage The ISO-639 language code
      */
     public static void setLanguage(String newLanguage) {
-        initializePropertiesObject(newLanguage, m_directory);
+        initLocale(newLanguage, m_directory);
     }//}}}
 
     //{{{ getMessage()
     /**
+     * <p>Returns the message with the specified name. When a Messages is
+     * queried for a message it first looks for the message in the current
+     * language and returns it. If it cannot find the message in the messages
+     * for the current language it looks for it in english and returns it. If
+     * it still doesn't find the message it returns null.</p>
+     *
      * @param String propertyName - the name of the property you want the value for
      * @return Returns the value of a property from the propertiesObject.
      */
@@ -100,12 +116,16 @@ public class Messages {
     
     //{{{ getMessage()
     /**
-     * Returns the message with the specified name.<p>
+     * <p>Returns the message with the specified name. When a Messages is
+     * queried for a message it first looks for the message in the current
+     * language and returns it. If it cannot find the message in the messages
+     * for the current language it looks for it in english and returns it. If
+     * it still doesn't find the message it returns null.</p>
      *
-     * The elements of the <code>args</code> array are substituted
+     * <p>The elements of the <code>args</code> array are substituted
      * into the value of the property in place of strings of the
      * form <code>{<i>n</i>}</code>, where <code><i>n</i></code> is an index
-     * in the array.<p>
+     * in the array.</p>
      *
      * You can find out more about this feature by reading the
      * documentation for the <code>format</code> method of the
@@ -131,13 +151,13 @@ public class Messages {
         }
     }//}}}
     
-    //{{{ initializePropertiesObject()
+    //{{{ initLocale()
     /**
-     * Initializes the localized messages for jsXe. 
-     * This method should only be called on jsXe startup.
+     * Initializes localized messages for jsXe.
      * @param language The language for the propertiesObject.
+     * @param directory The directory where the messages files are located.
      */
-    public static void initializePropertiesObject(String language, String directory) {
+    public static void initLocale(String language, String directory) {
         String isoLanguage = language;
         if (isoLanguage == null){
             //setLanguage("en");
@@ -168,6 +188,24 @@ public class Messages {
         loadMessages(m_defaultProperties, messagesFile);
     }//}}}
     
+    //{{{ loadPluginMessages()
+    /**
+     * Loads the localized messages from installed plugins and merges them into
+     * the plugin messages.
+     * This method should only be called on jsXe startup.
+     */
+    public static void loadPluginMessages(Properties pluginMessages) {
+        Log.log(Log.MESSAGE, Messages.class, "Loading plugin messages");
+        Enumeration names = pluginMessages.propertyNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement().toString();
+            String message = pluginMessages.getProperty(name);
+            m_pluginMessages.setProperty(name, message);
+        }
+    }//}}}
+
+    //{{{ Private Members
+    
     //{{{ loadMessages()
     /**
      * 
@@ -185,20 +223,7 @@ public class Messages {
             Log.log(Log.ERROR, Messages.class, e);
         }       
     }//}}}
-
-    //{{{ loadPluginMessages()
-    /**
-     * Loads the localized messages from installed plugins and merges them into
-     * the plugin messages.
-     * This method should only be called on jsXe startup.
-     */
-    public static void loadPluginMessages(Properties pluginMessages) {
-        Log.log(Log.MESSAGE, Messages.class, "Loading plugin messages");
-        Enumeration names = pluginMessages.propertyNames();
-        while (names.hasMoreElements()) {
-            String name = names.nextElement().toString();
-            String message = pluginMessages.getProperty(name);
-            m_pluginMessages.setProperty(name, message);
-        }
-    }//}}}
+    
+    //}}}
+    
 }
