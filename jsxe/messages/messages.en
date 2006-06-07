@@ -72,6 +72,7 @@ Global.Options.network=DTD and schema downloading:
 Document.Options.Title=XML Document Options
 Document.Options.Message=This dialog changes settings for the current\n document only. To change settings on an\n editor-wide basis, see the\n Tools->Global Options dialog box.
 Document.Options.Line.Separator=Line Separator:
+Document.Options.Line.Separator.ToolTip=The line separator. Usually you'll pick the line separator used by your operating system.
 Document.Options.Encoding=Encoding:
 Document.Options.Encoding.ToolTip=The encoding that jsXe uses to write the file.
 Document.Options.Indent.Width=Indent width:
