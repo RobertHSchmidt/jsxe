@@ -133,7 +133,8 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         content.add(buttons, BorderLayout.SOUTH);
         
         loadGeometry(this, "pluginmgr");
-        show();
+        
+        setVisible(true);
     }//}}}
 
     //{{{ ok()
