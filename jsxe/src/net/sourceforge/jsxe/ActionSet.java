@@ -133,10 +133,10 @@ public class ActionSet {
     */
    public Action[] getActions() {
       Action[] retVal = new Action[actions.size()];
-      Enumeration enum = actions.elements();
+      Enumeration elements = actions.elements();
       int i = 0;
-      while(enum.hasMoreElements()) {
-         retVal[i++] = (Action)enum.nextElement();
+      while(elements.hasMoreElements()) {
+         retVal[i++] = (Action)elements.nextElement();
       }
       return retVal;
    }//}}}
