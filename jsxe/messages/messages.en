@@ -8,6 +8,9 @@
 
 common.ok=OK
 common.cancel=Cancel
+common.open=Open
+common.save=Save
+common.save.as=Save As
 common.close=Close
 common.apply=Apply
 common.more=More
