@@ -7,6 +7,7 @@
     * Updated the DirtyFilesDialog so that it selects the first entry by
       default.
     * Updated EnhancedDialogs to be resizable by default.
+    * Updated the file dialog to use localized messages in the title
 
 05/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
