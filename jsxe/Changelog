@@ -3,6 +3,7 @@
     * Updated the document options to use abstract classes to lay out the
       dialog. OptionsPanel is now deprecated in favor of using the OptionPane
       and AbstractOptionPane classes.
+    * Updated dialogs to use setVisible() instead of show()
 
 06/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
 

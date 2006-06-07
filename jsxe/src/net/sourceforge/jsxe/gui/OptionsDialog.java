@@ -317,7 +317,7 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
         // in case saved geometry is too small
         updateSize();
 
-        show();
+        setVisible(true);
     } //}}}
 
     //{{{ selectPane() method

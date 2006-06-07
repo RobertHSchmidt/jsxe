@@ -58,33 +58,27 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  */
 public class ActivityLogAction extends AbstractAction {
-		
-	//	{{{ Public members
+        
+    // {{{ Private members
     private TabbedView view;
-   // private boolean activityLogUpdated = false;
     private ActivityLogDialog dialog = new ActivityLogDialog(view);      
     //}}}
     
-    //{{{ ActivityLogAction 
-	 /**
+    //{{{ ActivityLogAction constructor 
+     /**
      * @param TabbedView parent view containing the JSXE editor.
      * Constructor for the ActivityLogActionclass
      * @since jsXe 0.3pre15
      */
     public ActivityLogAction(TabbedView parent) {
-    	putValue(Action.NAME, Messages.getMessage("ActivityLogDialog.Open"));
+        putValue(Action.NAME, Messages.getMessage("ActivityLogDialog.Open"));
         putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("L").getKeyCode()));
         view = parent;
     }//}}}
     
-    //{{{ actionPerformed()   
+    //{{{ actionPerformed()
     public void actionPerformed(ActionEvent e) {
         dialog.refreshContents();
-        dialog.show();  
+        dialog.setVisible(true);  
     }//}}}
-    
-    /*
-	public void updateDialog(){
-		dialog.refreshContents();
-	}*/
 }
