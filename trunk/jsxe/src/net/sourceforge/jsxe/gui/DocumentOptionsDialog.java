@@ -3,7 +3,7 @@ DocumentOptionsDialog.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-Copyright (C) 2005 Trish Harnett (trishah136@member.fsf.org)
+Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -28,6 +28,7 @@ package net.sourceforge.jsxe.gui;
 
 //{{{ jsXe imports
 import net.sourceforge.jsxe.DocumentBuffer;
+import net.sourceforge.jsxe.options.OptionPane;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
@@ -60,17 +61,19 @@ public class DocumentOptionsDialog extends EnhancedDialog {
         super(parent, Messages.getMessage("Document.Options.Title"), true);
         m_view = parent;
         DocumentBuffer buffer = m_view.getDocumentBuffer();
-        m_optionsPanel = buffer.getOptionsPanel();
+        m_optionPane = buffer.getOptionPane();
+        
+        m_optionPane.init();
         
         JPanel content = new JPanel(new BorderLayout(12,12));
         content.setBorder(new EmptyBorder(12,12,12,12));
         setContentPane(content);
         
-        JPanel panel = new JPanel(new BorderLayout());
+        GridPanel panel = new GridPanel();
         
-        panel.add(createMultilineLabel(Messages.getMessage("Document.Options.Message")), BorderLayout.NORTH);
-        panel.add(new JSeparator(JSeparator.HORIZONTAL), BorderLayout.CENTER);
-        panel.add(m_optionsPanel, BorderLayout.SOUTH);
+        panel.addComponent(createMultilineLabel(Messages.getMessage("Document.Options.Message")));
+        panel.addSeparator();
+        panel.addComponent(m_optionPane.getComponent());
         
         getContentPane().add(panel, BorderLayout.CENTER);
         
@@ -104,7 +107,7 @@ public class DocumentOptionsDialog extends EnhancedDialog {
     
     //{{{ ok()
     public void ok() {
-        m_optionsPanel.save();
+        m_optionPane.save();
         cancel();
     }//}}}
     
@@ -154,6 +157,6 @@ public class DocumentOptionsDialog extends EnhancedDialog {
     /**
      * The document options panel for the current document
      */
-    private OptionsPanel m_optionsPanel;
+    private OptionPane m_optionPane;
     //}}}
 }
