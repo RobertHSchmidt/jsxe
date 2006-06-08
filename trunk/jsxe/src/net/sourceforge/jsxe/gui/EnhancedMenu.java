@@ -34,6 +34,7 @@ import java.util.*;
 
 /**
  * A Menu class that handles wrapping the menu items into sub-menus for you.
+ *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
@@ -49,6 +50,12 @@ public class EnhancedMenu extends JMenu {
     }//}}}
     
     //{{{ EnhancedMenu constructor
+    /**
+     * Constructs a EnhancedPopupMenu without an "invoker" and the wrap count
+     * specified.
+     * @param wrapCount the number of components that are added to menu before
+     *                  it wraps.
+     */
     public EnhancedMenu(int wrapCount) {
         super();
         m_wrapCount = wrapCount;
@@ -57,8 +64,11 @@ public class EnhancedMenu extends JMenu {
     
     //{{{ EnhancedMenu constructor
     /**
-     * Constructs a JPopupMenu with the specified title.
-     * @param label the string that a UI may use to display as a title for the popup menu.
+     * Constructs an EnhancedMenu with the specified title.
+     * @param label the string that a UI may use to display as a title for the
+     *              popup menu.
+     * @param wrapCount the number of components that are added to menu before
+     *                  it wraps.
      */
     public EnhancedMenu(String label, int wrapCount) {
         super(label);
@@ -253,7 +263,10 @@ public class EnhancedMenu extends JMenu {
     }//}}}
     
     //{{{ getMenuComponent()
-    
+    /**
+     * Returns the the component in this menu or a submenu.
+     * @param int the index into this menu and submenus.
+     */
     public Component getMenuComponent(int n) {
         int addIndex = (int)(n / m_wrapCount);
         int addSubIndex = (n % m_wrapCount);
@@ -266,7 +279,11 @@ public class EnhancedMenu extends JMenu {
     }//}}}
     
     //{{{ getMenuComponentCount
-    
+    /**
+     * Gets the total number of components in this menu
+     * and submenus.
+     * @return the total number of components.
+     */
     public int getMenuComponentCount() {
         return m_menuHash.keySet().size();
     }//}}}
@@ -274,7 +291,9 @@ public class EnhancedMenu extends JMenu {
     //{{{ Private members
     
     //{{{ getTrueMenuItemCount()
-    
+    /**
+     * Gets the true item count for a sub-menu
+     */
     private int getTrueMenuItemCount(JMenu menu) {
         if (menu == this) {
             return super.getMenuComponentCount();
@@ -287,13 +306,15 @@ public class EnhancedMenu extends JMenu {
     /**
      * Gets the current menu that we are adding to.
      */
-    public JMenu getCurrentMenu() {
+    private JMenu getCurrentMenu() {
         return ((JMenu)m_addToMenus.peek());
     }//}}}
     
     //{{{ updateSubMenus()
-    
-    public void updateSubMenus() {
+    /**
+     * Updates the submenus after adding or removing a component
+     */
+    private void updateSubMenus() {
         //must call m_addToMenus.size() here since we may remove menus in the loop.
         for (int i=0; i<m_addToMenus.size(); i++) {
             JMenu menu = (JMenu)m_addToMenus.get(i);
@@ -342,7 +363,7 @@ public class EnhancedMenu extends JMenu {
     /**
      * Updates the menu that we are truly adding to.
      */
-    public void maybeAddMenu() {
+    private void maybeAddMenu() {
         int componentCount = getTrueMenuItemCount(getCurrentMenu());
         if (componentCount >= m_wrapCount) {
             MoreMenu menu = new MoreMenu();
@@ -352,7 +373,9 @@ public class EnhancedMenu extends JMenu {
     }//}}}
     
     //{{{ MoreMenu class
-    
+    /**
+     * A submenu used by the EnhancedMenu
+     */
     private static class MoreMenu extends JMenu {
         
         public MoreMenu() {
