@@ -45,7 +45,8 @@
 		<property name="javac.deprecation" value="on"/>
     <property name="javac.include.runtime" value="no"/>
     <property name="javac.source" value="1.3"/>
-		<property name="javadoc.link" value="http://java.sun.com/j2se/1.3/docs/api/"/>
+		<property name="java.javadoc.link" value="http://java.sun.com/j2se/1.3/docs/api/"/>
+    <property name="xerces.javadoc.link" value="http://xerces.apache.org/xerces2-j/javadocs/api/"/>
     <property name="main.class" value="net.sourceforge.jsxe.jsXe"/>
 		<property name="major.version" value="0"/>
 		<property name="minor.version" value="5"/>
@@ -220,7 +221,10 @@
 		<copy file="INSTALL" tofile="${build.docs}/INSTALL"/>
 		<copy file="THANKS" tofile="${build.docs}/THANKS"/>
 		<copy file="NEWS" tofile="${build.docs}/NEWS"/>
-		<javadoc author="true" destdir="${build.javadocs}" doctitle="${app.name} ${app.version} API" link="${javadoc.link}" locale="en_US" packagenames="*" sourcepath="${build.src}" version="true" windowtitle="${app.name} ${app.version} API"/>
+		<javadoc author="true" destdir="${build.javadocs}" doctitle="${app.name} ${app.version} API" locale="en_US" packagenames="*" sourcepath="${build.src}" version="true" windowtitle="${app.name} ${app.version} API">
+      <link href="${java.javadoc.link}"/>
+      <link href="${xerces.javadoc.link}"/>
+    </javadoc>
     <zip basedir="${build.docs}" includes="api/**" zipfile="${build.dir}/${app.name}-${app_version}-api.zip"/>
   </target>
 	<!-- }}} -->
