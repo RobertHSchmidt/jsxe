@@ -141,7 +141,7 @@ public class jsXe {
             //}}}
             
             //{{{ start locale
-            Messages.initializePropertiesObject(null, jsXeHome+fileSep+"messages");
+            Messages.initLocale(null, jsXeHome+fileSep+"messages");
             //}}}
             
             //{{{ get and load the configuration files

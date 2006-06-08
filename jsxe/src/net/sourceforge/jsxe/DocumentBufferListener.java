@@ -53,6 +53,15 @@ public interface DocumentBufferListener {
     public void bufferSaved(DocumentBuffer source);//}}}
     
     //{{{ statusChanged()
-    
-    public void statusChanged(DocumentBuffer source, int statusType, boolean oldStatus);//}}}
+    /**
+     * Called whenever a status for the buffer has changed such as
+     * read-only status or dirty status. The new status can be obtained
+     * by querying the source document via the
+     * {@link DocumentBuffer.getStatus(int)} method.
+     *
+     * @param source the source document
+     * @param statusType the status type that changed
+     * @param oldStatus the old status
+     */
+    public void statusChanged(DocumentBuffer source, int statusType, boolean oldStatus);//}}
 }
