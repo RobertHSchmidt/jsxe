@@ -40,7 +40,12 @@ import java.io.File;
 public class OperatingSystem {
     
     //{{{ getScreenBounds()
-    
+    /**
+     * Gets the screen boundries. Due to some slight differences in the
+     * operating system desktops, this method massages the screen boundries
+     * so they are exactly correct.
+     * @return the screen boundries.
+     */
     public static final Rectangle getScreenBounds() {
         int screenX = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         int screenY = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -132,15 +137,19 @@ public class OperatingSystem {
         return (isMacOS() && UIManager.getLookAndFeel().isNativeLookAndFeel());
     }//}}}
 
-    //{{{ isJava14() method
+    //{{{ isJava15() method
     /**
-     * Returns if Java 2 version 1.4 is in use.
+     * Returns if Java 2 version 1.5 is in use.
      */
-    public static final boolean hasJava14() {
-        return java14;
+    public static final boolean hasJava15() {
+        return java15;
     } //}}}
 
     //{{{ Private members
+    
+    //{{{ Operating System constructor
+    public OperatingSystem() {}//}}}
+    
     private static final int UNIX = 0x31337;
     private static final int WINDOWS_9x = 0x640;
     private static final int WINDOWS_NT = 0x666;
@@ -149,7 +158,7 @@ public class OperatingSystem {
     private static final int UNKNOWN = 0xBAD;
 
     private static int os;
-    private static boolean java14;
+    private static boolean java15;
 
     //{{{ Class initializer
     static {
@@ -176,8 +185,8 @@ public class OperatingSystem {
             }
         }
 
-        if (System.getProperty("java.version").compareTo("1.4") >= 0) {
-            java14 = true;
+        if (System.getProperty("java.version").compareTo("1.5") >= 0) {
+            java15 = true;
         }
     } //}}}
 
