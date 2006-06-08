@@ -128,8 +128,29 @@ DocumentBuffer.Closed.Message={0} Closed
 DocumentBuffer.Loaded.Message={0} Loaded
 DocumentBuffer.Reloaded.Message={0} Reloaded
 
+# {0} plugin name
+# {1} requirement name
+# {2} required version
+# {3} found version
 Plugin.Dependency.Message={0} requires {1} version {2} but only version {3} was found.
+# {0} plugin name
+# {1} requirement name
+# {2} required version
 Plugin.Dependency.Not.Found={0} requires {1} version {2} but {1} was not found.
+# {0} plugin name
+# {1} requirement name
+Plugin.Dependency.Not.Found2={0} requires {1} but {1} was not found.
+# {0} plugin name
+# {1} invalid dependency
+Plugin.Dependency.Invalid={0} has an invalid dependency: {1}
+# {0} invalid version
+Plugin.Dependency.Invalid.jsXe.Version=Invalid jsXe version number: {0}
+# {0} plugin name
+# {1} requirement name
+Plugin.Dependency.No.Version=Cannot load plugin {0}, {1} has no version
+# {0} plugin name
+# {1} requirement name
+Plugin.Dependency.Failed.Load={0} requires plugin {1} but {1} did not load properly
 
 #{{{ Error Messages
 No.Xerces.Error={0} not found. jsXe requires Apache {0}.

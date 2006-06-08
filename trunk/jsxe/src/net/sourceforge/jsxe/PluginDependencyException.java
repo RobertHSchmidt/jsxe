@@ -71,6 +71,23 @@ public class PluginDependencyException extends RuntimeException {
     
     //{{{ PluginDependencyException constructor
     /**
+     * Creates a new PluginDependencyException for a component or plugin that
+     * was not found.
+     *
+     * @param pluginName the name of the plugin
+     * @param requiredName the name of the required component or plugin
+     * @param versionRequired the required version of the required component or plugin
+     */
+    public PluginDependencyException(String pluginName, String requiredName) {
+        super(Messages.getMessage("Plugin.Dependency.Not.Found2", new Object[] { pluginName, requiredName }));
+        m_pluginName = pluginName;
+        m_requiredName = requiredName;
+        m_versionRequired = null;
+        m_versionFound = null;
+    }//}}}
+    
+    //{{{ PluginDependencyException constructor
+    /**
      * Creates a new PluginDependencyException.
      * @param pluginName the name of the plugin that requires.
      * @param messsage the message
