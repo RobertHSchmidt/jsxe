@@ -417,7 +417,9 @@ public class JARClassLoader extends ClassLoader {
     //{{{ Private Members
     
     //{{{ checkDependencies()
-    
+    /**
+     * Checks for and loads dependencies for the jar file for a plugin.
+     */
     private void checkDependencies(JarFile file) throws IOException, PluginDependencyException {
         String name = getManifestAttribute(file, PLUGIN_NAME);
         String dep;
@@ -427,7 +429,7 @@ public class JARClassLoader extends ClassLoader {
             //parse the dependency
             int index = dep.indexOf(' ');
             if(index == -1) {
-                throw new PluginDependencyException(name, name + " has an invalid dependency: " + dep);
+                throw new PluginDependencyException(name, Messages.getMessage("Plugin.Dependency.Invalid", new Object[] { name, dep } ));
             }
             
             String what = dep.substring(0,index);
@@ -439,7 +441,7 @@ public class JARClassLoader extends ClassLoader {
             } else {
                 if (what.equals("jsxe") || what.equals("jsXe")) {
                     if(arg.length() != 11) {
-                        throw new PluginDependencyException(name, "Invalid jsXe version number: " + arg);
+                        throw new PluginDependencyException(name, Messages.getMessage("Plugin.Dependency.Invalid.jsXe.Version", new Object[] { arg }));
                     }
                     
                     if (MiscUtilities.compareStrings(jsXe.getBuild(),arg,false) < 0) {
@@ -450,7 +452,7 @@ public class JARClassLoader extends ClassLoader {
                     if (what.equals("plugin")) {
                         int index2 = arg.indexOf(' ');
                         if(index2 == -1) {
-                            throw new PluginDependencyException(name, name + " has an invalid dependency: " + dep + " (version is missing)");
+                            throw new PluginDependencyException(name, Messages.getMessage("Plugin.Dependency.Invalid", new Object[] { name, dep } ));
                         }
                 
                         String plugin = arg.substring(0,index2);
@@ -458,19 +460,19 @@ public class JARClassLoader extends ClassLoader {
                         String currVersion = getPluginProperty(plugin, PLUGIN_VERSION);
                         
                         if (currVersion == null) {
-                            throw new PluginDependencyException(name, "Cannot load plugin "+name+", " + plugin + " has no version");
+                            throw new PluginDependencyException(name, Messages.getMessage("Plugin.Dependency.No.Version", new Object[] { name, plugin } ));
                         } else {
                             if (MiscUtilities.compareStrings(currVersion,needVersion,false) < 0) {
                                 throw new PluginDependencyException(name, plugin, needVersion, currVersion);
                             } else {
                                 if (getPlugin(plugin) instanceof ActionPlugin.Broken) {
-                                    throw new PluginDependencyException(name, name + " requires plugin "+plugin+" but "+plugin+" did not load properly");
+                                    throw new PluginDependencyException(name, Messages.getMessage("Plugin.Dependency.Failed.Load", new Object[] { name, plugin } ));
                                 } else {
                                     //check dependencies of plugin we depend on.
                                     try {
                                         checkDependencies((JarFile)m_jarFiles.get(plugin));
                                     } catch (PluginDependencyException e) {
-                                        throw new PluginDependencyException(name, name + " requires plugin "+plugin+" but "+plugin+" did not load properly");
+                                        throw new PluginDependencyException(name, Messages.getMessage("Plugin.Dependency.Failed.Load", new Object[] { name, plugin } ));
                                     }
                                 }
                             }
@@ -480,10 +482,10 @@ public class JARClassLoader extends ClassLoader {
                             try {
                                 loadClass(arg,false);
                             } catch(Exception e) {
-                                throw new PluginDependencyException(name, "plugin "+name+" requires class "+arg);
+                                throw new PluginDependencyException(name, arg);
                             }
                         } else {
-                            throw new PluginDependencyException(name, name + " has unknown dependency: " + dep);
+                            throw new PluginDependencyException(name, Messages.getMessage("Plugin.Dependency.Invalid", new Object[] { name, dep } ));
                         }
                     }
                 }
@@ -705,7 +707,7 @@ public class JARClassLoader extends ClassLoader {
                     }
                 } else {
                     /*
-                    It's not a plugin. No biggie. We need it to be loaded
+                    It's not a plugin. No biggie. We needed it to be loaded
                     anyway.
                     */
                     throw new PluginLoadException(jarfile, "Main class is not a plugin class");
