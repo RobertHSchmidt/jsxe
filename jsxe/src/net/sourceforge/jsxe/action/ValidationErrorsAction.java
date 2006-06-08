@@ -86,7 +86,7 @@ public class ValidationErrorsAction extends AbstractAction {
         view = parent;
     }//}}}
     
-    //{{{ actionPerformed()   
+    //{{{ actionPerformed()
     public void actionPerformed(ActionEvent e) {
         DocumentBuffer document = view.getDocumentView().getDocumentBuffer();
         Vector errors = new Vector();
@@ -99,7 +99,7 @@ public class ValidationErrorsAction extends AbstractAction {
                                                      Messages.getMessage("ValidationErrors.title"),
                                                      Messages.getMessage("ValidationErrors.message"),
                                                      errors,
-                                                     false);
+                                                     true);
     }//}}}
     
     //{{{ formatError

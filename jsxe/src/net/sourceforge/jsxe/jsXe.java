@@ -361,7 +361,7 @@ public class jsXe {
             
             //Show plugin error dialog
             if (pluginErrors.size() > 0) {
-                new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), true);
+                new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), false);
             }
             
             Log.log(Log.NOTICE, jsXe.class, "jsXe started in "+(System.currentTimeMillis()-startTime)+" milliseconds");
