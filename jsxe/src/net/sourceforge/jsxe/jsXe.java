@@ -781,7 +781,11 @@ public class jsXe {
     }//}}}
     
     //{{{ getBufferHistory()
-    
+    /**
+     * Gets jsXe's buffer history. This is the history of the
+     * of the last files that were opened by jsXe.
+     * @return jsXe's buffer history
+     */
     public static BufferHistory getBufferHistory() {
         return m_bufferHistory;
     }//}}}
@@ -1103,7 +1107,12 @@ public class jsXe {
 	} //}}}
     
     //{{{ addActionSet()
-    
+    /**
+     * Adds a set of actions to the jsXe's pool of action sets.
+     * This allows action sets from installed plugins to be added
+     * and retrieved via jsXe's pool of actions.
+     * @param set the action set to add
+     */
     public static void addActionSet(ActionSet set) {
         m_actionSets.add(set);
     }//}}}
@@ -1111,6 +1120,8 @@ public class jsXe {
     //{{{ getAction()
     /**
      * Gets the action set with the given name
+     * @param the name of the action set.
+     * @return the action set that matches the name, or null if none match.
      */
     public static Action getAction(String name) {
         for (int i = 0; i < m_actionSets.size(); i++) {
