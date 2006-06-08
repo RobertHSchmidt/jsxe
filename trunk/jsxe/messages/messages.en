@@ -116,6 +116,8 @@ Help.About=About jsXe...
 #}}}
 
 #{{{ Messages
+
+#{0} file name
 DocumentBuffer.Reload.Message={0} unsaved!\n You will lose all unsaved changes if you reload!\n\nContinue?
 DocumentBuffer.Reload.Message.Title=Document Modified
 DocumentBuffer.SaveAs.Message=The file {0} already exists. Are you sure you want to overwrite it?
@@ -123,10 +125,16 @@ DocumentBuffer.SaveAs.Message.Title=File Exists
 DocumentBuffer.Close.Message={0} unsaved! Save it now?
 DocumentBuffer.Close.Message.Title=Unsaved Changes
 
+#{0} file name
 DocumentBuffer.Saved.Message={0} Saved
 DocumentBuffer.Closed.Message={0} Closed
 DocumentBuffer.Loaded.Message={0} Loaded
 DocumentBuffer.Reloaded.Message={0} Reloaded
+
+#{0} plugin name
+DocumentView.Not.Found=No plugin a with name of {0} exists
+
+#{{{ Plugin Load Messages
 
 # {0} plugin name
 # {1} requirement name
@@ -152,6 +160,8 @@ Plugin.Dependency.No.Version=Cannot load plugin {0}, {1} has no version
 # {1} requirement name
 Plugin.Dependency.Failed.Load={0} requires plugin {1} but {1} did not load properly
 
+#}}}
+
 #{{{ Error Messages
 No.Xerces.Error={0} not found. jsXe requires Apache {0}.
 No.Xerces.Error.Title={0} not found.
@@ -164,6 +174,8 @@ IO.Error.Title=I/O Error
 
 #{{{ Download resource dialog
 xml.download-resource.title=Getting resource from remote server
+
+#{0} URL
 xml.download-resource.message=This XML file depends on a resource which is stored at the following\n\
 	Internet address:\n\
 	\n\
@@ -177,14 +189,14 @@ xml.download-resource.message=This XML file depends on a resource which is store
 #}}}
 
 #{{{ Dirty Files Dialog
-DirtyFilesDialog.Dialog.Title = Unsaved Changes
-DirtyFilesDialog.Dialog.Message = The following files have unsaved changes:
-DirtyFilesDialog.Button.SelectAll.Title = Select All
-DirtyFilesDialog.Button.SelectAll.ToolTip = Select All
-DirtyFilesDialog.Button.SaveSelected.Title = Save Selected
-DirtyFilesDialog.Button.SaveSelected.ToolTip = Save Selected
-DirtyFilesDialog.Button.DiscardSelected.Title = Discard Selected
-DirtyFilesDialog.Button.DiscardSelected.ToolTip = Discard Selected
+DirtyFilesDialog.Dialog.Title=Unsaved Changes
+DirtyFilesDialog.Dialog.Message=The following files have unsaved changes:
+DirtyFilesDialog.Button.SelectAll.Title=Select All
+#DirtyFilesDialog.Button.SelectAll.ToolTip=Select All
+DirtyFilesDialog.Button.SaveSelected.Title=Save Selected
+#DirtyFilesDialog.Button.SaveSelected.ToolTip=Save Selected
+DirtyFilesDialog.Button.DiscardSelected.Title=Discard Selected
+#DirtyFilesDialog.Button.DiscardSelected.ToolTip=Discard Selected
 #}}}
 
 #{{{ Activity Log Dialog
