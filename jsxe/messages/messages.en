@@ -128,6 +128,9 @@ DocumentBuffer.Closed.Message={0} Closed
 DocumentBuffer.Loaded.Message={0} Loaded
 DocumentBuffer.Reloaded.Message={0} Reloaded
 
+Plugin.Dependency.Message={0} requires {1} version {2} but only version {3} was found.
+Plugin.Dependency.Not.Found={0} requires {1} version {2} but {1} was not found.
+
 #{{{ Error Messages
 No.Xerces.Error={0} not found. jsXe requires Apache {0}.
 No.Xerces.Error.Title={0} not found.

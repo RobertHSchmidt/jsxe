@@ -24,6 +24,8 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package net.sourceforge.jsxe;
 
+import net.sourceforge.jsxe.gui.Messages;
+
 /**
  * Signals that a dependency required by a plugin has not been met.
  * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
@@ -33,17 +35,46 @@ package net.sourceforge.jsxe;
 public class PluginDependencyException extends RuntimeException {
 
     //{{{ PluginDependencyException constructor
-    
+    /**
+     * Creates a new PluginDependencyException for a plugin that was found
+     * but an inadequate version was found.
+     *
+     * @param pluginName the name of the plugin
+     * @param requiredName the name of the required component or plugin
+     * @param versionRequired the required version of the required component or plugin
+     * @param versionFound the version that was found.
+     */
     public PluginDependencyException(String pluginName, String requiredName, String versionRequired, String versionFound) {
-        super(pluginName + " requires "+requiredName+" version "+versionRequired+" but only version "+versionFound+" was found.");
+        super(Messages.getMessage("Plugin.Dependency.Message", new Object[] { pluginName, requiredName, versionRequired, versionFound }));
         m_pluginName = pluginName;
         m_requiredName = requiredName;
         m_versionRequired = versionRequired;
         m_versionFound = versionFound;
+    }//}}}    
+    
+    //{{{ PluginDependencyException constructor
+    /**
+     * Creates a new PluginDependencyException for a component or plugin that
+     * was not found.
+     *
+     * @param pluginName the name of the plugin
+     * @param requiredName the name of the required component or plugin
+     * @param versionRequired the required version of the required component or plugin
+     */
+    public PluginDependencyException(String pluginName, String requiredName, String versionRequired) {
+        super(Messages.getMessage("Plugin.Dependency.Not.Found", new Object[] { pluginName, requiredName, versionRequired }));
+        m_pluginName = pluginName;
+        m_requiredName = requiredName;
+        m_versionRequired = versionRequired;
+        m_versionFound = null;
     }//}}}
     
     //{{{ PluginDependencyException constructor
-    
+    /**
+     * Creates a new PluginDependencyException.
+     * @param pluginName the name of the plugin that requires.
+     * @param messsage the message
+     */
     public PluginDependencyException(String pluginName, String message) {
         super(message);
         m_pluginName = pluginName;
