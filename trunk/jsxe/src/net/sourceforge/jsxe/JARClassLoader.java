@@ -41,7 +41,8 @@ import net.sourceforge.jsxe.util.MiscUtilities;
 
 /**
  * A class loader implementation that loads classes from JAR files. Also manages
- * getting files from plugin JARs.
+ * getting files from plugin JARs. It is used to load jsXe's plugins.
+ * 
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @since jsXe 0.4 beta
@@ -49,18 +50,41 @@ import net.sourceforge.jsxe.util.MiscUtilities;
 public class JARClassLoader extends ClassLoader {
     
     //{{{ Public static members
+    /**
+     * The manifest property that specifies the plugin name.
+     */
     public static final String PLUGIN_NAME    = "jsxe-plugin-name";
+    /**
+     * The manifest property that specifies the plugin class
+     */
     public static final String PLUGIN_CLASS   = "jsxe-plugin-class";
+    /** 
+     * The manifest property that specifies the plugin version
+     */
     public static final String PLUGIN_VERSION = "jsxe-plugin-version";
+    /**
+     * The manifest property that specifies the plugin URL
+     */
     public static final String PLUGIN_URL     = "jsxe-plugin-url";
+    /**
+     * The manifest property that specifies a human readable name for the plugin
+     */
     public static final String PLUGIN_HUMAN_READABLE_NAME = "jsxe-plugin-human-readable-name";
+    /**
+     * The manifest property that specifies the plugin description
+     */
     public static final String PLUGIN_DESCRIPTION = "jsxe-plugin-description";
     //}}}
     
     //{{{ ClassLoader methods
     
     //{{{ findClass()
-    
+    /**
+     * Finds a class by looking for it on the jar files in the search path.
+     * The search path is specified by the {@link addJarFile(String)},
+     * {@link addJarFile(File)}, and {@link addDirectory(String)} methods.
+     * @param name the class name
+     */
     protected Class findClass(String name) throws ClassNotFoundException {
         
         String classFileName = name.replace('.','/').concat(".class");
@@ -104,7 +128,13 @@ public class JARClassLoader extends ClassLoader {
     }//}}}
 
     //{{{ findResources()
-    
+    /**
+     * Finds all resources matching the name in the jar files specified in the
+     * search path. The search path is specified by the
+     * {@link addJarFile(String)}, {@link addJarFile(File)}, and
+     * {@link addDirectory(String)} methods.
+     * @param name the name of the resources to find
+     */
     protected Enumeration findResources(String name) throws IOException {
         Iterator fileItr = m_files.values().iterator();
         Iterator jarItr  = m_jarFiles.values().iterator();
@@ -123,7 +153,13 @@ public class JARClassLoader extends ClassLoader {
     }//}}}
     
     //{{{ findResource
-    
+    /**
+     * Finds the first resource matching the name in the jar files specified
+     * in the search path. The search path is specified by the
+     * {@link addJarFile(String)}, {@link addJarFile(File)}, and
+     * {@link addDirectory(String)} methods.
+     * @param name the name of the resources to find
+     */
     protected URL findResource(String name) {
         Iterator filesItr = m_files.values().iterator();
         Iterator jarItr = m_jarFiles.values().iterator();
