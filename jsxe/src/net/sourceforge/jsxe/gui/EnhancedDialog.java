@@ -44,14 +44,24 @@ import java.awt.*;
 public abstract class EnhancedDialog extends JDialog {
     
     //{{{ EnhancedDialog constructor
-    
+    /**
+     * Creates a new EnhancedDialog as a child of a frame.
+     * @param parent the parent frame
+     * @param title the title of the dialog
+     * @param modal true of the dialog is modal
+     */
     public EnhancedDialog(Frame parent, String title, boolean modal) {
         super(parent,title,modal);
         _init();
     }//}}}
     
     //{{{ EnhancedDialog constructor
-    
+    /**
+     * Creates a new EnhancedDialog as a child of a frame.
+     * @param parent the parent frame
+     * @param title the title of the dialog
+     * @param modal true of the dialog is modal
+     */
     public EnhancedDialog(Dialog parent, String title, boolean modal) {
         super(parent,title,modal);
         _init();
