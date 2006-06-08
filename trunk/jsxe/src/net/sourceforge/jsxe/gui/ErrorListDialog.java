@@ -37,6 +37,7 @@ import net.sourceforge.jsxe.util.Log;
 /**
  * A dialog that displays multiple errors based on a Vector containing string
  * objects.
+ *
  * @author Slava Pestov
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
@@ -44,8 +45,16 @@ import net.sourceforge.jsxe.util.Log;
 public class ErrorListDialog extends EnhancedDialog {
     
         //{{{ ErrorListDialog constructor
-        public ErrorListDialog(Frame frame, String title, String caption, Vector messages, boolean pluginError) {
-            super(frame,title,!pluginError);
+        /**
+         * Creates a new ErrorListDialog.
+         * @param frame the parent component of this dialog
+         * @param title the title of the dialog
+         * @param caption the caption displayed on the dialog.
+         * @param messages a Vector containing objects used as error messages
+         * @param modal whether the dialog is modal
+         */
+        public ErrorListDialog(Frame frame, String title, String caption, Vector messages, boolean modal) {
+            super(frame,title,modal);
 
             JPanel content = new JPanel(new BorderLayout(12,12));
             content.setBorder(new EmptyBorder(12,12,12,12));
@@ -108,11 +117,10 @@ public class ErrorListDialog extends EnhancedDialog {
         } //}}}
 
         //{{{ Private members
-        private JButton ok, pluginMgr;
-        //}}}
-
+        private JButton ok;
+        
         //{{{ ActionHandler class
-        class ActionHandler implements ActionListener {
+        private class ActionHandler implements ActionListener {
             //{{{ actionPerformed() method
             public void actionPerformed(ActionEvent evt) {
                 if (evt.getSource() == ok) {
@@ -120,4 +128,6 @@ public class ErrorListDialog extends EnhancedDialog {
                 }
             } //}}}
         } //}}}
+
+        //}}}
 }
