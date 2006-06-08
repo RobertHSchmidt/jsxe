@@ -62,15 +62,7 @@ import net.sourceforge.jsxe.util.Log;
  */
 public class ActivityLogDialog  extends EnhancedDialog {
 	
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private JList contentsJList;
-    private javax.swing.JButton close;  
-    private javax.swing.JLabel iconJLabel;
-    private javax.swing.JScrollPane activityLogJScrollPane;
-    private String m_geometryName = "activitylog";
-    // End of variables declaration//GEN-END:variables
-	
-    // {{{ ActivityLogDialog()
+	//{{{ ActivityLogDialog()
     /**
      * @param TabbedView parent view containing the JSXE editor.
      * Constructor for the ActivityLogDialog class
@@ -84,14 +76,91 @@ public class ActivityLogDialog  extends EnhancedDialog {
 		loadGeometry(this, m_geometryName);
         initComponents();
 	}//}}}
+	                               
+    //{{{ okayJButtonActionPerformed()
+    /**
+     * Provides action for clicking on the OK button
+     * @since jsXe 0.3pre15
+     */
+	private void okayJButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		cancel();
+	}//}}}
 	
+    //{{{ getActivityLogContents()
+    /**
+     * Gets contents of the ativity log jsxe.log
+     * @return ArrayList containing lines from the activity log
+     * @since jsXe 0.3pre15
+     */	
+	public ArrayList getActivityLogContents() {
+		String homeDir = System.getProperty("user.home");
+		File activityLog = new File(homeDir+ System.getProperty("file.separator")+".jsxe"+System.getProperty("file.separator")+"jsXe.log");
+			
+		String line;
+		ArrayList logContents = new ArrayList();
+		try {
+			BufferedReader reader = new BufferedReader( new FileReader(activityLog));			
+			try {
+				while ((line = reader.readLine()) != null) {
+					logContents.add(line);
+				}
+                reader.close();
+			} catch (IOException e1) {
+				Log.log(Log.ERROR, this, e1);
+			}
+            
+		} catch (FileNotFoundException e) {
+			Log.log(Log.ERROR, this, e);
+		}
+		return logContents;		
+    }//}}}
+	 	
+	//{{{ ok()
+	public void ok() {
+		cancel();
+	}//}}}
+
+	//{{{ cancel()
+	public void cancel() {
+		saveGeometry(this, m_geometryName);
+		dispose();
+	}//}}}
+	
+    //{{{ getContents()
+    /**
+     * Gets the contents of the activity log since last refreshed.
+     */
+	public ListModel getContents(){
+		ArrayList contents = getActivityLogContents();
+		
+		DefaultListModel contentsJListModel = new DefaultListModel();
+		JTextArea newArea = new JTextArea(5, 30);
+		for (Iterator it=contents.iterator(); it.hasNext(); ) {
+			String line = (String)it.next();	
+			contentsJListModel.addElement(line);
+		}
+        return contentsJListModel;
+	}//}}}
+	
+    //{{{ refreshContents()
+    /**
+     * Refreshes the contents of the Activity log dialog
+     */
+	public void refreshContents() {
+        Log.flushStream();
+		contentsJList.setModel(getContents());
+		//contentsJList.updateUI();
+	}//}}}
+    
+    //{{{ Private members
+    
     // {{{ initComponents()
     /**
      * @param JList containing contents of log file
      * Arranges all the components of the GUI
      * @since jsXe 0.3pre15
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
+    private void initComponents() {
         iconJLabel = new javax.swing.JLabel();
 
         //setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -121,93 +190,16 @@ public class ActivityLogDialog  extends EnhancedDialog {
 		buttonPanel.add(close);
 		buttonPanel.add(Box.createGlue());
 		getContentPane().add(BorderLayout.SOUTH,buttonPanel);
-        
-    }//}}}
+                         
+    }//}}}             
     
-    // {{{ okayJButtonActionPerformed()
-    /**
-     * Provides action for clicking on the OK button
-     * @since jsXe 0.3pre15
-     */
-	private void okayJButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		cancel();
-	}//}}}
-	
-    // {{{ getActivityLogContents()
-    /**
-     * Gets contents of the ativity log jsxe.log
-     * @return ArrayList containing lines from the activity log
-     * @since jsXe 0.3pre15
-     */	
-	public ArrayList getActivityLogContents() {
-		String homeDir = System.getProperty("user.home");
-		File activityLog = new File(homeDir+ System.getProperty("file.separator")+".jsxe"+System.getProperty("file.separator")+"jsXe.log");
-			
-		String line;
-		ArrayList logContents = new ArrayList();
-		try {
-			BufferedReader reader = new BufferedReader( new FileReader(activityLog));			
-			try {
-				while ((line = reader.readLine()) != null) {
-					logContents.add(line);
-				}
-                reader.close();
-			} catch (IOException e1) {
-				Log.log(Log.ERROR, this, e1);
-			}
-            
-		} catch (FileNotFoundException e) {
-			Log.log(Log.ERROR, this, e);
-		}
-		return logContents;		
-    }//}}}
-	 	
-	// {{{ ok()
-	public void ok() {
-		cancel();
-	}//}}}
-
-	//{{{ cancel()
-	public void cancel() {
-		saveGeometry(this, m_geometryName);
-		dispose();
-	}//}}}
-	
-    //{{{ getContents()
-	public ListModel getContents(){
-		ArrayList contents = getActivityLogContents();
-		
-		DefaultListModel contentsJListModel = new DefaultListModel();
-		JTextArea newArea = new JTextArea(5, 30);
-		for (Iterator it=contents.iterator(); it.hasNext(); ) {
-			String line = (String)it.next();	
-			contentsJListModel.addElement(line);
-		}
-        return contentsJListModel;
-	}//}}}
-	
-    //{{{ refreshContents()
-	public void refreshContents() {
-        Log.flushStream();
-		contentsJList.setModel(getContents());
-		//contentsJList.updateUI();
-	}//}}}
-
-    //{{{ getContentsList()
-	/**
-	 * @return Returns the contentsJList.
-	 */
-	public JList getContentsJList() {
-		return contentsJList;
-	}//}}}
+    private JList contentsJList;
+    private javax.swing.JButton close;  
+    private javax.swing.JLabel iconJLabel;
+    private javax.swing.JScrollPane activityLogJScrollPane;
+    private static final String m_geometryName = "activitylog";
     
-    //{{{ setContentsJList()
-	/**
-	 * @param contentsJList The contentsJList to set.
-	 */
-	public void setContentsJList(JList contentsJList) {
-		this.contentsJList = contentsJList;
-	}//}}}
+    //}}}
 }
 
 
