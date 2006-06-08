@@ -53,6 +53,19 @@ import org.xml.sax.*;
 public class CatalogManager {
 
     //{{{ resolve() method
+    /**
+     * Attempts to resolve an external entity. The internal cache is
+     * checked to see if the entity is cached on disk and if so it
+     * is retrieved from the cache. If not, it is read from the external
+     * source.
+     * 
+     * Local files are resolved relative to the current file.
+     *
+     * @param current the uri of the file where the external entity reference
+     *                is located.
+     * @param publicId the public ID of the external entity reference.
+     * @param systemId the system ID of the external entity reference.
+     */
     public static InputSource resolve(String current, String publicId, String systemId) throws Exception {
         load();
 
@@ -209,6 +222,11 @@ public class CatalogManager {
     } *///}}}
 
     //{{{ isLocal() method
+    /**
+     * Tests whether an entry in the resource cache has a file
+     * cached locally on disk.
+     * @param e the entry
+     */
     public static boolean isLocal(Entry e) {
         if (e == null || jsXe.getSettingsDirectory() == null)
             return false;
@@ -292,7 +310,10 @@ public class CatalogManager {
     } //}}}
 
     //{{{ Private members
-
+    
+    //{{{ CatalogManager constructor
+    private CatalogManager() {}//}}}
+    
     //{{{ Static variables
     private static boolean loadedCache;
     private static boolean loadedCatalogs;
