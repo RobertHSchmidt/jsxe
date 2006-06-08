@@ -33,10 +33,14 @@ import java.awt.event.*;
 import java.awt.*;
 
 /**
- * A dialog box that handles window closing, the ENTER key and the ESCAPE
+ * <p>A dialog box that handles window closing, the ENTER key and the ESCAPE
  * key for you. All you have to do is implement ok() (called when
  * Enter is pressed) and cancel() (called when Escape is pressed, or window
- * is closed).
+ * is closed).</p>
+ *
+ * <p>For consistency, plugins should implement this class for any dialogs
+ * that are displayed by the plugin</p>
+ *
  * @author Slava Pestov
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
