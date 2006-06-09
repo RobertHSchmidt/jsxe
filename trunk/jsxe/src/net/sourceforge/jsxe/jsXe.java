@@ -39,6 +39,8 @@ belongs to.
 import net.sourceforge.jsxe.gui.*;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.options.AbstractOptionPane;
+import net.sourceforge.jsxe.options.OptionPane;
 import net.sourceforge.jsxe.action.ActivityLogAction;
 //}}}
 
@@ -995,7 +997,11 @@ public class jsXe {
             try {
                 return Integer.parseInt(value.trim());
             } catch(NumberFormatException nf) {
-                return defaultValue;
+                try {
+                    return Integer.parseInt(jsXe.getDefaultProperty(key));
+                } catch(NumberFormatException nf2) {
+                    return defaultValue;
+                }
             }
         }
     }//}}}
@@ -1085,13 +1091,21 @@ public class jsXe {
 			try {
 				size = Integer.parseInt(sizeString);
 			} catch(NumberFormatException nf) {
-				return def;
+				try {
+                    size = Integer.parseInt(jsXe.getDefaultProperty(name+"size"));
+                } catch(NumberFormatException nf2) {
+                    return def;
+                }
 			}
 
 			try {
 				style = Integer.parseInt(styleString);
 			} catch(NumberFormatException nf) {
-				return def;
+				try {
+                    style = Integer.parseInt(jsXe.getDefaultProperty(name+"style"));
+                } catch(NumberFormatException nf2) {
+                    return def;
+                }
 			}
 
 			return new Font(family,style,size);
@@ -1157,11 +1171,13 @@ public class jsXe {
     
     //{{{ getOptionsPanel()
     /**
-     * Gets the options panel for the jsXe application.
-     * @return The OptionsPanel with the options for jsXe.
+     * Gets the option pane for the jsXe application.
+     * @return The OptionPane with the options for jsXe.
      */
-    public static final OptionsPanel getOptionsPanel() {
-        jsXeOptions = new jsXeOptionsPanel();
+    public static final OptionPane getOptionPane() {
+        if (jsXeOptions == null) {
+            jsXeOptions = new jsXeOptionPane();
+        }
         return jsXeOptions;
     }//}}}
     
@@ -1190,7 +1206,7 @@ public class jsXe {
     private jsXe() {}
     //}}}
     
-    // {{{ Private static members
+    //{{{ Private static members
 
     //{{{ fontStyleToString() method
 	private static String fontStyleToString(int style) {
@@ -1319,34 +1335,26 @@ public class jsXe {
         
     }//}}}
     
-    //{{{ jsXeOptionsPanel class
+    //{{{ jsXeOptionPane class
     
-    private static class jsXeOptionsPanel extends OptionsPanel {
+    private static class jsXeOptionPane extends AbstractOptionPane {
         
-        //{{{ jsXeOptionsPanel constructor
+        //{{{ jsXeOptionPane constructor
+        public jsXeOptionPane() {
+            super("jsxeoptions");
+        }//}}}
         
-        public jsXeOptionsPanel() {
+        //{{{ getTitle()
+        public String getTitle() {
+            return Messages.getMessage("Global.Options.Title");
+        }//}}}
+        
+        //{{{ _init()
+        protected void _init() {
             
-            GridBagLayout layout = new GridBagLayout();
-            GridBagConstraints constraints = new GridBagConstraints();
+            //{{{ max recent files
             
-            setLayout(layout);
-            
-            int gridY = 0;
-            
-            int maxRecentFiles = 20;
-            try {
-                maxRecentFiles = Integer.parseInt(jsXe.getProperty("max.recent.files"));
-            } catch (NumberFormatException nfe) {
-                try {
-                    maxRecentFiles = Integer.parseInt(jsXe.getDefaultProperty("max.recent.files"));
-                } catch (NumberFormatException nfe2) {
-                    Log.log(Log.ERROR, jsXe.class, "Could not read max.recent.files property");
-                }
-            }
-            
-            JLabel maxRecentFilesLabel = new JLabel(Messages.getMessage("Global.Options.Max.Recent.Files"));
-            maxRecentFilesLabel.setToolTipText(Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
+            int maxRecentFiles = jsXe.getIntegerProperty("max.recent.files", 20);
             
             Vector sizes = new Vector(4);
             sizes.add("10");
@@ -1357,9 +1365,13 @@ public class jsXe {
             maxRecentFilesComboBox.setEditable(true);
             maxRecentFilesComboBox.setSelectedItem(Integer.toString(maxRecentFiles));
             
-            maxRecentFilesComboBox.setToolTipText(Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
+            addComponent(Messages.getMessage("Global.Options.Max.Recent.Files"),
+                         maxRecentFilesComboBox,
+                         Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
             
-            JLabel networkLabel = new JLabel(Messages.getMessage("Global.Options.network"));
+            //}}}
+            
+            //{{{ network
             
             String[] networkValues = {
                 Messages.getMessage("Global.Options.network-always"),
@@ -1371,59 +1383,15 @@ public class jsXe {
             network = new JComboBox(networkValues);
             network.setSelectedIndex(jsXe.getIntegerProperty("xml.cache", 1));
             
-            constraints.gridy      = gridY;
-            constraints.gridx      = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
+            addComponent(Messages.getMessage("Global.Options.network"),
+                         network);
             
-            layout.setConstraints(maxRecentFilesLabel, constraints);
-            add(maxRecentFilesLabel);
+            //}}}
             
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 1;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(maxRecentFilesComboBox, constraints);
-            add(maxRecentFilesComboBox);
-            
-            constraints.gridy      = gridY;
-            constraints.gridx      = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(networkLabel, constraints);
-            add(networkLabel);
-            
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 1;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(network, constraints);
-            add(network);
         }//}}}
         
-        //{{{ getName()
-        
-        public String getName() {
-            return "jsxeoptions";
-        }//}}}
-        
-        //{{{ save()
-        public void save() {
+        //{{{ _save()
+        protected void _save() {
             try {
                 //don't need to set dirty, no change to text
                 jsXe.setProperty("max.recent.files", (new Integer(maxRecentFilesComboBox.getSelectedItem().toString())).toString());
@@ -1434,14 +1402,7 @@ public class jsXe {
             CatalogManager.propertiesChanged();
         }//}}}
         
-        //{{{ getTitle()
-        
-        public String getTitle() {
-            return Messages.getMessage("Global.Options.Title");
-        }//}}}
-        
         //{{{ toString()
-        
         public String toString() {
             return getTitle();
         }//}}}
@@ -1490,7 +1451,7 @@ public class jsXe {
     private static String m_settingsDirectory;
     private static String m_homeDirectory;
     
-    private static OptionsPanel jsXeOptions;
+    private static OptionPane jsXeOptions;
     //}}}
     
 }
