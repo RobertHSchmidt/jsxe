@@ -482,7 +482,7 @@ public class JARClassLoader extends ClassLoader {
                             try {
                                 loadClass(arg,false);
                             } catch(Exception e) {
-                                throw new PluginDependencyException(name, arg);
+                                throw new PluginDependencyException(name, arg, null);
                             }
                         } else {
                             throw new PluginDependencyException(name, Messages.getMessage("Plugin.Dependency.Invalid", new Object[] { name, dep } ));

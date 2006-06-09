@@ -62,7 +62,9 @@ public class PluginDependencyException extends RuntimeException {
      * @param versionRequired the required version of the required component or plugin
      */
     public PluginDependencyException(String pluginName, String requiredName, String versionRequired) {
-        super(Messages.getMessage("Plugin.Dependency.Not.Found", new Object[] { pluginName, requiredName, versionRequired }));
+        super((versionRequired != null) ?
+            Messages.getMessage("Plugin.Dependency.Not.Found", new Object[] { pluginName, requiredName, versionRequired }) :
+            Messages.getMessage("Plugin.Dependency.Not.Found2", new Object[] { pluginName, requiredName }));
         m_pluginName = pluginName;
         m_requiredName = requiredName;
         m_versionRequired = versionRequired;
@@ -71,30 +73,16 @@ public class PluginDependencyException extends RuntimeException {
     
     //{{{ PluginDependencyException constructor
     /**
-     * Creates a new PluginDependencyException for a component or plugin that
-     * was not found.
-     *
-     * @param pluginName the name of the plugin
-     * @param requiredName the name of the required component or plugin
-     * @param versionRequired the required version of the required component or plugin
-     */
-    public PluginDependencyException(String pluginName, String requiredName) {
-        super(Messages.getMessage("Plugin.Dependency.Not.Found2", new Object[] { pluginName, requiredName }));
-        m_pluginName = pluginName;
-        m_requiredName = requiredName;
-        m_versionRequired = null;
-        m_versionFound = null;
-    }//}}}
-    
-    //{{{ PluginDependencyException constructor
-    /**
      * Creates a new PluginDependencyException.
      * @param pluginName the name of the plugin that requires.
-     * @param messsage the message
+     * @param message the message
      */
     public PluginDependencyException(String pluginName, String message) {
         super(message);
         m_pluginName = pluginName;
+        m_requiredName = null;
+        m_versionRequired = null;
+        m_versionFound = null;
     }//}}}
 
     //{{{ Private Members
