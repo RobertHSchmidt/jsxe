@@ -3,7 +3,7 @@ DocumentBufferUpdate.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-Copyright (C) 2004 Ian Lewis (IanLewis@member.fsf.org)
+Copyright (C) 2006 Ian Lewis (IanLewis@member.fsf.org)
 Copyright (C) 1999, 2001 Slava Pestov
 
 This program is free software; you can redistribute it and/or
@@ -80,7 +80,7 @@ public class DocumentBufferUpdate extends EBMessage {
    // public static final Object PROPERTIES_CHANGED = "PROPERTIES_CHANGED";
     //}}}
 
-    //{{{ BufferUpdate constructor
+    //{{{ DocumentBufferUpdate constructor
     /**
      * Creates a new buffer update message.
      * @param buffer The document buffer
@@ -96,15 +96,15 @@ public class DocumentBufferUpdate extends EBMessage {
         this.what = what;
     } //}}}
 
-    //{{{ getWhat() method
+    //{{{ getWhat()
     /**
      * Returns what caused this buffer update.
      */
     public Object getWhat() {
-            return what;
+        return what;
     } //}}}
 
-    //{{{ getBuffer() method
+    //{{{ getBuffer()
     /**
      * Returns the buffer involved.
      */
@@ -112,7 +112,7 @@ public class DocumentBufferUpdate extends EBMessage {
         return (DocumentBuffer)getSource();
     } //}}}
 
-    //{{{ paramString() method
+    //{{{ paramString()
     public String paramString() {
         return "what=" + what + "," + super.paramString();
     } //}}}

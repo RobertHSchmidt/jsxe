@@ -71,7 +71,7 @@ public class GlobalOptionsDialog extends OptionsDialog {
         Iterator pluginItr = jsXe.getPluginLoader().getAllPlugins().iterator();
         while (pluginItr.hasNext()) {
             ActionPlugin plugin = (ActionPlugin)pluginItr.next();
-            pane = plugin.getOptionsPanel(buffer);
+            pane = plugin.getOptionPane(buffer);
             if (pane != null) {
                 addOptionPane(pane);
             }

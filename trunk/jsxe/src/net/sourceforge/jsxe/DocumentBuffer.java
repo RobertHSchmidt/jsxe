@@ -487,7 +487,10 @@ public class DocumentBuffer extends XMLDocument {
      * @return the option pane specific to this DocumentBuffer
      */
     public OptionPane getOptionPane() {
-        return new DocumentBufferOptionPane();
+        if (m_optionPane == null) {
+            m_optionPane = new DocumentBufferOptionPane();
+        }
+        return m_optionPane;
     }//}}}
     
     //{{{ fireStructureChanged()
@@ -535,7 +538,6 @@ public class DocumentBuffer extends XMLDocument {
     }//}}}
     
     //{{{ DocumentBufferOptionPane class
-    
     private class DocumentBufferOptionPane extends AbstractOptionPane {
     
         //{{{ DocumentBufferOptionPane()
@@ -800,6 +802,6 @@ public class DocumentBuffer extends XMLDocument {
     private File m_file;
     private ArrayList m_listeners = new ArrayList();
     private boolean m_dirty=false;
-    
+    private OptionPane m_optionPane;
     //}}}
 }
