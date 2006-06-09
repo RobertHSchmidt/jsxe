@@ -121,18 +121,20 @@ public abstract class EnhancedDialog extends JDialog {
         Rectangle desired = new Rectangle(x,y,width,height);
         win.setBounds(desired);
 
-        if ((win instanceof Frame) && OperatingSystem.hasJava14()) {
+        
+        if (win instanceof Frame) {
             int extState = jsXe.getIntegerProperty(name +   ".extendedState", Frame.NORMAL);
-
-            try {
-                java.lang.reflect.Method meth = Frame.class.getMethod("setExtendedState", new Class[] {int.class});
-
-                meth.invoke(win, new Object[] {new Integer(extState)});
-            } catch(NoSuchMethodException e) {}
-              catch(SecurityException e2) {}
-              catch(IllegalAccessException e3) {}
-              catch(java.lang.reflect.InvocationTargetException e4) {}
+            ((Frame)win).setExtendedState(extState);
         }
+        
+       // try {
+       //     java.lang.reflect.Method meth = Frame.class.getMethod("setExtendedState", new Class[] {int.class});
+
+       //     meth.invoke(win, new Object[] {new Integer(extState)});
+       // } catch(NoSuchMethodException e) {}
+       //   catch(SecurityException e2) {}
+       //   catch(IllegalAccessException e3) {}
+       //   catch(java.lang.reflect.InvocationTargetException e4) {}
     } //}}}
     
     //{{{ saveGeometry() method
@@ -146,23 +148,30 @@ public abstract class EnhancedDialog extends JDialog {
      */
     public static void saveGeometry(Window win, String name) {
         
-        if ((win instanceof Frame) && OperatingSystem.hasJava14()) {
-            try {
-                java.lang.reflect.Method meth = Frame.class.getMethod("getExtendedState",   new Class[0]);
-
-                Integer extState = (Integer)meth.invoke(win, new Object[0]);
-
-                jsXe.setIntegerProperty(name + ".extendedState", extState.intValue());
-
-                if (extState.intValue() != Frame.NORMAL) {
-                    return;
-                }
+        if (win instanceof Frame) {
+            int extState = ((Frame)win).getExtendedState();
+            jsXe.setIntegerProperty(name + ".extendedState", extState);
+            
+            if (extState != Frame.NORMAL) {
+                return;
             }
-            catch(NoSuchMethodException e) {}
-            catch(SecurityException e2) {}
-            catch(IllegalAccessException e3) {}
-            catch(java.lang.reflect.InvocationTargetException e4) {}
         }
+        
+       // try {
+       //     java.lang.reflect.Method meth = Frame.class.getMethod("getExtendedState",   new Class[0]);
+
+       //     Integer extState = (Integer)meth.invoke(win, new Object[0]);
+
+       //     jsXe.setIntegerProperty(name + ".extendedState", extState.intValue());
+
+       //     if (extState.intValue() != Frame.NORMAL) {
+       //         return;
+       //     }
+       // }
+       // catch(NoSuchMethodException e) {}
+       // catch(SecurityException e2) {}
+       // catch(IllegalAccessException e3) {}
+       // catch(java.lang.reflect.InvocationTargetException e4) {}
 
         Rectangle bounds = win.getBounds();
         jsXe.setIntegerProperty(name + ".x",bounds.x);
