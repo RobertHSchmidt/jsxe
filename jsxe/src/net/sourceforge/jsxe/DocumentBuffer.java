@@ -538,7 +538,7 @@ public class DocumentBuffer extends XMLDocument {
     
     private class DocumentBufferOptionPane extends AbstractOptionPane {
     
-        //{{{ DocumentBufferOptionsPanel()
+        //{{{ DocumentBufferOptionPane()
         public DocumentBufferOptionPane() {
             super("documentbuffer");
         }//}}}
