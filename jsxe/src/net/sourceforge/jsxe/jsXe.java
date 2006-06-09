@@ -42,6 +42,7 @@ import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.options.AbstractOptionPane;
 import net.sourceforge.jsxe.options.OptionPane;
 import net.sourceforge.jsxe.action.ActivityLogAction;
+import net.sourceforge.jsxe.msg.PropertyChanged;
 //}}}
 
 //{{{ Swing classes
@@ -936,12 +937,18 @@ public class jsXe {
      * @return The previous value for the key, or null if there was none.
      */
     public static Object setProperty(String key, String value) {
-        if (value == null) {
-            props.remove(key);
-            return null;
-        } else {
-            return props.setProperty(key, value);
+        String oldValue = getProperty(key);
+        
+        if (oldValue != value) {
+            if (value == null) {
+                props.remove(key);
+                return null;
+            } else {
+                props.setProperty(key, value);
+                EditBus.send(new PropertyChanged(key, oldValue));
+            }
         }
+        return oldValue;
     }//}}}
     
     //{{{ getDefaultProperty()
