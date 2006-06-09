@@ -1,3 +1,9 @@
+06/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added a PropertyChanged event for when one of jsXe's properties changes.
+    * Updated lots of javadoc
+    * jsXe's global options now implements AbstractOptionPane
+
 06/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated the document options to use abstract classes to lay out the
