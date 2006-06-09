@@ -74,7 +74,7 @@ import java.text.ParseException;
  */
 public class jsXe {
     
-    //{{{ static instance variables\
+    //{{{ static instance variables
     /**
      * The minimum version of the Java Runtime Environment needed to run
      * and compile jsXe
@@ -101,8 +101,8 @@ public class jsXe {
             String javaVersion = System.getProperty("java.version");
             if(javaVersion.compareTo(MIN_JAVA_VERSION) < 0)
             {
-                System.err.println(getAppTitle() + ": ERROR: You are running Java version " + javaVersion + ".");
-                System.err.println(getAppTitle() + ": ERROR:" + getAppTitle()+" requires Java "+MIN_JAVA_VERSION+" or later.");
+                System.err.println("jsXe: ERROR: You are running Java version " + javaVersion + ".");
+                System.err.println("jsXe: ERROR: jsXe requires Java "+MIN_JAVA_VERSION+" or later.");
                 System.exit(1);
             }//}}}
             
@@ -213,6 +213,10 @@ public class jsXe {
             if (MiscUtilities.compareStrings(xercesVersion, MIN_XERCES_VERSION, false) < 0) {
                 String msg = Messages.getMessage("No.Xerces.Error", new String[] { MIN_XERCES_VERSION });
                 Log.log(Log.ERROR, jsXe.class, msg);
+                
+                //close the splash screen so they can see the message
+                progressScreen.dispose();
+                
                 JOptionPane.showMessageDialog(null, msg, Messages.getMessage("No.Xerces.Error.Title", new String[] { MIN_XERCES_VERSION }), JOptionPane.WARNING_MESSAGE);
                 System.exit(1);
             }
@@ -334,7 +338,16 @@ public class jsXe {
                
             } catch (IOException ioe) {
                 Log.log(Log.ERROR, jsXe.class, ioe);
-                JOptionPane.showMessageDialog(null, ioe.getMessage()+".", Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+                
+                //close the splashscreen so they can see the messages
+                progressScreen.dispose();
+                
+                //show the error list dialog here too
+                if (pluginErrors.size() > 0) {
+                    new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), false);
+                }
+                
+                JOptionPane.showMessageDialog(null, ioe.getMessage()+".", Messages.getMessage("IO.Error.Title"), JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
             }
             m_activeView = tabbedview;
