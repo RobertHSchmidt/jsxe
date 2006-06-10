@@ -2,14 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <title>jsXe: The Java Simple XML Editor</title>
-    <meta content="Generaol" name="rating"/>
-    <meta content="Index, follow" name="robots"/>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-type"/>
-    <link href="mailto:IanLewis@member.fsf.org" rev="made"/>
-    <meta content="Ian Lewis" name="author"/>
-    <meta content="jsXe, Java, XML, Editor, Sourceforge, GNU" name="keywords"/>
-    <meta content="Information and links about jsXe" name="description"/>
-    <link rel="stylesheet" type="text/css" media="all" href="css/main.css" />
+    <?php include("meta.php") ?>
   </head>
   <body>
     <div id="title"><h1>jsXe: The Java Simple XML Editor</h1></div>
