@@ -63,7 +63,7 @@ public class GlobalOptionsDialog extends OptionsDialog {
         
         DocumentBuffer buffer = view.getDocumentView().getDocumentBuffer();
         
-        OptionPane pane = jsXe.getOptionPane();
+        OptionPane pane = new GeneralOptionPane();
         if (pane != null) {
             addOptionPane(pane);
         }

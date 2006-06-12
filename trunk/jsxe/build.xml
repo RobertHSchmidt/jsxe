@@ -70,6 +70,13 @@
 			</fileset>
 		</path>
     
+    <path id="run-classpath">
+      <pathelement location="${root.dir}/${app.name}.jar"/>
+      <fileset dir="${lib.dir}">
+				<include name="**/*.jar"/>
+			</fileset>
+    </path>
+    
     <!-- set whether we have the source for the default views -->
     <available file="${plugin.dir}/treeview/build.xml" property="treeview.avail"/>
     <available file="${plugin.dir}/sourceview/build.xml" property="sourceview.avail"/>
@@ -193,7 +200,14 @@
     <ant inheritAll="false" dir="${plugin.dir}/sourceview/" target="compile"/>
   </target>
 	<!-- }}} -->
-	<!-- {{{ ============ Prepares for a build ============================= -->
+	<!-- {{{ ============ Run the program ================================== -->
+  <target depends="compile" name="run" description="run jsXe">
+    <java fork="true" classname="${main.class}">
+      <classpath refid="classpath"/>
+    </java>
+  </target>
+  <!-- }}} -->
+  <!-- {{{ ============ Prepares for a build ============================= -->
 	<target depends="init" name="prepare-build">
 		<!-- lib -->
 		<mkdir dir="${build.dir}/lib"/>
