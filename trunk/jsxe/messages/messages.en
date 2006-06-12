@@ -134,9 +134,14 @@ DocumentBuffer.Loaded.Message={0} Loaded
 DocumentBuffer.Reloaded.Message={0} Reloaded
 
 #{0} plugin name
-DocumentView.Not.Found=No plugin a with name of {0} exists
+DocumentView.Not.Found=No plugin a with name of {0} exists.
 
 #{{{ Plugin Load Messages
+
+# {0} plugin name
+Plugin.Load.Already.Loaded=Plugin {0} already loaded.
+Plugin.Load.Wrong.Main.Class=Main class is not a plugin class.
+Plugin.Load.No.Plugin.Class=No plugin class defined.
 
 # {0} plugin name
 # {1} requirement name
@@ -157,10 +162,10 @@ Plugin.Dependency.Invalid={0} has an invalid dependency: {1}
 Plugin.Dependency.Invalid.jsXe.Version=Invalid jsXe version number: {0}
 # {0} plugin name
 # {1} requirement name
-Plugin.Dependency.No.Version=Cannot load plugin {0}, {1} has no version
+Plugin.Dependency.No.Version=Cannot load plugin {0}, {1} has no version.
 # {0} plugin name
 # {1} requirement name
-Plugin.Dependency.Failed.Load={0} requires plugin {1} but {1} did not load properly
+Plugin.Dependency.Failed.Load={0} requires plugin {1} but {1} did not load properly.
 
 #}}}
 
