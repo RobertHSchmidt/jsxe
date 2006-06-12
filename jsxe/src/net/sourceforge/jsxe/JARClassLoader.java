@@ -658,7 +658,7 @@ public class JARClassLoader extends ClassLoader {
         String pluginName = getManifestAttribute(jarfile, PLUGIN_NAME);
         
         if (getPlugin(pluginName) != null) {
-            throw new PluginLoadException("Plugin " + pluginName + " already loaded.");
+            throw new PluginLoadException(Messages.getMessage("Plugin.Load.Already.Loaded", new Object[] { pluginName }));
         }
         
         if (mainPluginClass != null && pluginName != null) {
@@ -710,7 +710,7 @@ public class JARClassLoader extends ClassLoader {
                     It's not a plugin. No biggie. We needed it to be loaded
                     anyway.
                     */
-                    throw new PluginLoadException(jarfile, "Main class is not a plugin class");
+                    throw new PluginLoadException(jarfile, Messages.getMessage("Plugin.Load.Wrong.Main.Class"));
                 }
             } catch (ClassNotFoundException e) {
                 throw new IOException(e.getMessage());
@@ -727,7 +727,7 @@ public class JARClassLoader extends ClassLoader {
             }
             
         } else {
-            throw new PluginLoadException(jarfile, "No plugin class defined.");
+            throw new PluginLoadException(jarfile, Messages.getMessage("Plugin.Load.No.Plugin.Class"));
         }
         
     }//}}}
