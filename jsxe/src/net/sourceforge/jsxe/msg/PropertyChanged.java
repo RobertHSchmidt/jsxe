@@ -63,7 +63,12 @@ public class PropertyChanged extends EBMessage {
     public String getOldValue() {
         return m_oldValue;
     } //}}}
-
+    
+    //{{{ paramString()
+    public String paramString() {
+        return "key=" + m_key + "," + "old.value=" + m_oldValue + "," + "new.value=" + jsXe.getProperty(m_key) + "," + super.paramString();
+    } //}}}
+    
     //{{{ Private members
     private String m_key;
     private String m_oldValue;
