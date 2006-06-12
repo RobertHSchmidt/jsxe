@@ -63,15 +63,16 @@ public class GlobalOptionsDialog extends OptionsDialog {
         
         DocumentBuffer buffer = view.getDocumentView().getDocumentBuffer();
         
-        OptionPane pane = new GeneralOptionPane();
-        if (pane != null) {
-            addOptionPane(pane);
-        }
+        // General Options
+        addOptionPane(new GeneralOptionPane());
+        
+        // Shortcuts
+        addOptionPane(new ShortcutsOptionPane());
         
         Iterator pluginItr = jsXe.getPluginLoader().getAllPlugins().iterator();
         while (pluginItr.hasNext()) {
             ActionPlugin plugin = (ActionPlugin)pluginItr.next();
-            pane = plugin.getOptionPane(buffer);
+            OptionPane pane = plugin.getOptionPane(buffer);
             if (pane != null) {
                 addOptionPane(pane);
             }
