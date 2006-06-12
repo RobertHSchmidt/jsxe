@@ -59,7 +59,7 @@ xml.schema=XML Schema
 
 #{{{ Global Options
 Global.Options.Dialog.Title=Global Options
-Global.Options.Title=jsXe Global Options
+Global.Options.Title=General
 Global.Options.Max.Recent.Files=Recent files to remember:
 Global.Options.Max.Recent.Files.ToolTip=The maximum number of files that jsXe remembers in the recent files menu.
 Global.Options.network-off=Always cache without asking

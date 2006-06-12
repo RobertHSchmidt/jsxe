@@ -1176,18 +1176,6 @@ public class jsXe {
         return m_actionSets;
     }//}}}
     
-    //{{{ getOptionsPanel()
-    /**
-     * Gets the option pane for the jsXe application.
-     * @return The OptionPane with the options for jsXe.
-     */
-    public static final OptionPane getOptionPane() {
-        if (jsXeOptions == null) {
-            jsXeOptions = new jsXeOptionPane();
-        }
-        return jsXeOptions;
-    }//}}}
-    
     //{{{ getPluginLoader()
     /**
      * Gets the plugin loader that is used to load
@@ -1338,85 +1326,6 @@ public class jsXe {
             Log.log(Log.ERROR, jsXe.class, "**** jsXe was probably not built correctly ****");
             exiterror(null, ioe, 1);
         }
-        //}}}
-        
-    }//}}}
-    
-    //{{{ jsXeOptionPane class
-    
-    private static class jsXeOptionPane extends AbstractOptionPane {
-        
-        //{{{ jsXeOptionPane constructor
-        public jsXeOptionPane() {
-            super("jsxeoptions");
-        }//}}}
-        
-        //{{{ getTitle()
-        public String getTitle() {
-            return Messages.getMessage("Global.Options.Title");
-        }//}}}
-        
-        //{{{ _init()
-        protected void _init() {
-            
-            //{{{ max recent files
-            
-            int maxRecentFiles = jsXe.getIntegerProperty("max.recent.files", 20);
-            
-            Vector sizes = new Vector(4);
-            sizes.add("10");
-            sizes.add("20");
-            sizes.add("30");
-            sizes.add("40");
-            maxRecentFilesComboBox = new JComboBox(sizes);
-            maxRecentFilesComboBox.setEditable(true);
-            maxRecentFilesComboBox.setSelectedItem(Integer.toString(maxRecentFiles));
-            
-            addComponent(Messages.getMessage("Global.Options.Max.Recent.Files"),
-                         maxRecentFilesComboBox,
-                         Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
-            
-            //}}}
-            
-            //{{{ network
-            
-            String[] networkValues = {
-                Messages.getMessage("Global.Options.network-always"),
-                Messages.getMessage("Global.Options.network-cache"),
-                Messages.getMessage("Global.Options.network-off")
-
-            };
-            
-            network = new JComboBox(networkValues);
-            network.setSelectedIndex(jsXe.getIntegerProperty("xml.cache", 1));
-            
-            addComponent(Messages.getMessage("Global.Options.network"),
-                         network);
-            
-            //}}}
-            
-        }//}}}
-        
-        //{{{ _save()
-        protected void _save() {
-            try {
-                //don't need to set dirty, no change to text
-                jsXe.setProperty("max.recent.files", (new Integer(maxRecentFilesComboBox.getSelectedItem().toString())).toString());
-            } catch (NumberFormatException nfe) {
-                //Bad input, don't save.
-            }
-            jsXe.setIntegerProperty("xml.cache",network.getSelectedIndex());
-            CatalogManager.propertiesChanged();
-        }//}}}
-        
-        //{{{ toString()
-        public String toString() {
-            return getTitle();
-        }//}}}
-        
-        //{{{ Private Members
-        private JComboBox maxRecentFilesComboBox;
-        private JComboBox network;
         //}}}
         
     }//}}}
