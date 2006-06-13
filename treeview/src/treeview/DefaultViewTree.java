@@ -392,7 +392,7 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                 NamedNodeMap attributes = node.getAttributes();
                 ElementDecl decl = node.getElementDecl();
                 XMLDocument document = node.getOwnerDocument();
-                String showAttrs = document.getProperty(DefaultView.SHOW_ATTRIBUTES);
+                String showAttrs = jsXe.getProperty(DefaultView.SHOW_ATTRIBUTES);
                 for (int i=0; i<attributes.getLength(); i++) {
                     Node attr = attributes.item(i);
                     ElementDecl.AttributeDecl attrDecl = (decl != null) ? decl.getAttribute(attr.getNodeName()) : null;

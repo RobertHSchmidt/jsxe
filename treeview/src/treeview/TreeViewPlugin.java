@@ -33,7 +33,7 @@ import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.gui.DocumentView;
-import net.sourceforge.jsxe.gui.OptionsPanel;
+import net.sourceforge.jsxe.options.OptionPane;
 //}}}
 
 //{{{ Java classes
@@ -49,7 +49,6 @@ public class TreeViewPlugin extends ViewPlugin {
     public static final String PLUGIN_NAME = "tree";
     
     //{{{ TreeViewPlugin constructor
-    
     public TreeViewPlugin() {
         //add actions
         addAction("treeview.add.element.node", new AddNodeAction("Add Element Node", "new_element", "", AdapterNode.ELEMENT_NODE));
@@ -69,15 +68,13 @@ public class TreeViewPlugin extends ViewPlugin {
     }//}}}
     
     //{{{ newDocumentView()
-    
     public DocumentView newDocumentView(DocumentBuffer document) throws IOException {
         return new DefaultView(document, this);
     }//}}}
     
-    //{{{ getOptionsPanel()
-    
-    public OptionsPanel getOptionsPanel(DocumentBuffer buffer) {
-        return new DefaultViewOptionsPanel(buffer);
+    //{{{ getOptionPane()
+    public OptionPane getOptionPane(DocumentBuffer buffer) {
+        return new DefaultViewOptionPane(buffer);
     }//}}}
     
 }
