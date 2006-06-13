@@ -257,7 +257,6 @@ public class jsXe {
             //}}}
 
             //{{{ start plugins
-            
             Log.log(Log.NOTICE, jsXe.class, "Starting plugins");
             pluginMessages.addAll(m_pluginLoader.startPlugins());
             Vector pluginErrors = new Vector();
