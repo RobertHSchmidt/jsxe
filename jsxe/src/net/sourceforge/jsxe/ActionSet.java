@@ -39,7 +39,6 @@ import javax.swing.Action;
 public class ActionSet {
    
    //{{{ ActionSet constructor
-   
    /**
     * Creates a new action set.
     */
@@ -48,7 +47,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ ActionSet constructor
-   
    /**
     * Creates a new action set.
     * @param label The label for the action set
@@ -59,7 +57,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ getLabel()
-   
    /**
     * Return the action source label.
     */
@@ -68,7 +65,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ setLabel()
-   
    /**
     * Sets the action source label.
     * @param label The label
@@ -78,7 +74,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ addAction()
-   
    /**
     * Adds an action to the action set.
     * @param name the internal name for the action
@@ -89,7 +84,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ removeAction()
-   
    /**
     * Removes an action from the action set.
     * @param name The internal action name
@@ -99,7 +93,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ removeAllActions()
-   
    /**
     * Removes all actions from the action set.
     */
@@ -108,7 +101,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ getAction()
-   
    /**
     * Returns an action with the specified name.
     * @param name The action name
@@ -118,7 +110,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ getActionCount()
-   
    /**
     * Returns the number of actions in the set.
     */
@@ -127,7 +118,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ getActions()
-   
    /**
     * Returns an array of all actions in this action set.
     */
@@ -142,7 +132,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ contains()
-   
    /**
     * Returns if this action set contains the specified action.
     * @param action The action

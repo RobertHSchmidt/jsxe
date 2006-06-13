@@ -57,6 +57,7 @@ import java.awt.event.ActionEvent;
 
 /**
  * The action executed when the user selects 'close' from the file menu.
+ *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
  * @version $Id$
@@ -64,7 +65,6 @@ import java.awt.event.ActionEvent;
 public class FileCloseAction extends AbstractAction {
     
     //{{{ FileCloseAction constructor
-    
     public FileCloseAction(TabbedView parent) {
         //putValue(Action.NAME, "Close");
         putValue(Action.NAME, Messages.getMessage("File.Close"));
