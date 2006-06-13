@@ -658,7 +658,7 @@ public class JARClassLoader extends ClassLoader {
         String pluginName = getManifestAttribute(jarfile, PLUGIN_NAME);
         
         if (getPlugin(pluginName) != null) {
-            throw new PluginLoadException(Messages.getMessage("Plugin.Load.Already.Loaded", new Object[] { pluginName }));
+            throw new PluginLoadException(jarfile, Messages.getMessage("Plugin.Load.Already.Loaded", new Object[] { pluginName }));
         }
         
         if (mainPluginClass != null && pluginName != null) {
