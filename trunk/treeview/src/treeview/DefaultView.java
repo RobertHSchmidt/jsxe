@@ -345,12 +345,12 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
         }
     }//}}}
     
-    //{{{ getDefaultViewTree()
+    //{{{ getTree()
     /**
      * Gets the tree component for this DefaultView.
      * @return the tree component
      */
-    public DefaultViewTree getDefaultViewTree() {
+    public TreeViewTree getTree() {
         return tree;
     }//}}}
     
@@ -538,7 +538,7 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
         
     }//}}}
     
-    private DefaultViewTree tree = new DefaultViewTree();
+    private TreeViewTree tree = new TreeViewTree();
     private JTextArea m_valueTextArea = new JTextArea("");
     private DefaultViewTable attributesTable = new DefaultViewTable();
     private JSplitPane vertSplitPane;

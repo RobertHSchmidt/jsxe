@@ -58,7 +58,7 @@ public class RemoveNodeAction extends AbstractAction {
         if (view instanceof DefaultView) {
             
             DefaultView defView = (DefaultView)view;
-            DefaultViewTree tree = defView.getDefaultViewTree();
+            TreeViewTree tree = defView.getTree();
             AdapterNode selectedNode = tree.getSelectedNode();
             if (selectedNode != null) {
                 try {

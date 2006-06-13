@@ -117,7 +117,7 @@ public class NodeTransferHandler extends TransferHandler {
     protected Transferable createTransferable(JComponent c) {
         Transferable result = null;
 
-        DefaultViewTree dvt = (DefaultViewTree)c;
+        TreeViewTree dvt = (TreeViewTree)c;
         TreePath path = dvt.getSelectionPath();
 
         //If a node is selected
@@ -143,7 +143,7 @@ public class NodeTransferHandler extends TransferHandler {
      * @see javax.swing.TransferHandler#exportDone(javax.swing.JComponent, java.awt.datatransfer.Transferable, int)
      */
     protected void exportDone(JComponent source, Transferable data, int action) {
-        DefaultViewTree dvt = (DefaultViewTree)source;
+        TreeViewTree dvt = (TreeViewTree)source;
         if (action == MOVE) {
             //XXX Delete the old source node?  Probably not necessary since
             //the addAdapterNodeAt method (see importData) is actually a
@@ -166,7 +166,7 @@ public class NodeTransferHandler extends TransferHandler {
         catch (UnsupportedFlavorException ufe) { return false; }
         catch (IOException ioe) { return false; }
 
-        DefaultViewTree dvt = (DefaultViewTree)comp;
+        TreeViewTree dvt = (TreeViewTree)comp;
         TreePath path = dvt.getSelectionPath();
 
         //If nothing is selected, do not import

@@ -78,7 +78,7 @@ public class AddDocTypeAction extends AbstractAction {
         DocumentView view = tabbedview.getDocumentView();
         if (view instanceof DefaultView) {
             m_defView = (DefaultView)view;
-            m_tree = m_defView.getDefaultViewTree();
+            m_tree = m_defView.getTree();
             
             /*
             Show a dialog to prompt for name and PUBLIC and SYSTEM identifiers.
@@ -90,7 +90,7 @@ public class AddDocTypeAction extends AbstractAction {
     //{{{ Private members
     
     DefaultView m_defView;
-    DefaultViewTree m_tree;
+    TreeViewTree m_tree;
     
     //{{{ EditDocTypeDialog
     
