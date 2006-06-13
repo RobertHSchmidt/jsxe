@@ -31,13 +31,11 @@ import treeview.action.*;
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.dom.completion.ElementDecl;
-import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.ViewPlugin;
-import net.sourceforge.jsxe.gui.OptionsPanel;
+import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.Log;
+import net.sourceforge.jsxe.msg.PropertyChanged;
 //}}}
 
 //{{{ Swing components
@@ -75,7 +73,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class DefaultView extends JPanel implements DocumentView {
+public class DefaultView extends JPanel implements DocumentView, EBListener {
     
     //{{{ Private static members
     private static final Properties m_defaultProperties;
@@ -219,12 +217,13 @@ public class DefaultView extends JPanel implements DocumentView {
         });//}}}
         
         setDocumentBuffer(document);
+        
+        EditBus.addToBus(this);
     }//}}}
     
     //{{{ DocumentView methods
 
     //{{{ close()
-    
     public boolean close() {
         
         //m_document should only be null if setDocumentBuffer was never called.
@@ -242,6 +241,8 @@ public class DefaultView extends JPanel implements DocumentView {
                 m_document.removeXMLDocumentListener(m_documentListener);
             }
         }
+        
+        EditBus.removeFromBus(this);
         
         return true;
     }//}}}
@@ -271,7 +272,6 @@ public class DefaultView extends JPanel implements DocumentView {
     }//}}}
     
     //{{{ setDocumentBuffer()
-    
     public void setDocumentBuffer(DocumentBuffer document) throws IOException {
         
         try {
@@ -304,7 +304,7 @@ public class DefaultView extends JPanel implements DocumentView {
         styledDoc.addDocumentListener(docListener);
         
         //get the splitpane layout options
-        boolean layout = Boolean.valueOf(document.getProperty(CONTINUOUS_LAYOUT)).booleanValue();
+        boolean layout = Boolean.valueOf(jsXe.getProperty(CONTINUOUS_LAYOUT)).booleanValue();
         vertSplitPane.setContinuousLayout(layout);
         horizSplitPane.setContinuousLayout(layout);
         
@@ -329,6 +329,21 @@ public class DefaultView extends JPanel implements DocumentView {
     }//}}}
     
     //}}}
+    
+    //{{{ handleMessage()
+    public void handleMessage(EBMessage message) {
+        if (message instanceof PropertyChanged) {
+            String key = ((PropertyChanged)message).getKey();
+            if (CONTINUOUS_LAYOUT.equals(key)) {
+                boolean layout = Boolean.valueOf(jsXe.getProperty(CONTINUOUS_LAYOUT)).booleanValue();
+                vertSplitPane.setContinuousLayout(layout);
+                horizSplitPane.setContinuousLayout(layout);
+            }
+            if (CONTINUOUS_LAYOUT.equals(key) || SHOW_COMMENTS.equals(key) || SHOW_ATTRIBUTES.equals(key)) {
+                tree.updateUI();
+            }
+        }
+    }//}}}
     
     //{{{ getDefaultViewTree()
     /**
@@ -367,14 +382,13 @@ public class DefaultView extends JPanel implements DocumentView {
     }//}}}
     
     //{{{ ensureDefaultProps()
-    
     private void ensureDefaultProps(XMLDocument document) {
         //get default properties from jsXe
-        document.setProperty(CONTINUOUS_LAYOUT, document.getProperty(CONTINUOUS_LAYOUT, m_defaultProperties.getProperty(CONTINUOUS_LAYOUT)));
+        jsXe.setProperty(CONTINUOUS_LAYOUT, jsXe.getProperty(CONTINUOUS_LAYOUT, m_defaultProperties.getProperty(CONTINUOUS_LAYOUT)));
         document.setProperty(HORIZ_SPLIT_LOCATION, document.getProperty(HORIZ_SPLIT_LOCATION, m_defaultProperties.getProperty(HORIZ_SPLIT_LOCATION)));
         document.setProperty(VERT_SPLIT_LOCATION, document.getProperty(VERT_SPLIT_LOCATION, m_defaultProperties.getProperty(VERT_SPLIT_LOCATION)));
-        document.setProperty(SHOW_COMMENTS, document.getProperty(SHOW_COMMENTS, m_defaultProperties.getProperty(SHOW_COMMENTS)));
-        document.setProperty(SHOW_ATTRIBUTES, document.getProperty(SHOW_ATTRIBUTES, m_defaultProperties.getProperty(SHOW_ATTRIBUTES)));
+        jsXe.setProperty(SHOW_COMMENTS, jsXe.getProperty(SHOW_COMMENTS, m_defaultProperties.getProperty(SHOW_COMMENTS)));
+        jsXe.setProperty(SHOW_ATTRIBUTES, jsXe.getProperty(SHOW_ATTRIBUTES, m_defaultProperties.getProperty(SHOW_ATTRIBUTES)));
        // document.setProperty(SHOW_EMPTY_NODES, document.getProperty(SHOW_EMPTY_NODES, m_defaultProperties.getProperty(SHOW_EMPTY_NODES)));
     }//}}}
     
@@ -577,21 +591,10 @@ public class DefaultView extends JPanel implements DocumentView {
     };//}}}
     private XMLDocumentListener m_documentListener = new XMLDocumentListener() {///{{{
         
-        //{{{ propertiesChanged
-        
-        public void propertyChanged(XMLDocument source, String key, String oldValue) {
-            if (CONTINUOUS_LAYOUT.equals(key)) {
-                boolean layout = Boolean.valueOf(source.getProperty(CONTINUOUS_LAYOUT)).booleanValue();
-                vertSplitPane.setContinuousLayout(layout);
-                horizSplitPane.setContinuousLayout(layout);
-            }
-            if (CONTINUOUS_LAYOUT.equals(key) || SHOW_COMMENTS.equals(key) || SHOW_ATTRIBUTES.equals(key)) {
-                tree.updateUI();
-            }
-        }//}}}
+        //{{{ propertiesChanged()
+        public void propertyChanged(XMLDocument source, String key, String oldValue) {}//}}}
         
         //{{{ structureChanged()
-        
         public void structureChanged(XMLDocument source, AdapterNode location) {
             /*
             need to reload since saving can change the structure,
