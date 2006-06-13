@@ -96,7 +96,7 @@ public class AddNodeAction extends AbstractAction {
         DocumentView view = jsXe.getActiveView().getDocumentView();
         if (view instanceof DefaultView) {
             DefaultView defView = (DefaultView)view;
-            DefaultViewTree tree = defView.getDefaultViewTree();
+            TreeViewTree tree = defView.getTree();
             AdapterNode selectedNode = tree.getSelectedNode();
             AdapterNode addedNode = null;
             if (selectedNode != null) {

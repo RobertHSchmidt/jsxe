@@ -87,7 +87,7 @@ import java.util.Enumeration;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @see DefaultView
- * @see DefaultViewTree
+ * @see TreeViewTree
  */
 public class DefaultViewTreeModel implements TreeModel {
     

@@ -83,7 +83,7 @@ public class PasteNodeAction extends AbstractAction {
         DocumentView view = jsXe.getActiveView().getDocumentView();
         if (view instanceof DefaultView) {
             DefaultView defView = (DefaultView)view;
-            DefaultViewTree tree = defView.getDefaultViewTree();
+            TreeViewTree tree = defView.getTree();
             try {
                 tree.paste();
             } catch (DOMException dome) {

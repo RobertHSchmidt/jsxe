@@ -1,17 +1,9 @@
 /*
-DefaultViewTree.java
+TreeViewTree.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editorh
-jsXe is a gui application that can edit an XML document and create a tree view.
-The user can then edit this tree and the content in the tree and save the
-document.
-
-This file contains the tree class that is used in the default view.
-
-This file written by Ian Lewis (IanLewis@member.fsf.org)
-Copyright (C) 2002 Ian Lewis
+Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -72,25 +64,25 @@ import java.util.*;
 //}}}
 
 /**
- * The DefaultViewTree is the tree that is displayed in the upper-left of
- * the DefaultView in jsXe. This class defines methods specific to the tree
+ * The TreeViewTree is the tree that is displayed in the upper-left of
+ * the TreeView in jsXe. This class defines methods specific to the tree
  * display.
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
- * @see DefaultView
+ * @see TreeView
  */
-public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner {
+public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
     
     //{{{ Properties
     private final String NODE_EXPANDED = "tree.expandedstate";
     //}}}
     
-    //{{{ DefaultViewTree constructor
+    //{{{ TreeViewTree constructor
     /**
-     * Creates a new DefaultViewTree with the default TreeModel
+     * Creates a new TreeViewTree with the default TreeModel
      */
-    public DefaultViewTree() {
+    public TreeViewTree() {
         
         //{{{ intitalize Drag n Drop
         m_dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_MOVE, m_treeDGListener);
@@ -592,7 +584,7 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
             try {
                 AdapterNode node = (AdapterNode)value;
                 type = node.getNodeType();
-                setText(DefaultViewTree.toString(node));
+                setText(TreeViewTree.toString(node));
             } catch (ClassCastException e) {}
             
             this.selected = selected;
@@ -750,7 +742,7 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
             //HACK
             //Use prepareForEditing to initialize the renderer
             TreePath path = getLeadSelectionPath();
-            JTree tree = DefaultViewTree.this;
+            JTree tree = TreeViewTree.this;
             Object value = getLastSelectedPathComponent();
             boolean isSelected = isPathSelected(path);
             boolean expanded = isExpanded(path);
@@ -984,7 +976,7 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                 dtde.acceptDrop(m_acceptableActions);
             } catch (DOMException dome) {
                 dtde.rejectDrop();
-                JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(TreeViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
             }
             m_dragOverTarget = null;
             paintImmediately(m_cueLine);
