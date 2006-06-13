@@ -5,7 +5,7 @@
 #:folding=explicit:collapseFolds=1:
 
 #{{{ TreeView
-TreeView.Options.Title=Tree View Options
+TreeView.Options.Title=Tree View
 TreeView.Options.Show.Comments=Show comment nodes
 TreeView.Options.Continuous.Layout=Continuous layout for split-panes
 TreeView.Options.Show.Attributes=Show element attributes in tree:
