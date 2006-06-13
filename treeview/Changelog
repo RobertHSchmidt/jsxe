@@ -1,5 +1,7 @@
 06/13/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
+    * Updated the options pane extend AbstractOptionPane
+
 06/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated version and dependency info
