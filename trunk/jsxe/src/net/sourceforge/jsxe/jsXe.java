@@ -929,6 +929,8 @@ public class jsXe {
         System.exit(errorcode);
     }//}}}
     
+    //{{{ Properties methods
+    
     //{{{ setProperty()
     /**
      * Sets a global property to jsXe.
@@ -1140,6 +1142,10 @@ public class jsXe {
 		setIntegerProperty(name + "style",value.getStyle());
 	} //}}}
     
+    //}}}
+    
+    //{{{ Action methods
+    
     //{{{ addActionSet()
     /**
      * Adds a set of actions to the jsXe's pool of action sets.
@@ -1175,6 +1181,8 @@ public class jsXe {
     public ArrayList getActionSets() {
         return m_actionSets;
     }//}}}
+    
+    //}}}
     
     //{{{ getPluginLoader()
     /**
