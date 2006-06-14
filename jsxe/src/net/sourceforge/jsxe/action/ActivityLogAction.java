@@ -52,7 +52,8 @@ import java.awt.event.ActionEvent;
 //}}}
 
 /**
- * The action that is executed when the clicks on the Activity Log option under the Help Menu
+ * The action that is executed when the clicks on the Activity Log
+ * option under the Help Menu
  *
  * @author  Trish Hartnett
  * @version $Id$
