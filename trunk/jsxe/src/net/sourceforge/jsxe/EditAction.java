@@ -26,6 +26,7 @@ package net.sourceforge.jsxe;
 
 //{{{ imports
 import java.awt.event.ActionEvent;
+import java.util.Properties;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
@@ -71,4 +72,25 @@ public abstract class EditAction {
      * @param evt the ActionEvent for this event.
      */
     public abstract void invoke(TabbedView view, ActionEvent evt);//}}}
+    
+    //{{{ getProperty()
+    /**
+     * Sets a property for this action
+     */
+    public String getProperty(String key) {
+        return m_properties.getProperty(key);
+    }//}}}
+    
+    //{{{ setProperty()
+    /**
+     * Sets a property for this action
+     * @return the old value of the property
+     */
+    public String setProperty(String key, String value) {
+        return setProperty(key, value);
+    }//}}}
+    
+    //{{{ Private members
+    private Properties m_properties = new Properties();
+    //}}}
 }

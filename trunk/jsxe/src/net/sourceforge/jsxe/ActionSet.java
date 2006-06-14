@@ -78,11 +78,22 @@ public class ActionSet {
     * Adds an action to the action set.
     * @param name the internal name for the action
     * @param action The action
+    * @deprecated Use EditActions instead
     */
    public void addAction(String name, Action action) {
       actions.put(name,action);
    }//}}}
 
+   //{{{ addAction()
+   /**
+    * Adds an action to the action set. The action can
+    * be retrieved via the INTERNAL_NAME of the EditAction.
+    * @param action The action
+    */
+   public void addAction(EditAction action) {
+      actions.put(action.getProperty(EditAction.INTERNAL_NAME),action);
+   }//}}}
+   
    //{{{ removeAction()
    /**
     * Removes an action from the action set.
