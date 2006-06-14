@@ -24,6 +24,11 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package net.sourceforge.jsxe;
 
+//{{{ imports
+import java.awt.event.ActionEvent;
+import net.sourceforge.jsxe.gui.TabbedView;
+//}}}
+
 /**
  * An action that can be used by jsXe. These actions are registered
  * with jsXe through ActionSets. These ActionSets can be registered with
