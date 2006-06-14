@@ -1,3 +1,10 @@
+06/14/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added the EditAction class for future actions in jsXe.
+      The messages, menu mnemonics, and tooltips will be able to be
+      localized and the shortcuts will be able to be set via the
+      InputManager.
+
 06/13/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added the InputManager for maintaining the key bindings for actions in
