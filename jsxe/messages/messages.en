@@ -87,6 +87,16 @@ Document.Options.Soft.Tabs=Soft tabs (emulated with spaces)
 Document.Options.Soft.Tabs.ToolTip=If this box is checked then tab characters are replaced by spaces.
 #}}}
 
+#{{{ Plugin Manager
+Plugin.Manager.Title=Plugin Manager
+Plugin.Manager.Name.Column.Header=Name
+Plugin.Manager.Version.Column.Header=Version
+Plugin.Manager.Status.Column.Header=Status
+Plugin.Manager.Loaded.Status=Loaded
+Plugin.Manager.Not.Loaded.Status=Not Loaded
+Plugin.Manager.Broken.Status=Error
+#}}}
+
 #{{{ Menu Items
 
 File.Menu=File
@@ -113,7 +123,6 @@ Tools.Options=Global Options...
 Tools.Document.Options=Document Options...
 Tools.Plugin=Plugin Manager...
 Tools.ValidationErrors=Validation Errors...
-Plugin.Manager.Title=Plugin Manager
 Help.About=About jsXe...
 #}}}
 
@@ -142,6 +151,9 @@ DocumentView.Not.Found=No plugin a with name of {0} exists.
 Plugin.Load.Already.Loaded=Plugin {0} already loaded.
 Plugin.Load.Wrong.Main.Class=Main class is not a plugin class.
 Plugin.Load.No.Plugin.Class=No plugin class defined.
+Plugin.Load.No.Plugin.Name=No plugin name defined.
+Plugin.Load.No.Plugin.HR.Name=No plugin human-readable name defined.
+Plugin.Load.No.Plugin.Version=No plugin version defined.
 
 # {0} plugin name
 # {1} requirement name

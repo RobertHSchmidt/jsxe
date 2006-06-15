@@ -52,24 +52,36 @@ public class JARClassLoader extends ClassLoader {
     //{{{ Public static members
     /**
      * The manifest property that specifies the plugin name.
+     * Note: This property is required
      */
     public static final String PLUGIN_NAME    = "jsxe-plugin-name";
     /**
      * The manifest property that specifies the plugin class
+     * Note: This property is required
      */
     public static final String PLUGIN_CLASS   = "jsxe-plugin-class";
     /** 
      * The manifest property that specifies the plugin version
+     * Note: This property is required
      */
     public static final String PLUGIN_VERSION = "jsxe-plugin-version";
+    /**
+     * The manifest property that specifies a human readable name for the plugin
+     * Note: This property is required
+     */
+    public static final String PLUGIN_HUMAN_READABLE_NAME = "jsxe-plugin-human-readable-name";
+    /**
+     * The manifest property that specifies the plugin Author
+     */
+    public static final String PLUGIN_AUTHOR     = "jsxe-plugin-author";
+    /**
+     * The manifest property that specifies the plugin URL
+     */
+    public static final String PLUGIN_RELEASE_DATE     = "jsxe-plugin-release-date";
     /**
      * The manifest property that specifies the plugin URL
      */
     public static final String PLUGIN_URL     = "jsxe-plugin-url";
-    /**
-     * The manifest property that specifies a human readable name for the plugin
-     */
-    public static final String PLUGIN_HUMAN_READABLE_NAME = "jsxe-plugin-human-readable-name";
     /**
      * The manifest property that specifies the plugin description
      */
@@ -605,6 +617,8 @@ public class JARClassLoader extends ClassLoader {
             String url               = getManifestAttribute(jarFile, PLUGIN_URL);
             String humanReadableName = getManifestAttribute(jarFile, PLUGIN_HUMAN_READABLE_NAME);
             String description       = getManifestAttribute(jarFile, PLUGIN_DESCRIPTION);
+            String author            = getManifestAttribute(jarFile, PLUGIN_AUTHOR);
+            String releaseDate       = getManifestAttribute(jarFile, PLUGIN_RELEASE_DATE);
             
             //prefix with both the plugin name and class
             m_pluginProperties.setProperty(propPrefix1+PLUGIN_NAME, pluginName);
@@ -620,6 +634,14 @@ public class JARClassLoader extends ClassLoader {
             if (url != null) {
                 m_pluginProperties.setProperty(propPrefix1+PLUGIN_URL, url);
                 m_pluginProperties.setProperty(propPrefix2+PLUGIN_URL, url);
+            }
+            if (author != null) {
+                m_pluginProperties.setProperty(propPrefix1+PLUGIN_AUTHOR, author);
+                m_pluginProperties.setProperty(propPrefix2+PLUGIN_AUTHOR, author);
+            }
+            if (releaseDate != null) {
+                m_pluginProperties.setProperty(propPrefix1+PLUGIN_RELEASE_DATE, releaseDate);
+                m_pluginProperties.setProperty(propPrefix2+PLUGIN_RELEASE_DATE, releaseDate);
             }
             if (humanReadableName != null) {
                 m_pluginProperties.setProperty(propPrefix1+PLUGIN_HUMAN_READABLE_NAME, humanReadableName);
@@ -656,78 +678,87 @@ public class JARClassLoader extends ClassLoader {
         
         String mainPluginClass = getManifestAttribute(jarfile, PLUGIN_CLASS);
         String pluginName = getManifestAttribute(jarfile, PLUGIN_NAME);
+        String humanReadableName = getManifestAttribute(jarfile, PLUGIN_HUMAN_READABLE_NAME);
+        String version = getManifestAttribute(jarfile, PLUGIN_VERSION);
         
         if (getPlugin(pluginName) != null) {
             throw new PluginLoadException(jarfile, Messages.getMessage("Plugin.Load.Already.Loaded", new Object[] { pluginName }));
         }
         
-        if (mainPluginClass != null && pluginName != null) {
+        if (mainPluginClass == null) {
+            throw new PluginLoadException(jarfile, Messages.getMessage("Plugin.Load.No.Plugin.Class"));
+        }
+        if (pluginName == null) {
+            throw new PluginLoadException(jarfile, Messages.getMessage("Plugin.Load.No.Plugin.Name"));
+        }
+        if (humanReadableName == null) {
+            throw new PluginLoadException(jarfile, Messages.getMessage("Plugin.Load.No.Plugin.HR.Name"));
+        }
+        if (version == null) {
+            throw new PluginLoadException(jarfile, Messages.getMessage("Plugin.Load.No.Plugin.Version"));
+        }
             
+        try {
+            
+            checkDependencies(jarfile);
+            
+            //load the plugin's localized messages
+            Log.log(Log.NOTICE, this, "Loading localized messages for plugin: "+pluginName);
+            Properties pluginMessages = new Properties();
             try {
-                
-                checkDependencies(jarfile);
-                
-                //load the plugin's localized messages
-                Log.log(Log.NOTICE, this, "Loading localized messages for plugin: "+pluginName);
-                Properties pluginMessages = new Properties();
-                try {
-                    InputStream stream = jarfile.getInputStream(jarfile.getEntry("messages/messages.en"));
-                    pluginMessages.load(stream);
-                    Messages.loadPluginMessages(pluginMessages);
-                } catch (IOException e) {
-                    Log.log(Log.WARNING, this, "Plugin "+pluginName+" does not have default messages.en");
-                }
-                try {
-                    InputStream stream = jarfile.getInputStream(jarfile.getEntry("messages/messages."+Messages.getLanguage()));
-                    pluginMessages.load(stream);
-                    Messages.loadPluginMessages(pluginMessages);
-                } catch (IOException e) {
-                    Log.log(Log.WARNING, this, "Plugin "+pluginName+" does not have localized messages."+Messages.getLanguage());
-                }
-                
-                Class pluginClass = loadClass(mainPluginClass);
-                
-                int modifiers = pluginClass.getModifiers();
-                if (!Modifier.isInterface(modifiers)
-                    && !Modifier.isAbstract(modifiers)
-                    && ActionPlugin.class.isAssignableFrom(pluginClass)) {
-                    
-                    Object plugin = pluginClass.newInstance();
-                    
-                    if (ViewPlugin.class.isAssignableFrom(pluginClass)) {
-                        //It's a view plugin
-                        Log.log(Log.NOTICE, this, "Started View Plugin: "+pluginName);
-                        ViewPlugin viewPlugin = (ViewPlugin)plugin;
-                        m_viewPlugins.put(pluginName, viewPlugin);
-                    } else {
-                        //It's an Action plugin
-                        Log.log(Log.NOTICE, this, "Started Action Plugin: "+pluginName);
-                        ActionPlugin actionPlugin = (ActionPlugin)plugin;
-                        m_actionPlugins.put(pluginName, actionPlugin);
-                    }
-                } else {
-                    /*
-                    It's not a plugin. No biggie. We needed it to be loaded
-                    anyway.
-                    */
-                    throw new PluginLoadException(jarfile, Messages.getMessage("Plugin.Load.Wrong.Main.Class"));
-                }
-            } catch (ClassNotFoundException e) {
-                throw new IOException(e.getMessage());
-            } catch (InstantiationException e) {
-                throw new IOException(e.getMessage());
-            } catch (IllegalAccessException e) {
-                throw new IOException(e.getMessage());
-            } catch (PluginDependencyException e) {
-                m_actionPlugins.put(pluginName, new ActionPlugin.Broken());
-                throw e;
+                InputStream stream = jarfile.getInputStream(jarfile.getEntry("messages/messages.en"));
+                pluginMessages.load(stream);
+                Messages.loadPluginMessages(pluginMessages);
             } catch (IOException e) {
-                m_actionPlugins.put(pluginName, new ActionPlugin.Broken());
-                throw e;
+                Log.log(Log.WARNING, this, "Plugin "+pluginName+" does not have default messages.en");
+            }
+            try {
+                InputStream stream = jarfile.getInputStream(jarfile.getEntry("messages/messages."+Messages.getLanguage()));
+                pluginMessages.load(stream);
+                Messages.loadPluginMessages(pluginMessages);
+            } catch (IOException e) {
+                Log.log(Log.WARNING, this, "Plugin "+pluginName+" does not have localized messages."+Messages.getLanguage());
             }
             
-        } else {
-            throw new PluginLoadException(jarfile, Messages.getMessage("Plugin.Load.No.Plugin.Class"));
+            Class pluginClass = loadClass(mainPluginClass);
+            
+            int modifiers = pluginClass.getModifiers();
+            if (!Modifier.isInterface(modifiers)
+                && !Modifier.isAbstract(modifiers)
+                && ActionPlugin.class.isAssignableFrom(pluginClass)) {
+                
+                Object plugin = pluginClass.newInstance();
+                
+                if (ViewPlugin.class.isAssignableFrom(pluginClass)) {
+                    //It's a view plugin
+                    Log.log(Log.NOTICE, this, "Started View Plugin: "+pluginName);
+                    ViewPlugin viewPlugin = (ViewPlugin)plugin;
+                    m_viewPlugins.put(pluginName, viewPlugin);
+                } else {
+                    //It's an Action plugin
+                    Log.log(Log.NOTICE, this, "Started Action Plugin: "+pluginName);
+                    ActionPlugin actionPlugin = (ActionPlugin)plugin;
+                    m_actionPlugins.put(pluginName, actionPlugin);
+                }
+            } else {
+                /*
+                It's not a plugin. No biggie. We needed it to be loaded
+                anyway.
+                */
+                throw new PluginLoadException(jarfile, Messages.getMessage("Plugin.Load.Wrong.Main.Class"));
+            }
+        } catch (ClassNotFoundException e) {
+            throw new IOException(e.getMessage());
+        } catch (InstantiationException e) {
+            throw new IOException(e.getMessage());
+        } catch (IllegalAccessException e) {
+            throw new IOException(e.getMessage());
+        } catch (PluginDependencyException e) {
+            m_actionPlugins.put(pluginName, new ActionPlugin.Broken());
+            throw e;
+        } catch (IOException e) {
+            m_actionPlugins.put(pluginName, new ActionPlugin.Broken());
+            throw e;
         }
         
     }//}}}
