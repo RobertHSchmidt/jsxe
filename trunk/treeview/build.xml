@@ -126,6 +126,8 @@
         <attribute name="jsxe-plugin-name" value="${app.name}"/>
         <attribute name="jsxe-plugin-human-readable-name" value="${readable.name}"/>
         <attribute name="jsxe-plugin-version" value="${implementation.version}"/>
+        <attribute name="jsxe-plugin-author" value="Ian Lewis"/>
+        <!--<attribute name="jsxe-plugin-release-date" value=""/>-->
         <attribute name="jsxe-plugin-url" value="http://jsxe.sourceforge.net/"/>
         <attribute name="jsxe-plugin-class" value="${main.class}"/>
         <attribute name="jsxe-plugin-description" value="${description}"/>
