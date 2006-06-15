@@ -9,6 +9,8 @@
 
     * Added the InputManager for maintaining the key bindings for actions in
       jsXe.
+    * Updated the param string for PropertyChanged messages.
+    * Moved the general options pane to it's own file.
 
 06/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
