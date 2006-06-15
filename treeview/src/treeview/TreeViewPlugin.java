@@ -34,6 +34,7 @@ import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.options.OptionPane;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Java classes
@@ -77,4 +78,16 @@ public class TreeViewPlugin extends ViewPlugin {
         return new TreeViewOptionPane(buffer);
     }//}}}
     
+    //{{{ getProperties()
+    public Properties getProperties() {
+        Properties props = new Properties();
+        try {
+            InputStream stream = TreeViewPlugin.class.getResourceAsStream("/treeview/treeview.props");
+            props.load(stream);
+        } catch (IOException ioe) {
+            Log.log(Log.ERROR, this, "Tree View: failed to load default properties.");
+            Log.log(Log.ERROR, this, ioe.getMessage());
+        }
+        return props;
+    }//}}}
 }

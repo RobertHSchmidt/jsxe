@@ -201,8 +201,8 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
                 Container parent = getParent();
                 if (parent != null) {
                     Dimension size = parent.getSize();
-                    float vertPercent = Integer.valueOf(m_document.getProperty(VERT_SPLIT_LOCATION)).floatValue();
-                    float horizPercent = Integer.valueOf(m_document.getProperty(HORIZ_SPLIT_LOCATION)).floatValue();
+                    float vertPercent = Integer.valueOf(jsXe.getProperty(VERT_SPLIT_LOCATION)).floatValue();
+                    float horizPercent = Integer.valueOf(jsXe.getProperty(HORIZ_SPLIT_LOCATION)).floatValue();
                     
                     int vertLoc = (int)((vertPercent/100.0)*size.getHeight());
                     int horizLoc = (int)((horizPercent/100.0)*size.getWidth());
@@ -235,8 +235,8 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
                 String vert = Integer.toString((int)(vertSplitPane.getDividerLocation()/size.getHeight()*100));
                 String horiz = Integer.toString((int)(horizSplitPane.getDividerLocation()/size.getWidth()*100));
                 
-                m_document.setProperty(VERT_SPLIT_LOCATION,vert);
-                m_document.setProperty(HORIZ_SPLIT_LOCATION,horiz);
+                jsXe.setProperty(VERT_SPLIT_LOCATION,vert);
+                jsXe.setProperty(HORIZ_SPLIT_LOCATION,horiz);
                 
                 m_document.removeXMLDocumentListener(m_documentListener);
             }
@@ -283,8 +283,6 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
         } catch (ParserConfigurationException e) {
             throw new IOException(e.toString());
         }
-        
-        ensureDefaultProps(document);
         
         AdapterNode adapter = document.getAdapterNode();
         
@@ -379,17 +377,6 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
     
     private boolean canEditInJEditorPane(AdapterNode node) {
         return (node.getNodeValue() != null);
-    }//}}}
-    
-    //{{{ ensureDefaultProps()
-    private void ensureDefaultProps(XMLDocument document) {
-        //get default properties from jsXe
-        jsXe.setProperty(CONTINUOUS_LAYOUT, jsXe.getProperty(CONTINUOUS_LAYOUT, m_defaultProperties.getProperty(CONTINUOUS_LAYOUT)));
-        document.setProperty(HORIZ_SPLIT_LOCATION, document.getProperty(HORIZ_SPLIT_LOCATION, m_defaultProperties.getProperty(HORIZ_SPLIT_LOCATION)));
-        document.setProperty(VERT_SPLIT_LOCATION, document.getProperty(VERT_SPLIT_LOCATION, m_defaultProperties.getProperty(VERT_SPLIT_LOCATION)));
-        jsXe.setProperty(SHOW_COMMENTS, jsXe.getProperty(SHOW_COMMENTS, m_defaultProperties.getProperty(SHOW_COMMENTS)));
-        jsXe.setProperty(SHOW_ATTRIBUTES, jsXe.getProperty(SHOW_ATTRIBUTES, m_defaultProperties.getProperty(SHOW_ATTRIBUTES)));
-       // document.setProperty(SHOW_EMPTY_NODES, document.getProperty(SHOW_EMPTY_NODES, m_defaultProperties.getProperty(SHOW_EMPTY_NODES)));
     }//}}}
     
     //{{{ TablePopupListener class
