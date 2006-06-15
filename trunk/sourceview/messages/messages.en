@@ -7,7 +7,7 @@
 #{{{ Source View
 
 #{{{ Source View Options
-SourceView.Options.Title=Source View Options
+SourceView.Options.Title=Source View
 SourceView.Options.EndOfLineMarker=End of line markers
 SourceView.Syntax.Object=Node Type
 SourceView.Syntax.Style=Text Style

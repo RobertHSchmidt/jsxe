@@ -1,3 +1,7 @@
+06/13/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the source view options panel to extend AbstractOptionPane
+
 06/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated version and dependency info

@@ -1,9 +1,9 @@
 /*
-SourceViewOptionsPanel.java
+SourceViewOptionPane.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
+Copyright (C) 2002, 2006 Ian Lewis (IanLewis@member.fsf.org)
 Portions Copyright (C) 1999, 2000, 2001, 2002 Slava Pestov
 
 This program is free software; you can redistribute it and/or
@@ -32,6 +32,8 @@ import org.syntax.jedit.*;
 //{{{ jsXe classes
 import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.gui.*;
+import net.sourceforge.jsxe.options.*;
+import net.sourceforge.jsxe.msg.PropertyChanged;
 import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
 
@@ -48,77 +50,36 @@ import java.util.Iterator;
 
 //}}}
 
-public class SourceViewOptionsPanel extends OptionsPanel {
+public class SourceViewOptionPane extends AbstractOptionPane {
     
-    //{{{ SourceViewOptionsPanel constructor
+    //{{{ SourceViewOptionPane constructor
+    public SourceViewOptionPane(DocumentBuffer buffer) {
+        super("sourceview");
+    }//}}}
     
-    public SourceViewOptionsPanel(DocumentBuffer buffer) {
-        
-        m_document = buffer;
-        
+    //{{{ _init()
+    protected void _init() {
         setLayout(new BorderLayout(6,6));
-
+        
+        // {{{ styles
+        
         add(BorderLayout.CENTER,createStyleTableScroller());
         
-        JPanel panel = new JPanel();
+        //}}}
         
-        GridBagLayout layout = new GridBagLayout();
-        GridBagConstraints constraints = new GridBagConstraints();
-        panel.setLayout(layout);
-        
-        int gridY = 0;
-        
+        //{{{ end of line markers
         m_endOfLineMarkCheckBox = new JCheckBox(Messages.getMessage("SourceView.Options.EndOfLineMarker"),jsXe.getBooleanProperty("source.end-of-line-markers",true));
+        m_endOfLineMarkCheckBox.setToolTipText(Messages.getMessage("SourceView.Options.EndOfLineMarker.Tooltip"));
+        add(BorderLayout.SOUTH, m_endOfLineMarkCheckBox);
         
-        constraints.gridy      = gridY++;
-        constraints.gridx      = 1;
-        constraints.gridheight = 1;
-        constraints.gridwidth  = 2;
-        constraints.weightx    = 1.0f;
-        constraints.fill       = GridBagConstraints.BOTH;
-        constraints.insets     = new Insets(1,0,1,0);
-        
-        layout.setConstraints(m_endOfLineMarkCheckBox, constraints);
-        panel.add(m_endOfLineMarkCheckBox);
-        
-        add(BorderLayout.SOUTH, panel);
+        //}}}
         
     }//}}}
     
-    //{{{ getName()
-    
-    public String getName() {
-        return "sourceview";
-    }//}}}
-    
-    //{{{ save()
-    
-    public void save() {
+    //{{{ _save()
+    protected void _save() {
         styleModel.save();
         jsXe.setBooleanProperty("source.end-of-line-markers",m_endOfLineMarkCheckBox.isSelected());
-        
-        Iterator itr = SourceView.m_sourceviews.iterator();
-        while (itr.hasNext()) {
-            TextAreaPainter painter = ((SourceView)itr.next()).getTextArea().getPainter();
-            painter.setEOLMarkersPainted(m_endOfLineMarkCheckBox.isSelected());
-            painter.setStyles(
-                new SyntaxStyle[] { parseStyle(jsXe.getProperty("source.text.color")),
-                                    parseStyle(jsXe.getProperty("source.comment.color")),
-                                    parseStyle(jsXe.getProperty("source.doctype.color")),
-                                    parseStyle(jsXe.getProperty("source.attribute.value.color")),
-                                    parseStyle(jsXe.getProperty("source.attribute.value.color")),
-                                    parseStyle(jsXe.getProperty("source.cdata.color")),
-                                    parseStyle(jsXe.getProperty("source.entity.reference.color")),
-                                    parseStyle(jsXe.getProperty("source.element.color")),
-                                    parseStyle(jsXe.getProperty("source.attribute.color")),
-                                    parseStyle(jsXe.getProperty("source.processing.instruction.color")),
-                                    parseStyle(jsXe.getProperty("source.namespace.prefix.color")),
-                                    parseStyle(jsXe.getProperty("source.markup.color")),
-                                    parseStyle(jsXe.getProperty("source.invalid.color")),
-                                  });
-        }
-        
-        
     }//}}}
     
     //{{{ getTitle()
@@ -290,7 +251,7 @@ public class SourceViewOptionsPanel extends OptionsPanel {
                 return;
 
             SyntaxStyle style = new StyleEditor(
-                SourceViewOptionsPanel.this,
+                SourceViewOptionPane.this,
                 (SyntaxStyle)styleModel.getValueAt(
                 row,1)).getStyle();
             if(style != null)
@@ -728,7 +689,6 @@ public class SourceViewOptionsPanel extends OptionsPanel {
     
     private StyleTableModel styleModel;
     private JTable styleTable;
-    private DocumentBuffer m_document;
     private JCheckBox m_endOfLineMarkCheckBox;
     //}}}
     

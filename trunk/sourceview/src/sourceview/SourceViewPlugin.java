@@ -33,8 +33,8 @@ import sourceview.action.*;
 import net.sourceforge.jsxe.ViewPlugin;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.gui.DocumentView;
-import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.util.Log;
+import net.sourceforge.jsxe.options.OptionPane;
 
 //}}}
 
@@ -70,18 +70,17 @@ public class SourceViewPlugin extends ViewPlugin {
         return new SourceView(document, this);
     }//}}}
     
-    //{{{ getOptionsPanel()
+    //{{{ getOptionPane()
     
-    public OptionsPanel getOptionsPanel(DocumentBuffer buffer) {
-        return new SourceViewOptionsPanel(buffer);
+    public OptionPane getOptionPane(DocumentBuffer buffer) {
+        return new SourceViewOptionPane(buffer);
     }//}}}
     
     //{{{ getProperties()
-    
     public Properties getProperties() {
         Properties props = new Properties();
         try {
-            InputStream stream = SourceView.class.getResourceAsStream("/sourceview/sourceview.props");
+            InputStream stream = SourceViewPlugin.class.getResourceAsStream("/sourceview/sourceview.props");
             props.load(stream);
         } catch (IOException ioe) {
             Log.log(Log.ERROR, this, "Source View: failed to load default properties.");
