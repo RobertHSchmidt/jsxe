@@ -1,3 +1,8 @@
+06/15/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added a new Status column to the Plugin Manager dialog
+    * Added new plugin properties for the plugin author and release date
+
 06/14/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added the EditAction class for future actions in jsXe.

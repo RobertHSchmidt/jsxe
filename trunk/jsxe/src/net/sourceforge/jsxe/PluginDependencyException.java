@@ -45,7 +45,7 @@ public class PluginDependencyException extends RuntimeException {
      * @param versionFound the version that was found.
      */
     public PluginDependencyException(String pluginName, String requiredName, String versionRequired, String versionFound) {
-        super(Messages.getMessage("Plugin.Dependency.Message", new Object[] { pluginName, requiredName, versionRequired, versionFound }));
+        super(pluginName+": "+Messages.getMessage("Plugin.Dependency.Message", new Object[] { pluginName, requiredName, versionRequired, versionFound }));
         m_pluginName = pluginName;
         m_requiredName = requiredName;
         m_versionRequired = versionRequired;
@@ -62,9 +62,9 @@ public class PluginDependencyException extends RuntimeException {
      * @param versionRequired the required version of the required component or plugin
      */
     public PluginDependencyException(String pluginName, String requiredName, String versionRequired) {
-        super((versionRequired != null) ?
+        super(pluginName+": "+((versionRequired != null) ?
             Messages.getMessage("Plugin.Dependency.Not.Found", new Object[] { pluginName, requiredName, versionRequired }) :
-            Messages.getMessage("Plugin.Dependency.Not.Found2", new Object[] { pluginName, requiredName }));
+            Messages.getMessage("Plugin.Dependency.Not.Found2", new Object[] { pluginName, requiredName })));
         m_pluginName = pluginName;
         m_requiredName = requiredName;
         m_versionRequired = versionRequired;
@@ -78,7 +78,7 @@ public class PluginDependencyException extends RuntimeException {
      * @param message the message
      */
     public PluginDependencyException(String pluginName, String message) {
-        super(message);
+        super(pluginName+": "+message);
         m_pluginName = pluginName;
         m_requiredName = null;
         m_versionRequired = null;
