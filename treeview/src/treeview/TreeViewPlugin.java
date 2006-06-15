@@ -74,7 +74,7 @@ public class TreeViewPlugin extends ViewPlugin {
     
     //{{{ getOptionPane()
     public OptionPane getOptionPane(DocumentBuffer buffer) {
-        return new DefaultViewOptionsPanel(buffer);
+        return new TreeViewOptionPane(buffer);
     }//}}}
     
 }
