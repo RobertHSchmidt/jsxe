@@ -106,6 +106,8 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
         
         m_plugin = plugin;
         
+        enableEvents(java.awt.AWTEvent.KEY_EVENT_MASK); 
+        
         setLayout(new BorderLayout());
         
         //{{{ init html editor pane
@@ -166,11 +168,11 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
         //TODO: get cut/copy/paste to work in the right hand text window
         m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
         m_editMenu.setMnemonic('E');
-        JMenuItem menuItem = new JMenuItem(jsXe.getAction("treeview.cut.node"));
+        JMenuItem menuItem = new JMenuItem(ActionManager.getAction("treeview.cut.node"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("treeview.copy.node"));
+        menuItem = new JMenuItem(ActionManager.getAction("treeview.copy.node"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("treeview.paste.node"));
+        menuItem = new JMenuItem(ActionManager.getAction("treeview.paste.node"));
         m_editMenu.add(menuItem);
         //}}}
         
@@ -412,12 +414,12 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
                 JMenuItem popupMenuItem;
                 
                 popupMenuItem = new JMenuItem("Add Attribute");
-                popupMenuItem.addActionListener(jsXe.getAction("treeview.add.attribute"));
+                popupMenuItem.addActionListener(ActionManager.getAction("treeview.add.attribute"));
                 popup.add(popupMenuItem);
                 
                 if (row != attributesTable.getRowCount()-1) {
                     popupMenuItem = new JMenuItem("Remove Attribute");
-                    popupMenuItem.addActionListener(jsXe.getAction("treeview.remove.attribute"));
+                    popupMenuItem.addActionListener(ActionManager.getAction("treeview.remove.attribute"));
                     popup.add(popupMenuItem);
                 }
                 popup.show(e.getComponent(), e.getX(), e.getY());

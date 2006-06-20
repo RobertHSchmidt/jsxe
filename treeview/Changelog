@@ -1,3 +1,7 @@
+06/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the treeview's actions to extend the new LocalizedAction class.
+
 06/15/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated how properties are loaded for the tree view
