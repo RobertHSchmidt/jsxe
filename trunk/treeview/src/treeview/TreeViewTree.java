@@ -30,6 +30,7 @@ import treeview.action.AddNodeAction;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.ActionManager;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.EnhancedMenu;
 import net.sourceforge.jsxe.dom.*;
@@ -452,11 +453,11 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                     JMenu addElement = new EnhancedMenu(Messages.getMessage("xml.element"), 20);
                     addNodeItem.add(addElement);
                     
-                    addElement.add(jsXe.getAction("treeview.add.element.node"));
+                    addElement.add(new ActionManager.Wrapper("treeview.add.element.node"));
                     Iterator allowedElements = selectedNode.getAllowedElements().iterator();
                     while (allowedElements.hasNext()) {
                         ElementDecl decl = (ElementDecl)allowedElements.next();
-                        addElement.add(new AddNodeAction(decl, decl.name));
+                        addElement.add(new ActionManager.Wrapper(new AddNodeAction(decl)));
                     }
                     
                     //Add the allowed entities even if no matter what
@@ -467,14 +468,14 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                     Iterator allowedEntities = ownerDocument.getAllowedEntities().iterator();
                     while (allowedEntities.hasNext()) {
                         EntityDecl decl = (EntityDecl)allowedEntities.next();
-                        popupMenuItem = new JMenuItem(new AddNodeAction(decl.name, decl.name, decl.value, AdapterNode.ENTITY_REFERENCE_NODE));
+                        popupMenuItem = new JMenuItem(new ActionManager.Wrapper(new AddNodeAction(decl)));
                         addEntity.add(popupMenuItem);
                     }
                     
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.text.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.add.text.node"));
                     popupMenuItem.setText(Messages.getMessage("xml.text"));
                     addNodeItem.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.cdata.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.add.cdata.node"));
                     popupMenuItem.setText(Messages.getMessage("xml.cdata"));
                     addNodeItem.add(popupMenuItem);
                     
@@ -486,7 +487,7 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                 
                 if (selectedNode.getNodeType() == Node.DOCUMENT_NODE) {
                     if (ownerDocument.getDocType() == null) {
-                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.doctype.node"));
+                        popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.add.doctype.node"));
                         popupMenuItem.setText(Messages.getMessage("xml.doctypedef"));
                         addNodeItem.add(popupMenuItem);
                         showpopup = true;
@@ -494,10 +495,10 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                 }
                 
                 if (selectedNode.getNodeType() == Node.DOCUMENT_NODE || selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.processing.instruction.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.add.pi.node"));
                     popupMenuItem.setText(Messages.getMessage("xml.processing.instruction"));
                     addNodeItem.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.comment.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.add.comment.node"));
                     popupMenuItem.setText(Messages.getMessage("xml.comment"));
                     addNodeItem.add(popupMenuItem);
                     addNodeShown = true;
@@ -510,13 +511,13 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                 
                 //Add the edit node action
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE && ownerDocument.getElementDecl(selectedNode.getNodeName()) != null) {
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.edit.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.edit.node"));
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE || selectedNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.rename.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.rename.node"));
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
@@ -526,7 +527,7 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                     !(selectedNode.getNodeType() == Node.ELEMENT_NODE &&
                     selectedNode.getParentNode().getNodeType() == Node.DOCUMENT_NODE))
                 {
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.remove.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.remove.node"));
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
@@ -538,15 +539,15 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                     if(!(selectedNode.getNodeType() == Node.ELEMENT_NODE &&
                        selectedNode.getParentNode().getNodeType() == Node.DOCUMENT_NODE))
                     {
-                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.cut.node"));
+                        popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.cut.node"));
                         popup.add(popupMenuItem);
                     }
                     
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.copy.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.copy.node"));
                     popup.add(popupMenuItem);
                     
                     if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.paste.node"));
+                        popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.paste.node"));
                         popup.add(popupMenuItem);
                     }
                     showpopup = true;

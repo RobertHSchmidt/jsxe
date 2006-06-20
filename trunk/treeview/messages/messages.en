@@ -9,11 +9,18 @@ TreeView.Options.Title=Tree View
 TreeView.Options.Show.Comments=Show comment nodes
 TreeView.Options.Continuous.Layout=Continuous layout for split-panes
 TreeView.Options.Show.Attributes=Show element attributes in tree:
-TreeView.RenameNode=Rename Node
-TreeView.RemoveNode=Remove Node
-TreeView.AddAttribute=Add Attribute
-TreeView.RemoveAttribute=Remove Attribute
-TreeView.EditNode=Edit Node
+treeview.rename.node.label=Rename Node
+treeview.remove.node.label=Remove Node
+treeview.add.attribute.label=Add Attribute
+treeview.remove.attribute.label=Remove Attribute
+treeview.edit.node.label=Edit Node
 TreeView.EditDocType.Title=Edit Document Type Definition
 Edit.Node.Dialog.Title=Edit Node
+treeview.add.doctype.node.label=Add Document Type Definition
+
+treeview.add.element.node.label=Add Element Node
+treeview.add.text.node.label=Add Text Node
+treeview.add.cdata.node.label=Add CDATA Node
+treeview.add.pi.node.label=Add Processing Instruction
+treeview.add.comment.node=Add Comment
 #}}}

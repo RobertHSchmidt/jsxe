@@ -43,8 +43,10 @@ import javax.swing.KeyStroke;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.util.Log;
 //}}}
@@ -58,7 +60,7 @@ import net.sourceforge.jsxe.util.Log;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class CopyNodeAction extends AbstractAction {
+public class CopyNodeAction extends LocalizedAction {
     
     //{{{ CopyNodeAction constructor
     /**
@@ -66,18 +68,20 @@ public class CopyNodeAction extends AbstractAction {
      * the clipboard.
      */
     public CopyNodeAction() {
-        putValue(Action.NAME, Messages.getMessage("common.copy"));
-        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl C"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
+        super("treeview.copy.node");
+       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl C"));
     }//}}}
     
-    //{{{ actionPerformed()
-  
-    public void actionPerformed(ActionEvent e) {
-        Log.log(Log.DEBUG, this, "copy");
-        DocumentView view = jsXe.getActiveView().getDocumentView();
-        if (view instanceof DefaultView) {
-            DefaultView defView = (DefaultView)view;
+    //{{{ getLabel()
+    public String getLabel() {
+        return Messages.getMessage("common.copy");
+    }//}}}
+    
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        DocumentView docView = view.getDocumentView();
+        if (docView instanceof DefaultView) {
+            DefaultView defView = (DefaultView)docView;
             TreeViewTree tree = defView.getTree();
             tree.copy();
         }

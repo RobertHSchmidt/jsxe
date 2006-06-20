@@ -49,9 +49,12 @@ import org.w3c.dom.DOMException;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.DocumentView;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.completion.ElementDecl;
+import net.sourceforge.jsxe.dom.completion.EntityDecl;
 //}}}
 
 //}}}
@@ -62,51 +65,63 @@ import net.sourceforge.jsxe.dom.completion.ElementDecl;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class AddNodeAction extends AbstractAction {
+public class AddNodeAction extends LocalizedAction {
     
-    //{{{ AddNodeAction constructor
-    /**
-     * Creates a action that adds a new node of the specified type and values
-     * to the current selected node in the tree.
-     * @param displayName the human readable name that is displayed for this action
-     * @param nodeName the name of the node. This can be null if applicable
-     * @param nodeValue the value of the node. This can be null if applicable
-     * @param nodeType the type of the node. Use the values specified by the org.w3c.dom.Node class
-     */
-    public AddNodeAction(String displayName, String nodeName, String nodeValue, short nodeType) {
-        init(nodeName, nodeValue, displayName, nodeType);
-    }//}}}
-  
     //{{{ AddNodeAction constructor
     /**
      * Crates an action that adds an element node based on the specified
      * element declaration. When adding a node using an ElementDecl
      * an EditTagDialog will be displayed.
      * @param element the declaration specifying the information for this node.
-     * @param 
      */
-    public AddNodeAction(ElementDecl element, String displayName) {
-        init(element.name, "", displayName, AdapterNode.ELEMENT_NODE);
-        m_m_element = element;
+    public AddNodeAction(ElementDecl element) {
+        super(element.name); // not to be registed with the ActionManager
+        init(element.name, null, AdapterNode.ELEMENT_NODE);
+        m_element = element;
     }//}}}
-  
-    //{{{ actionPerformed()
-  
-    public void actionPerformed(ActionEvent e) {
-        DocumentView view = jsXe.getActiveView().getDocumentView();
-        if (view instanceof DefaultView) {
-            DefaultView defView = (DefaultView)view;
+    
+    //{{{ AddNodeAction constructor
+    /**
+     * Crates an action that adds an entity reference node based on the specified
+     * entity declaration.
+     * @param entity the declaration specifying the information for this node.
+     */
+    public AddNodeAction(EntityDecl entity) {
+        super(entity.name); // not to be registed with the ActionManager
+        init(entity.name, entity.value, AdapterNode.ENTITY_REFERENCE_NODE);
+        m_entity = entity;
+    }//}}}
+    
+    //{{{ AddNodeAction constructor
+    /**
+     * Creates a action that adds a new node of the specified type and values
+     * to the current selected node in the tree.
+     * @param name the name of the action.
+     * @param nodeName the qualified name of the node to add. This can be null if applicable
+     * @param nodeValue the value of the node. This can be null if applicable
+     * @param nodeType the type of the node. Use the values specified by the org.w3c.dom.Node class
+     */
+    public AddNodeAction(String name, String nodeName, String nodeValue, short nodeType) {
+        super(name);
+        init(nodeName, nodeValue, nodeType);
+    }//}}}
+    
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        DocumentView docView = view.getDocumentView();
+        if (docView instanceof DefaultView) {
+            DefaultView defView = (DefaultView)docView;
             TreeViewTree tree = defView.getTree();
             AdapterNode selectedNode = tree.getSelectedNode();
             AdapterNode addedNode = null;
             if (selectedNode != null) {
                 try {
-                    if (m_m_element != null) {
+                    if (m_element != null) {
                         EditTagDialog dialog = new EditTagDialog(jsXe.getActiveView(),
-                                                                 m_m_element,
+                                                                 m_element,
                                                                  new HashMap(),
-                                                                 m_m_element.empty,
-                                                                 m_m_element.completionInfo.getEntityHash(),
+                                                                 m_element.empty,
+                                                                 m_element.completionInfo.getEntityHash(),
                                                                  new ArrayList(), //don't support IDs for now.
                                                                  selectedNode.getOwnerDocument());
                         dialog.show();
@@ -125,23 +140,35 @@ public class AddNodeAction extends AbstractAction {
             }
         }
     }//}}}
-  
-    //{{{ Private members
-  
-    //{{{ init()
-  
-    private void init(String qualifiedName, String value,  String actionTitle, short nodeType) {
-        m_name     = qualifiedName;
-        m_value    = value;
-        m_nodeType = nodeType;
-        putValue(Action.NAME, actionTitle);
+    
+    //{{{ getLabel()
+    public String getLabel() {
+        if (m_element != null) {
+            return m_element.name;
+        } else {
+            if (m_entity != null) {
+                return m_entity.name;
+            } else {
+                return super.getLabel();
+            }
+        }
     }//}}}
-  
+    
+    //{{{ Private members
+    
+    //{{{ init()
+    public void init(String name, String value, short type) {
+        m_name     = name;
+        m_value    = value;
+        m_nodeType = type;
+    }//}}}
+    
     private short m_nodeType;
     private String m_name;
     private String m_value;
-    private ElementDecl m_m_element;
+    private ElementDecl m_element;
+    private EntityDecl m_entity;
     //}}}
-  
+    
 }
 

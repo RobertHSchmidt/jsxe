@@ -52,20 +52,20 @@ public class TreeViewPlugin extends ViewPlugin {
     //{{{ TreeViewPlugin constructor
     public TreeViewPlugin() {
         //add actions
-        addAction("treeview.add.element.node", new AddNodeAction("Add Element Node", "new_element", "", AdapterNode.ELEMENT_NODE));
-        addAction("treeview.add.text.node", new AddNodeAction("Add Text Node", "", "New Text Node", AdapterNode.TEXT_NODE));
-        addAction("treeview.add.cdata.node", new AddNodeAction("Add CDATA Section", "", "New CDATA Section", AdapterNode.CDATA_SECTION_NODE));
-        addAction("treeview.add.processing.instruction.node", new AddNodeAction("Add Processing Instruction", "Instruction", "New Processing Instruction", AdapterNode.PROCESSING_INSTRUCTION_NODE));
-        addAction("treeview.add.comment.node", new AddNodeAction("Add Comment", "", "New Comment", AdapterNode.COMMENT_NODE));
-        addAction("treeview.remove.node", new RemoveNodeAction());
-        addAction("treeview.rename.node", new RenameNodeAction());
-        addAction("treeview.add.attribute", new AddAttributeAction());
-        addAction("treeview.remove.attribute", new RemoveAttributeAction());
-        addAction("treeview.edit.node", new EditNodeAction());
-        addAction("treeview.add.doctype.node", new AddDocTypeAction());
-        addAction("treeview.cut.node", new CutNodeAction());
-        addAction("treeview.copy.node", new CopyNodeAction());
-        addAction("treeview.paste.node", new PasteNodeAction());
+        addAction(new AddNodeAction("treeview.add.element.node", "new_element", "", AdapterNode.ELEMENT_NODE));
+        addAction(new AddNodeAction("treeview.add.text.node", "", "New Text Node", AdapterNode.TEXT_NODE));
+        addAction(new AddNodeAction("treeview.add.cdata.node", "", "New CDATA Section", AdapterNode.CDATA_SECTION_NODE));
+        addAction(new AddNodeAction("treeview.add.pi.node", "Instruction", "New Processing Instruction", AdapterNode.PROCESSING_INSTRUCTION_NODE));
+        addAction(new AddNodeAction("treeview.add.comment.node", "", "New Comment", AdapterNode.COMMENT_NODE));
+        addAction(new RemoveNodeAction());
+        addAction(new RenameNodeAction());
+        addAction(new AddAttributeAction());
+        addAction(new RemoveAttributeAction());
+        addAction(new EditNodeAction());
+        addAction(new AddDocTypeAction());
+        addAction(new CutNodeAction());
+        addAction(new CopyNodeAction());
+        addAction(new PasteNodeAction());
     }//}}}
     
     //{{{ newDocumentView()

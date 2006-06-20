@@ -43,6 +43,7 @@ import org.w3c.dom.DOMException;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.EnhancedDialog;
@@ -63,27 +64,27 @@ import java.io.IOException;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class AddDocTypeAction extends AbstractAction {
+public class AddDocTypeAction extends LocalizedAction {
     
     //{{{ AddDocTypeAction constructor
     /**
      * Creates a action that adds a new document type node.
      */
-    public AddDocTypeAction() {}//}}}
+    public AddDocTypeAction() {
+        super("treeview.add.doctype.node");
+    }//}}}
     
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
-        TabbedView tabbedview = jsXe.getActiveView();
-        DocumentView view = tabbedview.getDocumentView();
-        if (view instanceof DefaultView) {
-            m_defView = (DefaultView)view;
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        DocumentView docView = view.getDocumentView();
+        if (docView instanceof DefaultView) {
+            m_defView = (DefaultView)docView;
             m_tree = m_defView.getTree();
             
             /*
             Show a dialog to prompt for name and PUBLIC and SYSTEM identifiers.
             */
-            EditDocTypeDialog dialog = new EditDocTypeDialog(tabbedview, null, null, null);
+            EditDocTypeDialog dialog = new EditDocTypeDialog(view, null, null, null);
         }
     }//}}}
     
