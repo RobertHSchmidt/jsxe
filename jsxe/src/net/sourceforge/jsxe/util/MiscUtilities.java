@@ -30,9 +30,14 @@ package net.sourceforge.jsxe.util;
 //{{{ Imports
 import net.sourceforge.jsxe.OperatingSystem;
 import javax.swing.text.Segment;
-import javax.swing.JMenuItem;
 import java.io.*;
 import java.util.*;
+
+import javax.swing.JMenuItem;
+
+import javax.swing.JPopupMenu;
+import java.awt.Component;
+import javax.swing.JComponent;
 //}}}
 
 /**
@@ -1140,7 +1145,41 @@ loop:       for(int i = 0; i < str.length(); i++)
 
         return permissions;
     } //}}}
+    
+    //{{{ getComponentParent() method
+    /**
+     * Finds a parent of the specified component.
+     * @param comp The component
+     * @param clazz Looks for a parent with this class (exact match, not
+     * derived).
+     * @since jsXe 0.5 pre1
+     */
+    public static Component getComponentParent(Component comp, Class clazz) {
+        for(;;) {
+            if (comp == null) {
+                break;
+            }
 
+            if (comp instanceof JComponent) {
+                Component real = (Component)((JComponent)comp).getClientProperty("KORTE_REAL_FRAME");
+                if (real != null) {
+                    comp = real;
+                }
+            }
+
+            if (comp.getClass().equals(clazz)) {
+                return comp;
+            } else {
+                if (comp instanceof JPopupMenu) {
+                    comp = ((JPopupMenu)comp).getInvoker();
+                } else {
+                    comp = comp.getParent();
+                }
+            }
+        }
+        return null;
+    } //}}}
+    
     //{{{ XML Methods
     
     //{{{ getLocalNameFromQualifiedName()

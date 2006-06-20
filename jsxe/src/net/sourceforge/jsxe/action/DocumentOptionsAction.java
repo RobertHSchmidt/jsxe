@@ -25,22 +25,11 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.action;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.DocumentOptionsDialog;
-import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
-//}}}
-
-//{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
 //}}}
 
 //{{{ AWT components
@@ -55,24 +44,16 @@ import java.awt.event.ActionEvent;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class DocumentOptionsAction extends AbstractAction {
+public class DocumentOptionsAction extends LocalizedAction {
     
     //{{{ DocumentOptionsAction constructor
-    
-    public DocumentOptionsAction(TabbedView parent) {
-        //putValue(Action.NAME, "Options...");
-    	putValue(Action.NAME, Messages.getMessage("Tools.Document.Options"));	
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("D").getKeyCode()));
-        view = parent;
+    public DocumentOptionsAction() {
+    	super("document-options");
     }//}}}
     
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
         new DocumentOptionsDialog(view);
     }//}}}
     
-    //{{{ Private members
-    private TabbedView view;
-    //}}}
 }

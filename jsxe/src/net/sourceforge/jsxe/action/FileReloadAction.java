@@ -26,16 +26,11 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.action;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.DocumentView;
 //}}}
@@ -45,9 +40,6 @@ import java.io.IOException;
 //}}}
 
 //{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
 import javax.swing.JOptionPane;
 //}}}
 
@@ -63,31 +55,23 @@ import java.awt.event.ActionEvent;
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
  * @version $Id$
  */
-public class FileReloadAction extends AbstractAction {
+public class FileReloadAction extends LocalizedAction {
     
     //{{{ FileReloadAction constructor
-    
-    public FileReloadAction(TabbedView parent) {
-      //  putValue(Action.NAME, "Reload");
-    	putValue(Action.NAME, Messages.getMessage("File.Reload"));	
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("R").getKeyCode()));
-        m_view = parent;
+    public FileReloadAction() {
+        super("reload-file");
     }//}}}
     
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
         try {
-            DocumentView documentView = m_view.getDocumentView();
-            DocumentBuffer buffer = m_view.getDocumentBuffer();
-            buffer.reload(m_view);
+            DocumentView documentView = view.getDocumentView();
+            DocumentBuffer buffer = view.getDocumentBuffer();
+            buffer.reload(view);
             documentView.setDocumentBuffer(buffer); //reload the buffer in the documentView
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(m_view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
     
-    //{{{ Private members
-    private TabbedView m_view;
-    //}}}
 }

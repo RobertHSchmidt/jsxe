@@ -26,23 +26,13 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.action;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.PluginManagerDialog;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
-//{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
-//}}}
 
 //{{{ AWT components
 import java.awt.event.ActionEvent;
@@ -57,24 +47,16 @@ import java.awt.event.ActionEvent;
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
  * @version $Id$
  */
-public class ToolsPluginManagerAction extends AbstractAction {
+public class ToolsPluginManagerAction extends LocalizedAction {
     
     //{{{ ToolsPluginManagerAction constructor
-    
-    public ToolsPluginManagerAction(TabbedView parent) {
-        //putValue(Action.NAME, "Plugin Manager...");
-    	putValue(Action.NAME, Messages.getMessage("Tools.Plugin"));	
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("P").getKeyCode()));
-        view = parent;
+    public ToolsPluginManagerAction() {
+        super("plugin-manager");
     }//}}}
     
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
         new PluginManagerDialog(view);
     }//}}}
     
-    //{{{ Private members
-    private TabbedView view;
-    //}}}
 }

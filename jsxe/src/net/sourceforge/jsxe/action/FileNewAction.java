@@ -26,23 +26,13 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.action;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
-//{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
-//}}}
 
 //{{{ AWT components
 import java.awt.event.ActionEvent;
@@ -60,21 +50,16 @@ import java.io.IOException;
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
  * @version $Id$
  */
-public class FileNewAction extends AbstractAction {
+public class FileNewAction extends LocalizedAction {
     
     //{{{ FileNewAction constructor
-    
-    public FileNewAction(TabbedView parent) {
-        //putValue(Action.NAME, "New");
-    	putValue(Action.NAME, Messages.getMessage("File.New"));	
-        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl N"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("N").getKeyCode()));
-        view = parent;
+    public FileNewAction() {
+        super("new-file");
+       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl N"));
     }//}}}
     
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
         try {
             boolean success = jsXe.openXMLDocument(view, jsXe.getDefaultDocument());
             if (!success) {
@@ -85,7 +70,4 @@ public class FileNewAction extends AbstractAction {
         }
     }//}}}
     
-    //{{{ Private members
-    private TabbedView view;
-    //}}}
 }
