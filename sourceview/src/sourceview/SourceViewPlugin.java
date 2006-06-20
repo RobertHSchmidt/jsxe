@@ -58,10 +58,10 @@ public class SourceViewPlugin extends ViewPlugin {
     //{{{ SourceViewPlugin
     
     public SourceViewPlugin() {
-        addAction("sourceview.cut", new EditCutAction());
-        addAction("sourceview.copy", new EditCopyAction());
-        addAction("sourceview.paste", new EditPasteAction());
-        addAction("sourceview.find", new EditFindAction());
+        addAction(new EditCutAction());
+        addAction(new EditCopyAction());
+        addAction(new EditPasteAction());
+        addAction(new EditFindAction());
     }//}}}
     
     //{{{ newDocumentView()

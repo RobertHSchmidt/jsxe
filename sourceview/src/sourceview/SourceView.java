@@ -138,14 +138,14 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
         //{{{ create popup menu
         
         JPopupMenu popup = new JPopupMenu();
-        JMenuItem menuItem = new JMenuItem(jsXe.getAction("sourceview.cut"));
+        JMenuItem menuItem = new JMenuItem(ActionManager.getAction("sourceview.cut"));
         popup.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.copy"));
+        menuItem = new JMenuItem(ActionManager.getAction("sourceview.copy"));
         popup.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.paste"));
+        menuItem = new JMenuItem(ActionManager.getAction("sourceview.paste"));
         popup.add(menuItem);
         popup.addSeparator();
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.find"));
+        menuItem = new JMenuItem(ActionManager.getAction("sourceview.find"));
         popup.add(menuItem);
         
         m_textarea.setRightClickPopup(popup);
@@ -165,14 +165,14 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
        // menuItem.addActionListener( new EditRedoAction() );
        // menu.add(menuItem);
        // menu.addSeparator();
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.cut"));
+        menuItem = new JMenuItem(ActionManager.getAction("sourceview.cut"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.copy"));
+        menuItem = new JMenuItem(ActionManager.getAction("sourceview.copy"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.paste"));
+        menuItem = new JMenuItem(ActionManager.getAction("sourceview.paste"));
         m_editMenu.add(menuItem);
         m_editMenu.addSeparator();
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.find"));
+        menuItem = new JMenuItem(ActionManager.getAction("sourceview.find"));
         m_editMenu.add(menuItem);
        // menuItem = new JMenuItem(new EditFindNextAction());
        // menu.add(menuItem);

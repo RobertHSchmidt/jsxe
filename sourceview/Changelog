@@ -1,3 +1,7 @@
+06/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the sourceview's actions to extend the new LocalizedAction class.
+
 06/13/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated the source view options panel to extend AbstractOptionPane
