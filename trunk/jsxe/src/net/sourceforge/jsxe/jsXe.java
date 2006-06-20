@@ -289,7 +289,7 @@ public class jsXe {
                     setProperty(name, props.getProperty(name));
                 }
                 
-                addActionSet(plugin.getActionSet());
+                ActionManager.addActionSet(plugin.getActionSet());
                 
                 //add the plugin to the editbus
                 EditBus.addToBus(plugin);
@@ -354,6 +354,10 @@ public class jsXe {
             }
             m_activeView = tabbedview;
             progressScreen.updateSplashScreenDialog(85);
+            //}}}
+            
+            //{{{ init key bindings
+            ActionManager.initKeyBindings();
             //}}}
             
             //{{{ Parse files to open on the command line
@@ -1143,46 +1147,6 @@ public class jsXe {
     
     //}}}
     
-    //{{{ Action methods
-    
-    //{{{ addActionSet()
-    /**
-     * Adds a set of actions to the jsXe's pool of action sets.
-     * This allows action sets from installed plugins to be added
-     * and retrieved via jsXe's pool of actions.
-     * @param set the action set to add
-     */
-    public static void addActionSet(ActionSet set) {
-        m_actionSets.add(set);
-    }//}}}
-    
-    //{{{ getAction()
-    /**
-     * Gets the action set with the given name
-     * @param the name of the action set.
-     * @return the action set that matches the name, or null if none match.
-     */
-    public static Action getAction(String name) {
-        for (int i = 0; i < m_actionSets.size(); i++) {
-            Action action = ((ActionSet)m_actionSets.get(i)).getAction(name);
-            if (action != null) {
-                return action;
-            }
-        }
-        return null;
-    }//}}}
-    
-    //{{{ getActionSets()
-    /**
-     * Gets all action sets that have been registered with jsXe
-     * @return an ArrayList of ActionSet objects
-     */
-    public ArrayList getActionSets() {
-        return m_actionSets;
-    }//}}}
-    
-    //}}}
-    
     //{{{ getPluginLoader()
     /**
      * Gets the plugin loader that is used to load
@@ -1368,7 +1332,6 @@ public class jsXe {
     private static final Properties defaultProps = new Properties();
     private static Properties props = new Properties();
     private static BufferHistory m_bufferHistory;
-    private static ArrayList m_actionSets = new ArrayList();
     private static JARClassLoader m_pluginLoader;
     private static TabbedView m_activeView;
     private static String m_settingsDirectory;

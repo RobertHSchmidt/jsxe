@@ -26,7 +26,6 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe;
 
 import java.util.*;
-import javax.swing.Action;
 
 /**
  * A set of actions.
@@ -75,23 +74,13 @@ public class ActionSet {
 
    //{{{ addAction()
    /**
-    * Adds an action to the action set.
-    * @param name the internal name for the action
-    * @param action The action
-    * @deprecated Use EditActions instead
-    */
-   public void addAction(String name, Action action) {
-      actions.put(name,action);
-   }//}}}
-
-   //{{{ addAction()
-   /**
     * Adds an action to the action set. The action can
-    * be retrieved via the INTERNAL_NAME of the EditAction.
+    * be retrieved via the <code>getName()</code> method of
+    * the LocalizedAction.
     * @param action The action
     */
-   public void addAction(EditAction action) {
-      actions.put(action.getProperty(EditAction.INTERNAL_NAME),action);
+   public void addAction(LocalizedAction action) {
+      actions.put(action.getName(),action);
    }//}}}
    
    //{{{ removeAction()
@@ -113,11 +102,11 @@ public class ActionSet {
 
    //{{{ getAction()
    /**
-    * Returns an action with the specified name.
+    * Returns the action with the specified name.
     * @param name The action name
     */
-   public Action getAction(String name) {
-      return (Action)actions.get(name);
+   public LocalizedAction getAction(String name) {
+      return (LocalizedAction)actions.get(name);
    }//}}}
 
    //{{{ getActionCount()
@@ -132,12 +121,12 @@ public class ActionSet {
    /**
     * Returns an array of all actions in this action set.
     */
-   public Action[] getActions() {
-      Action[] retVal = new Action[actions.size()];
+   public LocalizedAction[] getActions() {
+      LocalizedAction[] retVal = new LocalizedAction[actions.size()];
       Enumeration elements = actions.elements();
       int i = 0;
       while(elements.hasMoreElements()) {
-         retVal[i++] = (Action)elements.nextElement();
+         retVal[i++] = (LocalizedAction)elements.nextElement();
       }
       return retVal;
    }//}}}
@@ -147,7 +136,7 @@ public class ActionSet {
     * Returns if this action set contains the specified action.
     * @param action The action
     */
-   public boolean contains(Action action) {
+   public boolean contains(LocalizedAction action) {
       return actions.contains(action);
    }//}}}
 

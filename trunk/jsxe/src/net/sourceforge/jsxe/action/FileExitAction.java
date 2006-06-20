@@ -26,22 +26,11 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.action;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.TabbedView;
-//}}}
-
-//{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
 //}}}
 
 //{{{ AWT components
@@ -56,25 +45,17 @@ import java.awt.event.ActionEvent;
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
  * @version $Id$
  */
-public class FileExitAction extends AbstractAction {
+public class FileExitAction extends LocalizedAction {
     
     //{{{ FileExitAction constructor
-    
-    public FileExitAction(TabbedView parent) {
-        //putValue(Action.NAME, "Exit");
-    	putValue(Action.NAME, Messages.getMessage("File.Exit"));	
-        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl Q"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("X").getKeyCode()));
-        view = parent;
+    public FileExitAction() {
+        super("exit");
+       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl Q"));
     }//}}}
     
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
         jsXe.exit(view);
     }//}}}
     
-    //{{{ Private members
-    private TabbedView view;
-    //}}}
 }

@@ -1,3 +1,10 @@
+06/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated actions in jsXe so that actions can be easily localized and
+      so that they can be assigned shortcuts. Future actions that are registered
+      with jsXe will extend this class. The ActionManager now manages ActionSets
+      and key bindings within jsXe.
+
 06/15/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added a new Status column to the Plugin Manager dialog

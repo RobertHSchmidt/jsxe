@@ -106,24 +106,24 @@ Tools.Menu=Tools
 Help.Menu=Help
 
 #{{{ File Menu Items
-File.New=New
-File.Open=Open...
+new-file.label=New
+open-file.label=Open...
 File.Recent=Recent Files
 File.Recent.None=No Recent Files
-File.Save=Save
-File.SaveAs=Save As...
-File.Reload=Reload
+save-file.label=Save
+save-as.label=Save As...
+reload-file.label=Reload
 File.Recent=Recent Files
-File.Close=Close
-File.CloseAll=Close All
-File.Exit=Exit
+close-file.label=Close
+close-all.label=Close All
+exit.label=Exit
 #}}}
 
-Tools.Options=Global Options...
-Tools.Document.Options=Document Options...
-Tools.Plugin=Plugin Manager...
-Tools.ValidationErrors=Validation Errors...
-Help.About=About jsXe...
+general-options.label=Global Options...
+document-options.label=Document Options...
+plugin-manager.label=Plugin Manager...
+validation-errors.label=Validation Errors...
+about-jsxe.label=About jsXe...
 #}}}
 
 #{{{ Messages
@@ -219,7 +219,7 @@ DirtyFilesDialog.Button.DiscardSelected.Title=Discard Selected
 #}}}
 
 #{{{ Activity Log Dialog
-ActivityLogDialog.Open = Activity Log
+activity-log.label = Activity Log
 ActivityLogDialog.Dialog.Title = Activity Log
 ActivityLogDialog.Dialog.Message = Activity Log contents:
 #}}}

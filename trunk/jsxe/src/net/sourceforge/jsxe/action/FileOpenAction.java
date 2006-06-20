@@ -26,23 +26,15 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.action;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
 //{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 //}}}
 
 //{{{ AWT components
@@ -61,21 +53,16 @@ import java.io.IOException;
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
  * @version $Id$
  */
-public class FileOpenAction extends AbstractAction {
+public class FileOpenAction extends LocalizedAction {
     
     //{{{ FileOpenAction constructor
-    
-    public FileOpenAction(TabbedView parent) {
-        //putValue(Action.NAME, "Open...");
-    	putValue(Action.NAME, Messages.getMessage("File.Open"));	
-        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl O"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("O").getKeyCode()));
-        view = parent;
+    public FileOpenAction() {
+        super("open-file");
+       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl O"));
     }//}}}
     
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
         try {
             jsXe.showOpenFileDialog(view);
         } catch (IOException ioe) {
@@ -84,7 +71,4 @@ public class FileOpenAction extends AbstractAction {
         
     }//}}}
     
-    //{{{ Public members
-    private TabbedView view;
-    //}}}
 }

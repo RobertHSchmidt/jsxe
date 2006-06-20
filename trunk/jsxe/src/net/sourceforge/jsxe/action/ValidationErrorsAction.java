@@ -3,7 +3,7 @@ ValidationErrorsAction.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
+Copyright (C) 2006 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -25,18 +25,13 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.action;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.gui.ErrorListDialog;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.ErrorListDialog;
 import net.sourceforge.jsxe.gui.TabbedView;
-import net.sourceforge.jsxe.gui.ActivityLogDialog;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
@@ -50,10 +45,7 @@ import java.util.Iterator;
 //}}}
 
 //{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 //}}}
 
 //{{{ AWT components
@@ -65,29 +57,18 @@ import java.awt.event.ActionEvent;
 /**
  * The action shows the Validation Errors Dialog
  *
- * @author Ian Lewis
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class ValidationErrorsAction extends AbstractAction {
-		
-	//	{{{ Public members
-    private TabbedView view;      
-    //}}}
+public class ValidationErrorsAction extends LocalizedAction {
     
-    //{{{ ValidationErrorsAction 
-	 /**
-     * @param TabbedView parent view containing the JSXE editor.
-     * Constructor for the ActivityLogActionclass
-     * @since jsXe 0.3pre15
-     */
-    public ValidationErrorsAction(TabbedView parent) {
-    	putValue(Action.NAME, Messages.getMessage("Tools.ValidationErrors"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("V").getKeyCode()));
-        view = parent;
+    //{{{ ValidationErrorsAction
+    public ValidationErrorsAction() {
+        super("validation-errors");
     }//}}}
     
-    //{{{ actionPerformed()
-    public void actionPerformed(ActionEvent e) {
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
         DocumentBuffer document = view.getDocumentView().getDocumentBuffer();
         Vector errors = new Vector();
         Iterator itr = document.getErrors().iterator();

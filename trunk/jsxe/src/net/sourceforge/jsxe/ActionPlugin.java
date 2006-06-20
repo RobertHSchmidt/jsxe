@@ -109,8 +109,8 @@ public abstract class ActionPlugin implements EBListener {
      * @param name the name of the action
      * @param action the action itself
      */
-    protected void addAction(String name, Action action) {
-        m_actionSet.addAction(name, action);
+    protected void addAction(LocalizedAction action) {
+        m_actionSet.addAction(action);
     }//}}}
     
     //{{{ getActionSet()
