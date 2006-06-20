@@ -29,21 +29,15 @@ package sourceview.action;
 import sourceview.*;
 
 //{{{ jsXe classes
-
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.DocumentView;
-
 //}}}
 
 //{{{ AWT classes
 import java.awt.event.ActionEvent;
-//}}}
-
-//{{{ Swing classes
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.KeyStroke;
 //}}}
 
 //}}}
@@ -54,23 +48,24 @@ import javax.swing.KeyStroke;
  * @version $Id$
  */
 
-public class EditFindAction extends AbstractAction {
+public class EditFindAction extends LocalizedAction {
     
     //{{{ EditFindAction constructor
-    
     public EditFindAction() {
-        //putValue(Action.NAME, "Find...");
-        putValue(Action.NAME, Messages.getMessage("common.find"));
-        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl F"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("F").getKeyCode()));
+        super("sourceview.find");
+       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl F"));
     }//}}}
     
-    //{{{ actionPerformed()
+    //{{{ getLabel()
+    public String getLabel() {
+        return Messages.getMessage("common.find");
+    }//}}}
     
-    public void actionPerformed(ActionEvent e) {
-        DocumentView view = jsXe.getActiveView().getDocumentView();
-        if (view instanceof SourceView) {
-            SourceView sourceView = (SourceView)view;
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        DocumentView docView = view.getDocumentView();
+        if (docView instanceof SourceView) {
+            SourceView sourceView = (SourceView)docView;
             SourceViewSearchDialog.showSearchDialog(sourceView);
         }
         

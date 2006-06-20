@@ -30,6 +30,8 @@ import sourceview.*;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.util.Log;
@@ -37,12 +39,6 @@ import net.sourceforge.jsxe.util.Log;
 
 //{{{ AWT classes
 import java.awt.event.ActionEvent;
-//}}}
-
-//{{{ Swing classes
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.KeyStroke;
 //}}}
 
 //}}}
@@ -53,23 +49,24 @@ import javax.swing.KeyStroke;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class EditCutAction extends AbstractAction {
+public class EditCutAction extends LocalizedAction {
     
     //{{{ EditCutAction constructor
-    
     public EditCutAction() {
-       //putValue(Action.NAME, "Cut");
-       putValue(Action.NAME, Messages.getMessage("common.cut"));
-       putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
-       putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("C").getKeyCode()));
+        super("sourceview.cut");
+      // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
+    }//}}}
+    
+    //{{{ getLabel()
+    public String getLabel() {
+        return Messages.getMessage("common.cut");
     }//}}}
      
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
-        DocumentView view = jsXe.getActiveView().getDocumentView();
-        if (view instanceof SourceView) {
-            SourceView sourceView = (SourceView)view;
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        DocumentView docView = view.getDocumentView();
+        if (docView instanceof SourceView) {
+            SourceView sourceView = (SourceView)docView;
             sourceView.getTextArea().cut();
         }
     }//}}}
