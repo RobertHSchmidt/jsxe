@@ -4,7 +4,7 @@
   <li><a href="features.php" >Features</a></li>
   <li><a href="screenshots.php">Screenshots</a></li>
   <li><a href="downloads.php">Downloads</a></li>
-  <li><a href="links.php">Get Involved</a></li>
+  <li><a href="get-involved.php">Get Involved</a></li>
 </ul>
 
 <ul>
