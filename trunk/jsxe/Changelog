@@ -1,3 +1,8 @@
+06/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Moved EnhancedMenu to it's own package. I will be creating a new menu
+      class that is specially designed for jsXe's LocalizedActions
+
 06/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated actions in jsXe so that actions can be easily localized and
