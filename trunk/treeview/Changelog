@@ -1,3 +1,8 @@
+06/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated TreeViewTree to use the new package for EnhancedMenu so it
+      compiles properly.
+
 06/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated the treeview's actions to extend the new LocalizedAction class.

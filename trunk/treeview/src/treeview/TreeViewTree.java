@@ -32,7 +32,7 @@ import treeview.action.AddNodeAction;
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.ActionManager;
 import net.sourceforge.jsxe.gui.Messages;
-import net.sourceforge.jsxe.gui.EnhancedMenu;
+import net.sourceforge.jsxe.gui.menu.*;
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.dom.completion.*;
 import net.sourceforge.jsxe.util.Log;
