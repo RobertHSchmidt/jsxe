@@ -34,6 +34,7 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.action.*;
+import net.sourceforge.jsxe.gui.menu.*;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
@@ -317,11 +318,16 @@ public class TabbedView extends JFrame {
         return true;
     }//}}}
     
+    //{{{ processKeyEvent()
+    /**
+     * Processes key events checking for registered key bindings and
+     * invoking the appropriate actions.
+     */
     protected void processKeyEvent(KeyEvent e) {
         //TODO: process shortcuts
         Log.log(Log.DEBUG, this, e.toString());
         super.processKeyEvent(e);
-    }
+    }//}}}
     
     //{{{ Private static members
     
@@ -579,17 +585,21 @@ public class TabbedView extends JFrame {
             
             DocumentBuffer currentBuffer = getDocumentBuffer();
             
+            //Add key listeners to the DocumentView and sub components
+            Component comp = newView.getDocumentViewComponent();
+            addKeyHandler(comp);
+            
             //no exceptions? cool. register the new view
             m_documentViews.remove(oldView);
             m_documentViews.add(index, newView);
             tabbedPane.remove(index);
-            tabbedPane.add(newView.getDocumentViewComponent(), index);
+            tabbedPane.add(comp, index);
             tabbedPane.setIconAt(index, getTabIcon(currentBuffer));
             tabbedPane.setTitleAt(index, currentBuffer.getName());
             tabbedPane.setSelectedIndex(index);
             
             //not sure why stateChanged doesn't get called above but
-            //update manually
+            //update manually.
             updateMenuBar();
         }
     }//}}}
@@ -661,9 +671,7 @@ public class TabbedView extends JFrame {
         //}}}
         
         //{{{ SetDefaultViewAction constructor
-        
         public SetViewAction(ViewPlugin view) throws UnrecognizedPluginException {
-            
             //need to get the human readable name.
             m_view = view;
             putValue(Action.NAME, jsXe.getPluginLoader().getPluginProperty(m_view, JARClassLoader.PLUGIN_HUMAN_READABLE_NAME));

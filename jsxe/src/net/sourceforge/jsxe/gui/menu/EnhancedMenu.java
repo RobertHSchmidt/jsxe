@@ -22,15 +22,23 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package net.sourceforge.jsxe.gui;
+package net.sourceforge.jsxe.gui.menu;
 
-import net.sourceforge.jsxe.util.Log;
+//{{{ imports
 
+//{{{ jsXe classes
+import net.sourceforge.jsxe.gui.Messages;
+//}}}
+
+//{{{ Java classes
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.Action;
 import java.awt.Component;
 import java.util.*;
+//}}}
+
+//}}}
 
 /**
  * A Menu class that handles wrapping the menu items into sub-menus for you.

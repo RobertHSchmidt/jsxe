@@ -272,6 +272,7 @@ public class ActionManager {
     //{{{ invokeAction()
     private static void invokeAction(LocalizedAction action, ActionEvent evt) {
         if (action != null) {
+            Log.log(Log.MESSAGE, ActionManager.class, "Invoking action "+action.getName());
             action.invoke((TabbedView)MiscUtilities.getComponentParent((java.awt.Component)evt.getSource(), TabbedView.class), evt);
         }
     }//}}}
