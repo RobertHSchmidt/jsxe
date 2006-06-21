@@ -12,11 +12,42 @@
     </div>
     <div id="mainBody">
       <h2>Getting Involved</h2>
-        
+      
+      <p>jsXe needs developers to implement new features and fix bugs,
+         translators for translating messages and the website, and 
+         web designers who are interested in updating the project's
+         website.</p>
+      
       <p>Getting involved is fairly easy. There are a multitude of ways that
-          you can become involved in the project. The easiest is probably by
-          subscribing to the mailing lists, however there are many methods at
-          your disposal.</p>
+         you can become involved in the project. The easiest is probably by
+         subscribing to the mailing lists, however there are many methods at
+         your disposal.</p>
+      
+      <h3>Developers</h3>
+      
+      <p>If you are interested in working on jsXe, please
+      <a href="http://lists.sourceforge.net/mailman/listinfo/jsxe-devel">subscribe</a>
+      and send a mail to the jsxe-devel mailing list. The developers can help
+      get you started. Developers should be know how to use SVN and have some
+      experience with Java swing or XML.</p>
+      
+      <h3>Translators</h3>
+      
+      <p>If you are interested in translating for the jsXe project. Please
+      <a href="http://lists.sourceforge.net/mailman/listinfo/jsxe-devel">subscribe</a>
+      and send a mail to the jsxe-devel mailing list. For those who are
+      knowlegeable of SVN, you can check out the messages files from jsXe's 
+      <a href="http://svn.sourceforge.net/viewcvs.cgi/jsxe/trunk/jsxe/">SVN repository</a>.
+      But even if you are not versed in SVN, the developers on the
+      mailing list can help get you.</p>
+      
+      <h3>Web Developers</h3>
+      
+      <p>If you are interested in working on jsXe's webpage, please
+      <a href="http://lists.sourceforge.net/mailman/listinfo/jsxe-devel">subscribe</a>
+      and send a mail to the jsxe-devel mailing list. The developers can help
+      get you started.</p>. Web developers should have some knowledge of CSS and
+      PHP.</p>
       
       <h3>Mailing Lists</h3>
       
@@ -32,7 +63,7 @@
       
       <p>To get support if you&apos;re having problems installing or running
          jsXe please post to the Help forum. Any other comments and criticism
-         can be posted in- the open discussion forum.</p>
+         can be posted in the open discussion forum.</p>
       <ul>
         <li><a href="http://sourceforge.net/forum/forum.php?forum_id=197160">Open Discussion</a></li>
         <li><a href="http://sourceforge.net/forum/forum.php?forum_id=197161">Help</a></li>
