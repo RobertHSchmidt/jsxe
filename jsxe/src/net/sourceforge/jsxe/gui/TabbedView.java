@@ -399,7 +399,6 @@ public class TabbedView extends JFrame {
     }//}}}
     
     //{{{ updateRecentFilesMenu()
-    
     private void updateRecentFilesMenu() {
         /*
         TODO: Make this more efficient
@@ -501,7 +500,7 @@ public class TabbedView extends JFrame {
             m_fileMenu.add( menuItem );
             
             //Add recent files menu
-            m_recentFilesMenu = new EnhancedMenu(Messages.getMessage("File.Recent"), 20);
+            m_recentFilesMenu = new EnhancedMenu(Messages.getMessage("File.Recent"), jsXe.getIntegerProperty("menu.spill.over", 20));
             m_fileMenu.add(m_recentFilesMenu);
             
             m_fileMenu.addSeparator();

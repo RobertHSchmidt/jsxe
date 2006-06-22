@@ -2,6 +2,8 @@
 
     * Moved EnhancedMenu to it's own package. I will be creating a new menu
       class that is specially designed for jsXe's LocalizedActions
+    * Created a new option for how many items can be in menus before they spill
+      over.
 
 06/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
 

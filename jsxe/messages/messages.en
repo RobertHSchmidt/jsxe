@@ -66,6 +66,8 @@ Global.Options.network-off=Always cache without asking
 Global.Options.network-cache=Ask first, then cache remote files
 Global.Options.network-always=Always download without asking
 Global.Options.network=DTD and schema downloading:
+Global.Options.Menu.Spill.Over=Number of items before menus spill over
+
 
 Shortcuts.Options.Title=Shortcuts
 #}}}

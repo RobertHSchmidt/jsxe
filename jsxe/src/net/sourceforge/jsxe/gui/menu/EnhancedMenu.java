@@ -28,6 +28,7 @@ package net.sourceforge.jsxe.gui.menu;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.EBListener;
 //}}}
 
 //{{{ Java classes
@@ -46,7 +47,7 @@ import java.util.*;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class EnhancedMenu extends JMenu {
+public class EnhancedMenu extends JMenu implements EBListener {
     
     //{{{ EnhancedMenu constructor
     /**

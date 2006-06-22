@@ -74,6 +74,24 @@ public class GeneralOptionPane extends AbstractOptionPane {
         
         //}}}
         
+        //{{{ menu spill over
+        
+        int menuSpillOver = jsXe.getIntegerProperty("menu.spill.over", 20);
+        
+        Vector sizes2 = new Vector(4);
+        sizes2.add("10");
+        sizes2.add("20");
+        sizes2.add("30");
+        sizes2.add("40");
+        menuSpillOverComboBox = new JComboBox(sizes2);
+        menuSpillOverComboBox.setEditable(true);
+        menuSpillOverComboBox.setSelectedItem(Integer.toString(menuSpillOver));
+        
+        addComponent(Messages.getMessage("Global.Options.Menu.Spill.Over"),
+                     menuSpillOverComboBox,
+                     Messages.getMessage("Global.Options.Menu.Spill.Over.ToolTip"));
+        //}}}
+        
         //{{{ network
         
         String[] networkValues = {
@@ -87,7 +105,8 @@ public class GeneralOptionPane extends AbstractOptionPane {
         network.setSelectedIndex(jsXe.getIntegerProperty("xml.cache", 1));
         
         addComponent(Messages.getMessage("Global.Options.network"),
-                     network);
+                     network,
+                     Messages.getMessage("Global.Options.network.ToolTip"));
         
         //}}}
         
@@ -96,8 +115,12 @@ public class GeneralOptionPane extends AbstractOptionPane {
     //{{{ _save()
     protected void _save() {
         try {
-            //don't need to set dirty, no change to text
-            jsXe.setProperty("max.recent.files", (new Integer(maxRecentFilesComboBox.getSelectedItem().toString())).toString());
+            jsXe.setIntegerProperty("max.recent.files", Integer.parseInt(maxRecentFilesComboBox.getSelectedItem().toString()));
+        } catch (NumberFormatException nfe) {
+            //Bad input, don't save.
+        }
+        try {
+            jsXe.setIntegerProperty("menu.spill.over", Integer.parseInt(maxRecentFilesComboBox.getSelectedItem().toString()));
         } catch (NumberFormatException nfe) {
             //Bad input, don't save.
         }
@@ -111,6 +134,7 @@ public class GeneralOptionPane extends AbstractOptionPane {
     }//}}}
     
     //{{{ Private Members
+    private JComboBox menuSpillOverComboBox;
     private JComboBox maxRecentFilesComboBox;
     private JComboBox network;
     //}}}

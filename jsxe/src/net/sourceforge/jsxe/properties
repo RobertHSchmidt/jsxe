@@ -5,6 +5,7 @@
 # :folding=explicit:collapseFolds=1:
 
 max.recent.files=20
+menu.spill.over=20
 
 # Enable network operations
 xml.network=true
