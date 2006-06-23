@@ -53,7 +53,6 @@ public class EditFindAction extends LocalizedAction {
     //{{{ EditFindAction constructor
     public EditFindAction() {
         super("sourceview.find");
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl F"));
     }//}}}
     
     //{{{ getLabel()

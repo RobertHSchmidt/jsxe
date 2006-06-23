@@ -54,7 +54,6 @@ public class EditCutAction extends LocalizedAction {
     //{{{ EditCutAction constructor
     public EditCutAction() {
         super("sourceview.cut");
-      // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
     }//}}}
     
     //{{{ getLabel()
