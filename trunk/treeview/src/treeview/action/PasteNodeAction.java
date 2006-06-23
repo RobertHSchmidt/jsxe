@@ -74,7 +74,6 @@ public class PasteNodeAction extends LocalizedAction {
      */
     public PasteNodeAction() {
         super("treeview.paste.node");
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl V"));
     }//}}}
     
     //{{{ getLabel()

@@ -69,7 +69,6 @@ public class CopyNodeAction extends LocalizedAction {
      */
     public CopyNodeAction() {
         super("treeview.copy.node");
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl C"));
     }//}}}
     
     //{{{ getLabel()
