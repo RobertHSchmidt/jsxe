@@ -20,3 +20,9 @@ tree.show.attributes=ID only
 #default size for edit doc type dialog
 treeview.editdoctypenode.width=200
 treeview.editdoctypenode.height=100
+
+#{{{ Default key bindings
+treeview.copy.node.shortcut=ctrl C
+treeview.cut.node.shortcut=ctrl X
+treeview.paste.node.shortcut=ctrl V
+#}}}
