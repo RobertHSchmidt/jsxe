@@ -53,9 +53,7 @@ public class EditCopyAction extends LocalizedAction {
     
     //{{{ EditCopyAction constructor
     public EditCopyAction() {
-        //putValue(Action.NAME, "Copy");
         super("sourceview.copy");
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl C"));
     }//}}}
     
     //{{{ getLabel()

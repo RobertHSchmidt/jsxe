@@ -23,3 +23,10 @@ source.close-complete-open=false
 
 #end of line markers
 source.end-of-line-markers=true
+
+#{{{ Default key bindings
+sourceview.copy.shortcut=ctrl C
+sourceview.cut.shortcut=ctrl X
+sourceview.paste.shortcut=ctrl V
+sourceview.find.shortcut=ctrl F
+#}}}
