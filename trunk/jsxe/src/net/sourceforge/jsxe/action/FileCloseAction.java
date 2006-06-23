@@ -59,7 +59,6 @@ public class FileCloseAction extends LocalizedAction {
     //{{{ FileCloseAction constructor
     public FileCloseAction() {
         super("close-file");
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl W"));
     }//}}}
     
     //{{{ actionPerformed()

@@ -326,6 +326,11 @@ public class TabbedView extends JFrame {
     protected void processKeyEvent(KeyEvent e) {
         //TODO: process shortcuts
         Log.log(Log.DEBUG, this, e.toString());
+        /*
+        TODO: We should process all key events here instead of having Swing
+        process them. Since we don't know which would be added to menus and
+        which aren't.
+        */
         super.processKeyEvent(e);
     }//}}}
     

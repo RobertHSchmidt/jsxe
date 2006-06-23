@@ -87,21 +87,23 @@ public class ActionManager {
      * @param name the name of the action.
      */
     public static Action getAction(String name) {
+        Log.log(Log.NOTICE, ActionManager.class, "Loading key bindings.");
         Action action = (Action)m_actionMap.get(name);
         if (action == null) {
             LocalizedAction editAction = getLocalizedAction(name);
             if (editAction != null) {
                 action = new Wrapper(name);
                 
-                if (editAction == null) {
-                    String dispName = editAction.getLabel();
-                    String keyBinding = jsXe.getProperty(name+".shortcut");
-                    
-                    action.putValue(Action.NAME, dispName);
-                    
-                    if (keyBinding != null) {
-                        action.putValue(Action.ACCELERATOR_KEY, keyBinding);
-                    }
+                String dispName = editAction.getLabel();
+                //TODO: add method for setting menu mnemonic from label
+                
+                String keyBinding = jsXe.getProperty(name+".shortcut");
+                
+                action.putValue(Action.NAME, dispName);
+                
+                if (keyBinding != null) {
+                    action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(keyBinding));
+                    Log.log(Log.NOTICE, ActionManager.class, "Loaded key binding for "+name+": "+keyBinding);
                 }
                 
                 m_actionMap.put(name, action);
@@ -149,7 +151,11 @@ public class ActionManager {
                         if (msg.getKey().endsWith(".shortcut")) {
                             String actionName = msg.getKey().substring(0, msg.getKey().lastIndexOf("."));
                             String keyBinding = jsXe.getProperty(msg.getKey());
-                            addKeyBinding(keyBinding, actionName);
+                            if (keyBinding != null) {
+                                addKeyBinding(keyBinding, actionName);
+                            } else {
+                                removeKeyBinding(msg.getOldValue());
+                            }
                         }
                     }
                 }//}}}
@@ -191,6 +197,8 @@ public class ActionManager {
         if (action != null && keyBinding != null) {
             Action wrapper = getAction(action.getName());
             m_keyBindingMap.put(keyBinding,wrapper);
+            
+            //need to do this so that the accelerator key is rendered on menu items
             wrapper.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(keyBinding));
         }
     }//}}}

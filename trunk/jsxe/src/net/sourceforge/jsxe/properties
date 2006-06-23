@@ -51,4 +51,10 @@ metal.secondary.fontsize=12
 metal.secondary.fontstyle=0
 #}}}
 
-
+#{{{ Default key bindings
+open-file.shortcut=ctrl O
+exit.shortcut=ctrl Q
+close-file.shortcut=ctrl W
+new-file.shortcut=ctrl N
+save-file.shortcut=ctrl S
+#}}}
