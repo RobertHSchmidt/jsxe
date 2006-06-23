@@ -59,7 +59,6 @@ public class FileSaveAction extends LocalizedAction {
     //{{{ FileSaveAction constructor
     public FileSaveAction() {
         super("save-file");
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl S"));
     }//}}}
     
     //{{{ invoke()

@@ -50,7 +50,6 @@ public class FileExitAction extends LocalizedAction {
     //{{{ FileExitAction constructor
     public FileExitAction() {
         super("exit");
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl Q"));
     }//}}}
     
     //{{{ invoke()

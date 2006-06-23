@@ -58,7 +58,6 @@ public class FileOpenAction extends LocalizedAction {
     //{{{ FileOpenAction constructor
     public FileOpenAction() {
         super("open-file");
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl O"));
     }//}}}
     
     //{{{ invoke()

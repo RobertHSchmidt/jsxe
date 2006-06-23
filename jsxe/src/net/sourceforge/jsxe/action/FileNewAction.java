@@ -55,7 +55,6 @@ public class FileNewAction extends LocalizedAction {
     //{{{ FileNewAction constructor
     public FileNewAction() {
         super("new-file");
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl N"));
     }//}}}
     
     //{{{ invoke()
