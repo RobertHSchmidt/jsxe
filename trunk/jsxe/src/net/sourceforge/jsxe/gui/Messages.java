@@ -195,7 +195,6 @@ public class Messages {
      * This method should only be called on jsXe startup.
      */
     public static void loadPluginMessages(Properties pluginMessages) {
-        Log.log(Log.MESSAGE, Messages.class, "Loading plugin messages");
         Enumeration names = pluginMessages.propertyNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement().toString();
