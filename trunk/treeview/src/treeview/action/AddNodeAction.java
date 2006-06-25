@@ -117,15 +117,19 @@ public class AddNodeAction extends LocalizedAction {
             if (selectedNode != null) {
                 try {
                     if (m_element != null) {
-                        EditTagDialog dialog = new EditTagDialog(jsXe.getActiveView(),
-                                                                 m_element,
-                                                                 new HashMap(),
-                                                                 m_element.empty,
-                                                                 m_element.completionInfo.getEntityHash(),
-                                                                 new ArrayList(), //don't support IDs for now.
-                                                                 selectedNode.getOwnerDocument());
-                        dialog.show();
-                        addedNode = selectedNode.addAdapterNode(dialog.getNewNode());
+                        if (m_element.getAttributes().size() > 0) {
+                            EditTagDialog dialog = new EditTagDialog(jsXe.getActiveView(),
+                                                                     m_element,
+                                                                     new HashMap(),
+                                                                     m_element.empty,
+                                                                     m_element.completionInfo.getEntityHash(),
+                                                                     new ArrayList(), //don't support IDs for now.
+                                                                     selectedNode.getOwnerDocument());
+                            dialog.show();
+                            addedNode = selectedNode.addAdapterNode(dialog.getNewNode());
+                        } else {
+                            addedNode = selectedNode.addAdapterNode(m_element.name, null, AdapterNode.ELEMENT_NODE, selectedNode.childCount());
+                        }
                     } else {
                         //add the node of the correct type to the end of the children of this node
                         addedNode = selectedNode.addAdapterNode(m_name, m_value, m_nodeType, selectedNode.childCount());

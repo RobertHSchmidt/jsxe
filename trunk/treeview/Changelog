@@ -1,3 +1,9 @@
+06/25/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Feature Request 1494444: Updated the tree view so that if no attributes
+      are defined in the Schema/DTD for the element then the Edit Node dialog
+      will not be displayed.
+
 06/23/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added back rudimentary key bindings using Swing Actions so they get
