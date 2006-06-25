@@ -87,7 +87,6 @@ public class ActionManager {
      * @param name the name of the action.
      */
     public static Action getAction(String name) {
-        Log.log(Log.NOTICE, ActionManager.class, "Loading key bindings.");
         Action action = (Action)m_actionMap.get(name);
         if (action == null) {
             LocalizedAction editAction = getLocalizedAction(name);
@@ -103,7 +102,6 @@ public class ActionManager {
                 
                 if (keyBinding != null) {
                     action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(keyBinding));
-                    Log.log(Log.NOTICE, ActionManager.class, "Loaded key binding for "+name+": "+keyBinding);
                 }
                 
                 m_actionMap.put(name, action);
@@ -139,6 +137,7 @@ public class ActionManager {
      * do nothing.
      */
     public static void initKeyBindings() {
+        Log.log(Log.NOTICE, ActionManager.class, "Loading key bindings.");
         if (!initialized) {
             
             //Add EditBus Listener to update key bindings when properties are changed
@@ -169,7 +168,10 @@ public class ActionManager {
                 for (int i=0; i<actions.length; i++) {
                     String actionName = actions[i].getName();
                     String keyBinding = jsXe.getProperty(actionName+".shortcut");
-                    addKeyBinding(keyBinding, actions[i]);
+                    if (keyBinding != null) {
+                        addKeyBinding(keyBinding, actions[i]);
+                        Log.log(Log.NOTICE, ActionManager.class, "Loaded key binding for "+actionName+": "+keyBinding);
+                    }
                 }
             }
             
