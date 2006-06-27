@@ -247,7 +247,14 @@ public class ActionManager {
      */
     public static void handleKey(KeyEvent event) {
         KeyStroke key = KeyStroke.getKeyStrokeForEvent(event);
+        
+        //Gets the action for the KeyStroke.
         Action action = (Action)m_keyBindingMap.get(key);
+        if (action != null) {
+            Log.log(Log.DEBUG, ActionManager.class, "Key mapping match for "+((Wrapper)action).getName());
+            action.actionPerformed(translateKeyEvent(event));
+            event.consume();
+        }
     }//}}}
     
     //{{{ Wrapper class
@@ -279,6 +286,11 @@ public class ActionManager {
         //{{{ actionPerformed()
         public void actionPerformed(ActionEvent evt) {
             invokeAction(m_action, evt);
+        }//}}}
+        
+        //{{{ getName()
+        public String getName() {
+            return m_action.getName();
         }//}}}
         
         //{{{ Private members
@@ -322,6 +334,15 @@ public class ActionManager {
             action.putValue(Action.ACCELERATOR_KEY, null);
             m_keyBindingMap.remove(key);
         }
+    }//}}}
+    
+    //{{{ translateKeyEvent()
+    public static ActionEvent translateKeyEvent(KeyEvent evt) {
+        ActionEvent event = new ActionEvent(evt.getSource(),
+                                            (int)ActionEvent.KEY_EVENT_MASK,
+                                            "",
+                                            evt.getModifiers());
+        return event;
     }//}}}
     
     //}}}
