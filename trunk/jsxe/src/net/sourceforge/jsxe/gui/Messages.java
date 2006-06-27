@@ -111,7 +111,11 @@ public class Messages {
         }
         
         //search in order, localized messages->default messages->plugin messages
-        return m_propertiesObject.getProperty(propertyName, m_defaultProperties.getProperty(propertyName, m_pluginMessages.getProperty(propertyName)));
+        String message = m_propertiesObject.getProperty(propertyName, m_defaultProperties.getProperty(propertyName, m_pluginMessages.getProperty(propertyName)));
+        if (message == null) {
+            Log.log(Log.WARNING, Messages.class, "Unregistered message requested: "+propertyName);
+        }
+        return message;
     }//}}}
     
     //{{{ getMessage()

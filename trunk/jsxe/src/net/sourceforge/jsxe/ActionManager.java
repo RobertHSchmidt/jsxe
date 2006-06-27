@@ -29,18 +29,32 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe;
 
 //{{{ imports
-import net.sourceforge.jsxe.gui.TabbedView;
+
+//{{{ jsXe classes
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.GUIUtilities;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.msg.PropertyChanged;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
+//}}}
+
+//{{{ Java classes
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
+//}}}
+
+//{{{ Swing classes
+import javax.swing.Action;
+import javax.swing.AbstractAction;
+import javax.swing.KeyStroke;
+//}}}
+
+//{{{ AWT classes
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+//}}}
+
 //}}}
 
 /**
@@ -198,10 +212,11 @@ public class ActionManager {
     public static void addKeyBinding(String keyBinding, LocalizedAction action) {
         if (action != null && keyBinding != null) {
             Action wrapper = getAction(action.getName());
-            m_keyBindingMap.put(keyBinding,wrapper);
+            KeyStroke key = KeyStroke.getKeyStroke(keyBinding);
+            m_keyBindingMap.put(key,wrapper);
             
             //need to do this so that the accelerator key is rendered on menu items
-            wrapper.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(keyBinding));
+            wrapper.putValue(Action.ACCELERATOR_KEY, key);
         }
     }//}}}
     
@@ -211,11 +226,7 @@ public class ActionManager {
 	 * @param keyBinding The key binding
 	 */
     public static void removeKeyBinding(String keyBinding) {
-        Action action = (Action)m_keyBindingMap.get(keyBinding);
-        if (action != null) {
-            action.putValue(Action.ACCELERATOR_KEY, null);
-            m_keyBindingMap.remove(keyBinding);
-        }
+        removeKeyBinding(KeyStroke.getKeyStroke(keyBinding));
     }//}}}
     
 	//{{{ removeAllKeyBindings()
@@ -225,8 +236,18 @@ public class ActionManager {
     public static void removeAllKeyBindings() {
         Iterator itr = m_keyBindingMap.keySet().iterator();
         while (itr.hasNext()) {
-            removeKeyBinding(itr.next().toString());
+            removeKeyBinding((KeyStroke)itr.next());
         }
+    }//}}}
+    
+    //{{{ handleKey()
+    /**
+     * Handles a key event. If the event matches any key bindings the
+     * associated action is invoked.
+     */
+    public static void handleKey(KeyEvent event) {
+        KeyStroke key = KeyStroke.getKeyStrokeForEvent(event);
+        Action action = (Action)m_keyBindingMap.get(key);
     }//}}}
     
     //{{{ Wrapper class
@@ -283,12 +304,25 @@ public class ActionManager {
     private static void invokeAction(LocalizedAction action, ActionEvent evt) {
         if (action != null) {
             Log.log(Log.MESSAGE, ActionManager.class, "Invoking action "+action.getName());
-            action.invoke((TabbedView)MiscUtilities.getComponentParent((java.awt.Component)evt.getSource(), TabbedView.class), evt);
+            action.invoke(GUIUtilities.getView((java.awt.Component)evt.getSource()), evt);
         }
     }//}}}
     
     //{{{ ActionManager constructor
     private ActionManager() {}//}}}
+    
+    //{{{ removeKeyBinding()
+	/**
+	 * Removes a key binding.
+	 * @param keyBinding The key binding
+	 */
+    public static void removeKeyBinding(KeyStroke key) {
+        Action action = (Action)m_keyBindingMap.get(key);
+        if (action != null) {
+            action.putValue(Action.ACCELERATOR_KEY, null);
+            m_keyBindingMap.remove(key);
+        }
+    }//}}}
     
     //}}}
 }

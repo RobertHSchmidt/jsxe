@@ -1,10 +1,10 @@
 /*
-AbstractOptionPane.java
+GridPane.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
 Copyright (C) 1998, 1999, 2000, 2001, 2002 Slava Pestov
-Portions Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
+Portions Copyright (C) 2006 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

@@ -25,10 +25,15 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package net.sourceforge.jsxe;
 
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import javax.swing.UIManager;
 import java.io.File;
+import java.util.Vector;
+import java.util.Enumeration;
 
 /**
  * Operating system detection routines.
@@ -72,6 +77,84 @@ public class OperatingSystem {
         
         return new Rectangle(x,y,w,h);
     }//}}}
+    
+    //{{{ getScreenBounds() method
+    /**
+     * Returns the bounds of the (virtual) screen that the window should be in
+     * @param window The bounds of the window to get the screen for
+     * @since jsXe 0.5 pre1
+     */
+    public static final Rectangle getScreenBounds(Rectangle window) {
+        GraphicsDevice[] gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+        Vector intersects = new Vector();
+
+        // Get available screens
+        // O(n^3), this is nasty, but since we aren't dealling with
+        // many items it should be fine
+        for (int i=0; i < gd.length; i++) {
+            GraphicsConfiguration gc = gd[i].getDefaultConfiguration();
+            // Don't add duplicates
+            if (window.intersects(gc.getBounds())) {
+                for (Enumeration e = intersects.elements(); e.hasMoreElements();) {
+                    GraphicsConfiguration gcc = (GraphicsConfiguration)e.nextElement();
+                    if (gcc.getBounds().equals(gc.getBounds())) {
+                        break;
+                    }
+                }
+                intersects.add(gc);
+            }
+        }
+        
+        GraphicsConfiguration choice = null;
+        if (intersects.size() > 0) {
+            // Pick screen with largest intersection
+            for (Enumeration e = intersects.elements(); e.hasMoreElements();) {
+                GraphicsConfiguration gcc = (GraphicsConfiguration)e.nextElement();
+                if (choice == null) {
+                    choice = gcc;
+                } else {
+                    Rectangle int1 = choice.getBounds().intersection(window);
+                    Rectangle int2 = gcc.getBounds().intersection(window);
+                    int area1 = int1.width * int1.height;
+                    int area2 = int2.width * int2.height;
+                    if (area2 > area1) {
+                        choice = gcc;
+                    }
+                }
+            }
+        } else {
+            choice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+        }
+        
+        // Make adjustments for some OS's
+        int screenX = (int)choice.getBounds().x;
+        int screenY = (int)choice.getBounds().y;
+        int screenW = (int)choice.getBounds().width;
+        int screenH = (int)choice.getBounds().height;
+        int x, y, w, h;
+        
+        if (isMacOS()) {
+            x = screenX;
+            y = screenY + 22;
+            w = screenW;
+            h = screenH - y - 4;//shadow size
+        } else {
+            if (isWindows()) {
+                x = screenX - 4;
+                y = screenY - 4;
+                w = screenW - 2*x;
+                h = screenH - 2*y;
+            } else {
+                x = screenX;
+                y = screenY;
+                w = screenW;
+                h = screenH;
+            }
+        }
+        
+        // Yay, we're finally there
+        return new Rectangle(x,y,w,h);
+    } //}}}
     
     //{{{ isDOSDerived() method
     /**
