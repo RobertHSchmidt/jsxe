@@ -25,11 +25,23 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.options;
 
 //{{{ imports
+
+//{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.CatalogManager;
+import net.sourceforge.jsxe.ActionSet;
+import net.sourceforge.jsxe.ActionManager;
 import net.sourceforge.jsxe.gui.Messages;
-import javax.swing.JComboBox;
+import net.sourceforge.jsxe.util.MiscUtilities;
+//}}}
+
+//{{{ Swing classes
+import javax.swing.table.*;
+//}}}
+
+//{{{ Java classses
 import java.util.Vector;
+//}}}
+
 //}}}
 
 /**
@@ -38,6 +50,7 @@ import java.util.Vector;
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @since 0.5 pre1
  * @see net.sourceforge.jsxe.gui.GlobalOptionsDialog
  */
 public class ShortcutsOptionPane extends AbstractOptionPane {
@@ -68,6 +81,43 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
     }//}}}
     
     //{{{ Private Members
+    
+    //{{{ ActionSetTableModel class
+    private class ActionSetTableModel extends AbstractTableModel {
+        
+        //{{{ ActionSetTableModel constructor
+        public ActionSetTableModel(ActionSet set) {
+            //TODO: need to use key bindings from the GrabKeyDialog
+            String[] names = set.getActionNames();
+            m_set = new Vector(names.length);
+            
+            for (int i = 0; i < names.length; i++) {
+                String label = ActionManager.getLocalizedAction(names[i]).getLabel();
+                m_set.add(label);
+            }
+            MiscUtilities.quicksort(m_set, new MiscUtilities.StringCompare());
+        }//}}}
+        
+        //{{{ getColumnCount()
+        public int getColumnCount() {
+            return 2;
+        }//}}}
+        
+        //{{{ getRowCount()
+        public int getRowCount() {
+            return m_set.size();
+        }//}}}
+        
+        //{{{ getValueAt()
+        public Object getValueAt(int row, int column) {
+            return null;
+        }//}}}
+        
+        //{{{ Private members
+        private Vector m_set;
+        //}}}
+        
+    }//}}}
     
     //}}}
     

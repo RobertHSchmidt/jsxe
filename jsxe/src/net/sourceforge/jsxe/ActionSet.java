@@ -116,7 +116,22 @@ public class ActionSet {
    public int getActionCount() {
       return actions.size();
    }//}}}
-
+   
+   //{{{ getActionNames() method
+	/**
+	 * Returns an array of all action names in this action set.
+	 * @since jsXe 0.5 pre1
+	 */
+	public String[] getActionNames() {
+		String[] retVal = new String[actions.size()];
+		Enumeration e = actions.keys();
+		int i = 0;
+		while(e.hasMoreElements()) {
+			retVal[i++] = (String)e.nextElement();
+		}
+		return retVal;
+	} //}}}
+   
    //{{{ getActions()
    /**
     * Returns an array of all actions in this action set.

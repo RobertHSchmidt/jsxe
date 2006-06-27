@@ -1,3 +1,9 @@
+06/27/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added the GUIUtilities class for handling utility functions in jsXe.
+    * Added the GrabKeyDialog which will be used to assign shortcuts.
+    * Updated many classes for supporting shortcuts.
+
 06/23/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added back rudimentary key bindings using Swing Actions so they get
