@@ -67,8 +67,8 @@
           
       <ul>
         <li>A schema designer view that uses <a href="http://www.jgraph.com/">JGraph</a></li>
-        <li>Support for transforming XML documents using XSLT
-            stylesheets.</li>
+        <li>A docbook editor view using <a href="http://vex.sourceforge.net/">Vex</a></li>
+        <li>Support for transforming XML documents using XSLT stylesheets.</li>
         <li>Support for Unlimited Undo (version 0.5 beta)</li>
         <li>Tag completion using DTD/Schema introspection (version 0.5 beta)</li>
         <li>Automatic insertion of closing tags (version 0.5 beta)</li>
