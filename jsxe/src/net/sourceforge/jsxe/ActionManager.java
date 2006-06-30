@@ -58,7 +58,16 @@ import java.awt.event.KeyEvent;
 //}}}
 
 /**
- * The ActionManager handles key bindings within jsXe.
+ * <p>The ActionManager handles key bindings within jsXe. Key bindings can be
+ * set editor wide via the shortcuts option pane in the global options dialog.</p>
+ *
+ * <p>While most actions are editor wide, some are editor wide but the
+ * implementations are view specific. These include Cut/Copy/Paste/Find which
+ * are common among different views thought their implementation will be
+ * provided by the view. These actions will be named using the format
+ * <i>viewname</i>.<i>actionname</i> (ex. <i>treeview</i>.<i>cut</i>).
+ * these special actions will have a single key binding associated with them
+ * but when invoked will activate view specific code provided by the plugin.</p>
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
