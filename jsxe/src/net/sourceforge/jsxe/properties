@@ -10,7 +10,7 @@ menu.spill.over=20
 # Enable network operations
 xml.network=true
 
-# Resource Eache
+# Resource Cache
 xml.cache=true
 
 #{{{ Plugin Manager Default Dimensions
