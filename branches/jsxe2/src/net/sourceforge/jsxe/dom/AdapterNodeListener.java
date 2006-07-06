@@ -46,9 +46,6 @@ import org.w3c.dom.NodeList;
 
 //}}}
 
-/**
- * @deprecated
- */
 public interface AdapterNodeListener {
     
     //{{{ nodeAdded()
