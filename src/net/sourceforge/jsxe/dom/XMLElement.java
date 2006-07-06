@@ -35,7 +35,7 @@ import java.util.HashMap;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @see XMLDocument
- * @since jsXe 0.5 pre1
+ * @since jsXe 0.5 pre2
  */
 public class XMLElement extends XMLNode {
     
@@ -43,8 +43,25 @@ public class XMLElement extends XMLNode {
     /**
      * Creates a new XMLElement
      * @param document the document that owns this element
+     * @param localName the local name of the element.
      */
-    XMLElement(XMLDocument document) {
+    XMLElement(XMLDocument document, String localName) throws XMLException {
+        super(document);
+        setLocalName(localName);
+        m_attributes = new HashMap();
+    }//}}}
+    
+    //{{{ XMLElement constructor
+    /**
+     * Creates a new XMLElement
+     * @param document the document that owns this element
+     * @param prefix the namespace prefix for this element
+     * @param localName the local name of the element.
+     */
+    XMLElement(XMLDocument document, String prefix, String localName) throws XMLException {
+        super(document);
+        setNSPrefix(prefix);
+        setLocalName(localName);
         m_attributes = new HashMap();
     }//}}}
     
@@ -54,6 +71,17 @@ public class XMLElement extends XMLNode {
      */
     public HashMap getAttributes() {
         return m_attributes;
+    }//}}}
+    
+    //{{{ getNodeType()
+    public int getNodeType() {
+        return ELEMENT_NODE;
+    }//}}}
+    
+    //{{{ setLocalName()
+    public void setLocalName(String localName) throws XMLException {
+        //TODO: error checking for invalid name
+        super.setLocalName(localName);
     }//}}}
     
     //{{{ Private Members

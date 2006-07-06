@@ -62,7 +62,6 @@ import org.w3c.dom.*;
  * @version $Id$
  * @see XMLDocument
  * @see XMLDocument#addAdapterNode(AdapterNode, String, String, short)
- * @deprecated
  */
 public class AdapterNode {
     

@@ -999,7 +999,7 @@ public class XMLDocument {
      * in the event that specs that will alter how the document is serialized or
      * parsed are changed.
      * @param location the location of the change. null if unknown
-     * @deprecated structureCHange
+     * @deprecated use fireInsert() or fireRemove() instead.
      */
     protected void fireStructureChanged(AdapterNode location) {
         ListIterator iterator = listeners.listIterator();

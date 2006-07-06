@@ -35,7 +35,7 @@ package net.sourceforge.jsxe.dom;
  * @version $Id$
  * @see XMLDocument
  * @see XMLNode
- * @since jsXe 0.5 pre1
+ * @since jsXe 0.5 pre2
  */
 public class XMLException extends RuntimeException {
     
