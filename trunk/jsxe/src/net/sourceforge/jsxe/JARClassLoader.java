@@ -191,7 +191,31 @@ public class JARClassLoader extends ClassLoader {
         
         return null;
     }//}}}
-
+    
+    //{{{ getPluginResources()
+    /**
+     * Finds all resources matching the name in the jar files specified in the
+     * search path. The search path is specified by the
+     * {@link addJarFile(String)}, {@link addJarFile(File)}, and
+     * {@link addDirectory(String)} methods.
+     * @param name the name of the resources to find
+     */
+    public Enumeration getPluginResources(String name) throws IOException {
+        return findResources(name);
+    }//}}}
+    
+    //{{{ getPluginResource()
+    /**
+     * Finds the first resource matching the name in the jar files specified
+     * in the search path. The search path is specified by the
+     * {@link addJarFile(String)}, {@link addJarFile(File)}, and
+     * {@link addDirectory(String)} methods.
+     * @param name the name of the resources to find
+     */
+    public URL getPluginResource(String name) {
+        return findResource(name);
+    }//}}}
+    
     //}}}
     
     //{{{ addJarFile()
@@ -703,22 +727,22 @@ public class JARClassLoader extends ClassLoader {
             checkDependencies(jarfile);
             
             //load the plugin's localized messages
-            Log.log(Log.NOTICE, this, "Loading localized messages for plugin: "+pluginName);
-            Properties pluginMessages = new Properties();
-            try {
-                InputStream stream = jarfile.getInputStream(jarfile.getEntry("messages/messages.en"));
-                pluginMessages.load(stream);
-                Messages.loadPluginMessages(pluginMessages);
-            } catch (IOException e) {
-                Log.log(Log.WARNING, this, "Plugin "+pluginName+" does not have default messages.en");
-            }
-            try {
-                InputStream stream = jarfile.getInputStream(jarfile.getEntry("messages/messages."+Messages.getLanguage()));
-                pluginMessages.load(stream);
-                Messages.loadPluginMessages(pluginMessages);
-            } catch (IOException e) {
-                Log.log(Log.WARNING, this, "Plugin "+pluginName+" does not have localized messages."+Messages.getLanguage());
-            }
+           // Log.log(Log.NOTICE, this, "Loading localized messages for plugin: "+pluginName);
+           // Properties pluginMessages = new Properties();
+           // try {
+           //     InputStream stream = jarfile.getInputStream(jarfile.getEntry("messages/messages.en"));
+           //     pluginMessages.load(stream);
+           //     Messages.loadPluginMessages(pluginMessages);
+           // } catch (IOException e) {
+           //     Log.log(Log.WARNING, this, "Plugin "+pluginName+" does not have default messages.en");
+           // }
+           // try {
+           //     InputStream stream = jarfile.getInputStream(jarfile.getEntry("messages/messages."+Messages.getLanguage()));
+           //     pluginMessages.load(stream);
+           //     Messages.loadPluginMessages(pluginMessages);
+           // } catch (IOException e) {
+           //     Log.log(Log.WARNING, this, "Plugin "+pluginName+" does not have localized messages."+Messages.getLanguage());
+           // }
             
             Class pluginClass = loadClass(mainPluginClass);
             
