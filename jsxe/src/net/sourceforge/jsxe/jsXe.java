@@ -123,7 +123,7 @@ public class jsXe {
             if(!_pluginsDirectory.exists())
                 _pluginsDirectory.mkdirs();
             
-            String jsXeHome = System.getProperty("jsxe.home");
+            jsXeHome = System.getProperty("jsxe.home");
             if (jsXeHome == null) {
                 String classpath = System.getProperty("java.class.path");
                 int index = classpath.toLowerCase().indexOf("jsxe.jar");
@@ -141,10 +141,6 @@ public class jsXe {
                 }
             }
             
-            //}}}
-            
-            //{{{ start locale
-            Messages.initLocale(null, jsXeHome+fileSep+"messages");
             //}}}
             
             //{{{ get and load the configuration files
@@ -457,6 +453,23 @@ public class jsXe {
     public static ImageIcon getIcon() {
         return jsXeIcon;
     }//}}}
+    
+    //{{{ getHomeDirectory() method
+    /**
+     * Returns the path to where jsXe is installed
+     */
+    public static String getInstallDirectory() {
+        return jsXeHome;
+    } //}}}
+    
+    
+    //{{{ getHomeDirectory() method
+    /**
+     * Returns the path to the user's home directory.
+     */
+    public static String getHomeDirectory() {
+        return m_homeDirectory;
+    } //}}}
     
     //{{{ getSettingsDirectory() method
     /**
@@ -1336,6 +1349,7 @@ public class jsXe {
     private static TabbedView m_activeView;
     private static String m_settingsDirectory;
     private static String m_homeDirectory;
+    private static String jsXeHome;
     
     private static OptionPane jsXeOptions;
     //}}}
