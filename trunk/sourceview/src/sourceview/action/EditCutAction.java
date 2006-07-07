@@ -53,7 +53,7 @@ public class EditCutAction extends LocalizedAction {
     
     //{{{ EditCutAction constructor
     public EditCutAction() {
-        super("sourceview.cut");
+        super(SourceViewPlugin.PLUGIN_NAME+".cut");
     }//}}}
     
     //{{{ getLabel()

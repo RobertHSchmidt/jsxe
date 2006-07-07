@@ -83,14 +83,10 @@ import java.util.ArrayList;
  */
 public class SourceView extends JPanel implements DocumentView, EBListener {
     
-    //{{{ Private static members
-    private static final String _VIEWNAME = "source";
-    //}}}
-    
     //{{{ Public static members
-    public static final String SOFT_TABS = _VIEWNAME+".soft.tabs";
-    public static final String LAST_FIND_STRING = _VIEWNAME+".last.find.string";
-    public static final String END_OF_LINE_MARKS = _VIEWNAME+".end-of-line-markers";
+    public static final String SOFT_TABS = SourceViewPlugin.PLUGIN_NAME+".soft.tabs";
+    public static final String LAST_FIND_STRING = SourceViewPlugin.PLUGIN_NAME+".last.find.string";
+    public static final String END_OF_LINE_MARKS = SourceViewPlugin.PLUGIN_NAME+".end-of-line-markers";
     //}}}
     
     //{{{ SourceView constructor
@@ -138,14 +134,16 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
         //{{{ create popup menu
         
         JPopupMenu popup = new JPopupMenu();
-        JMenuItem menuItem = new JMenuItem(ActionManager.getAction("sourceview.cut"));
+        JMenuItem menuItem = new JMenuItem(ActionManager.getAction("cut"));
         popup.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("sourceview.copy"));
+        menuItem = new JMenuItem(ActionManager.getAction("copy"));
         popup.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("sourceview.paste"));
+        menuItem = new JMenuItem(ActionManager.getAction("paste"));
         popup.add(menuItem);
         popup.addSeparator();
-        menuItem = new JMenuItem(ActionManager.getAction("sourceview.find"));
+        menuItem = new JMenuItem(ActionManager.getAction("find"));
+        popup.add(menuItem);
+        menuItem = new JMenuItem(ActionManager.getAction("findnext"));
         popup.add(menuItem);
         
         m_textarea.setRightClickPopup(popup);
@@ -165,17 +163,17 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
        // menuItem.addActionListener( new EditRedoAction() );
        // menu.add(menuItem);
        // menu.addSeparator();
-        menuItem = new JMenuItem(ActionManager.getAction("sourceview.cut"));
+        menuItem = new JMenuItem(ActionManager.getAction("cut"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("sourceview.copy"));
+        menuItem = new JMenuItem(ActionManager.getAction("copy"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("sourceview.paste"));
+        menuItem = new JMenuItem(ActionManager.getAction("paste"));
         m_editMenu.add(menuItem);
         m_editMenu.addSeparator();
-        menuItem = new JMenuItem(ActionManager.getAction("sourceview.find"));
+        menuItem = new JMenuItem(ActionManager.getAction("find"));
         m_editMenu.add(menuItem);
-       // menuItem = new JMenuItem(new EditFindNextAction());
-       // menu.add(menuItem);
+        menuItem = new JMenuItem(ActionManager.getAction("findnext"));
+        m_editMenu.add(menuItem);
         //}}}
         
         setDocumentBuffer(document);
@@ -308,52 +306,6 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
     //}}}
     
     //{{{ Private members
-    
-    //{{{ EditUndoAction class
-    
-    private class EditUndoAction implements ActionListener {
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            //undo does nothing for now
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ EditRedoAction class
-    
-    private class EditRedoAction implements ActionListener {
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            //redo action does nothing for now.
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ EditFindNextAction class
-    
-    private class EditFindNextAction extends AbstractAction {
-        
-        //{{{ EditFindNextAction constructor
-        
-        public EditFindNextAction() {
-            //putValue(Action.NAME, "Find Next");
-        	putValue(Action.NAME,  Messages.getMessage("SourceView.FindNext"));
-            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl G"));
-            putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("N").getKeyCode()));
-        }//}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            //use previous find string
-            
-        }//}}}
-        
-    }//}}}
     
     //{{{ SourceViewXMLDocumentListener class
     

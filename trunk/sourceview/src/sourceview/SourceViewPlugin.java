@@ -55,6 +55,8 @@ import java.util.Properties;
  */
 public class SourceViewPlugin extends ViewPlugin {
     
+    public static final String PLUGIN_NAME = "sourceview";
+    
     //{{{ SourceViewPlugin
     
     public SourceViewPlugin() {
