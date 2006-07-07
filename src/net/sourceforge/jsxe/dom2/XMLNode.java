@@ -22,7 +22,7 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package net.sourceforge.jsxe.dom;
+package net.sourceforge.jsxe.dom2;
 
 //{{{ imports
 
@@ -54,7 +54,7 @@ import org.w3c.dom.events.*;
  * @see XMLDocument
  * @since jsXe 0.5 pre2
  */
-public abstract class XMLNode {
+public abstract class XMLNode /* implements javax.swing.text.Element */ {
     
     private static final String USER_DATA_KEY = "net.sourceforge.jsxe.dom.XMLNode";
     
