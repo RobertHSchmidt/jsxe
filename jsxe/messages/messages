@@ -150,6 +150,8 @@ DocumentView.Not.Found=No plugin a with name of {0} exists.
 #{{{ Plugin Load Messages
 
 # {0} plugin name
+Plugin.Error.title=Plugin Error
+Plugin.Error.List.message=The following plugins could not be loaded:
 Plugin.Load.Already.Loaded=Plugin {0} already loaded.
 Plugin.Load.Wrong.Main.Class=Main class is not a plugin class.
 Plugin.Load.No.Plugin.Class=No plugin class defined.
@@ -184,9 +186,10 @@ Plugin.Dependency.Failed.Load={0} requires plugin {1} but {1} did not load prope
 #}}}
 
 #{{{ Error Messages
-No.Xerces.Error={0} not found. jsXe requires Apache {0}.
-No.Xerces.Error.Title={0} not found.
-IO.Error.Title=I/O Error
+No.Xerces.Error.message={0} not found. jsXe requires Apache {0}.
+No.Xerces.Error.title={0} not found.
+IO.Error.title=I/O Error
+IO.Error.message=An I/O error has occurred
 #}}}
 
 #}}}

@@ -38,6 +38,7 @@ package net.sourceforge.jsxe.action;
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
 //{{{ Swing components
@@ -72,7 +73,7 @@ public class FileSaveAsAction extends LocalizedAction {
         try {
             view.getDocumentBuffer().saveAs(view);
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
     

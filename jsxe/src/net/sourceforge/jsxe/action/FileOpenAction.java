@@ -31,6 +31,7 @@ package net.sourceforge.jsxe.action;
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
 //{{{ Swing components
@@ -65,7 +66,7 @@ public class FileOpenAction extends LocalizedAction {
         try {
             jsXe.showOpenFileDialog(view);
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view, ioe, "IO Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
         }
         
     }//}}}

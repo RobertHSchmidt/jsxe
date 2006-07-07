@@ -690,7 +690,7 @@ public class TabbedView extends JFrame {
                 setDocumentView(view);
             } catch (IOException ioe) {
                 Log.log(Log.WARNING, TabbedView.this, ioe.getMessage());
-                JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(TabbedView.this, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
             }
         }//}}}
         
