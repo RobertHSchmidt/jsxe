@@ -44,10 +44,6 @@ import java.util.Vector;
 import java.util.Iterator;
 //}}}
 
-//{{{ Swing components
-import javax.swing.JOptionPane;
-//}}}
-
 //{{{ AWT components
 import java.awt.event.ActionEvent;
 //}}}

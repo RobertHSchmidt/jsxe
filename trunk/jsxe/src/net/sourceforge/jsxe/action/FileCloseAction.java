@@ -31,6 +31,7 @@ package net.sourceforge.jsxe.action;
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
 //{{{ Java classes
@@ -61,12 +62,12 @@ public class FileCloseAction extends LocalizedAction {
         super("close-file");
     }//}}}
     
-    //{{{ actionPerformed()
+    //{{{ invoke()
     public void invoke(TabbedView view, ActionEvent evt) {
         try {
             jsXe.closeDocumentBuffer(view, view.getDocumentBuffer());
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.ERROR_MESSAGE);
         }
     }//}}}
 

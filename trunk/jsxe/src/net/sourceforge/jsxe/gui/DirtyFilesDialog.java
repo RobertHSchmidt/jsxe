@@ -290,7 +290,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 			}
 		} catch (IOException e) {
 			Log.log(Log.ERROR, this, e);
-			JOptionPane.showMessageDialog(newTabbedView, e.getMessage(), Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(newTabbedView, e.getMessage(), Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
 		}
 	}//}}}
 
@@ -324,7 +324,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 							}
 						} catch (IOException e) {
 							Log.log(Log.ERROR, this, e);
-							JOptionPane.showMessageDialog(newTabbedView, e.getMessage(), Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+							JOptionPane.showMessageDialog(newTabbedView, e.getMessage(), Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
 						}
 						continue test;
 					}

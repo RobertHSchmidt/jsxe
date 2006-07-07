@@ -214,13 +214,10 @@ public class jsXe {
             //{{{ check Xerces version
             String xercesVersion = org.apache.xerces.impl.Version.getVersion();
             if (MiscUtilities.compareStrings(xercesVersion, MIN_XERCES_VERSION, false) < 0) {
-                String msg = Messages.getMessage("No.Xerces.Error", new String[] { MIN_XERCES_VERSION });
-                Log.log(Log.ERROR, jsXe.class, msg);
-                
                 //close the splash screen so they can see the message
                 progressScreen.dispose();
                 
-                JOptionPane.showMessageDialog(null, msg, Messages.getMessage("No.Xerces.Error.Title", new String[] { MIN_XERCES_VERSION }), JOptionPane.WARNING_MESSAGE);
+                GUIUtilities.error(null, "No.Xerces.Error", new String[] { MIN_XERCES_VERSION });
                 System.exit(1);
             }
             progressScreen.updateSplashScreenDialog(20);
@@ -349,7 +346,7 @@ public class jsXe {
                     new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), false);
                 }
                 
-                JOptionPane.showMessageDialog(null, ioe.getMessage()+".", Messages.getMessage("IO.Error.Title"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, ioe.getMessage()+".", Messages.getMessage("IO.Error.title"), JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
             }
             m_activeView = tabbedview;
@@ -380,7 +377,7 @@ public class jsXe {
             
             //Show plugin error dialog
             if (pluginErrors.size() > 0) {
-                new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), false);
+                new ErrorListDialog(tabbedview, Messages.getMessage("Plugin.Error.title"), Messages.getMessage("Plugin.Error.List.message"), new Vector(pluginErrors), false);
             }
             
             Log.log(Log.NOTICE, jsXe.class, "jsXe started in "+(System.currentTimeMillis()-startTime)+" milliseconds");
@@ -538,7 +535,7 @@ public class jsXe {
                         } catch (IOException ioe) {
                             //I/O error doesn't change value of success
                             Log.log(Log.WARNING, jsXe.class, ioe);
-                            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
                         }
                     }
                 }
@@ -916,7 +913,7 @@ public class jsXe {
         } catch (IOException ioe) {
             //failed save of a dirty buffer
             Log.log(Log.ERROR, jsXe.class, ioe);
-            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
             m_exiting = false;
         }
     }//}}}
@@ -1268,7 +1265,7 @@ public class jsXe {
                 } catch (IOException ioe) {
                     //I/O error doesn't change value of success
                     Log.log(Log.WARNING, jsXe.class, ioe);
-                    JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
                 }
             }
         }

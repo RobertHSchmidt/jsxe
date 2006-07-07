@@ -33,6 +33,7 @@ import net.sourceforge.jsxe.DocumentBuffer;
 import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.DocumentView;
+import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
 //{{{ Java classes
@@ -70,7 +71,7 @@ public class FileReloadAction extends LocalizedAction {
             buffer.reload(view);
             documentView.setDocumentBuffer(buffer); //reload the buffer in the documentView
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
     

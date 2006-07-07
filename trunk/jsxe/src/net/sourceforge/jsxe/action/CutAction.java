@@ -39,10 +39,6 @@ import net.sourceforge.jsxe.gui.Messages;
 import java.io.IOException;
 //}}}
 
-//{{{ Swing components
-import javax.swing.JOptionPane;
-//}}}
-
 //{{{ AWT components
 import java.awt.event.ActionEvent;
 //}}}
