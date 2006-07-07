@@ -266,8 +266,6 @@ public class ActionManager {
     public static void handleKey(KeyEvent event) {
         KeyStroke key = KeyStroke.getKeyStrokeForEvent(event);
         
-        Log.log(Log.DEBUG, ActionManager.class, "handleKey");
-        
         //Gets the action for the KeyStroke.
         Action action = (Action)m_keyBindingMap.get(key);
         if (action != null) {
