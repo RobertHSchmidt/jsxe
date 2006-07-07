@@ -1,3 +1,7 @@
+07/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated to support the new Messages format.
+
 06/23/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added back rudimentary key bindings using Swing Actions so they get
