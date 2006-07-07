@@ -57,4 +57,8 @@ exit.shortcut=ctrl Q
 close-file.shortcut=ctrl W
 new-file.shortcut=ctrl N
 save-file.shortcut=ctrl S
+cut.shortcut=ctrl X
+copy.shortcut=ctrl C
+paste.shortcut=ctrl V
+find.shortcut=ctrl F
 #}}}

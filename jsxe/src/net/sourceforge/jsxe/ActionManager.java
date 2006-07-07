@@ -75,6 +75,15 @@ import java.awt.event.KeyEvent;
  */
 public class ActionManager {
     
+    //{{{ Public static identifiers
+    
+    public static final String CUT_SUFFIX = ".cut";
+    public static final String COPY_SUFFIX = ".copy";
+    public static final String PASTE_SUFFIX = ".paste";
+    public static final String FIND_SUFFIX = ".find";
+    
+    //}}}
+    
     //{{{ addActionSet()
     /**
      * Adds a set of actions to the jsXe's pool of action sets.
@@ -257,6 +266,8 @@ public class ActionManager {
     public static void handleKey(KeyEvent event) {
         KeyStroke key = KeyStroke.getKeyStrokeForEvent(event);
         
+        Log.log(Log.DEBUG, ActionManager.class, "handleKey");
+        
         //Gets the action for the KeyStroke.
         Action action = (Action)m_keyBindingMap.get(key);
         if (action != null) {
@@ -352,6 +363,14 @@ public class ActionManager {
                                             "",
                                             evt.getModifiers());
         return event;
+    }//}}}
+    
+    //{{{ isDocviewSpecific()
+    public boolean isDocViewSpecific(String actionName) {
+        return (actionName.endsWith(CUT_SUFFIX) ||
+                actionName.endsWith(COPY_SUFFIX) ||
+                actionName.endsWith(PASTE_SUFFIX) ||
+                actionName.endsWith(FIND_SUFFIX));
     }//}}}
     
     //}}}
