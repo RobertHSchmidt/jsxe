@@ -40,11 +40,18 @@ import net.sourceforge.jsxe.dom.completion.*;
 //}}}
 
 //{{{ Java Base Classes
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.ListIterator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 //}}}
 
 //{{{ DOM classes
 import org.w3c.dom.*;
+import org.w3c.dom.events.*;
 //}}}
 
 //}}}
@@ -109,6 +116,12 @@ public class AdapterNode {
             throw new NullPointerException();
         }
         m_domNode = document;
+        ((EventTarget)m_domNode).addEventListener("DOMSubtreeModified", 
+            new EventListener() {
+                public void handleEvent(Event evt) {
+                    Log.log(Log.DEBUG, this, evt.toString());
+                }
+            }, true);
         m_rootDocument = xmlDocument;
     }//}}}
     
@@ -951,6 +964,8 @@ public class AdapterNode {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
             listener.nodeAdded(source, child);
         }
+        
+        Node doc = getOwnerDocument().getAdapterNode().getNode();
         fireStructureChanged();
     }//}}}
     
