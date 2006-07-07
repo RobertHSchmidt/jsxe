@@ -69,7 +69,7 @@
     <mkdir dir="${build.messages}"/>
     <copy todir="${build.messages}">
       <fileset dir="${messages.dir}">
-        <include name="**/messages.*"/>
+        <include name="**/messages*"/>
       </fileset>
     </copy>
 	</target>
@@ -133,7 +133,7 @@
     
 		<jar jarfile="${root.dir}/../${app.name}.jar" manifest="${app.name}.manifest">
 			<fileset dir="${build.dir}">
-        <include name="messages/messages.*"/>
+        <include name="messages/messages*"/>
       </fileset>
       <fileset dir="${build.dest}">
 				<include name="**/*.class"/>
