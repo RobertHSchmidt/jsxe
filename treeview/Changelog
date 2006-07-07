@@ -1,3 +1,7 @@
+07/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated to support the new Messages format.
+
 06/25/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Feature Request 1494444: Updated the tree view so that if no attributes
