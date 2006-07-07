@@ -1,0 +1,18 @@
+# JSXE source view British English properties file
+# $Id: messages 996 2006-07-07 03:46:52Z ian_lewis $
+#:mode=properties:
+#:tabSize=4:indentSize=4:noTabs=true:
+#:folding=explicit:collapseFolds=1
+
+#{{{ Source View
+
+#{{{ Source View Options
+SourceView.ColorChooser.Title=Colour Chooser
+#}}}
+
+#{{{ Style Editor
+SourceView.StyleEditor.Color=Text Colour
+#}}}
+
+#}}}
+
