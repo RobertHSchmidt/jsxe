@@ -52,7 +52,7 @@ public class EditFindAction extends LocalizedAction {
     
     //{{{ EditFindAction constructor
     public EditFindAction() {
-        super("sourceview.find");
+        super(SourceViewPlugin.PLUGIN_NAME+".find");
     }//}}}
     
     //{{{ getLabel()

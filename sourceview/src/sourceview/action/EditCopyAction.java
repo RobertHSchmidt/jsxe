@@ -53,7 +53,7 @@ public class EditCopyAction extends LocalizedAction {
     
     //{{{ EditCopyAction constructor
     public EditCopyAction() {
-        super("sourceview.copy");
+        super(SourceViewPlugin.PLUGIN_NAME+".copy");
     }//}}}
     
     //{{{ getLabel()
@@ -61,7 +61,7 @@ public class EditCopyAction extends LocalizedAction {
         return Messages.getMessage("common.copy");
     }//}}}
     
-    //{{{ import()
+    //{{{ invoke()
     public void invoke(TabbedView view, ActionEvent evt) {
         DocumentView docView = view.getDocumentView();
         if (docView instanceof SourceView) {

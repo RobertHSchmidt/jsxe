@@ -53,8 +53,7 @@ public class EditPasteAction extends LocalizedAction {
     
     //{{{ EditPasteAction constructor
     public EditPasteAction() {
-        super("sourceview.paste");
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl V"));
+        super(SourceViewPlugin.PLUGIN_NAME+".paste");
     }//}}}
     
     //{{{ getLabel()

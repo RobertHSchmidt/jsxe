@@ -78,9 +78,9 @@ public class DefaultInputHandler extends InputHandler
 		addKeyBinding("C+ENTER",REPEAT);
 		
 		// Clipboard
-		addKeyBinding("C+C", CLIP_COPY);
-		addKeyBinding("C+V", CLIP_PASTE);
-		addKeyBinding("C+X", CLIP_CUT);
+	//	addKeyBinding("C+C", CLIP_COPY);
+	//	addKeyBinding("C+V", CLIP_PASTE);
+	//	addKeyBinding("C+X", CLIP_CUT);
 	}
 
 	/**
