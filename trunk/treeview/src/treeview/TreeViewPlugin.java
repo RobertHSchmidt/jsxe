@@ -47,7 +47,7 @@ import java.util.Properties;
 
 public class TreeViewPlugin extends ViewPlugin {
     
-    public static final String PLUGIN_NAME = "tree";
+    public static final String PLUGIN_NAME = "treeview";
     
     //{{{ TreeViewPlugin constructor
     public TreeViewPlugin() {

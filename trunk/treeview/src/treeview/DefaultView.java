@@ -168,11 +168,11 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
         //TODO: get cut/copy/paste to work in the right hand text window
         m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
         m_editMenu.setMnemonic('E');
-        JMenuItem menuItem = new JMenuItem(ActionManager.getAction("treeview.cut.node"));
+        JMenuItem menuItem = new JMenuItem(ActionManager.getAction("cut"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("treeview.copy.node"));
+        menuItem = new JMenuItem(ActionManager.getAction("copy"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("treeview.paste.node"));
+        menuItem = new JMenuItem(ActionManager.getAction("paste"));
         m_editMenu.add(menuItem);
         //}}}
         

@@ -73,7 +73,7 @@ public class PasteNodeAction extends LocalizedAction {
      * selected node in the tree.
      */
     public PasteNodeAction() {
-        super("treeview.paste.node");
+        super(TreeViewPlugin.PLUGIN_NAME+".paste");
     }//}}}
     
     //{{{ getLabel()

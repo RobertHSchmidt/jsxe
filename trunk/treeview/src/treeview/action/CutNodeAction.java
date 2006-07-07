@@ -73,7 +73,7 @@ public class CutNodeAction extends LocalizedAction {
      * the clipboard.
      */
     public CutNodeAction() {
-        super("treeview.cut.node");
+        super(TreeViewPlugin.PLUGIN_NAME+".cut");
        // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
     }//}}}
     
