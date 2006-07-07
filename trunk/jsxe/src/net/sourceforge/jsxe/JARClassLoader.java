@@ -192,6 +192,8 @@ public class JARClassLoader extends ClassLoader {
         return null;
     }//}}}
     
+    //}}}
+    
     //{{{ getPluginResources()
     /**
      * Finds all resources matching the name in the jar files specified in the
@@ -215,8 +217,6 @@ public class JARClassLoader extends ClassLoader {
     public URL getPluginResource(String name) {
         return findResource(name);
     }//}}}
-    
-    //}}}
     
     //{{{ addJarFile()
     /**
@@ -409,6 +409,9 @@ public class JARClassLoader extends ClassLoader {
      * @return an ArrayList of errors (either Strings or Exceptions).
      */
     public ArrayList startPlugins() {
+        
+        Messages.initPluginMessages();
+        
         Iterator jarItr = m_jarFiles.keySet().iterator();
         ArrayList errors = new ArrayList();
         
