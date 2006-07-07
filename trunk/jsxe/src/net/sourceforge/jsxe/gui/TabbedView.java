@@ -456,6 +456,10 @@ public class TabbedView extends JFrame {
         set.addAction(new jsxeAboutDialog());
         set.addAction(new ActivityLogAction());
         set.addAction(new ValidationErrorsAction());
+        set.addAction(new CutAction());
+        set.addAction(new CopyAction());
+        set.addAction(new PasteAction());
+        set.addAction(new FindAction());
         ActionManager.addActionSet(set);
         //}}}
         
@@ -697,7 +701,6 @@ public class TabbedView extends JFrame {
     private class WindowHandler extends WindowAdapter {
         
         //{{{ windowClosing()
-        
         public void windowClosing(WindowEvent e) {
             jsXe.exit(TabbedView.this);
         }//}}}
@@ -709,7 +712,6 @@ public class TabbedView extends JFrame {
         
         //{{{ keyPressed()
         public void keyPressed(KeyEvent evt) {
-            //TODO: catch keyboard shortcuts here.
             processKeyEvent(evt);
         }//}}}
     
