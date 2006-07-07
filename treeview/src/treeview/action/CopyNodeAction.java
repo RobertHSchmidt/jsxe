@@ -68,7 +68,7 @@ public class CopyNodeAction extends LocalizedAction {
      * the clipboard.
      */
     public CopyNodeAction() {
-        super("treeview.copy.node");
+        super(TreeViewPlugin.PLUGIN_NAME+".copy");
     }//}}}
     
     //{{{ getLabel()

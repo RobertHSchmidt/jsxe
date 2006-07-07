@@ -539,15 +539,15 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                     if(!(selectedNode.getNodeType() == Node.ELEMENT_NODE &&
                        selectedNode.getParentNode().getNodeType() == Node.DOCUMENT_NODE))
                     {
-                        popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.cut.node"));
+                        popupMenuItem = new JMenuItem(ActionManager.getAction("cut"));
                         popup.add(popupMenuItem);
                     }
                     
-                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.copy.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("copy"));
                     popup.add(popupMenuItem);
                     
                     if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                        popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.paste.node"));
+                        popupMenuItem = new JMenuItem(ActionManager.getAction("paste"));
                         popup.add(popupMenuItem);
                     }
                     showpopup = true;
