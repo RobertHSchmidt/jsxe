@@ -60,8 +60,8 @@ import net.sourceforge.jsxe.util.MiscUtilities;
  * The Messages class searches these files in the following order.
  *
  * <ul>
- * <li>messages.<code>language</code>.<code>country</code>.<code>variant</code></li>
- * <li>messages.<code>language</code>.<code>country</code></li>
+ * <li>messages.<code>language</code>_<code>country</code>_<code>variant</code></li>
+ * <li>messages.<code>language</code>_<code>country</code></li>
  * <li>messages.<code>language</code></li>
  * <li>messages</li>
  * </ul>
@@ -76,152 +76,206 @@ public class Messages {
     
     //{{{ Private static members
     /**
-     * A Locale to Properties object map which is used when searching
-     * for a message resource.
+     * properties containing the messages for jsXe
      */
-    private static HashMap m_messagesMap = new HashMap();
+    private static Properties m_messages;
     /**
-     * This is a list of URLs messages files for plugins which have been loaded.
+     * plugin properties
      */
-    private static ArrayList m_resources = new ArrayList();
-    /**
-     * The default properties file
-     */
-    private static Properties m_default;
+    private static Properties m_pluginMessages;
+    
     private static Locale m_locale = Locale.getDefault();
+    
+    private static boolean initialized = false;
+    private static boolean plugins_initialized = false;
     
     //{{{ getMessagesFileName()
     private static String getMessagesFileName(Locale locale) {
         StringBuffer messagesFile = new StringBuffer("messages");
                 
         if (locale != null) {
-            String language = locale.getLanguage();
-            if (language != null && !language.equals("")) {
-                messagesFile.append(".").append(language);
+            messagesFile.append(".").append(locale.toString());
+           // String language = locale.getLanguage();
+           // if (language != null && !language.equals("")) {
+           //     messagesFile.append(".").append(language);
                 
-                String country = locale.getCountry();
-                if (country != null && !country.equals("")) {
-                    messagesFile.append(".").append(country);
+           //     String country = locale.getCountry();
+           //     if (country != null && !country.equals("")) {
+           //         messagesFile.append(".").append(country);
                     
-                    String variant = locale.getVariant();
-                    if (variant != null && !variant.equals("")) {
-                        messagesFile.append(".").append(variant);
-                    }
-                }
-            }
+           //         String variant = locale.getVariant();
+           //         if (variant != null && !variant.equals("")) {
+           //             messagesFile.append(".").append(variant);
+           //         }
+           //     }
+           // }
         }
         
         return messagesFile.toString();
     }//}}}
     
     //{{{ loadMessages()
-    /**
-     * @param locale the locale to use when searching for the messages file.
-     *               The language, country, and variant must be exact. Null
-     *               loads the default messages file.
-     */
-    private static Properties loadMessages(Locale locale) {
-        Properties props = null;
+    private static void loadMessages(Locale locale) {
+        
+        String messagesFile = getMessagesFileName(locale);
+        
         try {
             
-            if (locale != null) {
-                props = (Properties)m_messagesMap.get(locale);
-            } else {
-                props = m_default;
-            }
+            //create input stream from messages file
+            FileInputStream in = new FileInputStream(jsXe.getInstallDirectory()+
+                                                     System.getProperty("file.separator")+
+                                                     "messages"+
+                                                     System.getProperty("file.separator")+
+                                                     messagesFile);
             
-            if (props == null) {
-                //{{{ Load the properties file
-                
-                String messagesFile = getMessagesFileName(locale);
-                
-                //create input stream from messages file
-                FileInputStream in = new FileInputStream(jsXe.getInstallDirectory()+
-                                                         System.getProperty("file.separator")+
-                                                         "messages"+
-                                                         System.getProperty("file.separator")+
-                                                         messagesFile.toString());
-                Log.log(Log.NOTICE, Messages.class, "Loading messages file: "+messagesFile);
-                props = new Properties();
-                props.load(in);
-                if (locale != null) {
-                    m_messagesMap.put(locale, props);
-                } else {
-                    m_default = props;
-                }
-                //}}}
-            }
+            Properties props = new Properties();
+            
+            Log.log(Log.NOTICE, Messages.class, "Loading message file: "+messagesFile);
+            
+            props.load(in);
+            
+            m_messages = MiscUtilities.mergeProperties(m_messages, props);
+            
         } catch (FileNotFoundException e) {
             // just fall through
         } catch(IOException e) {
             Log.log(Log.ERROR, Messages.class, e);
         }
+    }//}}}
+    
+    //{{{ loadPluginMessages()
+    private static void loadPluginMessages(Locale locale) {
         
-        //{{{ Check for plugin resources
-       // Log.log(Log.DEBUG, Messages.class, "loading plugin messages");
+        String messagesFile = getMessagesFileName(locale);
+        JARClassLoader loader = jsXe.getPluginLoader();
+        
+        //create input stream from messages file
         try {
-            JARClassLoader loader = jsXe.getPluginLoader();
-            if (loader != null) {
-                String messagesFile = getMessagesFileName(locale);
-                //TODO: inefficient
-                Enumeration pluginMessages = loader.getPluginResources("messages/"+messagesFile);
-               // Log.log(Log.DEBUG, Messages.class, "looking for: "+"messages/"+messagesFile);
-                while (pluginMessages.hasMoreElements()) {
-                    URL resource = (URL)pluginMessages.nextElement();
-                   // Log.log(Log.DEBUG, Messages.class, resource.toString());
-                    if (!m_resources.contains(resource)) {
-                        Properties resourceProps = new Properties();
-                        Log.log(Log.NOTICE, Messages.class, "Loading plugin messages file: "+resource.toString());
-                        resourceProps.load(resource.openStream());
-                        props = MiscUtilities.mergeProperties(props, resourceProps);
-                        m_resources.add(resource);
-                        if (locale != null) {
-                            m_messagesMap.put(locale, props);
-                        } else {
-                            m_default = props;
-                        }
-                    }
+            Enumeration resources = loader.getPluginResources("messages/"+messagesFile);
+            
+            while (resources.hasMoreElements()) {
+                try {
+                    Properties props = new Properties();
+                    URL resource = (URL)resources.nextElement();
+                    
+                    Log.log(Log.NOTICE, Messages.class, "Loading plugin message file: "+resource.toString());
+                    
+                    props.load(resource.openStream());
+                    
+                    m_pluginMessages = MiscUtilities.mergeProperties(m_pluginMessages, props);
+                } catch (FileNotFoundException e) {
+                    //fall through
+                } catch(IOException e) {
+                    Log.log(Log.ERROR, Messages.class, e);
                 }
             }
         } catch(IOException e) {
             Log.log(Log.ERROR, Messages.class, e);
-        }//}}}
-        
-        return props;
-    }//}}}
-    
-    //{{{ getMessages()
-    /**
-     * Searches the available resources for a resource where it can draw
-     * the messages that are needed for the current locale.
-     */
-    private static Properties getMessages(Locale locale) {
-        Properties messages = loadMessages(locale);
-        if (messages == null) {
-            messages = loadMessages(new Locale(locale.getLanguage(), locale.getCountry()));
-            if (messages == null) {
-                messages = loadMessages(new Locale(locale.getLanguage()));
-                if (messages == null) {
-                    messages = loadMessages(null);
-                }
-            }
         }
-        return messages;
+            
     }//}}}
     
     //}}}
     
+    //{{{ initMessages()
+    public static void initMessages() {
+        if (!initialized) {
+            
+            Log.log(Log.NOTICE, Messages.class, "Loading localized messages: "+m_locale.toString());
+            
+            m_messages = new Properties();
+            
+            //{{{ load messages files that match the locale
+            
+            boolean hasLang = (m_locale.getLanguage() != null && !m_locale.getLanguage().equals(""));
+            boolean hasCountry = (m_locale.getCountry() != null && !m_locale.getCountry().equals(""));
+            boolean hasVariant = (m_locale.getVariant() != null && !m_locale.getVariant().equals(""));
+            
+            if (hasVariant) {
+                // use full locale
+                loadMessages(m_locale);
+            }
+            
+            if (hasCountry) {
+                //use only language and country
+                loadMessages(new Locale(m_locale.getLanguage(), m_locale.getCountry()));
+            }
+            
+            if (hasLang) {
+                //use only the language
+                loadMessages(new Locale(m_locale.getLanguage()));
+            }
+            
+            //}}}
+            
+            // load the default messages
+            
+            loadMessages(null);
+            
+            initialized = true;
+        }
+    }//}}}
+    
+    //{{{ initPluginMessages()
+    public static void initPluginMessages() {
+        if (!plugins_initialized) {
+            m_pluginMessages = new Properties();
+            
+            Log.log(Log.NOTICE, Messages.class, "Loading localized messages for plugins: "+m_locale.toString());
+            
+            //{{{ load messages files that match the locale
+            
+            boolean hasLang = (m_locale.getLanguage() != null && !m_locale.getLanguage().equals(""));
+            boolean hasCountry = (m_locale.getCountry() != null && !m_locale.getCountry().equals(""));
+            boolean hasVariant = (m_locale.getVariant() != null && !m_locale.getVariant().equals(""));
+            
+            if (hasVariant) {
+                // use full locale
+                loadPluginMessages(m_locale);
+            }
+            
+            if (hasCountry) {
+                //use only language and country
+                loadPluginMessages(new Locale(m_locale.getLanguage(), m_locale.getCountry()));
+            }
+            if (hasLang) {
+                //use only the language
+                loadPluginMessages(new Locale(m_locale.getLanguage()));
+            }
+            
+            //}}}
+            
+            // load the default messages.
+            
+            loadPluginMessages(null);
+            
+            plugins_initialized = true;
+        }
+    }//}}}
+    
     //{{{ getLocale()
+    /**
+     * The current locale that jsXe is using to display localized messages.
+     */
     public Locale getLocale() {
         return m_locale;
     }//}}}
     
     //{{{ setLocale()
     /**
-     * @param locale the new locale The ISO-639 language code
+     * @param locale the new locale
      */
     public static void setLocale(Locale locale) {
         m_locale = locale;
+        if (initialized) {
+            initialized = false;
+            initMessages();
+            
+            if (plugins_initialized) {
+                plugins_initialized = false;
+                initPluginMessages();
+            }
+        }
     }//}}}
 
     //{{{ getMessage()
@@ -237,10 +291,13 @@ public class Messages {
      */
     public static synchronized String getMessage(String propertyName){
         
-        Properties messages = getMessages(m_locale);
-        
         //search in order, localized messages->default messages->plugin messages
-        String message = messages.getProperty(propertyName);
+        String message = m_messages.getProperty(propertyName);
+        
+        if (message == null) {
+            message = m_pluginMessages.getProperty(propertyName);
+        }
+        
         if (message == null) {
             Log.log(Log.WARNING, Messages.class, "Unregistered message requested: "+propertyName);
         }

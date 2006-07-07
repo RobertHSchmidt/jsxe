@@ -147,10 +147,28 @@ public class jsXe {
             initDefaultProps();
             //}}}
             
+            //{{{ start logging
+            Log.init(true, Log.ERROR, false);
+            try {
+                BufferedWriter stream = new BufferedWriter(new FileWriter(getSettingsDirectory()+fileSep+"jsXe.log"));
+                stream.flush();
+                stream.write("Log file created on " + new Date());
+                stream.write(System.getProperty("line.separator"));
+                
+                Log.setLogWriter(stream);
+              
+            } catch (IOException ioe) {
+                Log.log(Log.ERROR, jsXe.class, ioe);
+            }
+            //}}}
+            
+            //{{{ start locale
+            Messages.initMessages();
+            //}}}
+            
             //{{{ parse command line arguments
             String viewname = null;
             ArrayList files = new ArrayList();
-            boolean debug = false;
             for (int i=0; i<args.length; i++) {
                 if (args[i].equals("--help") || args[i].equals("-h")) {
                     printUsage();
@@ -162,7 +180,7 @@ public class jsXe {
                 }
                 
                 if (args[i].equals("--debug")) {
-                    debug = true;
+                    Log.setDebug(true);
                 } else {
                     files.add(args[i]);
                 }
@@ -189,21 +207,7 @@ public class jsXe {
             int y = (dim.height-h)/2;
             progressScreen.setLocation(x, y);
             progressScreen.setVisible(true);
-            //}}}
             
-            //{{{ start logging
-            Log.init(true, Log.ERROR, debug);
-            try {
-                BufferedWriter stream = new BufferedWriter(new FileWriter(getSettingsDirectory()+fileSep+"jsXe.log"));
-                stream.flush();
-                stream.write("Log file created on " + new Date());
-                stream.write(System.getProperty("line.separator"));
-                
-                Log.setLogWriter(stream);
-              
-            } catch (IOException ioe) {
-                Log.log(Log.ERROR, jsXe.class, ioe);
-            }
             progressScreen.updateSplashScreenDialog(10);
             //}}}
             
@@ -461,7 +465,6 @@ public class jsXe {
     public static String getInstallDirectory() {
         return jsXeHome;
     } //}}}
-    
     
     //{{{ getHomeDirectory() method
     /**

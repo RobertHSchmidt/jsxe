@@ -2,8 +2,7 @@
 
     * Rewrote the Messages class. Now it loads messages on demand and only
       loads the messages that it needs but allows the Locale to be changed at
-      any time. Though this implementation is inefficient as it checks for
-      messages files in plugins every time a message is requested.
+      any time. It also now supports different countries and variants.
 
 06/27/2006  Ian Lewis   <IanLewis@member.fsf.org>
 

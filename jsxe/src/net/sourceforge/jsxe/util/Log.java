@@ -240,7 +240,17 @@ public class Log {
             }
         }
     }//}}}
-
+    
+    //{{{ setDebug()
+    /**
+     * Sets whether debug is recorded to the log.
+     * @param debug If true, debug will be printed to the log even if it is not
+     *              at or higher than the level.
+     */
+    public static void setDebug(boolean debug) {
+        Log.debug = debug;
+    }//}}}
+    
     //{{{ Private members
     private static Object LOCK = new Object();
     private static Document logDocument;
