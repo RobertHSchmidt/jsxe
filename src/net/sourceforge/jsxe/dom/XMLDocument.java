@@ -1192,6 +1192,8 @@ public class XMLDocument {
         
         DocumentBuilder builder = factory.newDocumentBuilder();
         
+        DOMImplementation imp = builder.getDOMImplementation();
+        
         builder.setErrorHandler(null);
         
         if (m_entityResolver != null) {

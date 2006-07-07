@@ -25,7 +25,8 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.dom;
 
 //{{{ Imports
-import java.util.HashMap;
+import org.w3c.dom.*;
+import org.w3c.dom.events.*;
 //}}}
 
 /**
@@ -42,49 +43,15 @@ public class XMLElement extends XMLNode {
     //{{{ XMLElement constructor
     /**
      * Creates a new XMLElement
-     * @param document the document that owns this element
-     * @param localName the local name of the element.
+     * @param element the element node that this node wraps.
      */
-    XMLElement(XMLDocument document, String localName) throws XMLException {
-        super(document);
-        setLocalName(localName);
-        m_attributes = new HashMap();
-    }//}}}
-    
-    //{{{ XMLElement constructor
-    /**
-     * Creates a new XMLElement
-     * @param document the document that owns this element
-     * @param prefix the namespace prefix for this element
-     * @param localName the local name of the element.
-     */
-    XMLElement(XMLDocument document, String prefix, String localName) throws XMLException {
-        super(document);
-        setNSPrefix(prefix);
-        setLocalName(localName);
-        m_attributes = new HashMap();
-    }//}}}
-    
-    //{{{ getAttributes()
-    /**
-     * Returns a HashMap of attribute names to XMLAttribute objects.
-     */
-    public HashMap getAttributes() {
-        return m_attributes;
+     XMLElement(Element element) {
+        super(element);
     }//}}}
     
     //{{{ getNodeType()
     public int getNodeType() {
-        return ELEMENT_NODE;
+        return Node.ELEMENT_NODE;
     }//}}}
     
-    //{{{ setLocalName()
-    public void setLocalName(String localName) throws XMLException {
-        //TODO: error checking for invalid name
-        super.setLocalName(localName);
-    }//}}}
-    
-    //{{{ Private Members
-    private HashMap m_attributes;
-    //}}}
 }
