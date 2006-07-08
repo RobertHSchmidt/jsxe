@@ -60,7 +60,7 @@ import javax.swing.text.*;
  */
 public abstract class XMLNode /* implements javax.swing.text.Element */ {
     
-    static final String USER_DATA_KEY = "net.sourceforge.jsxe.dom.XMLNode";
+    protected static final String USER_DATA_KEY = "net.sourceforge.jsxe.dom.XMLNode";
     
     //{{{ Private members
     

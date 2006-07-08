@@ -58,9 +58,12 @@ import javax.swing.event.UndoableEditListener;
  * provided to allow user objects to interact with the XML document as text
  * or as a tree structure seamlessly.
  *
+ * Properties of XMLDocuments are saved by jsXe as string values. And are loaded
+ * later when if the document was loaded recently.
+ *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id: XMLDocument.java 999 2006-07-07 20:59:23Z ian_lewis $
- * @see AdapterNode
+ * @see XMLNode
  */
 public class XMLDocument /* implements javax.swing.text.Document */ {
     
@@ -217,7 +220,13 @@ public class XMLDocument /* implements javax.swing.text.Document */ {
     }//}}}
     
     //{{{ putProperty()
-    
+    /**
+     * Add a property to the XMLDocument.
+     * They are saved in memory as objects however, jsXe saves properties as
+     * Strings when saving the Document to the recent buffers file, and when
+     * the document is opened later the property will be loaded as a String.
+     * Generally String properties are stored here.
+     */
     public void putProperty(Object key, Object value) {
         m_properties.put(key, value);
     }//}}}
@@ -257,6 +266,45 @@ public class XMLDocument /* implements javax.swing.text.Document */ {
     
     public void render(Runnable r) {
         //TODO: implement concurrency support.
+    }//}}}
+    
+    //}}}
+    
+    //{{{ getDocumentType()
+    
+    public XMLDocumentType getDocumentType() {
+        DocumentType docType = m_document.getDocType();
+        if (docType != null) {
+            return (XMLDocumentType)docType.getUserData(USER_DATA_KEY);
+        } else {
+            return null;
+        }
+    }//}}}
+    
+    //{{{ getProperties()
+    
+    public Map getProperties() {
+        return m_properties;
+    }//}}}
+    
+    //{{{ Node Factory methods
+    
+    //{{{ newElementNode()
+    /**
+     * Create a new XMLElement node with the given name.
+     * @param name the qualified name of the new node.
+     */
+    public XMLElement newElementNode(String name) throws DOMException {
+        return new XMLElement(m_document.createElementNS("", name));
+    }//}}}
+    
+    //{{{ newAttributeNode()
+    /**
+     * Create a new XMLAttribute node with the given name.
+     * @param name the qualified name of the new node.
+     */
+    public XMLAttribute newAttributeNode(String name) throws DOMException {
+        return new XMLAttribute(m_document.createAttributeNS("", name));
     }//}}}
     
     //}}}
