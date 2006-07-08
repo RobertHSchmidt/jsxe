@@ -37,6 +37,10 @@ import org.w3c.dom.*;
 import org.w3c.dom.events.*;
 //}}}
 
+//{{{ Swing classes
+import javax.swing.text.*;
+//}}}
+
 //}}}
 
 /**
@@ -71,7 +75,77 @@ public abstract class XMLNode /* implements javax.swing.text.Element */ {
     //{{{ XMLNode constructor
     XMLNode(Node node) {
         m_domNode = node;
+        //TODO: add UserDataHandler
+        m_domNode.setUserData(USER_DATA_KEY, this, null);
     }//}}}
+    
+    //{{{ javax.swing.text.Element methods
+    
+    //{{{ getAttributes()
+    /**
+     * Attributes in an XMLNode are implemented as the attributes in a
+     * XML Element node. All other node types will return null.
+     * Attribute sets will never contain style data unless defined by a
+     * DocumentView.
+     * @return the attributes of the XMLElement node or null.
+     */
+    public AttributeSet getAttributes() {
+        //no attributes by default. Subclasses may override this behavior
+        return null;
+    }//}}}
+    
+    //{{{ getDocument()
+    public javax.swing.text.Document getDocument() {
+        return (javax.swing.text.Document)m_domNode.getOwnerDocument().getUserData(USER_DATA_KEY);
+    }//}}}
+    
+    //{{{ getElement()
+    
+    public javax.swing.text.Element getElement(int index) {
+        return (javax.swing.text.Element)m_domNode.getChildNodes().item(index).getUserData(USER_DATA_KEY);
+    }//}}}
+    
+    //{{{ getElementCount()
+    
+    public int getElementCount() {
+        return m_domNode.getChildNodes().getLength();
+    }//}}}
+    
+    //{{{ getEndOffset()
+    
+    public int getEndOffset() {
+        //TODO: implement offsets
+        //TODO: should this be abstract?
+        return 0;
+    }//}}}
+    
+    //{{{ getName()
+    
+    public String getName() {
+        return m_domNode.getNodeName();
+    }//}}}
+    
+    //{{{ getParentElement()
+    
+    public javax.swing.text.Element getParentElement() {
+        return (javax.swing.text.Element)m_domNode.getParentNode().getUserData(USER_DATA_KEY);
+    }//}}}
+    
+    //{{{ getStartOffset() 
+    
+    public int getStartOffset() {
+        //TODO: implement offsets
+        //TODO: should this be abstract?
+        return 0;
+    }//}}}
+    
+    //{{{ isLeaf()
+    
+    public boolean isLeaf() {
+        return m_domNode.hasChildNodes();
+    }//}}}
+    
+    //}}}
     
     //{{{ addEventListener()
     public void addEventListener(java.lang.String type, EventListener listener, boolean useCapture) {
