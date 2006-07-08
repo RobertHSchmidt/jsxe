@@ -25,8 +25,16 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.dom2;
 
 //{{{ Imports
+
+//{{{ Swing classes
+import javax.swing.text.*;
+//}}}
+
+//{{{ DOM classes
 import org.w3c.dom.*;
 import org.w3c.dom.events.*;
+//}}}
+
 //}}}
 
 /**
@@ -45,8 +53,15 @@ public class XMLElement extends XMLNode {
      * Creates a new XMLElement
      * @param element the element node that this node wraps.
      */
-     XMLElement(Element element) {
+     XMLElement(org.w3c.dom.Element element) {
         super(element);
+    }//}}}
+    
+    //{{{ getAttributes()
+    
+    public AttributeSet getAttributes() {
+        //TODO: implement attributes
+        return null;
     }//}}}
     
     //{{{ getNodeType()
