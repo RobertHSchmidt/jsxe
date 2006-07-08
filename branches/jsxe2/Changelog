@@ -5,6 +5,9 @@
     * Created an new XMLDocument class.
     * Made use of the DOM events model to allow users to register DOM event
       listeners.
+    * Added a new XMLDocumentType class
+    * Added factory methods for XMLElements and XMLAttributes to the
+      XMLDocument class.
 
 06/04/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
