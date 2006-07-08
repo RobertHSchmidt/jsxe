@@ -54,7 +54,7 @@ import javax.swing.event.UndoableEditListener;
 
 /**
  * The XMLDocument class represents an XML document as a  tree structure
- * that has nodes, implemented as AdapterNodes, as well as text. Methods are
+ * that has nodes, implemented as XMLNodes, as well as text. Methods are
  * provided to allow user objects to interact with the XML document as text
  * or as a tree structure seamlessly.
  *

@@ -60,7 +60,7 @@ import javax.swing.text.*;
  */
 public abstract class XMLNode /* implements javax.swing.text.Element */ {
     
-    private static final String USER_DATA_KEY = "net.sourceforge.jsxe.dom.XMLNode";
+    static final String USER_DATA_KEY = "net.sourceforge.jsxe.dom.XMLNode";
     
     //{{{ Private members
     
@@ -120,7 +120,11 @@ public abstract class XMLNode /* implements javax.swing.text.Element */ {
     }//}}}
     
     //{{{ getName()
-    
+    /**
+     * Gets the qualified name of the node. This will be the namespace
+     * prefix + ":" + the locale name.
+     * @return the qualified name
+     */
     public String getName() {
         return m_domNode.getNodeName();
     }//}}}
@@ -158,11 +162,83 @@ public abstract class XMLNode /* implements javax.swing.text.Element */ {
     }//}}}
     
     //{{{ appendNode()
-    public XMLNode appendChild(XMLNode newChild) {
+    public XMLNode appendNode(XMLNode newChild) throws DOMException {
         
         m_domNode.appendChild(newChild.getNode());
         
         return newChild;
+    }//}}}
+    
+    //{{{ getBaseURI()
+    
+    public String getBaseURI() {
+        return m_domNode.getBaseURI();
+    }//}}}
+    
+    //{{{ getNamespaceURI()
+    
+    public String getNamespaceURI() {
+        return m_domNode.getNamespaceURI();
+    }//}}}
+    
+    //{{{ getNodeType()
+    
+    public short getNodeType() {
+        return m_domNode.getNodeType();
+    }//}}}
+    
+    //{{{ getValue()
+    
+    public String getValue() {
+        return m_domNode.getNodeValue();
+    }//}}}
+    
+    //{{{ getNSPrefix()
+    
+    public String getNSPrefix() {
+        return m_domNode.getPrefix();
+    }//}}}
+    
+    //{{{ insertNode()
+    
+    public XMLNode insertNode(XMLNode node, int index) throws DOMException {
+        m_domNode.insertBefore(node.getNode(), m_domNode.getChildNodes().item(index));
+        return node;
+    }//}}}
+    
+    //{{{ lookupNamespaceURI()
+    
+    public String lookupNamespaceURI(String prefix) {
+        return m_domNode.lookupNamespaceURI(prefix);
+    }//}}}
+    
+    //{{{ removeNode()
+    
+    public XMLNode removeNode(XMLNode child) throws DOMException {
+        Node childNode = child.getNode();
+        m_domNode.removeChild(childNode);
+        childNode.setUserData(USER_DATA_KEY, null, null);
+        return child;
+    }//}}}
+    
+    //{{{ setValue()
+    
+    public void setValue(String value) throws DOMException {
+        m_domNode.setNodeValue(value);
+    }//}}}
+    
+    //{{{ setNSPrefix()
+    
+    public void setNSPrefix(String prefix) throws DOMException {
+        m_domNode.setPrefix(prefix);
+    }//}}}
+    
+    //{{{ setName()
+    /**
+     * @param name the qualified name of the node.
+     */
+    public void setName(String name) {
+        m_domNode = m_domNode.getOwnerDocument().renameNode(m_domNode, m_domNode.getNamespaceURI(), name);
     }//}}}
     
     //{{{ Protected Members
