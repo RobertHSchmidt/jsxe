@@ -1,3 +1,8 @@
+07/10/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added the Shortcuts option pane. However, it currently it doesn't work. 
+      It only displays the built in options and the combo box.
+
 07/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Rewrote the Messages class. Now it loads messages on demand and only
