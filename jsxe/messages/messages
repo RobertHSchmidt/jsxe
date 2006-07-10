@@ -68,8 +68,10 @@ Global.Options.network-always=Always download without asking
 Global.Options.network=DTD and schema downloading:
 Global.Options.Menu.Spill.Over=Number of items before menus spill over
 
-
 Shortcuts.Options.Title=Shortcuts
+Shortcuts.Options.Select.Label=Edit Shortcuts:
+Shortcuts.Options.Shortcut=Shortcut
+Shortcuts.Options.Command=Command
 #}}}
 
 #{{{ Document Options
