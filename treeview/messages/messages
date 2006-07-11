@@ -4,7 +4,6 @@
 #:tabSize=4:indentSize=4:noTabs=true:
 #:folding=explicit:collapseFolds=1:
 
-#{{{ TreeView
 TreeView.Options.Title=Tree View
 TreeView.Options.Show.Comments=Show comment nodes
 TreeView.Options.Continuous.Layout=Continuous layout for split-panes
@@ -22,5 +21,4 @@ treeview.add.element.node.label=Add Element Node
 treeview.add.text.node.label=Add Text Node
 treeview.add.cdata.node.label=Add CDATA Node
 treeview.add.pi.node.label=Add Processing Instruction
-treeview.add.comment.node=Add Comment
-#}}}
+treeview.add.comment.node.label=Add Comment
