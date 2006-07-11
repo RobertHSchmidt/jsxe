@@ -88,7 +88,7 @@ public class Messages {
      */
     private static Properties m_pluginMessages;
     
-    private static Locale m_locale = Locale.GERMANY;
+    private static Locale m_locale = Locale.getDefault();
     
     private static boolean initialized = false;
     private static boolean plugins_initialized = false;
