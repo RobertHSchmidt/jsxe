@@ -112,20 +112,19 @@ public class GrabKeyDialog extends JDialog {
      * removed or the dialog either has been cancelled. Use isOK()
      * to determine if the latter is true.
      */
-    public String getShortcut()
-    {
-        if(isOK)
+    public String getShortcut() {
+        if (isOK) {
             return shortcut.getText();
-        else
+        } else {
             return null;
+        }
     } //}}}
 
     //{{{ isOK() method
     /**
      * Returns true, if the dialog has not been cancelled.
      */
-    public boolean isOK()
-    {
+    public boolean isOK() {
         return isOK;
     } //}}}
 
@@ -296,38 +295,49 @@ public class GrabKeyDialog extends JDialog {
         if (ok != null) {
             ok.setEnabled(kb == null/* || !kb.isPrefix*/);
         }
-
+        
         assignedTo.setText(Messages.getMessage("Grab.Key.assigned-to", new String[] { text }));
     } //}}}
 
     //{{{ getKeyBinding() method
-    private KeyBinding getKeyBinding(String shortcut)
-    {
-        if(shortcut == null || shortcut.length() == 0)
+    private KeyBinding getKeyBinding(String shortcut) {
+        
+        if (shortcut == null || shortcut.length() == 0) {
             return null;
-
-        String spacedShortcut = shortcut + " ";
+        }
+        
+        Log.log(Log.DEBUG, this, "getting key binding for: "+shortcut);
+        
+       // String spacedShortcut = shortcut + " ";
         Enumeration e = allBindings.elements();
 
-        while(e.hasMoreElements())
-        {
+        while (e.hasMoreElements()) {
+            
             KeyBinding kb = (KeyBinding)e.nextElement();
-
-            if(!kb.isAssigned())
+            
+            if (!kb.isAssigned()) {
                 continue;
-
-            String spacedKbShortcut = kb.shortcut + " ";
-
-            // eg, trying to bind C+n C+p if C+n already bound
-            if(spacedShortcut.startsWith(spacedKbShortcut))
-                return kb;
-
-            // eg, trying to bind C+e if C+e is a prefix
-            if(spacedKbShortcut.startsWith(spacedShortcut)) {
-                // create a temporary (synthetic) prefix
-                // KeyBinding, that won't be saved
-                return new KeyBinding(kb.name,kb.label,shortcut);
             }
+            
+           // String spacedKbShortcut = kb.shortcut + " ";
+            
+            Log.log(Log.DEBUG, this, "searching "+kb.label+": "+kb.shortcut);
+            
+            // eg, trying to bind C+n C+p if C+n already bound
+           // if (spacedShortcut.startsWith(spacedKbShortcut)) {
+           //     return kb;
+           // }
+            
+            if (shortcut.equals(kb.shortcut)) {
+                return kb;
+            }
+            
+            // eg, trying to bind C+e if C+e is a prefix
+           // if (spacedKbShortcut.startsWith(spacedShortcut)) {
+           //     // create a temporary (synthetic) prefix
+           //     // KeyBinding, that won't be saved
+           //     return new KeyBinding(kb.name,kb.label,shortcut);
+           // }
         }
 
         return null;
@@ -369,9 +379,9 @@ public class GrabKeyDialog extends JDialog {
         } //}}}
 
         //{{{ processKeyEvent() method
-        protected void processKeyEvent(KeyEvent evt) {
-           // KeyEvent evt = KeyEventWorkaround.processKeyEvent(_evt);
-           // Log.log(Log.DEBUG, this, "Event " + GrabKeyDialog.toString(_evt) + (evt == null ? " filtered\n" : " passed\n"));
+        protected void processKeyEvent(KeyEvent _evt) {
+            KeyEvent evt = KeyEventWorkaround.processKeyEvent(_evt);
+            Log.log(Log.DEBUG, this, "Event " + GrabKeyDialog.toString(_evt) + (evt == null ? " filtered\n" : " passed\n"));
 
             if (evt == null) {
                 return;
@@ -379,41 +389,33 @@ public class GrabKeyDialog extends JDialog {
 
             evt.consume();
             
-           // KeyEventTranslator.Key key = KeyEventTranslator.translateKeyEvent(evt);
-           // if (key == null) {
-           //     return;
-           // }
-            
-           // Log.log(Log.DEBUG, this, "==> Translated to " + key + "\n");
-
-            StringBuffer keyString = new StringBuffer(getText());
-
-           // if (getDocument().getLength() != 0) {
-           //     keyString.append(' ');
-           // }
-
-           // if (key.modifiers != null) {
-           //     keyString.append(key.modifiers).append('+');
-           // }
-            
-            if (evt.getModifiers() != 0) {
-                keyString.append(KeyEvent.getKeyModifiersText(evt.getModifiers())).append(' ');
+            KeyEventTranslator.Key key = KeyEventTranslator.translateKeyEvent(evt);
+            if (key == null) {
+                return;
             }
             
-            if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+            Log.log(Log.DEBUG, this, "==> Translated to " + key + "\n");
+
+            StringBuffer keyString = new StringBuffer();
+
+            if (key.modifiers != null) {
+                keyString.append(key.modifiers).append('+');
+            }
+            
+            if (key.input == ' ') {
                 keyString.append("SPACE");
             } else {
-               // if (key.input != '\0') {
-                    keyString.append(KeyEvent.getKeyText(evt.getKeyCode()));
-               // } else {
-               //     String symbolicName = getSymbolicName(key.key);
+                if (key.input != '\0') {
+                    keyString.append(key.input);
+                } else {
+                    String symbolicName = getSymbolicName(key.key);
 
-               //     if (symbolicName == null) {
-               //         return;
-               //     }
+                    if (symbolicName == null) {
+                        return;
+                    }
 
-               //     keyString.append(symbolicName);
-               // }
+                    keyString.append(symbolicName);
+                }
             }
 
             setText(keyString.toString());

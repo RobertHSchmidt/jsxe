@@ -2,6 +2,8 @@
 
     * Added the Shortcuts option pane. However, it currently it doesn't work. 
       It only displays the built in options and the combo box.
+    * Updated the shortcuts option pane so that it shows the select shortcut
+      dialog.
 
 07/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
 

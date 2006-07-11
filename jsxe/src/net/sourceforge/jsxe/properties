@@ -52,7 +52,7 @@ metal.secondary.fontstyle=0
 #}}}
 
 #{{{ Default key bindings
-open-file.shortcut=ctrl O
+open-file.shortcut=ctrl ENTER
 exit.shortcut=ctrl Q
 close-file.shortcut=ctrl W
 new-file.shortcut=ctrl N
