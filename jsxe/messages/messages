@@ -72,6 +72,31 @@ Shortcuts.Options.Title=Shortcuts
 Shortcuts.Options.Select.Label=Edit Shortcuts:
 Shortcuts.Options.Shortcut=Shortcut
 Shortcuts.Options.Command=Command
+
+Grab.Key.title=Specify Shortcut
+Grab.Key.caption=Press the desired shortcut for "{0}", then click OK.
+Grab.Key.keyboard-test=Input the key strokes that are causing problems.
+Grab.Key.assigned-to=Currently assigned to: {0}
+Grab.Key.assigned-to.none=<none>
+Grab.Key.clear=Clear
+Grab.Key.remove=Remove Current
+
+Grab.Key.remove-ask.title=Remove Shortcut?
+Grab.Key.remove-ask.message=\
+	You didn't specify a new shortcut.\n\
+	Do you want to remove the current shortcut?
+
+Grab.Key.duplicate-alt-shortcut.title=Duplicate Shortcut
+Grab.Key.duplicate-alt-shortcut.message=\
+	The shortcut you selected duplicates the other\n\
+	shortcut for this item. Please choose another.
+
+Grab.Key.duplicate-shortcut.title=Duplicate Shortcut
+Grab.Key.duplicate-shortcut.message=\
+	This shortcut is already assigned to\n\
+	"{0}".\n\
+	\n\
+	Do you want to override this assignment?
 #}}}
 
 #{{{ Document Options
