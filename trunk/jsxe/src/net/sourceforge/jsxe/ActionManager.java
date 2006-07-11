@@ -224,7 +224,8 @@ public class ActionManager {
 	//{{{ addKeyBinding()
 	/**
 	 * Adds a key binding to this input handler.
-	 * @param keyBinding The key binding
+	 * @param keyBinding The key binding. It should be of the form described 
+     *                   in {@link net.sourceforge.jsxe.gui.KeyEventTranslator}
 	 * @param action The action
 	 */
     public static void addKeyBinding(String keyBinding, LocalizedAction action) {
