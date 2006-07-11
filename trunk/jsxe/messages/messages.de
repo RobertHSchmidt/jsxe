@@ -1,5 +1,5 @@
 # JSXE German properties file
-# $Id: messages.ger,v 1.10 2005/06/14 13:56:57 trishah136 Exp $
+# $Id$
 # Maintained by Bianca Shöen
 #:mode=properties:
 #:tabSize=4:indentSize=4:noTabs=true:
@@ -116,8 +116,8 @@ DirtyFilesDialog.Dialog.Title=Ungesicherte Änderungen
 DirtyFilesDialog.Dialog.Message=Die folgenden Dateien haben ungesicherte Änderungen:
 DirtyFilesDialog.Button.SelectAll.Title=Alle Auswählen
 DirtyFilesDialog.Button.SelectAll.ToolTip=Alle Auswählen
-DirtyFilesDialog.Button.SaveSelected.Title = Auswahl Speichern
-DirtyFilesDialog.Button.SaveSelected.ToolTip = Auswahl Speichern
-DirtyFilesDialog.Button.DiscardSelected.Title = Auswahl Verwerfen
-DirtyFilesDialog.Button.DiscardSelected.ToolTip = Auswahl Verwerfen
+DirtyFilesDialog.Button.SaveSelected.Title=Auswahl Speichern
+DirtyFilesDialog.Button.SaveSelected.ToolTip=Auswahl Speichern
+DirtyFilesDialog.Button.DiscardSelected.Title=Auswahl Verwerfen
+DirtyFilesDialog.Button.DiscardSelected.ToolTip=Auswahl Verwerfen
 #}}}
