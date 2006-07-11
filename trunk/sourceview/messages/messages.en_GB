@@ -4,8 +4,6 @@
 #:tabSize=4:indentSize=4:noTabs=true:
 #:folding=explicit:collapseFolds=1
 
-#{{{ Source View
-
 #{{{ Source View Options
 SourceView.ColorChooser.Title=Colour Chooser
 #}}}
@@ -13,6 +11,3 @@ SourceView.ColorChooser.Title=Colour Chooser
 #{{{ Style Editor
 SourceView.StyleEditor.Color=Text Colour
 #}}}
-
-#}}}
-
