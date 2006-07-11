@@ -75,6 +75,10 @@ import net.sourceforge.jsxe.util.MiscUtilities;
 public class Messages {
     
     //{{{ Private static members
+    /*
+    TODO: Properties files save and load in ISO 8859-1. This is unacceptable.
+          Need a UTF-8 way to load properties.
+    */
     /**
      * properties containing the messages for jsXe
      */
@@ -84,7 +88,7 @@ public class Messages {
      */
     private static Properties m_pluginMessages;
     
-    private static Locale m_locale = Locale.getDefault();
+    private static Locale m_locale = Locale.GERMANY;
     
     private static boolean initialized = false;
     private static boolean plugins_initialized = false;
