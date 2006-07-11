@@ -111,7 +111,12 @@ public class GrabKeyDialog extends JDialog {
      */
     public String getShortcut() {
         if (isOK) {
-            return shortcut.getKey().getInternalShortcut();
+            KeyEventTranslator.Key key = shortcut.getKey();
+            if (key != null) {
+                return key.getInternalShortcut();
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
