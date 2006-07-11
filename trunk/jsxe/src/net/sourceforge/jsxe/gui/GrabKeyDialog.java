@@ -88,7 +88,7 @@ public class GrabKeyDialog extends JDialog {
      * (may be null)
      */
     public GrabKeyDialog(Dialog parent, KeyBinding binding, Vector allBindings) {
-        super(parent, Messages.getMessage("grab-key.title"),true);
+        super(parent, Messages.getMessage("Grab.Key.title"),true);
         init(binding,allBindings);
     } //}}}
 
@@ -102,7 +102,7 @@ public class GrabKeyDialog extends JDialog {
      * (may be null)
      */
     public GrabKeyDialog(Frame parent, KeyBinding binding, Vector allBindings) {
-        super(parent, Messages.getMessage("grab-key.title"),true);
+        super(parent, Messages.getMessage("Grab.Key.title"),true);
         init(binding,allBindings);
     } //}}}
 
@@ -200,7 +200,7 @@ public class GrabKeyDialog extends JDialog {
         content.setBorder(new EmptyBorder(12,12,12,12));
         setContentPane(content);
 
-        JLabel label = new JLabel(Messages.getMessage("grab-key.caption",new String[] { binding.label }));
+        JLabel label = new JLabel(Messages.getMessage("Grab.Key.caption",new String[] { binding.label }));
 
         Box input = Box.createHorizontalBox();
 
@@ -208,7 +208,7 @@ public class GrabKeyDialog extends JDialog {
         input.add(shortcut);
         input.add(Box.createHorizontalStrut(12));
 
-        clear = new JButton(jsXe.getProperty("grab-key.clear"));
+        clear = new JButton(Messages.getMessage("Grab.Key.clear"));
         clear.addActionListener(new ActionHandler());
         input.add(clear);
 
@@ -225,7 +225,7 @@ public class GrabKeyDialog extends JDialog {
 
         if (binding.isAssigned()) {
             // show "remove" button
-            remove = new JButton(Messages.getMessage("grab-key.remove"));
+            remove = new JButton(Messages.getMessage("Grab.Key.remove"));
             remove.addActionListener(new ActionHandler());
             buttons.add(remove);
             buttons.add(Box.createHorizontalStrut(12));
@@ -282,12 +282,12 @@ public class GrabKeyDialog extends JDialog {
     //{{{ updateAssignedTo() method
     private void updateAssignedTo(String shortcut) {
         
-        String text = Messages.getMessage("grab-key.assigned-to.none");
+        String text = Messages.getMessage("Grab.Key.assigned-to.none");
         KeyBinding kb = getKeyBinding(shortcut);
 
         if (kb != null) {
            // if (kb.isPrefix) {
-           //     text = Messages.getMessage("grab-key.assigned-to.prefix", new String[] { shortcut });
+           //     text = Messages.getMessage("Grab.Key.assigned-to.prefix", new String[] { shortcut });
            // } else {
                 text = kb.label;
            // }
@@ -297,7 +297,7 @@ public class GrabKeyDialog extends JDialog {
             ok.setEnabled(kb == null/* || !kb.isPrefix*/);
         }
 
-        assignedTo.setText(Messages.getMessage("grab-key.assigned-to", new String[] { text }));
+        assignedTo.setText(Messages.getMessage("Grab.Key.assigned-to", new String[] { text }));
     } //}}}
 
     //{{{ getKeyBinding() method
@@ -452,7 +452,7 @@ public class GrabKeyDialog extends JDialog {
                 // ask whether to remove the old shortcut
                 int answer = GUIUtilities.confirm(
                     GrabKeyDialog.this,
-                    "grab-key.remove-ask",
+                    "Grab.Key.remove-ask",
                     null,
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
@@ -475,7 +475,7 @@ public class GrabKeyDialog extends JDialog {
             if (other.name == binding.name) {
                 // we don't need two identical shortcuts
                 GUIUtilities.error(GrabKeyDialog.this,
-                    "grab-key.duplicate-alt-shortcut",
+                    "Grab.Key.duplicate-alt-shortcut",
                     null);
                 return false;
             }
@@ -484,14 +484,14 @@ public class GrabKeyDialog extends JDialog {
            // if (other.isPrefix) {
            //     // can't override prefix shortcuts
            //     GUIUtilities.error(GrabKeyDialog.this,
-           //         "grab-key.prefix-shortcut",
+           //         "Grab.Key.prefix-shortcut",
            //         null);
            //     return false;
            // }
 
             // ask whether to override that other shortcut
             int answer = GUIUtilities.confirm(GrabKeyDialog.this,
-                "grab-key.duplicate-shortcut",
+                "Grab.Key.duplicate-shortcut",
                 new Object[] { other.label },
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);

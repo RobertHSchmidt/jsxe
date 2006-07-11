@@ -32,6 +32,7 @@ import net.sourceforge.jsxe.ActionSet;
 import net.sourceforge.jsxe.ActionManager;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.GrabKeyDialog;
+import net.sourceforge.jsxe.gui.GUIUtilities;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.util.Log;
 //}}}
@@ -39,6 +40,7 @@ import net.sourceforge.jsxe.util.Log;
 //{{{ AWT classes
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.*;
 //}}}
 
 //{{{ Swing classes
@@ -85,19 +87,20 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
         
         initModels();
         
-        JComboBox setsBox = new JComboBox(ActionManager.getActionSets().toArray());
+        m_setsComboBox = new JComboBox(m_models);
+        m_setsComboBox.addActionListener(new ComboBoxHandler());
         Box north = Box.createHorizontalBox();
         north.add(new JLabel(Messages.getMessage("Shortcuts.Options.Select.Label")));
         north.add(Box.createHorizontalStrut(6));
-        north.add(setsBox);
+        north.add(m_setsComboBox);
         
-        JTable keyTable = new JTable(m_currentModel);
-        keyTable.getTableHeader().setReorderingAllowed(false);
+        m_keyTable = new JTable(m_currentModel);
+        m_keyTable.getTableHeader().setReorderingAllowed(false);
        // keyTable.getTableHeader().addMouseListener(new HeaderMouseHandler());
-       // keyTable.addMouseListener(new TableMouseHandler());
-        Dimension d = keyTable.getPreferredSize();
+        m_keyTable.addMouseListener(new TableMouseHandler());
+        Dimension d = m_keyTable.getPreferredSize();
         d.height = Math.min(d.height,200);
-        JScrollPane scroller = new JScrollPane(keyTable);
+        JScrollPane scroller = new JScrollPane(m_keyTable);
         scroller.setPreferredSize(d);
         
         add(BorderLayout.NORTH,north);
@@ -119,6 +122,8 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
     
     private ActionSetTableModel m_currentModel;
     private Vector m_models;
+    private JComboBox m_setsComboBox;
+    private JTable m_keyTable;
     
     //{{{ ActionSetTableModel class
     private class ActionSetTableModel extends AbstractTableModel {
@@ -140,6 +145,12 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
             MiscUtilities.quicksort(m_set, new KeyCompare());
             
             m_name = set.getLabel();
+        }//}}}
+        
+        //{{{ getBindingAt()
+        
+        public GrabKeyDialog.KeyBinding getBindingAt(int row) {
+			return (GrabKeyDialog.KeyBinding)m_set.elementAt(row);
         }//}}}
         
         //{{{ getColumnCount()
@@ -211,10 +222,45 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
             
         }//}}}
         
-        private Vector m_set;
+        public Vector m_set;
         private String m_name;
         //}}}
         
+    }//}}}
+    
+    //{{{ ComboBoxHandler class
+    
+    private class ComboBoxHandler implements ActionListener {
+        
+        public void actionPerformed(ActionEvent evt) {
+            ActionSetTableModel newModel = (ActionSetTableModel)m_setsComboBox.getSelectedItem();
+
+            if (m_currentModel != newModel) {
+                m_currentModel = newModel;
+                m_keyTable.setModel(m_currentModel);
+            }
+        }
+    }//}}}
+    
+    //{{{ TableMouseHandler class
+    
+    private class TableMouseHandler extends MouseAdapter {
+        
+        public void mouseClicked(MouseEvent evt) {
+            int row = m_keyTable.getSelectedRow();
+            int col = m_keyTable.getSelectedColumn();
+            if (col != 0 && row != -1) {
+                Vector allBindings = createAllBindings();
+                GrabKeyDialog gkd = new GrabKeyDialog(
+                    GUIUtilities.getParentDialog(
+                    ShortcutsOptionPane.this),
+                    m_currentModel.getBindingAt(row),
+                    allBindings);
+                 if (gkd.isOK()) {
+                    m_currentModel.setValueAt(gkd.getShortcut(),row,col);
+                 }
+            }
+        }
     }//}}}
     
     //{{{ initModels()
@@ -231,6 +277,21 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
         }
         MiscUtilities.quicksort(m_models,new MiscUtilities.StringICaseCompare());
         m_currentModel = (ActionSetTableModel)m_models.elementAt(0);
+    }//}}}
+    
+    //{{{ createAllBindings()
+    
+    public Vector createAllBindings() {
+        Vector set = new Vector();
+        Iterator itr = m_models.iterator();
+        while (itr.hasNext()) {
+            ActionSetTableModel model = (ActionSetTableModel)itr.next();
+            Iterator itr2 = model.m_set.iterator();
+            while (itr2.hasNext()) {
+                set.add((GrabKeyDialog.KeyBinding)itr2.next());
+            }
+        }
+        return set;
     }//}}}
     
     //}}}
