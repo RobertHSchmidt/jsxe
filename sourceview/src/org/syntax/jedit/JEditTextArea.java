@@ -264,8 +264,7 @@ public class JEditTextArea extends JComponent
         if(horizontal != null && width != 0)
         {
             horizontal.setValues(-horizontalOffset,width,0,width * 5);
-            horizontal.setUnitIncrement(painter.getFontMetrics()
-                .charWidth('w'));
+            horizontal.setUnitIncrement(painter.getFontMetrics().charWidth('w'));
             horizontal.setBlockIncrement(width / 2);
         }
     }
