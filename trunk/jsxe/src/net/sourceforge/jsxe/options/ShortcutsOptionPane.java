@@ -138,9 +138,11 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
                 String label = ActionManager.getLocalizedAction(names[i]).getLabel();
                 if (label == null) {
                     Log.log(Log.WARNING, this, names[i]+" has a null label");
-                } else {
-                    String binding = jsXe.getProperty(names[i]+".shortcut");
-                    m_set.add(new GrabKeyDialog.KeyBinding(names[i], label, binding));
+                } else {                                
+                    if (!ActionManager.isDocViewSpecific(names[i])) {
+                        String binding = jsXe.getProperty(names[i]+".shortcut");
+                        m_set.add(new GrabKeyDialog.KeyBinding(names[i], label, binding));
+                    }
                 }
             }
             MiscUtilities.quicksort(m_set, new KeyCompare());
@@ -285,9 +287,13 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
         Iterator itr = ActionManager.getActionSets().iterator();
         while(itr.hasNext()) {
             ActionSet actionSet = (ActionSet)itr.next();
-            if (actionSet.getActionCount() != 0) {
+            if (actionSet.getActionCount() > 0) {
                 String modelLabel = actionSet.getLabel();
-                m_models.addElement(new ActionSetTableModel(actionSet));
+                ActionSetTableModel model = new ActionSetTableModel(actionSet);
+                //models may be empty due to having all view specific actions
+                if (model.getRowCount() > 0) {
+                    m_models.addElement(model);
+                }
             }
         }
         MiscUtilities.quicksort(m_models,new MiscUtilities.StringICaseCompare());

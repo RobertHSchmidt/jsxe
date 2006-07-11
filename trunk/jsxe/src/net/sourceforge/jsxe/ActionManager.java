@@ -278,6 +278,17 @@ public class ActionManager {
         }
     }//}}}
     
+    //{{{ isDocviewSpecific()
+    /**
+     * Returns whether the action with the given name is document view specific.
+     */
+    public static boolean isDocViewSpecific(String actionName) {
+        return (actionName.endsWith(CUT_SUFFIX) ||
+                actionName.endsWith(COPY_SUFFIX) ||
+                actionName.endsWith(PASTE_SUFFIX) ||
+                actionName.endsWith(FIND_SUFFIX));
+    }//}}}
+    
     //{{{ Wrapper class
     /**
      * The Wrapper class wraps LocalizedActions so they can be invoked
@@ -349,7 +360,7 @@ public class ActionManager {
 	 * Removes a key binding.
 	 * @param keyBinding The key binding
 	 */
-    public static void removeKeyBinding(KeyEventTranslator.Key key) {
+    private static void removeKeyBinding(KeyEventTranslator.Key key) {
         Action action = (Action)m_keyBindingMap.get(key);
         if (action != null) {
             action.putValue(Action.ACCELERATOR_KEY, null);
@@ -358,20 +369,12 @@ public class ActionManager {
     }//}}}
     
     //{{{ translateKeyEvent()
-    public static ActionEvent translateKeyEvent(KeyEvent evt) {
+    private static ActionEvent translateKeyEvent(KeyEvent evt) {
         ActionEvent event = new ActionEvent(evt.getSource(),
                                             (int)ActionEvent.KEY_EVENT_MASK,
                                             "",
                                             evt.getModifiers());
         return event;
-    }//}}}
-    
-    //{{{ isDocviewSpecific()
-    public boolean isDocViewSpecific(String actionName) {
-        return (actionName.endsWith(CUT_SUFFIX) ||
-                actionName.endsWith(COPY_SUFFIX) ||
-                actionName.endsWith(PASTE_SUFFIX) ||
-                actionName.endsWith(FIND_SUFFIX));
     }//}}}
     
     //}}}
