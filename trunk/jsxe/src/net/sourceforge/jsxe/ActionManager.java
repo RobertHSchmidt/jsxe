@@ -33,6 +33,7 @@ package net.sourceforge.jsxe;
 //{{{ jsXe classes
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.GUIUtilities;
+import net.sourceforge.jsxe.gui.KeyEventTranslator;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.msg.PropertyChanged;
@@ -133,7 +134,7 @@ public class ActionManager {
                 action.putValue(Action.NAME, dispName);
                 
                 if (keyBinding != null) {
-                    action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(keyBinding));
+                    action.putValue(Action.ACCELERATOR_KEY, KeyEventTranslator.getKeyStroke(keyBinding));
                 }
                 
                 m_actionMap.put(name, action);
@@ -231,11 +232,12 @@ public class ActionManager {
     public static void addKeyBinding(String keyBinding, LocalizedAction action) {
         if (action != null && keyBinding != null) {
             Action wrapper = getAction(action.getName());
-            KeyStroke key = KeyStroke.getKeyStroke(keyBinding);
-            m_keyBindingMap.put(key,wrapper);
+            
+            KeyEventTranslator.Key key = KeyEventTranslator.parseKey(keyBinding);
+            m_keyBindingMap.put(key, wrapper);
             
             //need to do this so that the accelerator key is rendered on menu items
-            wrapper.putValue(Action.ACCELERATOR_KEY, key);
+            wrapper.putValue(Action.ACCELERATOR_KEY, KeyEventTranslator.getKeyStroke(keyBinding));
         }
     }//}}}
     
@@ -245,7 +247,7 @@ public class ActionManager {
 	 * @param keyBinding The key binding
 	 */
     public static void removeKeyBinding(String keyBinding) {
-        removeKeyBinding(KeyStroke.getKeyStroke(keyBinding));
+        removeKeyBinding(KeyEventTranslator.parseKey(keyBinding));
     }//}}}
     
 	//{{{ removeAllKeyBindings()
@@ -255,7 +257,7 @@ public class ActionManager {
     public static void removeAllKeyBindings() {
         Iterator itr = m_keyBindingMap.keySet().iterator();
         while (itr.hasNext()) {
-            removeKeyBinding((KeyStroke)itr.next());
+            removeKeyBinding((KeyEventTranslator.Key)itr.next());
         }
     }//}}}
     
@@ -265,9 +267,9 @@ public class ActionManager {
      * associated action is invoked.
      */
     public static void handleKey(KeyEvent event) {
-        KeyStroke key = KeyStroke.getKeyStrokeForEvent(event);
+        KeyEventTranslator.Key key = KeyEventTranslator.translateKeyEvent(event);
         
-        //Gets the action for the KeyStroke.
+        //Gets the action for the Key.
         Action action = (Action)m_keyBindingMap.get(key);
         if (action != null) {
             Log.log(Log.DEBUG, ActionManager.class, "Key mapping match for "+((Wrapper)action).getName());
@@ -347,7 +349,7 @@ public class ActionManager {
 	 * Removes a key binding.
 	 * @param keyBinding The key binding
 	 */
-    public static void removeKeyBinding(KeyStroke key) {
+    public static void removeKeyBinding(KeyEventTranslator.Key key) {
         Action action = (Action)m_keyBindingMap.get(key);
         if (action != null) {
             action.putValue(Action.ACCELERATOR_KEY, null);

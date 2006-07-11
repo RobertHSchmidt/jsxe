@@ -33,6 +33,7 @@ import net.sourceforge.jsxe.ActionManager;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.GrabKeyDialog;
 import net.sourceforge.jsxe.gui.GUIUtilities;
+import net.sourceforge.jsxe.gui.KeyEventTranslator;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.util.Log;
 //}}}
@@ -177,19 +178,33 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
         }//}}}
         
         //{{{ getValueAt()
+        /**
+         * Note: this returns a display value for the shortcut while
+         * <code>setValueAt()</code> takes an internal value. Since we don't
+         * use the default table editors, this works ok. 
+         */
         public Object getValueAt(int row, int column) {
             switch (column) {
                 case (0):
                     return ((GrabKeyDialog.KeyBinding)m_set.get(row)).label;
                 case (1):
-                    return ((GrabKeyDialog.KeyBinding)m_set.get(row)).shortcut;
+                    KeyEventTranslator.Key key = KeyEventTranslator.parseKey(((GrabKeyDialog.KeyBinding)m_set.get(row)).shortcut);
+                    if (key != null) {
+                        return key.toString();
+                    } else {
+                        return null;
+                    }
                 default:
                     return null;
             }
         }//}}}
         
         //{{{ setValueAt()
-        
+        /**
+         * Note: this takes an internal shortcut value, while getValueAt()
+         * will return a display value. Since we don't use the default
+         * table editors this works ok.
+         */
         public void setValueAt(Object value, int row, int col) {
             if (col == 0)
                 return;

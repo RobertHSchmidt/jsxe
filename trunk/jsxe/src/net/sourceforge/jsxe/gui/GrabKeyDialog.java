@@ -36,7 +36,6 @@ import javax.swing.border.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
-import java.lang.reflect.Field;
 import java.util.*;
 
 //}}}
@@ -51,23 +50,21 @@ import java.util.*;
 public class GrabKeyDialog extends JDialog {
     
     //{{{ toString() method
-    public static String toString(KeyEvent evt)
-    {
+    public static String toString(KeyEvent evt) {
         String id;
-        switch(evt.getID())
-        {
-        case KeyEvent.KEY_PRESSED:
-            id = "KEY_PRESSED";
-            break;
-        case KeyEvent.KEY_RELEASED:
-            id = "KEY_RELEASED";
-            break;
-        case KeyEvent.KEY_TYPED:
-            id = "KEY_TYPED";
-            break;
-        default:
-            id = "unknown type";
-            break;
+        switch (evt.getID()) {
+            case KeyEvent.KEY_PRESSED:
+                id = "KEY_PRESSED";
+                break;
+            case KeyEvent.KEY_RELEASED:
+                id = "KEY_RELEASED";
+                break;
+            case KeyEvent.KEY_TYPED:
+                id = "KEY_TYPED";
+                break;
+            default:
+                id = "unknown type";
+                break;
         }
 
         return id + ",keyCode=0x"
@@ -114,7 +111,7 @@ public class GrabKeyDialog extends JDialog {
      */
     public String getShortcut() {
         if (isOK) {
-            return shortcut.getText();
+            return shortcut.getKey().getInternalShortcut();
         } else {
             return null;
         }
@@ -133,8 +130,7 @@ public class GrabKeyDialog extends JDialog {
      * Returns if this component can be traversed by pressing the
      * Tab key. This returns false.
      */
-    public boolean isManagingFocus()
-    {
+    public boolean isManagingFocus() {
         return false;
     } //}}}
 
@@ -142,14 +138,12 @@ public class GrabKeyDialog extends JDialog {
     /**
      * Makes the tab key work in Java 1.4.
      */
-    public boolean getFocusTraversalKeysEnabled()
-    {
+    public boolean getFocusTraversalKeysEnabled() {
         return false;
     } //}}}
 
     //{{{ processKeyEvent() method
-    protected void processKeyEvent(KeyEvent evt)
-    {
+    protected void processKeyEvent(KeyEvent evt) {
         shortcut.processKeyEvent(evt);
     } //}}}
 
@@ -168,8 +162,8 @@ public class GrabKeyDialog extends JDialog {
     //}}}
 
     //{{{ init() method
-    private void init(KeyBinding binding, Vector allBindings)
-    {
+    private void init(KeyBinding binding, Vector allBindings) {
+        
         this.binding = binding;
         this.allBindings = allBindings;
 
@@ -177,22 +171,19 @@ public class GrabKeyDialog extends JDialog {
 
         // create a panel with a BoxLayout. Can't use Box here
         // because Box doesn't have setBorder().
-        JPanel content = new JPanel(new GridLayout(0,1,0,6))
-        {
+        JPanel content = new JPanel(new GridLayout(0,1,0,6)) {
             /**
              * Returns if this component can be traversed by pressing the
              * Tab key. This returns false.
              */
-            public boolean isManagingFocus()
-            {
+            public boolean isManagingFocus() {
                 return false;
             }
 
             /**
              * Makes the tab key work in Java 1.4.
              */
-            public boolean getFocusTraversalKeysEnabled()
-            {
+            public boolean getFocusTraversalKeysEnabled() {
                 return false;
             }
         };
@@ -247,37 +238,7 @@ public class GrabKeyDialog extends JDialog {
         setResizable(false);
         setVisible(true);
     } //}}}
-
-    //{{{ getSymbolicName() method
-    private String getSymbolicName(int keyCode) {
-        if (keyCode == KeyEvent.VK_UNDEFINED) {
-            return null;
-        }
-        /* else if(keyCode == KeyEvent.VK_OPEN_BRACKET)
-            return "[";
-        else if(keyCode == KeyEvent.VK_CLOSE_BRACKET)
-            return "]"; */
-
-        if (keyCode >= KeyEvent.VK_A && keyCode <= KeyEvent.VK_Z) {
-            return String.valueOf(Character.toLowerCase((char)keyCode));
-        }
-        
-        try {
-            Field[] fields = KeyEvent.class.getFields();
-            for(int i = 0; i < fields.length; i++) {
-                Field field = fields[i];
-                String name = field.getName();
-                if(name.startsWith("VK_") && field.getInt(null) == keyCode) {
-                    return name.substring(3);
-                }
-            }
-        } catch(Exception e) {
-            Log.log(Log.ERROR,this,e);
-        }
-
-        return null;
-    } //}}}
-
+    
     //{{{ updateAssignedTo() method
     private void updateAssignedTo(String shortcut) {
         
@@ -351,13 +312,19 @@ public class GrabKeyDialog extends JDialog {
      */
     public static class KeyBinding {
         
+        /**
+         * Creates a new key binding for use with the GrabKeyDialog.
+         * @param name The internal name of the action.
+         * @param label The human readable label for the action
+         * @param shortcut The internal shortcut for the keybinding
+         */
         public KeyBinding(String name, String label, String shortcut/*, boolean isPrefix*/) {
             this.name = name;
             this.label = label;
             this.shortcut = shortcut;
            // this.isPrefix = isPrefix;
         }
-
+        
         public String name;
         public String label;
         public String shortcut;
@@ -390,37 +357,37 @@ public class GrabKeyDialog extends JDialog {
             evt.consume();
             
             KeyEventTranslator.Key key = KeyEventTranslator.translateKeyEvent(evt);
+            
             if (key == null) {
                 return;
             }
             
-            Log.log(Log.DEBUG, this, "==> Translated to " + key + "\n");
+            Log.log(Log.DEBUG, this, "==> Translated to " + 
+                    ((key.modifiers == 0 ? "" : KeyEventTranslator.modifiersToString(key.modifiers))
+                    + "<"
+                    + Integer.toString(key.key,16)
+                    + ","
+                    + Integer.toString(key.input,16)
+                    + ">")
+                + "\n");
 
-            StringBuffer keyString = new StringBuffer();
-
-            if (key.modifiers != null) {
-                keyString.append(key.modifiers).append('+');
-            }
-            
-            if (key.input == ' ') {
-                keyString.append("SPACE");
-            } else {
-                if (key.input != '\0') {
-                    keyString.append(key.input);
-                } else {
-                    String symbolicName = getSymbolicName(key.key);
-
-                    if (symbolicName == null) {
-                        return;
-                    }
-
-                    keyString.append(symbolicName);
-                }
+            String internalShortcut = key.getInternalShortcut();
+            if (internalShortcut == null) {
+                return;
             }
 
-            setText(keyString.toString());
-            updateAssignedTo(keyString.toString());
+            setText(key.toString());
+            updateAssignedTo(internalShortcut);
+            m_key = key;
         } //}}}
+        
+        //{{{ getKey()
+        
+        public KeyEventTranslator.Key getKey() {
+            return m_key;
+        }//}}}
+        
+        private KeyEventTranslator.Key m_key = null;
     } //}}}
 
     //{{{ ActionHandler class
