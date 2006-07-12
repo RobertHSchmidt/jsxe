@@ -4,6 +4,7 @@
       work but the shortcut labels for menu items are not updated when the
       action is updated. This is a bug that is fixed in the beta for Java 6
       but obviously it can't wait that long.
+    * Renamed EnhancedMenu to WrappingMenu. I think it's more descriptive.
 
 07/10/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
