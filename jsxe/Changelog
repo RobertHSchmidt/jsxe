@@ -5,6 +5,7 @@
       action is updated. This is a bug that is fixed in the beta for Java 6
       but obviously it can't wait that long.
     * Renamed EnhancedMenu to WrappingMenu. I think it's more descriptive.
+    * Updated messages to load the messages files in UTF-8
 
 07/10/2006  Ian Lewis   <IanLewis@member.fsf.org>
 

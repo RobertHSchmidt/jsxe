@@ -75,10 +75,6 @@ import net.sourceforge.jsxe.util.MiscUtilities;
 public class Messages {
     
     //{{{ Private static members
-    /*
-    TODO: Properties files save and load in ISO 8859-1. This is unacceptable.
-          Need a UTF-8 way to load properties.
-    */
     /**
      * properties containing the messages for jsXe
      */
@@ -88,7 +84,12 @@ public class Messages {
      */
     private static Properties m_pluginMessages;
     
+    static {
+       // Locale.setDefault(new Locale("sv"));
+        Locale.setDefault(Locale.GERMANY);
+    }
     private static Locale m_locale = Locale.getDefault();
+    
     
     private static boolean initialized = false;
     private static boolean plugins_initialized = false;
@@ -124,6 +125,7 @@ public class Messages {
         String messagesFile = getMessagesFileName(locale);
         
         try {
+            Properties props = new Properties();
             
             //create input stream from messages file
             FileInputStream in = new FileInputStream(jsXe.getInstallDirectory()+
@@ -132,11 +134,22 @@ public class Messages {
                                                      System.getProperty("file.separator")+
                                                      messagesFile);
             
-            Properties props = new Properties();
-            
             Log.log(Log.NOTICE, Messages.class, "Loading message file: "+messagesFile);
             
             props.load(in);
+            
+            //reset the messages in UTF-8
+            //TODO: fix this so we don't have to do a encoding conversion
+            Enumeration keys = props.keys();
+            while (keys.hasMoreElements()) {
+                String key = keys.nextElement().toString();
+                String value = props.getProperty(key);
+                if (value != null) {
+                    props.setProperty(key, new String(value.getBytes("ISO-8859-1"),"UTF-8"));
+                } else {
+                    Log.log(Log.DEBUG, Messages.class, "null value: "+key);
+                }
+            }
             
             m_messages = MiscUtilities.mergeProperties(m_messages, props);
             
@@ -165,6 +178,19 @@ public class Messages {
                     Log.log(Log.NOTICE, Messages.class, "Loading plugin message file: "+resource.toString());
                     
                     props.load(resource.openStream());
+                    
+                    //reset the messages in UTF-8
+                    //TODO: fix this so we don't have to do a encoding conversion
+                    Enumeration keys = props.keys();
+                    while (keys.hasMoreElements()) {
+                        String key = keys.nextElement().toString();
+                        String value = props.getProperty(key);
+                        if (value != null) {
+                            props.setProperty(key, new String(value.getBytes("ISO-8859-1"),"UTF-8"));
+                        } else {
+                            Log.log(Log.DEBUG, Messages.class, "null value: "+key);
+                        }
+                    }
                     
                     m_pluginMessages = MiscUtilities.mergeProperties(m_pluginMessages, props);
                 } catch (FileNotFoundException e) {

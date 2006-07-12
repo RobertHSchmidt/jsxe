@@ -25,6 +25,11 @@ common.paste=Paste
 common.find=Find...
 common.findnext=Find Next
 
+common.ctrl=Ctrl
+common.alt=Alt
+common.shift=Shift
+common.meta=Meta
+
 #}}}
 
 #{{{ XML Terminology
