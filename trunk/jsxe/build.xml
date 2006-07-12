@@ -31,11 +31,11 @@
     <property name="build.messages" value="${build.dir}/messages"/>
     <property name="docs.dir" value="${src.dir}/doc"/>
     <property name="plugin.dir" value="${root.dir}/jars"/>
+    <property name="build.plugin" value="${build.dir}/jars"/>
     <property name="build.src" value="${build.dir}/src"/>
     <property name="build.dest" value="${build.dir}/classes"/>
     <property name="build.docs" value="${build.dir}/doc"/>
     <property name="build.lib" value="${build.dir}/lib"/>
-    <property name="build.bin" value="${build.dir}/bin"/>
     <property name="build.bin" value="${build.dir}/bin"/>
     <property name="date.format" value="MM.dd.yyyy HH:mm:ss z"/>
     <property name="build.javadocs" value="${build.docs}/api"/>
@@ -71,7 +71,7 @@
     </path>
     
     <path id="run-classpath">
-      <pathelement location="${root.dir}/${app.name}.jar"/>
+      <pathelement location="${build.dir}/${app.name}.jar"/>
       <fileset dir="${lib.dir}">
         <include name="**/*.jar"/>
       </fileset>
@@ -127,12 +127,23 @@
         <include name="**/*.png"/>
       </fileset>
     </copy>
+    <mkdir dir="${build.plugin}"/>
+    
+    <copy todir="${build.plugin}">
+      <fileset dir="${plugin.dir}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    
     <mkdir dir="${build.messages}"/>
-    <copy todir="${build.messages}">
+    <!--<copy todir="${build.messages}">
       <fileset dir="${messages.dir}">
         <include name="**/messages.*"/>
       </fileset>
-    </copy>
+    </copy>-->
+    
+    <!-- run native2ascii on these files -->
+    <native2ascii encoding="UTF-8" src="${messages.dir}" dest="${build.messages}" includes="messages*"/>
   </target>
   <!-- }}} -->
   <!-- {{{ ============ Compiles the program ============================= -->
@@ -166,7 +177,7 @@
     </propertyfile>
     
     <!-- create jar manifest -->
-    <manifest file="${root.dir}/${app.name}.manifest">
+    <manifest file="${build.dir}/${app.name}.manifest">
       <attribute name="Built-By" value="${user.name}"/>
       <attribute name="Main-Class" value="${main.class}"/>
       <section name="common">
@@ -175,7 +186,7 @@
       </section>
     </manifest>
     
-    <jar jarfile="${root.dir}/${app.name}.jar" manifest="${app.name}.manifest">
+    <jar jarfile="${build.dir}/${app.name}.jar" manifest="${build.dir}/${app.name}.manifest">
       <fileset dir="${build.dest}">
         <include name="**/*.class"/>
         <include name="**/properties"/>
@@ -194,16 +205,16 @@
     <antcall target="build-sourceview"/>
   </target>
   <target name="build-treeview" if="treeview.avail">
-    <ant inheritAll="false" dir="${plugin.dir}/treeview/" target="compile"/>
+    <ant inheritAll="false" dir="${build.plugin}/treeview/" target="compile"/>
   </target>
   <target name="build-sourceview" if="sourceview.avail">
-    <ant inheritAll="false" dir="${plugin.dir}/sourceview/" target="compile"/>
+    <ant inheritAll="false" dir="${build.plugin}/sourceview/" target="compile"/>
   </target>
   <!-- }}} -->
   <!-- {{{ ============ Run the program ================================== -->
   <target depends="compile" name="run" description="run jsXe">
     <java fork="true" classname="${main.class}">
-      <classpath refid="classpath"/>
+      <classpath refid="run-classpath"/>
     </java>
   </target>
   <!-- }}} -->
@@ -248,7 +259,7 @@
     <!-- plugins -->
     <mkdir dir="${distbin.dir}/jars"/>
     <copy todir="${distbin.dir}/jars">
-      <fileset dir="${plugin.dir}">
+      <fileset dir="${build.plugin}">
         <include name="*.jar"/>
       </fileset>
     </copy>
@@ -272,11 +283,11 @@
     <mkdir dir="${distbin.dir}/messages"/>
     <copy todir="${distbin.dir}/messages">
       <fileset dir="${build.messages}">
-        <include name="**/messages.*"/>
+        <include name="**/messages*"/>
       </fileset>
     </copy>
     
-    <copy file="${app.name}.jar" tofile="${distbin.dir}/${app.name}.jar"/>
+    <copy file="${build.dir}/${app.name}.jar" tofile="${distbin.dir}/${app.name}.jar"/>
     <!-- lib -->
     <mkdir dir="${distbin.dir}/lib"/>
     <copy todir="${distbin.dir}/lib">
@@ -331,7 +342,7 @@
     <mkdir dir="${distsrc.dir}/messages"/>
     <copy todir="${distsrc.dir}/messages">
       <fileset dir="${build.messages}">
-        <include name="**/messages.*"/>
+        <include name="**/messages*"/>
       </fileset>
     </copy>
     
@@ -339,7 +350,7 @@
   </target>
   <target name="copy-treeview-source" if="treeview.avail">
     <copy todir="${distsrc.dir}/jars">
-      <fileset dir="${root.dir}/jars/">
+      <fileset dir="${build.dir}/jars/">
         <include name="treeview/**/*"/>
         <exclude name="treeview/build"/>
         <exclude name="treeview/build/**/*"/>
@@ -349,7 +360,7 @@
   </target>
   <target name="copy-sourceview-source" if="sourceview.avail">
     <copy todir="${distsrc.dir}/jars">
-      <fileset dir="${root.dir}/jars/">
+      <fileset dir="${build.dir}/jars/">
         <include name="sourceview/**/*"/>
         <exclude name="sourceview/build"/>
         <exclude name="sourceview/build/**/*"/>
@@ -367,8 +378,6 @@
   <target depends="init" name="clean" description="Clean up distribution tree">
     <delete dir="${build.dir}"/>
     <delete>
-      <fileset dir="." includes="${app.name}.jar"/>
-      <fileset dir="." includes="${app.name}.manifest"/>
       <fileset dir="." includes="**/*.class"/>
       <fileset dir="." includes="**/*.rej"/>
       <fileset dir="." includes="**/*.orig"/>
@@ -378,14 +387,14 @@
       <fileset dir="." includes="**/.directory"/>
       <fileset dir="." includes="**/.xvpics"/>
     </delete>
-    <antcall target="clean-treeview"/>
-    <antcall target="clean-sourceview"/>
+    <!--<antcall target="clean-treeview"/>-->
+    <!--<antcall target="clean-sourceview"/>-->
   </target>
-  <target name="clean-treeview" if="treeview.avail">
+  <!--<target name="clean-treeview" if="treeview.avail">
     <ant inheritAll="false" dir="${plugin.dir}/treeview/" target="clean"/>
   </target>
   <target name="clean-sourceview" if="sourceview.avail">
     <ant inheritAll="false" dir="${plugin.dir}/sourceview/" target="clean"/>
-  </target>
+  </target>-->
   <!-- }}} -->
 </project>
