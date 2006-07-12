@@ -504,7 +504,7 @@ public class TabbedView extends JFrame {
             m_fileMenu.add( menuItem );
             
             //Add recent files menu
-            m_recentFilesMenu = new EnhancedMenu(Messages.getMessage("File.Recent"), jsXe.getIntegerProperty("menu.spill.over", 20));
+            m_recentFilesMenu = new WrappingMenu(Messages.getMessage("File.Recent"), jsXe.getIntegerProperty("menu.spill.over", 20));
             m_fileMenu.add(m_recentFilesMenu);
             
             m_fileMenu.addSeparator();
@@ -721,7 +721,7 @@ public class TabbedView extends JFrame {
     private JMenu m_viewMenu;
     private JMenu m_toolsMenu;
     private JMenu m_helpMenu;
-    private EnhancedMenu m_recentFilesMenu;
+    private WrappingMenu m_recentFilesMenu;
     private ArrayList m_documentViews = new ArrayList();
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
