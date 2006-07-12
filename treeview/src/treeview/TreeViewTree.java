@@ -450,7 +450,7 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     
-                    JMenu addElement = new EnhancedMenu(Messages.getMessage("xml.element"), 20);
+                    JMenu addElement = new WrappingMenu(Messages.getMessage("xml.element"), 20);
                     addNodeItem.add(addElement);
                     
                     addElement.add(new ActionManager.Wrapper("treeview.add.element.node"));
@@ -462,7 +462,7 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                     
                     //Add the allowed entities even if no matter what
                     
-                    JMenu addEntity = new EnhancedMenu(Messages.getMessage("xml.entity.reference"), 20);
+                    JMenu addEntity = new WrappingMenu(Messages.getMessage("xml.entity.reference"), 20);
                     addNodeItem.add(addEntity);
                     
                     Iterator allowedEntities = ownerDocument.getAllowedEntities().iterator();
