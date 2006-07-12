@@ -325,7 +325,7 @@ public class TabbedView extends JFrame {
      */
     protected void processKeyEvent(KeyEvent e) {
         //TODO: process shortcuts
-        Log.log(Log.DEBUG, this, e.toString());
+       // Log.log(Log.DEBUG, this, e.toString());
         ActionManager.handleKey(e);
     }//}}}
     

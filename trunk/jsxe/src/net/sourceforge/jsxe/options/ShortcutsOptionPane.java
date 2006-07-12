@@ -111,7 +111,14 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
     
     //{{{ _save()
     protected void _save() {
-        
+        if (m_keyTable.getCellEditor() != null) {
+            m_keyTable.getCellEditor().stopCellEditing();
+        }
+
+        Iterator e = m_models.iterator();
+        while (e.hasNext()) {
+            ((ActionSetTableModel)e.next()).save();
+        }
     }//}}}
     
     //{{{ toString()
@@ -153,7 +160,7 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
         //{{{ getBindingAt()
         
         public GrabKeyDialog.KeyBinding getBindingAt(int row) {
-			return (GrabKeyDialog.KeyBinding)m_set.elementAt(row);
+            return (GrabKeyDialog.KeyBinding)m_set.elementAt(row);
         }//}}}
         
         //{{{ getColumnCount()
@@ -225,6 +232,19 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
             return m_name;
         }//}}}
         
+        //{{{ save()
+        /**
+         * Saves the current config to the properties
+         */
+        public void save() {
+            Iterator e = m_set.iterator();
+            while(e.hasNext()) {
+                GrabKeyDialog.KeyBinding binding = (GrabKeyDialog.KeyBinding)e.next();
+                
+                jsXe.setProperty(binding.name + ".shortcut", binding.shortcut);
+            }
+        }//}}}
+        
         //{{{ Private members
         
         //{{{ KeyCompare class
@@ -281,7 +301,6 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
     }//}}}
     
     //{{{ initModels()
-    
     private void initModels() {
         m_models = new Vector();
         Iterator itr = ActionManager.getActionSets().iterator();
