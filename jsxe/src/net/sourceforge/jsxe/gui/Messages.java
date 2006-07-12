@@ -59,6 +59,12 @@ import net.sourceforge.jsxe.util.MiscUtilities;
  * names with the format messages.<code>language</code>.<code>country</code>.<code>variant</code>.
  * The Messages class searches these files in the following order.
  *
+ * Messages files should be in a format that the <code>Properties</code> class
+ * can understand. This means that messages files that contain localized
+ * characters should have the native2ascii tool run on them. This ensures
+ * that these characters are in the \\u... format that can be read by the
+ * <code>Properties</code> class.
+ *
  * <ul>
  * <li>messages.<code>language</code>_<code>country</code>_<code>variant</code></li>
  * <li>messages.<code>language</code>_<code>country</code></li>
@@ -84,10 +90,11 @@ public class Messages {
      */
     private static Properties m_pluginMessages;
     
-   // static {
-   //    // Locale.setDefault(new Locale("sv"));
-   //     Locale.setDefault(Locale.GERMANY);
-   // }
+    static {
+       // Locale.setDefault(new Locale("sv"));
+        Locale.setDefault(Locale.GERMANY);
+       // Locale.setDefault(Locale.JAPAN);
+    }
     private static Locale m_locale = Locale.getDefault();
     
     
@@ -140,16 +147,16 @@ public class Messages {
             
             //reset the messages in UTF-8
             //TODO: fix this so we don't have to do a encoding conversion
-            Enumeration keys = props.keys();
-            while (keys.hasMoreElements()) {
-                String key = keys.nextElement().toString();
-                String value = props.getProperty(key);
-                if (value != null) {
-                    props.setProperty(key, new String(value.getBytes("ISO-8859-1"),"UTF-8"));
-                } else {
-                    Log.log(Log.DEBUG, Messages.class, "null value: "+key);
-                }
-            }
+           // Enumeration keys = props.keys();
+           // while (keys.hasMoreElements()) {
+           //     String key = keys.nextElement().toString();
+           //     String value = props.getProperty(key);
+           //     if (value != null) {
+           //         props.setProperty(key, new String(value.getBytes("ISO-8859-1"),"UTF-8"));
+           //     } else {
+           //         Log.log(Log.DEBUG, Messages.class, "null value: "+key);
+           //     }
+           // }
             
             m_messages = MiscUtilities.mergeProperties(m_messages, props);
             
@@ -181,16 +188,16 @@ public class Messages {
                     
                     //reset the messages in UTF-8
                     //TODO: fix this so we don't have to do a encoding conversion
-                    Enumeration keys = props.keys();
-                    while (keys.hasMoreElements()) {
-                        String key = keys.nextElement().toString();
-                        String value = props.getProperty(key);
-                        if (value != null) {
-                            props.setProperty(key, new String(value.getBytes("ISO-8859-1"),"UTF-8"));
-                        } else {
-                            Log.log(Log.DEBUG, Messages.class, "null value: "+key);
-                        }
-                    }
+                   // Enumeration keys = props.keys();
+                   // while (keys.hasMoreElements()) {
+                   //     String key = keys.nextElement().toString();
+                   //     String value = props.getProperty(key);
+                   //     if (value != null) {
+                   //         props.setProperty(key, new String(value.getBytes("ISO-8859-1"),"UTF-8"));
+                   //     } else {
+                   //         Log.log(Log.DEBUG, Messages.class, "null value: "+key);
+                   //     }
+                   // }
                     
                     m_pluginMessages = MiscUtilities.mergeProperties(m_pluginMessages, props);
                 } catch (FileNotFoundException e) {
