@@ -1,3 +1,8 @@
+07/12/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated TreeViewTree to use the WrappingMenu instead of EnhancedMenu
+      since it was renamed.
+
 07/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated to support the new Messages format.
