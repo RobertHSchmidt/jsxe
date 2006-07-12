@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-     This is a build.xml file for building the Tree View for jsXe.
-     Version: $Id$
+    :tabSize=2:indentSize=2:noTabs=true:
+    :folding=explicit:collapseFolds=1:
+    
+    This is a build.xml file for building the Tree View for jsXe.
+    Version: $Id$
 -->
 <project basedir="." default="usage" name="treeview">
 	
@@ -68,11 +71,14 @@
 		<mkdir dir="${build.dir}"/>
     
     <mkdir dir="${build.messages}"/>
-    <copy todir="${build.messages}">
+    <!--<copy todir="${build.messages}">
       <fileset dir="${messages.dir}">
-        <include name="**/messages*"/>
+        <include name="**/messages.*"/>
       </fileset>
-    </copy>
+    </copy>-->
+    
+    <!-- run native2ascii on these files -->
+    <native2ascii encoding="UTF-8" src="${messages.dir}" dest="${build.messages}" includes="messages*"/>
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Prepares the documentation ======================= -->
