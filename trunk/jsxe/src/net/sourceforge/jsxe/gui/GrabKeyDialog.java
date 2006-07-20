@@ -272,7 +272,7 @@ public class GrabKeyDialog extends JDialog {
             return null;
         }
         
-        Log.log(Log.DEBUG, this, "getting key binding for: "+shortcut);
+       // Log.log(Log.DEBUG, this, "getting key binding for: "+shortcut);
         
        // String spacedShortcut = shortcut + " ";
         Enumeration e = allBindings.elements();
@@ -287,7 +287,7 @@ public class GrabKeyDialog extends JDialog {
             
            // String spacedKbShortcut = kb.shortcut + " ";
             
-            Log.log(Log.DEBUG, this, "searching "+kb.label+": "+kb.shortcut);
+           // Log.log(Log.DEBUG, this, "searching "+kb.label+": "+kb.shortcut);
             
             // eg, trying to bind C+n C+p if C+n already bound
            // if (spacedShortcut.startsWith(spacedKbShortcut)) {
@@ -353,7 +353,7 @@ public class GrabKeyDialog extends JDialog {
         //{{{ processKeyEvent() method
         protected void processKeyEvent(KeyEvent _evt) {
             KeyEvent evt = KeyEventWorkaround.processKeyEvent(_evt);
-            Log.log(Log.DEBUG, this, "Event " + GrabKeyDialog.toString(_evt) + (evt == null ? " filtered\n" : " passed\n"));
+           // Log.log(Log.DEBUG, this, "Event " + GrabKeyDialog.toString(_evt) + (evt == null ? " filtered\n" : " passed\n"));
 
             if (evt == null) {
                 return;
@@ -367,14 +367,14 @@ public class GrabKeyDialog extends JDialog {
                 return;
             }
             
-            Log.log(Log.DEBUG, this, "==> Translated to " + 
-                    ((key.modifiers == 0 ? "" : KeyEventTranslator.modifiersToString(key.modifiers))
-                    + "<"
-                    + Integer.toString(key.key,16)
-                    + ","
-                    + Integer.toString(key.input,16)
-                    + ">")
-                + "\n");
+           // Log.log(Log.DEBUG, this, "==> Translated to " + 
+           //         ((key.modifiers == 0 ? "" : KeyEventTranslator.modifiersToString(key.modifiers))
+           //         + "<"
+           //         + Integer.toString(key.key,16)
+           //         + ","
+           //         + Integer.toString(key.input,16)
+           //         + ">")
+           //     + "\n");
 
             String internalShortcut = key.getInternalShortcut();
             if (internalShortcut == null) {

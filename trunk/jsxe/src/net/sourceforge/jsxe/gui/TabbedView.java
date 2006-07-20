@@ -33,6 +33,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.*;
+import net.sourceforge.jsxe.msg.PropertyChanged;
 import net.sourceforge.jsxe.action.*;
 import net.sourceforge.jsxe.gui.menu.*;
 import net.sourceforge.jsxe.util.Log;
@@ -488,6 +489,20 @@ public class TabbedView extends JFrame {
         setIconImage(jsXe.getIcon().getImage());
         
         setBounds(new Rectangle(x, y, width, height));
+        
+        EditBus.addToBus(new EBListener() {
+            public void handleMessage(EBMessage message) {
+                if (message instanceof PropertyChanged) {
+                    PropertyChanged msg = (PropertyChanged)message;
+                    if (msg.getKey().endsWith(".shortcut")) {
+                        //hack to get the menubar to display the correct
+                        //shortcuts as the menu accelerators
+                        createDefaultMenuItems();
+                        updateMenuBar();
+                    }
+                }
+            }
+        });
         
     }//}}}
     

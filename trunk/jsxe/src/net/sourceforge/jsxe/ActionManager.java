@@ -363,6 +363,7 @@ public class ActionManager {
     private static void removeKeyBinding(KeyEventTranslator.Key key) {
         Action action = (Action)m_keyBindingMap.get(key);
         if (action != null) {
+            Log.log(Log.DEBUG, ActionManager.class, "removing key binding: "+key.toString());
             action.putValue(Action.ACCELERATOR_KEY, null);
             m_keyBindingMap.remove(key);
         }
