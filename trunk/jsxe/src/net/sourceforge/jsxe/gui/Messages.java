@@ -90,11 +90,11 @@ public class Messages {
      */
     private static Properties m_pluginMessages;
     
-    static {
-       // Locale.setDefault(new Locale("sv"));
-       // Locale.setDefault(Locale.GERMANY);
-        Locale.setDefault(Locale.JAPAN);
-    }
+   // static {
+   //    // Locale.setDefault(new Locale("sv"));
+   //    // Locale.setDefault(Locale.GERMANY);
+   //     Locale.setDefault(Locale.JAPAN);
+   // }
     private static Locale m_locale = Locale.getDefault();
     
     
