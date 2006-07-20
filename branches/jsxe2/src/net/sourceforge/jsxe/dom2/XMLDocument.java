@@ -41,6 +41,7 @@ import org.w3c.dom.events.*;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.HashMap;
 //}}}
 
@@ -273,9 +274,9 @@ public class XMLDocument /* implements javax.swing.text.Document */ {
     //{{{ getDocumentType()
     
     public XMLDocumentType getDocumentType() {
-        DocumentType docType = m_document.getDocType();
+        DocumentType docType = m_document.getDoctype();
         if (docType != null) {
-            return (XMLDocumentType)docType.getUserData(USER_DATA_KEY);
+            return (XMLDocumentType)docType.getUserData(XMLNode.USER_DATA_KEY);
         } else {
             return null;
         }
