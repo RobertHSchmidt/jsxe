@@ -1,3 +1,16 @@
+07/25/2006  version 0.5 pre1
+
+    * Added support for keyboard shortcuts that can be set by the user via
+      the Global Options Dialog.
+    * Split the options into two dialogs. The Global Options, which are
+      editor-wide options, and the Document Options, which are set for each
+      document.
+    * Added a Japanese translation.
+    * Added a British-English translation.
+    * Fixed translation files so that non-ASCII characters will be displayed
+      properly.
+    * Added a status bar to display messages to the user.
+
 04/25/2006  version 0.4 beta
 
     * Updated to work with xerces 2.8.0 (jsXe now requires xerces 2.8.0)

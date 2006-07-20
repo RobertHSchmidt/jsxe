@@ -1,5 +1,7 @@
 RELEASE CHECKLIST
 
+* Make sure all bugs that are priority 5 or higher are resolved.
+
 * Get translations finalized
 * Build the Java Doc and check it for omissions and errors.
 
@@ -8,7 +10,6 @@ RELEASE CHECKLIST
 * Update the README if needed
 * Update the AUTHORS if needed
 * Update the INSTALL file if needed
-* Update the README if needed
 * Update the jsXe website in CVS to reference the new versions
 * Update the jsXe website in CVS to have the correct help and documentation.
     * Run 'ant deploy-web-doc'
