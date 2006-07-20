@@ -1,6 +1,7 @@
 07/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added Japanese translation
+    * Fixed syntax highlighting colors when you first load jsXe
 
 07/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
