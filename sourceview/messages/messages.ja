@@ -11,20 +11,4 @@ SourceView.Syntax.Object=ノードタイプ
 SourceView.Markup=マーク付け
 #}}}
 
-#{{{ About dialag
-about.title=jsXeについて
-about.message=Released under the terms of the GNU General Public License\n\n\
-    Active Contributors:\n\
-    \ \ \ \ Ian Lewis <IanLewis@member.fsf.org>\n\
-    \ \ \ \ Trish Hartnett <trishah136@users.sourceforge.net>\n\n\
-    翻訳者:\n\
-    \ \ \ \ ドイツ語 (de) - Bianca Shöen\n\
-    \ \ \ \ スウェーデン語 (sv) - Patrik Johansson <patjoh@itstud.chalmers.se>\n\n\
-    Past Contributers:\n\
-    \ \ \ \ Aaron Flatten  <aflatten@users.sourceforge.net>\n\
-    \ \ \ \ Bilel Remmache <rbilel@users.sourceforge.net>\n\
-    \ \ \ \ SVM <svmcoranto@users.sourceforge.net>\n\n\
-    ホームページ: http://jsxe.sourceforge.net/
-#}}}
-
 #}}}
