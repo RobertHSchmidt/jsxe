@@ -1,3 +1,8 @@
+07/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Keyboard shortcuts are now fully supported.
+    * Added Japanese translation
+
 07/12/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added functionality to save keyboard shortcuts. The shortcuts themselves
