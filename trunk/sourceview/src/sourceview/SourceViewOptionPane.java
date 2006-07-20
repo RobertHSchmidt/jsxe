@@ -384,18 +384,18 @@ public class SourceViewOptionPane extends AbstractOptionPane {
         //{{{ StyleTableModel constructor
         public StyleTableModel() {
             styleChoices = new Vector(9);
-            addStyleChoice("SourceView.Markup", "source.markup.color");
-            addStyleChoice("xml.namespace.prefix", "source.namespace.prefix.color");
-            addStyleChoice("xml.text","source.text.color");
-            addStyleChoice("xml.element","source.element.color");
-            addStyleChoice("xml.attribute","source.attribute.color");
-            addStyleChoice("xml.attribute.value", "source.attribute.value.color");
-            addStyleChoice("xml.cdata","source.cdata.color");
-            addStyleChoice("xml.processing.instruction","source.processing.instruction.color");
-            addStyleChoice("xml.entity.reference","source.entity.reference.color");
-            addStyleChoice("xml.comment","source.comment.color");
-            addStyleChoice("xml.doctype","source.doctype.color");
-            addStyleChoice("SourceView.Invalid", "source.invalid.color");
+            addStyleChoice("SourceView.Markup",             "sourceview.markup.color");
+            addStyleChoice("xml.namespace.prefix",          "sourceview.namespace.prefix.color");
+            addStyleChoice("xml.text",                      "sourceview.text.color");
+            addStyleChoice("xml.element",                   "sourceview.element.color");
+            addStyleChoice("xml.attribute",                 "sourceview.attribute.color");
+            addStyleChoice("xml.attribute.value",           "sourceview.attribute.value.color");
+            addStyleChoice("xml.cdata",                     "sourceview.cdata.color");
+            addStyleChoice("xml.processing.instruction",    "sourceview.processing.instruction.color");
+            addStyleChoice("xml.entity.reference",          "sourceview.entity.reference.color");
+            addStyleChoice("xml.comment",                   "sourceview.comment.color");
+            addStyleChoice("xml.doctype",                   "sourceview.doctype.color");
+            addStyleChoice("SourceView.Invalid",            "sourceview.invalid.color");
             MiscUtilities.quicksort(styleChoices, new MiscUtilities.StringCompare());
         } //}}}
     
