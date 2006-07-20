@@ -65,7 +65,7 @@ public class KeyEventTranslator {
     public static Key translateKeyEvent(KeyEvent evt) {
         int modifiers = evt.getModifiers();
         Key returnValue = null;
-
+        
         switch(evt.getID()) {
             case KeyEvent.KEY_PRESSED:
                 int keyCode = evt.getKeyCode();
