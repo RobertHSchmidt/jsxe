@@ -90,10 +90,12 @@ public class TreeViewOptionPane extends AbstractOptionPane {
         
         //{{{ show attributes
         
-        String showAttrs = jsXe.getProperty(DefaultView.SHOW_ATTRIBUTES, "ID only");
+        int showAttrs = jsXe.getIntegerProperty(DefaultView.SHOW_ATTRIBUTES, 0);
         
-        m_showAttrsComboBox = new JComboBox(new String [] {"None", "ID only", "All"});
-        m_showAttrsComboBox.setSelectedItem(showAttrs);
+        m_showAttrsComboBox = new JComboBox(new String [] {Messages.getMessage("Show.Attributes.None"),
+                                                           Messages.getMessage("Show.Attributes.ID.Only"),
+                                                           Messages.getMessage("Show.Attributes.All")});
+        m_showAttrsComboBox.setSelectedIndex(showAttrs);
         
         addComponent(Messages.getMessage("TreeView.Options.Show.Attributes"),
                      m_showAttrsComboBox,
@@ -108,7 +110,7 @@ public class TreeViewOptionPane extends AbstractOptionPane {
         jsXe.setProperty(DefaultView.SHOW_COMMENTS,String.valueOf(showCommentsCheckBox.isSelected()));
        // m_document.setProperty(SHOW_EMPTY_NODES,(new Boolean(showEmptyNodesCheckBox.isSelected())).toString());
         jsXe.setProperty(DefaultView.CONTINUOUS_LAYOUT,String.valueOf(ContinuousLayoutCheckBox.isSelected()));
-        jsXe.setProperty(DefaultView.SHOW_ATTRIBUTES, m_showAttrsComboBox.getSelectedItem().toString());
+        jsXe.setIntegerProperty(DefaultView.SHOW_ATTRIBUTES, m_showAttrsComboBox.getSelectedIndex());
     }//}}}
     
     //{{{ getTitle()

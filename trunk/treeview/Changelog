@@ -1,3 +1,10 @@
+07/13/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed problem where the shortcut for Adding an element node wasn't 
+      showing in the popup menu.
+    * Fixed problem where the shortcut for Adding and removing an attribute
+      wasn't showing in the popup menu.
+
 07/12/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated TreeViewTree to use the WrappingMenu instead of EnhancedMenu
