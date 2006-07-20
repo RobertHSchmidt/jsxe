@@ -71,7 +71,7 @@ public class XMLAttribute extends XMLNode {
     //{{{ isId()
     
     public boolean isId() {
-        return ((Attr)getNode()).getId();
+        return ((Attr)getNode()).isId();
     }//}}}
     
 }

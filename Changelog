@@ -1,3 +1,8 @@
+07/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Xerces needs to be installed in the java endorsed directory now to make
+      use of DOM3 classes.
+
 06/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * XMLAttribute was added to the new data model.

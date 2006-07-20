@@ -59,7 +59,8 @@
     <!--<property name="app_version" value="${major.version}_${minor.version}beta"/>-->
 		<property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
 		<property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>
-		<path id="classpath">
+    
+    <path id="classpath">
 			<pathelement location="."/>
 			<pathelement location="${build.dest}"/>
 			<pathelement location="${build.src}"/>
@@ -132,7 +133,7 @@
 		<mkdir dir="${build.dest}"/>
 		<javac debug="${javac.debug}" deprecation="${javac.deprecation}" includeJavaRuntime="${javac.include.runtime}" optimize="${javac.optimize}" source="${javac.source}" destdir="${build.dest}" srcdir="${build.src}">
 			<classpath refid="classpath"/>
-			<include name="**/*.java"/>
+      <include name="**/*.java"/>
 		</javac>
 		<copy todir="${build.dest}">
 			<fileset dir="${build.src}">

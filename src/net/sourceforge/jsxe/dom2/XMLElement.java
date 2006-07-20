@@ -26,6 +26,10 @@ package net.sourceforge.jsxe.dom2;
 
 //{{{ Imports
 
+//{{{ jsXe classes
+import net.sourceforge.jsxe.util.MiscUtilities;
+//}}}
+
 //{{{ Swing classes
 import javax.swing.text.*;
 //}}}
@@ -33,6 +37,12 @@ import javax.swing.text.*;
 //{{{ DOM classes
 import org.w3c.dom.*;
 import org.w3c.dom.events.*;
+//}}}
+
+//{{{ Java classes
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 //}}}
 
 //}}}
@@ -103,7 +113,7 @@ public class XMLElement extends XMLNode {
      * @param name the qualified name of the attribute
      */
     public XMLAttribute getAttribute(String name) {
-        Element element = (org.w3c.dom.Element)getNode();
+        org.w3c.dom.Element element = (org.w3c.dom.Element)getNode();
         String localName = MiscUtilities.getLocalNameFromQualifiedName(name);
         String prefix    = MiscUtilities.getNSPrefixFromQualifiedName(name);
         
@@ -122,7 +132,7 @@ public class XMLElement extends XMLNode {
      * @param value the value of the attribute
      */
     public XMLAttribute setAttribute(String name, String value) throws DOMException {
-        Element element = (org.w3c.dom.Element)getNode();
+        org.w3c.dom.Element element = (org.w3c.dom.Element)getNode();
         String prefix    = MiscUtilities.getNSPrefixFromQualifiedName(name);
         Attr newAttr;
         
@@ -139,7 +149,7 @@ public class XMLElement extends XMLNode {
             String uri = lookupNamespaceURI(prefix);
             
             element.setAttributeNS(uri,name,value);
-            newAttr = getAttributeNodeNS(uri, name, value);
+            newAttr = element.getAttributeNodeNS(uri, name);
         } else {
             /*
             setAttribute doesn't throw an error if the first character is
@@ -150,13 +160,13 @@ public class XMLElement extends XMLNode {
                 throw new DOMException(DOMException.NAMESPACE_ERR, "An attribute name cannot have a ':' as the first character");
             }
             element.setAttribute(name, value);
-            newAttr = getAttributeNode(name, value);
+            newAttr = element.getAttributeNode(name);
         }
         
         //create an XMLAttribute node for the new attribute
         if (newAttr != null) {
-            xmlAttr = new XMLAttribute(attr);
-            attr.setUserData(USER_DATA_KEY, xmlAttr, null);
+            XMLAttribute xmlAttr = new XMLAttribute(newAttr);
+            newAttr.setUserData(USER_DATA_KEY, xmlAttr, null);
             return xmlAttr;
         }
         return null;
@@ -177,12 +187,13 @@ public class XMLElement extends XMLNode {
     /**
      * @param index the index at which to remove an attribute.
      */
-    public removeAttributeAt(int index) throws DOMException {
-        Element element = (org.w3c.dom.Element)getNode();
+    public XMLAttribute removeAttributeAt(int index) throws DOMException {
+        org.w3c.dom.Element element = (org.w3c.dom.Element)getNode();
         NamedNodeMap attrs = element.getAttributes();
         if (attrs != null) {
-            removeAttribute(attrs.item(index).getNodeName());
+            return removeAttribute(attrs.item(index).getNodeName());
         }
+        return null;
     }//}}}
     
     //{{{ removeAttribute()
@@ -190,7 +201,7 @@ public class XMLElement extends XMLNode {
      * @param name The qualified name of the attribute.
      */
     public XMLAttribute removeAttribute(String name) throws DOMException {
-        Element element = (org.w3c.dom.Element)getNode();
+        org.w3c.dom.Element element = (org.w3c.dom.Element)getNode();
         
         String prefix = MiscUtilities.getNSPrefixFromQualifiedName(name);
         String localName = MiscUtilities.getLocalNameFromQualifiedName(name);
@@ -227,15 +238,22 @@ public class XMLElement extends XMLNode {
             }
         }
         
+        XMLAttribute attr;
+        
         if (prefix != null && !prefix.equals("")) {
-            element.removeAttributeNS(lookupNamespaceURI(prefix),localName);
+            String uri = lookupNamespaceURI(prefix);
+            attr = (XMLAttribute)element.getAttributeNodeNS(uri, localName).getUserData(USER_DATA_KEY);
+            element.removeAttributeNS(uri,localName);
         } else {
+            attr = (XMLAttribute)element.getAttributeNode(localName).getUserData(USER_DATA_KEY);
             element.removeAttribute(localName);
         }
+        
+        return attr;
     }//}}}
     
     //{{{ getNodeType()
-    public int getNodeType() {
+    public short getNodeType() {
         return Node.ELEMENT_NODE;
     }//}}}
     
