@@ -24,6 +24,19 @@
         <table border="0" cellpadding="0" cellspacing="15" width="100%">
           <tr>
             <td>
+              <a href="screenshots.php?id=81126">
+                <img alt="screenshot" border="0" src="http://sourceforge.net/dbimage.php?id=81125"/>
+              </a>
+            </td>
+            <td>
+              jsXe with Japanese locale.
+              <br/>
+              
+              (jsXe 0.5 pre1 running on Windows XP)
+            </td>
+          </tr>
+          <tr>
+            <td>
               <a href="screenshots.php?id=59765">
                 <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=59764"/>
               </a>
@@ -86,19 +99,6 @@
               <br/>
               
               (jsXe 0.4 pre1 running on Windows XP)
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <a href="screenshots.php?id=34504">
-                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34503"/>
-              </a>
-            </td>
-            <td>
-              An early look at the schema view running as a plugin.
-              <br/>
-              
-              (jsXe 0.3pre16 running on Linux)
             </td>
           </tr>
         </table>
