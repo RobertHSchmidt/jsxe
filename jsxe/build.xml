@@ -218,6 +218,14 @@
     </java>
   </target>
   <!-- }}} -->
+  <!-- {{{ ============ Run the program in debug mode ==================== -->
+  <target depends="compile" name="debug" description="run jsXe in debug mode">
+    <java fork="true" classname="${main.class}">
+      <classpath refid="run-classpath"/>
+      <arg value="--debug"/>
+    </java>
+  </target>
+  <!-- }}} -->
   <!-- {{{ ============ Prepares for a build ============================= -->
   <target depends="init" name="prepare-build">
     <!-- lib -->
