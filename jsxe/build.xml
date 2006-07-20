@@ -81,6 +81,7 @@
     <available file="${plugin.dir}/treeview/build.xml" property="treeview.avail"/>
     <available file="${plugin.dir}/sourceview/build.xml" property="sourceview.avail"/>
     <available file="${root.dir}/../web" property="web.avail"/>
+    <available file="${plugin.dir}" property="plugin.avail"/>
     
     <echo message="${app.name} ${app.version}"/>
     <echo message="----------------------------------------------------------"/>
@@ -129,11 +130,7 @@
     </copy>
     <mkdir dir="${build.plugin}"/>
     
-    <copy todir="${build.plugin}">
-      <fileset dir="${plugin.dir}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
+    <antcall target="prepare-plugins"/>
     
     <mkdir dir="${build.messages}"/>
     <!--<copy todir="${build.messages}">
@@ -144,6 +141,13 @@
     
     <!-- run native2ascii on these files -->
     <native2ascii encoding="UTF-8" src="${messages.dir}" dest="${build.messages}" includes="messages*"/>
+  </target>
+  <target name="prepare-plugins" if="plugin.avail">
+    <copy todir="${build.plugin}">
+      <fileset dir="${plugin.dir}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
   </target>
   <!-- }}} -->
   <!-- {{{ ============ Compiles the program ============================= -->
