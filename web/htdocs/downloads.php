@@ -31,7 +31,7 @@
       
       <ul>
         <li>The latest stable version of jsXe is <a href="https://sourceforge.net/project/showfiles.php?group_id=58584&amp;package_id=120827">0.4 beta</a></li>
-        <li>The latest development version of jsXe is <a href="https://sourceforge.net/project/showfiles.php?group_id=58584&amp;package_id=54488">0.4 pre3</a></li>
+        <li>The latest development version of jsXe is <a href="https://sourceforge.net/project/showfiles.php?group_id=58584&amp;package_id=54488">0.5 pre1</a></li>
       </ul>
       
       <h3>Install</h3>
