@@ -372,7 +372,6 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
     //{{{ toString()
     /**
      * Creates the string that will be displayed in the tree node
-     * @param showattrs "ID only", "All" or "None"
      */
     private static String toString(AdapterNode node) {
         StringBuffer s = new StringBuffer();
@@ -385,12 +384,14 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                 NamedNodeMap attributes = node.getAttributes();
                 ElementDecl decl = node.getElementDecl();
                 XMLDocument document = node.getOwnerDocument();
-                String showAttrs = jsXe.getProperty(DefaultView.SHOW_ATTRIBUTES);
+                int showAttrs = jsXe.getIntegerProperty(DefaultView.SHOW_ATTRIBUTES, 0);
                 for (int i=0; i<attributes.getLength(); i++) {
                     Node attr = attributes.item(i);
                     ElementDecl.AttributeDecl attrDecl = (decl != null) ? decl.getAttribute(attr.getNodeName()) : null;
-                    if (showAttrs.equals("All") ||
-                    (showAttrs.equals("ID only") && 
+                    
+                    // 0 = None; 1 = ID only; 2 = All
+                    if (showAttrs == 2 ||
+                    (showAttrs == 1 && 
                         ((attr.getNodeName().equalsIgnoreCase("id") || 
                         (attrDecl != null && attrDecl.type.equals("ID"))))))
                     {
@@ -453,7 +454,7 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                     JMenu addElement = new WrappingMenu(Messages.getMessage("xml.element"), 20);
                     addNodeItem.add(addElement);
                     
-                    addElement.add(new ActionManager.Wrapper("treeview.add.element.node"));
+                    addElement.add(ActionManager.getAction("treeview.add.element.node"));
                     Iterator allowedElements = selectedNode.getAllowedElements().iterator();
                     while (allowedElements.hasNext()) {
                         ElementDecl decl = (ElementDecl)allowedElements.next();

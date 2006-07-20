@@ -413,14 +413,10 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
                 JPopupMenu popup = new JPopupMenu();
                 JMenuItem popupMenuItem;
                 
-                popupMenuItem = new JMenuItem("Add Attribute");
-                popupMenuItem.addActionListener(ActionManager.getAction("treeview.add.attribute"));
-                popup.add(popupMenuItem);
+                popup.add(ActionManager.getAction("treeview.add.attribute"));
                 
                 if (row != attributesTable.getRowCount()-1) {
-                    popupMenuItem = new JMenuItem("Remove Attribute");
-                    popupMenuItem.addActionListener(ActionManager.getAction("treeview.remove.attribute"));
-                    popup.add(popupMenuItem);
+                    popup.add(ActionManager.getAction("treeview.remove.attribute"));
                 }
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
