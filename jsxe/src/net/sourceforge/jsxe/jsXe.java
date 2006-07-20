@@ -317,6 +317,15 @@ public class jsXe {
             initPLAF();
             //}}}
             
+            //{{{ init key bindings
+            /*
+            key bindings are loaded before the TabbedView is created
+            so that the ActionManagers EBListener is added to the EditBus first
+            Hopefully this is a temporary problem.
+            */
+            ActionManager.initKeyBindings();
+            //}}}
+            
             //{{{ create the TabbedView
             Log.log(Log.NOTICE, jsXe.class, "Starting the main window");
             TabbedView tabbedview = null;
@@ -351,10 +360,6 @@ public class jsXe {
             }
             m_activeView = tabbedview;
             progressScreen.updateSplashScreenDialog(85);
-            //}}}
-            
-            //{{{ init key bindings
-            ActionManager.initKeyBindings();
             //}}}
             
             //{{{ Parse files to open on the command line
@@ -960,11 +965,10 @@ public class jsXe {
         if (oldValue != value) {
             if (value == null) {
                 props.remove(key);
-                return null;
             } else {
                 props.setProperty(key, value);
-                EditBus.send(new PropertyChanged(key, oldValue));
             }
+            EditBus.send(new PropertyChanged(key, oldValue));
         }
         return oldValue;
     }//}}}

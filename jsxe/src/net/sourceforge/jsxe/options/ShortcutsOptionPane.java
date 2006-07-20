@@ -215,9 +215,11 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
          * table editors this works ok.
          */
         public void setValueAt(Object value, int row, int col) {
-            if (col == 0)
+            if (col == 0) {
                 return;
-
+            }
+            
+            Log.log(Log.DEBUG, this, "setting shortcut value: "+value);
             ((GrabKeyDialog.KeyBinding)m_set.get(row)).shortcut = (String)value;
 
             // redraw the whole table because a second shortcut
@@ -240,7 +242,7 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
             Iterator e = m_set.iterator();
             while(e.hasNext()) {
                 GrabKeyDialog.KeyBinding binding = (GrabKeyDialog.KeyBinding)e.next();
-                
+                Log.log(Log.DEBUG, this, "saving "+binding.name+" shortcut value: "+binding.shortcut);
                 jsXe.setProperty(binding.name + ".shortcut", binding.shortcut);
             }
         }//}}}
