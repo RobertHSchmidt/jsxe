@@ -2168,12 +2168,12 @@ public class JEditTextArea extends JComponent
         if (max != maxHorizontalScrollWidth) {
             maxHorizontalScrollWidth = max;
             horizontal.setValues(Math.max(0,
-                Math.min(maxHorizontalScrollWidth /*+ charWidth*/
+                Math.min(maxHorizontalScrollWidth + charWidth
                 - painter.getWidth(),
                 -horizontalOffset)),
                 painter.getWidth(),
                 0,maxHorizontalScrollWidth
-                /*+ charWidth*/);
+                + charWidth);
         }
     } //}}}
 
