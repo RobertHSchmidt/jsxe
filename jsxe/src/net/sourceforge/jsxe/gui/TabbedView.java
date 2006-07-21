@@ -33,7 +33,7 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.*;
-import net.sourceforge.jsxe.msg.PropertyChanged;
+import net.sourceforge.jsxe.msg.*;
 import net.sourceforge.jsxe.action.*;
 import net.sourceforge.jsxe.gui.menu.*;
 import net.sourceforge.jsxe.util.Log;
@@ -201,7 +201,7 @@ public class TabbedView extends JFrame {
                 }
             }
             
-            String msg = "Could not open buffer in any installed document views";
+            String msg = Messages.getMessage("DocumentView.Open.Message");
             String error = buf.toString();
             if (!error.equals("")) {
                 msg=msg+"\n\n"+error;
@@ -265,6 +265,56 @@ public class TabbedView extends JFrame {
             }
         }
         return false;
+    }//}}}
+    
+    //{{{ reload()
+    /**
+     * Reloads the current DocumentBuffer and makes sure that the
+     * reloaded document is opened in an appropriate DocumentView.
+     * @param buffer the DocumentBuffer to reload.
+     */
+    public void reload() throws IOException {
+        DocumentBuffer buffer = getDocumentBuffer();
+        ViewPlugin plugin = getDocumentView().getViewPlugin();
+        
+        /*
+        try to open it in the current view first. If that doesn't work
+        loop through the other views
+        */
+        
+        StringBuffer buf = new StringBuffer();
+        
+        buffer.reload(this);
+        
+        try {
+            DocumentView view = plugin.newDocumentView(buffer);
+            setDocumentView(view);
+            return;
+        } catch (IOException ioe) {
+            
+            buf.append(buffer.getName() + ": "+ioe.getMessage() + "\n");
+            
+            Iterator types = jsXe.getPluginLoader().getViewPlugins().iterator();
+            
+            while (types.hasNext()) {
+                plugin = (ViewPlugin)types.next();
+                try {
+                    DocumentView view = plugin.newDocumentView(buffer);
+                    setDocumentView(view);
+                    return;
+                } catch (IOException ioe2) {
+                    buf.append(buffer.getName() + ": "+ioe.getMessage() + "\n");
+                }
+            }
+        }
+        
+        String msg = Messages.getMessage("DocumentView.Open.Message");
+        String error = buf.toString();
+        if (!error.equals("")) {
+            msg=msg+"\n\n"+error;
+        }
+        throw new IOException(msg);
+        
     }//}}}
     
     //{{{ getBufferCount()
@@ -499,6 +549,17 @@ public class TabbedView extends JFrame {
                         //shortcuts as the menu accelerators
                         createDefaultMenuItems();
                         updateMenuBar();
+                    }
+                }
+                
+                /*
+                Catch when a document is reloaded and make sure the view
+                can still handle the structure..
+                */
+                if (message instanceof DocumentBufferUpdate) {
+                    DocumentBufferUpdate msg = (DocumentBufferUpdate)message;
+                    if (DocumentBufferUpdate.LOADED.equals(msg.getWhat())) {
+                        
                     }
                 }
             }

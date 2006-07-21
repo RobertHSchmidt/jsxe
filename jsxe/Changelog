@@ -1,3 +1,8 @@
+07/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed bug 1509575. Files that are reloaded should always be loaded in a
+      view that can accep the reloaded file.
+
 07/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Released 0.5pre1
