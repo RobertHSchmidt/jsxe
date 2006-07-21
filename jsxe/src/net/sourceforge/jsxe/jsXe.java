@@ -212,7 +212,11 @@ public class jsXe {
             //}}}
             
             //{{{ check Xerces version
-            String xercesVersion = org.apache.xerces.impl.Version.getVersion();
+            String xercesVersion = "0";
+            try {
+                xercesVersion = org.apache.xerces.impl.Version.getVersion();
+            } catch (Throwable e) {}
+            
             if (MiscUtilities.compareStrings(xercesVersion, MIN_XERCES_VERSION, false) < 0) {
                 //close the splash screen so they can see the message
                 progressScreen.dispose();
