@@ -11,6 +11,10 @@
 <executableName>build\jsXe.exe</executableName>
 <iconLocation>src\net\sourceforge\jsxe\icons\jsxe.jpg</iconLocation>
 <initialMemoryHeap>16777216</initialMemoryHeap>
+<javaProperties>
+<name>java.endorsed.dirs</name>
+<value>lib</value>
+</javaProperties>
 <mainClassName>net.sourceforge.jsxe.jsXe</mainClassName>
 <maximumMemoryHeap>67108864</maximumMemoryHeap>
 <maximumVersion></maximumVersion>
