@@ -66,10 +66,7 @@ public class FileReloadAction extends LocalizedAction {
     //{{{ invoke()
     public void invoke(TabbedView view, ActionEvent evt) {
         try {
-            DocumentView documentView = view.getDocumentView();
-            DocumentBuffer buffer = view.getDocumentBuffer();
-            buffer.reload(view);
-            documentView.setDocumentBuffer(buffer); //reload the buffer in the documentView
+            view.reload();
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
         }

@@ -163,6 +163,8 @@ about-jsxe.label=About jsXe...
 
 #{{{ Messages
 
+DocumentView.Open.Message="Could not open buffer in any installed document views"
+
 #{0} file name
 DocumentBuffer.Reload.Message={0} unsaved!\n You will lose all unsaved changes if you reload!\n\nContinue?
 DocumentBuffer.Reload.Message.Title=Document Modified
