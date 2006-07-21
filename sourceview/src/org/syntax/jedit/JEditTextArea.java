@@ -251,19 +251,17 @@ public class JEditTextArea extends JComponent
      * if the number of lines in the document changes, or when the
      * size of the text are changes.
      */
-    public void updateScrollBars()
-    {
-        if(vertical != null && visibleLines != 0)
-        {
+    public void updateScrollBars() {
+        if (vertical != null && visibleLines != 0) {
             vertical.setValues(firstLine,visibleLines,0,getLineCount());
             vertical.setUnitIncrement(2);
             vertical.setBlockIncrement(visibleLines);
         }
-
         int width = painter.getWidth();
-        if(horizontal != null && width != 0)
-        {
-            horizontal.setValues(-horizontalOffset,width,0,width * 5);
+        if (horizontal != null && width != 0) {
+           // Log.log(Log.DEBUG, this, "value: "+ (-horizontalOffset));
+            
+            horizontal.setValue(-horizontalOffset);
             horizontal.setUnitIncrement(painter.getFontMetrics().charWidth('w'));
             horizontal.setBlockIncrement(width / 2);
         }
@@ -328,13 +326,14 @@ public class JEditTextArea extends JComponent
      * implement horizontal scrolling.
      * @param horizontalOffset offset The new horizontal offset
      */
-    public void setHorizontalOffset(int horizontalOffset)
-    {
-        if(horizontalOffset == this.horizontalOffset)
+    public void setHorizontalOffset(int horizontalOffset) {
+        if (horizontalOffset == this.horizontalOffset) {
             return;
+        }
         this.horizontalOffset = horizontalOffset;
-        if(horizontalOffset != horizontal.getValue())
+        if (horizontalOffset != horizontal.getValue()) {
             updateScrollBars();
+        }
         painter.repaint();
     }
 
@@ -1602,6 +1601,8 @@ public class JEditTextArea extends JComponent
     protected int magicCaret;
     protected boolean overwrite;
     protected boolean rectSelect;
+    
+    private int maxHorizontalScrollWidth;
 
     protected void fireCaretEvent()
     {
@@ -2130,6 +2131,51 @@ public class JEditTextArea extends JComponent
                 return false;
         }
     }
+    
+    //{{{ updateMaxHorizontalScrollWidth() method
+    void updateMaxHorizontalScrollWidth() {
+        
+        int max = 0;
+        
+        for (int i = firstLine; i < firstLine + visibleLines; i++) {
+            /*
+            TODO: This is broken since some parts of the line can be bold and
+            thus be wider than other parts of the line. Need to implement
+            a chunk cache like jEdit has.
+            */
+            int width = (int)Math.round(
+                painter.getFont().getStringBounds(getLineText(i),
+                new java.awt.font.FontRenderContext(null,false,false)).getWidth());
+            if (width > max) {
+                max = width;
+            }
+        }
+        
+        int _tabSize = ((Integer)getDocument().getProperty(PlainDocument.tabSizeAttribute)).intValue();
+        char[] foo = new char[] { ' ' };
+        
+        int charWidth = (int)Math.round(
+            painter.getFont().getStringBounds(foo,0,1,
+            new java.awt.font.FontRenderContext(null,false,false)).getWidth());
+        
+       // Log.log(Log.DEBUG, this, "value: "+ Math.max(0,
+       //         Math.min(maxHorizontalScrollWidth /*+ charWidth*/
+       //         - painter.getWidth(),
+       //         -horizontalOffset))
+       //     +" extent: "+painter.getWidth()
+       //     +" min: "+0
+       //     +" max: "+max);
+        if (max != maxHorizontalScrollWidth) {
+            maxHorizontalScrollWidth = max;
+            horizontal.setValues(Math.max(0,
+                Math.min(maxHorizontalScrollWidth /*+ charWidth*/
+                - painter.getWidth(),
+                -horizontalOffset)),
+                painter.getWidth(),
+                0,maxHorizontalScrollWidth
+                /*+ charWidth*/);
+        }
+    } //}}}
 
     //{{{ WheelScrollListener class
     static class MouseWheelHandler implements MouseWheelListener {
