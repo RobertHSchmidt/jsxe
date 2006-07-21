@@ -2144,7 +2144,7 @@ public class JEditTextArea extends JComponent
             a chunk cache like jEdit has.
             */
             int width = (int)Math.round(
-                painter.getFont().getStringBounds(getLineText(i),
+                painter.getFont().deriveFont(Font.BOLD).getStringBounds(getLineText(i),
                 new java.awt.font.FontRenderContext(null,false,false)).getWidth());
             if (width > max) {
                 max = width;
