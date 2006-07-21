@@ -1,3 +1,9 @@
+07/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added better horizontal scrolling support. It isn't perfect because
+      it's hard to know the true width of the line because parts of it
+      can have bold text while other parts don't.
+
 07/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added Japanese translation
