@@ -9,10 +9,12 @@
     You should check out jsxe to make a structure like this. This ensures that
     when compiling jsXe the other views will be compiled as well.
     
-    jsxe module         => jsxe/
-    treeview module     => jsxe/jars/treeview
-    sourceview module   => jsxe/jars/sourceview
-    jsxe web module     => web/
+    jsxe module                       => jsxe/
+    treeview module (optional)        => jsxe/jars/treeview
+    sourceview module (optional)      => jsxe/jars/sourceview
+    jsxe web module (optional)        => web/
+    jsmooth ant task (optional)       => buildlib/
+    
 -->
 <project basedir="." default="usage" name="jsXe">
   
@@ -52,6 +54,11 @@
     <property name="minor.version" value="5"/>
     <property name="beta.version" value="1"/>
     <property name="bugfix.version" value="0"/>
+    
+    <property name="buildlib.dir" value="${root.dir}/buildlib"/>
+    <property name="jsmooth.project" value="${root.dir}/jsXe.jsmooth"/>
+    <property name="jsmooth.jar" value="${buildlib.dir}/jsmoothgen-ant.jar"/>
+    
     <!-- Human Readable -->
     <property name="app.version" value="0.5 pre1"/>
     <!-- Used in filenames -->
@@ -82,6 +89,7 @@
     <available file="${plugin.dir}/sourceview/build.xml" property="sourceview.avail"/>
     <available file="${root.dir}/../web" property="web.avail"/>
     <available file="${plugin.dir}" property="plugin.avail"/>
+    <available file="${jsmooth.jar}" property="jsmooth.avail"/>
     
     <echo message="${app.name} ${app.version}"/>
     <echo message="----------------------------------------------------------"/>
@@ -307,7 +315,19 @@
         <include name="**/*"/>
       </fileset>
     </copy>
+    
+    <!-- build the windows executable -->
+    <antcall target="build-exe"/>
+    
     <zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-bin/**" zipfile="${build.dir}/${app.name}-${app_version}-bin.zip"/>
+  </target>
+  <target name="build-exe" if="jsmooth.avail">
+    <taskdef name="jsmoothgen"
+      classname="net.charabia.jsmoothgen.ant.JSmoothGen"
+      classpath="${jsmooth.jar}"/>
+    
+    <jsmoothgen project="${jsmooth.project}" skeletonroot="${buildlib.dir}/skeletons"/>
+    <copy todir="${distbin.dir}" file="${build.dir}/jsXe.exe"/>
   </target>
   <!-- }}} -->
   <!-- {{{ ============ Generates the source distribution ================ -->
