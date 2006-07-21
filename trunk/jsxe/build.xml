@@ -258,19 +258,22 @@
   <!-- }}} -->
   <!-- {{{ ============ Generates the documentation ====================== -->
   <target depends="prepare-doc, prepare-src" name="doc" description="Build documentation">
-    <copy file="COPYING" tofile="${build.docs}/COPYING"/>
-    <copy file="README" tofile="${build.docs}/README"/>
-    <copy file="AUTHORS" tofile="${build.docs}/AUTHORS"/>
-    <copy file="ISSUES" tofile="${build.docs}/ISSUES"/>
-    <copy file="Changelog" tofile="${build.docs}/Changelog"/>
-    <copy file="INSTALL" tofile="${build.docs}/INSTALL"/>
-    <copy file="THANKS" tofile="${build.docs}/THANKS"/>
-    <copy file="NEWS" tofile="${build.docs}/NEWS"/>
+    <copy file="${root.dir}/COPYING" tofile="${build.docs}/COPYING"/>
+    <copy file="${root.dir}/README" tofile="${build.docs}/README"/>
+    <copy file="${root.dir}/AUTHORS" tofile="${build.docs}/AUTHORS"/>
+    <copy file="${root.dir}/ISSUES" tofile="${build.docs}/ISSUES"/>
+    <copy file="${root.dir}/Changelog" tofile="${build.docs}/Changelog"/>
+    <copy file="${root.dir}/INSTALL" tofile="${build.docs}/INSTALL"/>
+    <copy file="${root.dir}/THANKS" tofile="${build.docs}/THANKS"/>
+    <copy file="${root.dir}/NEWS" tofile="${build.docs}/NEWS"/>
+    
     <javadoc author="true" destdir="${build.javadocs}" doctitle="${app.name} ${app.version} API" locale="en_US" packagenames="*" sourcepath="${build.src}" version="true" windowtitle="${app.name} ${app.version} API">
       <link href="${java.javadoc.link}"/>
       <link href="${xerces.javadoc.link}"/>
     </javadoc>
+    
     <zip basedir="${build.docs}" includes="api/**" zipfile="${build.dir}/${app.name}-${app_version}-api.zip"/>
+    
   </target>
   <!-- }}} -->
   <!-- {{{ ============ Generates the binary distribution ================ -->
@@ -343,6 +346,17 @@
         <include name="**/*"/>
       </fileset>
     </copy>
+    
+    <!-- move these files to the root dir of the src distribution -->
+    <move file="${distsrc.dir}/doc/COPYING" tofile="${distsrc.dir}/COPYING"/>
+    <move file="${distsrc.dir}/doc/README" tofile="${distsrc.dir}/README"/>
+    <move file="${distsrc.dir}/doc/AUTHORS" tofile="${distsrc.dir}/AUTHORS"/>
+    <move file="${distsrc.dir}/doc/ISSUES" tofile="${distsrc.dir}/ISSUES"/>
+    <move file="${distsrc.dir}/doc/Changelog" tofile="${distsrc.dir}/Changelog"/>
+    <move file="${distsrc.dir}/doc/INSTALL" tofile="${distsrc.dir}/INSTALL"/>
+    <move file="${distsrc.dir}/doc/THANKS" tofile="${distsrc.dir}/THANKS"/>
+    <move file="${distsrc.dir}/doc/NEWS" tofile="${distsrc.dir}/NEWS"/>
+    
     <!-- build files -->
     <copy todir="${distsrc.dir}">
       <fileset dir="${root.dir}">
@@ -370,7 +384,16 @@
         <include name="**/*"/>
       </fileset>
     </copy>
-        <!-- messages -->
+    <!-- buildlib -->
+    <mkdir dir="${distsrc.dir}/buildlib"/>
+    <copy todir="${distsrc.dir}/buildlib">
+      <fileset dir="${buildlib.dir}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    <copy todir="${distsrc.dir}" file="${jsmooth.project}"/>
+    
+    <!-- messages -->
     <mkdir dir="${distsrc.dir}/messages"/>
     <copy todir="${distsrc.dir}/messages">
       <fileset dir="${build.messages}">
