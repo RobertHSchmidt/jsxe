@@ -59,6 +59,13 @@
     <property name="jsmooth.project" value="${root.dir}/jsXe.jsmooth"/>
     <property name="jsmooth.jar" value="${buildlib.dir}/jsmoothgen-ant.jar"/>
     
+    <condition property="windows.build">
+      <and>
+        <os family="windows"/>
+        <available file="${jsmooth.jar}" property="jsmooth.avail"/>
+      </and>
+    </condition>
+    
     <!-- Human Readable -->
     <property name="app.version" value="0.5 pre1"/>
     <!-- Used in filenames -->
@@ -89,7 +96,7 @@
     <available file="${plugin.dir}/sourceview/build.xml" property="sourceview.avail"/>
     <available file="${root.dir}/../web" property="web.avail"/>
     <available file="${plugin.dir}" property="plugin.avail"/>
-    <available file="${jsmooth.jar}" property="jsmooth.avail"/>
+    
     
     <echo message="${app.name} ${app.version}"/>
     <echo message="----------------------------------------------------------"/>
@@ -324,7 +331,7 @@
     
     <zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-bin/**" zipfile="${build.dir}/${app.name}-${app_version}-bin.zip"/>
   </target>
-  <target name="build-exe" if="jsmooth.avail">
+  <target name="build-exe" if="windows.build">
     <taskdef name="jsmoothgen"
       classname="net.charabia.jsmoothgen.ant.JSmoothGen"
       classpath="${jsmooth.jar}"/>
