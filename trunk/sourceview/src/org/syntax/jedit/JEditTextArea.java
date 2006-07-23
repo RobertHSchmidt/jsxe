@@ -2137,7 +2137,7 @@ public class JEditTextArea extends JComponent
         
         int max = 0;
         
-        for (int i = firstLine; i < firstLine + visibleLines; i++) {
+        for (int i = firstLine; i < firstLine + visibleLines && i < getLineCount(); i++) {
             /*
             TODO: This is broken since some parts of the line can be bold and
             thus be wider than other parts of the line. Need to implement
