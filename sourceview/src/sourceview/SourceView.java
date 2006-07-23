@@ -110,19 +110,19 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
         TextAreaPainter painter = m_textarea.getPainter();
         painter.setEOLMarkersPainted(jsXe.getBooleanProperty(SourceView.END_OF_LINE_MARKS, true));
         painter.setStyles(
-            new SyntaxStyle[] { SourceViewOptionPane.parseStyle(jsXe.getProperty("source.text.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.comment.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.doctype.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.attribute.value.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.attribute.value.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.cdata.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.entity.reference.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.element.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.attribute.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.processing.instruction.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.namespace.prefix.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.markup.color")),
-                                SourceViewOptionPane.parseStyle(jsXe.getProperty("source.invalid.color")),
+            new SyntaxStyle[] { SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.text.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.comment.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.doctype.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.attribute.value.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.attribute.value.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.cdata.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.entity.reference.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.element.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.attribute.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.processing.instruction.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.namespace.prefix.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.markup.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.invalid.color")),
                                 });
        // textarea.setFont(new Font("Monospaced", 0, 12));
         m_textarea.setCaretPosition(0);
