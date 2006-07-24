@@ -28,6 +28,7 @@ package net.sourceforge.jsxe.dom2;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.dom2.ls.*;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
@@ -35,14 +36,18 @@ import net.sourceforge.jsxe.util.MiscUtilities;
 //{{{ DOM classes
 import org.w3c.dom.*;
 import org.w3c.dom.events.*;
+import org.xml.sax.EntityResolver;
 //}}}
 
 //{{{ Java base classes
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
+import java.net.URI;
 //}}}
 
 //{{{ Swing classes
@@ -68,9 +73,99 @@ import javax.swing.event.UndoableEditListener;
  */
 public class XMLDocument /* implements javax.swing.text.Document */ {
     
+    //{{{ XMLDocument defined properties
+    /**
+     * The property key for the encoding of this XML document
+     */
+    public static final String ENCODING = DOMSerializerConfiguration.XML_ENCODING;
+    /**
+     * The property key for the boolean property specifying if whitespace
+     * is allowed in element content.
+     */
+    public static final String WS_IN_ELEMENT_CONTENT = DOMSerializerConfiguration.WS_IN_ELEMENT_CONTENT;
+    /**
+     * The property key for the boolean property specifying that the XML text
+     * should be formatted to look pleasing to the eye.
+     */
+    public static final String FORMAT_XML = DOMSerializerConfiguration.FORMAT_XML;
+    /**
+     * The property key for the property defining the size of a tab when the
+     * document is displayed as text or otherwise. Used when serializing the
+     * document using soft-tabs.
+     */
+    public static final String INDENT = DOMSerializerConfiguration.INDENT;
+    /**
+     * The property key for the property defining whether to serialize
+     * using soft tabs (tabs replaced by the number of spaces specified in the
+     * INDENT property). Has a value of "true" if using soft tabs.
+     */
+    public static final String IS_USING_SOFT_TABS = DOMSerializerConfiguration.SOFT_TABS;
+    /**
+     * The property key for the property defining whether to validate the
+     * document with a DTD or Schema
+     */
+    public static final String IS_VALIDATING = "validating";
+    /**
+     * The property key for the property defining what line separator
+     * to use when serializing a document. \n is always used for the internal
+     * text but this line separator is used when serializing using the
+     * serialize method.
+     */
+    public static final String LINE_SEPARATOR = "line-separator";
+    //}}}
+    
     //{{{ XMLDocument constructor
-    XMLDocument() {
+    /**
+     * Creates a new XMLDocument for a document that can be read by the given
+     * Reader.
+     * @param uri the uri for the location of this document. Can be null.
+     * @param reader the Reader object to read the XML document from.
+     * @throws IOException if there was a problem reading the document
+     */
+    public XMLDocument(String uri, InputStream reader) throws IOException {
+        this(uri, reader, null);
+    }//}}}
+    
+    //{{{ XMLDocument constructor
+    /**
+     * Creates a new XMLDocument for a document that can be read by the given
+     * Reader.
+     * @param reader the Reader object to read the XML document from.
+     * @param resolver the EntityResolver to use when resolving external
+     *                 entities.
+     * @throws IOException if there was a problem reading the document
+     */
+    public XMLDocument(String uri, InputStream reader, EntityResolver resolver) throws IOException {
+        this(uri, reader, resolver, null);
+    }//}}}
+    
+    //{{{ XMLDocument constructor
+    /**
+     * Creates a new XMLDocument for a document that can be read by the given
+     * Reader.
+     * @param uri the document uri
+     * @param reader the Reader object to read the XML document from.
+     * @param resolver the EntityResolver to use when resolving external
+     *                 entities.
+     * @param properties the properties to assign this XMLDocument on creation.
+     * @throws IOException if there was a problem reading the document
+     */
+    public XMLDocument(String uri, InputStream reader, EntityResolver resolver, Map properties) throws IOException {
+        m_entityResolver = resolver;
+        setDefaultProperties();
+        setURI(uri);
         
+        //add properties one by one
+        if (properties != null) {
+            Iterator propertyNames = properties.keySet().iterator();
+            while (propertyNames.hasNext()) {
+                Object key = propertyNames.next();
+                setProperty(key, properties.get(key));
+            }
+        }
+        
+        //TODO: Read the document from the input stream
+        reader.close();
     }//}}}
     
     //{{{ swing.text.Document methods
@@ -288,6 +383,42 @@ public class XMLDocument /* implements javax.swing.text.Document */ {
         return m_properties;
     }//}}}
     
+    //{{{ setURI()
+    /**
+     * Sets the URI for the location of this document.
+     * @param uri the uri specifying the location of this document. Can be null.
+     */
+    public void setURI(String uri) {
+        m_document.setDocumentURI(uri);
+    }//}}}
+    
+    //{{{ getURI()
+    /**
+     * Gets the URI for the location of this document.
+     * @return the uri specifying the location of this document. Can be null.
+     */
+    public String getURI() {
+        return m_document.getDocumentURI();
+    }//}}}
+    
+    //{{{ setStandalone()
+    /**
+     * An attribute specifying, as part of the XML declaration, whether this
+     * document is standalone. This is false when unspecified.
+     */
+    public void setStandalone(boolean standalone) throws DOMException {
+        m_document.setXmlStandalone(standalone);
+    }//}}}
+    
+    //{{{ isStandalone()
+    /**
+     * An attribute specifying, as part of the XML declaration, whether this
+     * document is standalone. This is false when unspecified.
+     */
+    public boolean isStandalone() {
+        return m_document.getXmlStandalone();
+    }//}}}
+    
     //{{{ Node Factory methods
     
     //{{{ newElementNode()
@@ -311,6 +442,16 @@ public class XMLDocument /* implements javax.swing.text.Document */ {
     //}}}
     
     //{{{ Private members
+    
+    //{{{ setDefaultProperties()
+    private void setDefaultProperties() {
+        setProperty(FORMAT_XML, "false");
+        setProperty(IS_USING_SOFT_TABS, "false");
+        setProperty(WS_IN_ELEMENT_CONTENT, "true");
+        setProperty(ENCODING, "UTF-8");
+        setProperty(INDENT, "4");
+        setProperty(IS_VALIDATING, "false");
+    }//}}}
     
     //{{{ ContentManager class
     /**
@@ -546,6 +687,11 @@ public class XMLDocument /* implements javax.swing.text.Document */ {
     private ArrayList m_docListeners = new ArrayList();
     private ArrayList m_undoListeners = new ArrayList();
     
+    /**
+     * The entity resolver to use when resolving external entities
+     * in this document.
+     */
+    private EntityResolver m_entityResolver;
     //}}}
     
 }

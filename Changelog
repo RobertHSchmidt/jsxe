@@ -1,3 +1,10 @@
+07/24/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added the XMLText, XMLComment, and XMLProcessingInstruction node
+      types.
+    * Added some support for the URIs and standalone properties in
+      XMLDocument.
+
 07/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Xerces needs to be installed in the java endorsed directory now to make
