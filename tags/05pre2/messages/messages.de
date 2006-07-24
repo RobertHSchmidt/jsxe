@@ -1,0 +1,123 @@
+# JSXE German properties file
+# $Id$
+# Maintained by Bianca Shöen
+#:mode=properties:
+#:tabSize=4:indentSize=4:noTabs=true:
+#:folding=explicit:collapseFolds=1:
+
+# ä Ä é ö Ö ü Ü ß
+
+#{{{ common properties
+
+common.ok=OK
+common.cancel=Abbrechen
+common.close=Schließen
+common.apply=Anwenden
+common.more=Mehr
+common.insert=Einfügen
+common.add=Hinzufügen
+common.remove=Entfernen
+common.moveUp=Move Up
+common.moveDown=Move Down
+common.cut=Ausschneiden
+common.copy=Kopieren
+common.paste=Einfügen
+common.find=Suchen...
+common.findnext=Nächsten suchen
+
+#}}}
+
+#{{{ XML Terminology
+
+#{{{ XML Node Types
+xml.element=Element
+xml.processing.instruction=Processing Instruction
+xml.cdata=CDATA Abschnitt
+xml.text=Text
+xml.entity.reference=Entity Referenz
+xml.declaration=Element Deklaration
+xml.notation=Bezeichnung
+xml.entity=Entity Deklaration
+xml.comment=Kommentar
+xml.attribute=Attribut
+xml.doctype=Dokumenten Typ
+#}}}
+
+xml.attribute.value.short=Wert
+xml.attribute.value=Attribut Wert
+xml.document=XML Dokument
+xml.namespace=Namespace
+xml.namespace.prefix=Namespace Prefix
+xml.namespace.prefix.short=Prefix
+xml.namespace.decl=Namespace Deklaration
+xml.doctypedef=Dokument Typ Definition
+xml.schema=XML Schema
+#}}}
+
+#{{{ Global Options
+Global.Options.Dialog.Title=Globale Optionen
+Global.Options.Title=jsXe Globale Optionen
+Global.Options.Max.Recent.Files=Letzte Dateien zu merken:
+Global.Options.Max.Recent.Files.ToolTip=Dies ist die Anzahl zuletzt bearbeiteter Dateien, auf die von Datei >> Zuletzt bearbeitete Dateien
+Document.Options.Title=XML Dokument Optionen
+Document.Options.Encoding=Codierung:
+#this one is wrong. You can select many more encoding types
+#Document.Options.Encoding.ToolTip=<HTML>Sie können 3 verschiedene Codierungstypen wählen:<BR><ul> <li><strong>US-ASCII:<strong>  </li><li><strong>ISO-8859_1:<strong></li>  <li><strong>UTF-8:<strong></li>   </ul>  <HTML>
+Document.Options.Indent.Width=Zeileneinzug Breite:
+Document.Options.Indent.Width.ToolTip=<HTML>Dieses Feature kann für Dateien im SourceView gesehen werden. <BR>Die Breite des Zeileneinzugs bestimmt wieviel Platz zwischen dem Text<BR> und der linken Seite des Screens gelassen wird.<\HTML>
+Document.Options.Format.XML=Format XML Ausgabe
+Document.Options.Format.XML.ToolTip=
+Document.Options.Validate=Bestätigen ob DTD oder Schema verfügbar ist
+Document.Options.Soft.Tabs=Soft Tabs (mit Freizeichen nachgebildet)
+#}}}
+
+#{{{ Menu Items
+
+File.Menu=Datei
+View.Menu=Ansicht
+Tools.Menu=Extras
+Help.Menu=Hilfe
+
+#{{{ File Menu Items
+File.New=Neu
+File.Open=Öffnen...
+File.Recent=Zuletzt bearbeitete Dateien
+File.Save=Speichern
+File.SaveAs=Speichern unter...
+File.Reload=Neu Laden
+File.Recent=Zuletzt bearbeitete Dateien
+File.Close=Schließen
+File.CloseAll=Alle schließen
+File.Exit=Exit
+#}}}
+
+Tools.Options=Optionen...
+Tools.Plugin=Plugin Manager...
+Plugin.Manager.Title=Plugin Manager
+Help.About=Über jsXe...
+#}}}
+
+#{{{ Messages
+DocumentBuffer.Reload.Message={0} Nicht gespeichert!\n Sie verlieren alle ungesicherten Veränderungen wenn sie neu laden!\n\nWeiter?
+DocumentBuffer.Reload.Message.Title=Dokument Verändert
+DocumentBuffer.SaveAs.Message=Die Datei {0} existiert bereits. Sind sie sicher, dass sie die Datei Überschreiben wollen?
+DocumentBuffer.SaveAs.Message.Title=Datei Vorhanden
+DocumentBuffer.Close.Message={0} Nicht gespeichert! Jetzt speichern?
+DocumentBuffer.Close.Message.Title=Ungesicherte Änderungen
+#}}}
+
+#{{{ Error Messages
+No.Xerces.Error={0} nicht gefunden. jsXe benötigt Apache {0}.
+No.Xerces.Error.Title={0} nicht gefunden.
+#}}}
+
+#{{{ Dirty Files Dialog
+DirtyFilesDialog.Dialog.Title=Ungesicherte Änderungen
+DirtyFilesDialog.Dialog.Message=Die folgenden Dateien haben ungesicherte Änderungen:
+DirtyFilesDialog.Button.SelectAll.Title=Alle Auswählen
+DirtyFilesDialog.Button.SelectAll.ToolTip=Alle Auswählen
+DirtyFilesDialog.Button.SaveSelected.Title=Auswahl Speichern
+DirtyFilesDialog.Button.SaveSelected.ToolTip=Auswahl Speichern
+DirtyFilesDialog.Button.DiscardSelected.Title=Auswahl Verwerfen
+DirtyFilesDialog.Button.DiscardSelected.ToolTip=Auswahl Verwerfen
+#}}}

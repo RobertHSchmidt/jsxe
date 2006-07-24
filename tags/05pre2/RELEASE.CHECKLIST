@@ -1,0 +1,26 @@
+RELEASE CHECKLIST
+
+* Make sure all bugs that are priority 5 or higher are resolved.
+
+* Get translations finalized
+* Build the Java Doc and check it for omissions and errors.
+
+* Update the Changelog file
+* Update the NEWS file
+* Update the README if needed
+* Update the AUTHORS if needed
+* Update the INSTALL file if needed
+* Update the jsXe website in CVS to reference the new versions
+* Update the jsXe website in CVS to have the correct help and documentation.
+    * Run 'ant deploy-web-doc'
+
+Build the project
+    * Make sure the major.version, minor.version, beta.version, bugfix.version,
+      app.version, and app_version are correct in build.xml
+    * Build the release files using 'ant bin src'
+
+* Create new release on sourceforge
+    * Upload binary and source distribution to Sourceforge
+    * Add the NEWS and Changelog entries to the release.
+* Update the News on the sourceforge project page.
+* Update the freshmeat project with the new version and URLs.
