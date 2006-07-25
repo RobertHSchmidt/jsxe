@@ -1,3 +1,9 @@
+07/24/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed a bug with the source view for new users that caused a
+      NullPointerException to be thrown when opening the source view.
+    * Added a wrapper exe for windows users using jSmooth
+
 07/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed bug 1509575. Files that are reloaded should always be loaded in a

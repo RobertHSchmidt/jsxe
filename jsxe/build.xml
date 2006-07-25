@@ -52,7 +52,7 @@
     <property name="main.class" value="net.sourceforge.jsxe.jsXe"/>
     <property name="major.version" value="0"/>
     <property name="minor.version" value="5"/>
-    <property name="beta.version" value="1"/>
+    <property name="beta.version" value="2"/>
     <property name="bugfix.version" value="0"/>
     
     <property name="buildlib.dir" value="${root.dir}/buildlib"/>
@@ -67,9 +67,9 @@
     </condition>
     
     <!-- Human Readable -->
-    <property name="app.version" value="0.5 pre1"/>
+    <property name="app.version" value="0.5 pre2"/>
     <!-- Used in filenames -->
-    <property name="app_version" value="05_pre1"/>
+    <property name="app_version" value="05_pre2"/>
     <!--<property name="app.version" value="${major.version}.${minor.version} beta"/>-->
     <!--<property name="app_version" value="${major.version}_${minor.version}beta"/>-->
     <property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>

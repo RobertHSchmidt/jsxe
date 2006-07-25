@@ -51,23 +51,19 @@ in  C:\Program Files\  or  /usr/local/share/  or something like that.
 RUNNING jsXe
 
 You should have 1.4.2 or better of java and you need 2.6.2 of Xerces.
+
+*Windows*
+
+Just run jsXe using the jsXe.exe in the install directory. The exe will
+detect your version of Java and run jsXe using that version.
+
+*Unix*
+
 To run jsXe you should just run the java interpreter on the jsXe.jar file. There
 is a shell script or batch file included in the source tree for this purpose.
 
-    ./bin/jsXe.sh
+./bin/jsXe.sh
 
-or
-
-    ./bin/jsXe.bat
-
-The batch program should be run in with the jsXe root directory of as the
-working directory. So you can create a shortcut to run jsXe by specifying the
-batch file as the program to run and jsXe's root directory as the working
-directory.
-
-Ex.
-Target:   "C:\Program Files\jsXe\bin\jsXe.bat"
-Start in: "C:\Program Files\jsXe\"
-
-You can also edit the JSXEDIR variable in the batch program to be the directory
-where you installed jsXe and then the 'Start in' directory can be anywhere.
+The shell script should be run in with the jsXe root directory of as the
+working directory. You can also edit the JSXEDIR variable in the shell script
+to be the directory where you installed jsXe.
