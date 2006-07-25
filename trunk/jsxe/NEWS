@@ -1,4 +1,12 @@
-07/25/2006  version 0.5 pre1
+07/24/2006  version 0.5 pre2
+
+    * Fixed a bug with the source view for new users that caused a
+      NullPointerException to be thrown when opening the source view.
+    * Added a wrapper exe for windows users using jSmooth
+    * Fixed bug 1509575. Files that are reloaded should always be loaded in a
+      view that can accep the reloaded file.
+
+07/20/2006  version 0.5 pre1
 
     * Added support for keyboard shortcuts that can be set by the user via
       the Global Options Dialog.
