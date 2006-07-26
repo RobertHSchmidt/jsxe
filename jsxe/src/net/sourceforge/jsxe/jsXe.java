@@ -321,14 +321,31 @@ public class jsXe {
             initPLAF();
             //}}}
             
-            //{{{ init key bindings
+            //{{{ Add EditBus Listener to update key bindings when properties are changed
             /*
-            key bindings are loaded before the TabbedView is created
-            so that the ActionManagers EBListener is added to the EditBus first
-            Hopefully this is a temporary problem.
+             This must be done before creating the TabbedView so that
+             the ActionManager's listener is notified of changes first.
             */
-            ActionManager.initKeyBindings();
-            //}}}
+            
+            EditBus.addToBus(new EBListener() {
+
+                //{{{ handleMessage()
+                public void handleMessage(EBMessage message) {
+                    if (message instanceof PropertyChanged) {
+                        PropertyChanged msg = (PropertyChanged)message;
+                        if (msg.getKey().endsWith(".shortcut")) {
+                            String actionName = msg.getKey().substring(0, msg.getKey().lastIndexOf("."));
+                            String keyBinding = jsXe.getProperty(msg.getKey());
+                            if (keyBinding != null) {
+                                ActionManager.addKeyBinding(keyBinding, actionName);
+                            } else {
+                                ActionManager.removeKeyBinding(msg.getOldValue());
+                            }
+                        }
+                    }
+                }//}}}
+            
+            });//}}}
             
             //{{{ create the TabbedView
             Log.log(Log.NOTICE, jsXe.class, "Starting the main window");
@@ -364,6 +381,10 @@ public class jsXe {
             }
             m_activeView = tabbedview;
             progressScreen.updateSplashScreenDialog(85);
+            //}}}
+            
+            //{{{ init key bindings
+            ActionManager.initKeyBindings();
             //}}}
             
             //{{{ Parse files to open on the command line

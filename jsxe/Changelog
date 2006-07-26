@@ -2,6 +2,8 @@
 
     * Updated the find and findnext actions to use proper messages
       labels.
+    * Fixed a bug where the shortcuts for Built-In commands were not being 
+      honored.
 
 07/24/2006  Ian Lewis   <IanLewis@member.fsf.org>
 

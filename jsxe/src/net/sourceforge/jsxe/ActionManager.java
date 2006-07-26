@@ -82,6 +82,7 @@ public class ActionManager {
     public static final String COPY_SUFFIX = ".copy";
     public static final String PASTE_SUFFIX = ".paste";
     public static final String FIND_SUFFIX = ".find";
+    public static final String FIND_NEXT_SUFFIX = ".findnext";
     
     //}}}
     
@@ -173,27 +174,6 @@ public class ActionManager {
         Log.log(Log.NOTICE, ActionManager.class, "Loading key bindings.");
         if (!initialized) {
             
-            //Add EditBus Listener to update key bindings when properties are changed
-            EditBus.addToBus(new EBListener() {
-
-                //{{{ handleMessage()
-                public void handleMessage(EBMessage message) {
-                    if (message instanceof PropertyChanged) {
-                        PropertyChanged msg = (PropertyChanged)message;
-                        if (msg.getKey().endsWith(".shortcut")) {
-                            String actionName = msg.getKey().substring(0, msg.getKey().lastIndexOf("."));
-                            String keyBinding = jsXe.getProperty(msg.getKey());
-                            if (keyBinding != null) {
-                                addKeyBinding(keyBinding, actionName);
-                            } else {
-                                removeKeyBinding(msg.getOldValue());
-                            }
-                        }
-                    }
-                }//}}}
-                
-            });
-            
             Iterator itr = m_actionSets.iterator();
             while (itr.hasNext()) {
                 ActionSet set = (ActionSet)itr.next();
@@ -233,8 +213,14 @@ public class ActionManager {
         if (action != null && keyBinding != null) {
             Action wrapper = getAction(action.getName());
             
+            
+            
             KeyEventTranslator.Key key = KeyEventTranslator.parseKey(keyBinding);
             m_keyBindingMap.put(key, wrapper);
+            
+            Log.log(Log.DEBUG, ActionManager.class, "Adding binding: "+key.toString());
+            Log.log(Log.DEBUG, ActionManager.class, "key.key: "+key.key);
+            Log.log(Log.DEBUG, ActionManager.class, "key.input: "+key.input);
             
             //need to do this so that the accelerator key is rendered on menu items
             wrapper.putValue(Action.ACCELERATOR_KEY, KeyEventTranslator.getKeyStroke(keyBinding));
@@ -268,6 +254,9 @@ public class ActionManager {
      */
     public static void handleKey(KeyEvent event) {
         KeyEventTranslator.Key key = KeyEventTranslator.translateKeyEvent(event);
+        Log.log(Log.DEBUG, ActionManager.class, "Key: "+key.toString());
+        Log.log(Log.DEBUG, ActionManager.class, "key.key: "+key.key);
+        Log.log(Log.DEBUG, ActionManager.class, "key.input: "+key.input);
         
         //Gets the action for the Key.
         Action action = (Action)m_keyBindingMap.get(key);
@@ -286,7 +275,8 @@ public class ActionManager {
         return (actionName.endsWith(CUT_SUFFIX) ||
                 actionName.endsWith(COPY_SUFFIX) ||
                 actionName.endsWith(PASTE_SUFFIX) ||
-                actionName.endsWith(FIND_SUFFIX));
+                actionName.endsWith(FIND_SUFFIX) ||
+                actionName.endsWith(FIND_NEXT_SUFFIX));
     }//}}}
     
     //{{{ Wrapper class
