@@ -9,6 +9,5 @@
 SourceView.Options.Title=ソース表示
 SourceView.Syntax.Object=ノードタイプ
 SourceView.Markup=マーク付け
-#}}}
-
+SourceView.Invalid=無効
 #}}}
