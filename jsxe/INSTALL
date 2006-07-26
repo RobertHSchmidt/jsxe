@@ -25,10 +25,12 @@ cvs checkout sourceview
 BUILDING jsXe FROM SOURCE
 
 This is pretty simple. You will need jakarta ANT and a Sun's javac compiler
-(others might work, I just haven't tested them). Also, in order for jsXe to
-compile properly you will need Apache Xerces installed.
+(others might work, I just haven't tested them). You will need the optional
+ant tasks installed as well. On some Linux distributions this may be a separate
+package. Also, in order for jsXe to compile properly you will need Apache 
+Xerces installed.
 
-You should have 1.4.2 or better of java and you will need version 2.8.0 of
+You will need version 1.4.2 or better of java and you will need version 2.8.0 of
 Xerces (A Xerces 2.8.0 binary distribution is not included in the CVS source
 tree. You can aquire it at at http://xml.apache.org/) The jar files
 xercesImpl.jar, xml-apis.jar, and resolver.jar from the 2.8.0 distribution are
@@ -36,7 +38,7 @@ required. These should be placed in a directory called lib in jsXe's root folder
 (where you installed jsXe's source) or in the jre/lib/ext or lib/ext in your
 JVM. These jar files will be included with jsXe distributions for convenience.
 
-Simply typing 'ant' or 'ant -p' in jsXe's root directory will give you the
+Simply typing 'ant' in jsXe's root directory will give you the
 available targets to use with ant. To just simply compile jsXe and the default
 views to a jar file you can type 'ant compile'. To build a binary distribution
 you will need to run the 'bin' target in the build.xml file. I do this by simply

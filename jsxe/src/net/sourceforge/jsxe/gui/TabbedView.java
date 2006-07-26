@@ -511,6 +511,7 @@ public class TabbedView extends JFrame {
         set.addAction(new CopyAction());
         set.addAction(new PasteAction());
         set.addAction(new FindAction());
+        set.addAction(new FindNextAction());
         ActionManager.addActionSet(set);
         //}}}
         
