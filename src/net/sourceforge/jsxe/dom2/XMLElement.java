@@ -27,6 +27,7 @@ package net.sourceforge.jsxe.dom2;
 //{{{ Imports
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
 
@@ -175,6 +176,9 @@ public class XMLElement extends XMLNode {
     //{{{ setAttribute()
     
     public XMLAttribute setAttribute(XMLAttribute attr) throws DOMException {
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
         /*
         TODO: test how this works. Will I need to check for a namespace and
         call setAttributeNode() instead if there is none?
@@ -188,6 +192,10 @@ public class XMLElement extends XMLNode {
      * @param index the index at which to remove an attribute.
      */
     public XMLAttribute removeAttributeAt(int index) throws DOMException {
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
+        
         org.w3c.dom.Element element = (org.w3c.dom.Element)getNode();
         NamedNodeMap attrs = element.getAttributes();
         if (attrs != null) {
@@ -201,6 +209,10 @@ public class XMLElement extends XMLNode {
      * @param name The qualified name of the attribute.
      */
     public XMLAttribute removeAttribute(String name) throws DOMException {
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
+        
         org.w3c.dom.Element element = (org.w3c.dom.Element)getNode();
         
         String prefix = MiscUtilities.getNSPrefixFromQualifiedName(name);

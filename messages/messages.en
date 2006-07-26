@@ -21,6 +21,8 @@ common.copy=Copy
 common.paste=Paste
 common.find=Find...
 common.findnext=Find Next
+common.error=Error
+common.warning=Warning
 
 #}}}
 
@@ -123,6 +125,11 @@ DocumentBuffer.Reloaded.Message={0} Reloaded
 No.Xerces.Error={0} not found. jsXe requires Apache {0}.
 No.Xerces.Error.Title={0} not found.
 IO.Error.Title=I/O Error
+
+#{{{ XML Messages
+XML.Read.Only.Node=You cannot modify this node. The node is read only.
+#}}}
+
 #}}}
 
 #}}}

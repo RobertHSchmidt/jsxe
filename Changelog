@@ -1,3 +1,11 @@
+07/26/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added support for error nodes in the new data model
+
+07/25/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added support for the read only attribute
+
 07/24/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added the XMLText, XMLComment, and XMLProcessingInstruction node

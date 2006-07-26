@@ -71,7 +71,7 @@ import javax.swing.event.UndoableEditListener;
  * @version $Id: XMLDocument.java 999 2006-07-07 20:59:23Z ian_lewis $
  * @see XMLNode
  */
-public class XMLDocument /* implements javax.swing.text.Document */ {
+public class XMLDocument implements javax.swing.text.Document {
     
     //{{{ XMLDocument defined properties
     /**
@@ -160,7 +160,7 @@ public class XMLDocument /* implements javax.swing.text.Document */ {
             Iterator propertyNames = properties.keySet().iterator();
             while (propertyNames.hasNext()) {
                 Object key = propertyNames.next();
-                setProperty(key, properties.get(key));
+                putProperty(key, properties.get(key));
             }
         }
         
@@ -419,6 +419,26 @@ public class XMLDocument /* implements javax.swing.text.Document */ {
         return m_document.getXmlStandalone();
     }//}}}
     
+    //{{{ isReadOnly()
+    /**
+     * Returns whether this document is currently read only.
+     */
+    public boolean isReadOnly() {
+        return m_readOnly;
+    }//}}}
+    
+    //{{{ setReadOnly()
+    /**
+     * Sets this document to read only. Any attempts
+     * to change any attribute of this document or
+     * child nodes of this document will result in
+     * DOMExceptions being thrown.
+     * @param readOnly the value of the readOnly property
+     */
+    public void setReadOnly(boolean readOnly) {
+        m_readOnly = readOnly;
+    }//}}}
+    
     //{{{ Node Factory methods
     
     //{{{ newElementNode()
@@ -439,18 +459,28 @@ public class XMLDocument /* implements javax.swing.text.Document */ {
         return new XMLAttribute(m_document.createAttributeNS("", name));
     }//}}}
     
+    //{{{ newErrorNode()
+    /**
+     * Creates a new error node.
+     * @param message the error message
+     * @param warning true if the node is a warning, false if it's an error
+     */
+    public XMLError newErrorNode(String message, boolean warning) {
+        return new XMLError(this, null, message, warning);
+    }//}}}
+    
     //}}}
     
     //{{{ Private members
     
     //{{{ setDefaultProperties()
     private void setDefaultProperties() {
-        setProperty(FORMAT_XML, "false");
-        setProperty(IS_USING_SOFT_TABS, "false");
-        setProperty(WS_IN_ELEMENT_CONTENT, "true");
-        setProperty(ENCODING, "UTF-8");
-        setProperty(INDENT, "4");
-        setProperty(IS_VALIDATING, "false");
+        putProperty(FORMAT_XML, "false");
+        putProperty(IS_USING_SOFT_TABS, "false");
+        putProperty(WS_IN_ELEMENT_CONTENT, "true");
+        putProperty(ENCODING, "UTF-8");
+        putProperty(INDENT, "4");
+        putProperty(IS_VALIDATING, "false");
     }//}}}
     
     //{{{ ContentManager class
@@ -692,6 +722,8 @@ public class XMLDocument /* implements javax.swing.text.Document */ {
      * in this document.
      */
     private EntityResolver m_entityResolver;
+    
+    private boolean m_readOnly;
     //}}}
     
 }
