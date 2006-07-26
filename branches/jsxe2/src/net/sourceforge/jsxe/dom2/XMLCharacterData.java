@@ -24,6 +24,8 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package net.sourceforge.jsxe.dom2;
 
+import net.sourceforge.jsxe.gui.Messages;
+
 import org.w3c.dom.*;
 
 public abstract class XMLCharacterData extends XMLNode {
@@ -35,16 +37,25 @@ public abstract class XMLCharacterData extends XMLNode {
     
     //{{{ appendData()
     public void append(String data) throws DOMException {
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
         ((CharacterData)getNode()).appendData(data);
     }//}}}
     
     //{{{ deleteData()
     public void deleteData(int offset, int len) throws DOMException {
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
         ((CharacterData)getNode()).deleteData(offset, len);
     }//}}}
     
     //{{{ insertData()
     public void insertData(int offset, String data) {
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
         ((CharacterData)getNode()).insertData(offset, data);
     }//}}}
     

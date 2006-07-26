@@ -28,6 +28,7 @@ package net.sourceforge.jsxe.dom2;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.dom.completion.*;
 //}}}
@@ -40,6 +41,8 @@ import org.w3c.dom.events.*;
 //{{{ Swing classes
 import javax.swing.text.*;
 //}}}
+
+import java.util.ArrayList;
 
 //}}}
 
@@ -58,9 +61,54 @@ import javax.swing.text.*;
  * @see XMLDocument
  * @since jsXe 0.5 pre2
  */
-public abstract class XMLNode /* implements javax.swing.text.Element */ {
+public abstract class XMLNode implements javax.swing.text.Element {
     
     protected static final String USER_DATA_KEY = "net.sourceforge.jsxe.dom.XMLNode";
+    
+    /**
+     * The node is an Attr.
+     */
+    public static short ATTRIBUTE_NODE = Node.ATTRIBUTE_NODE;
+    /**
+     * The node is a CDATASection.
+     */
+    public static short CDATA_SECTION_NODE = Node.CDATA_SECTION_NODE;
+    /**
+     * The node is a Comment.
+     */
+    public static short COMMENT_NODE = Node.COMMENT_NODE;
+    /**
+     * The node is a DocumentType.
+     */
+    public static short DOCUMENT_TYPE_NODE = Node.DOCUMENT_TYPE_NODE;
+    /**
+     * The node is an Element.
+     */
+    public static short ELEMENT_NODE = Node.ELEMENT_NODE;
+    /**
+     * The node is an Entity.
+     */
+    public static short ENTITY_NODE = Node.ENTITY_NODE;
+    /**
+     * The node is an EntityReference.
+     */
+    public static short ENTITY_REFERENCE_NODE = Node.ENTITY_REFERENCE_NODE;
+    /**
+     * The node is a Notation.
+     */
+    public static short NOTATION_NODE = Node.NOTATION_NODE;
+    /**
+     * The node is a ProcessingInstruction.
+     */
+    public static short PROCESSING_INSTRUCTION_NODE = Node.PROCESSING_INSTRUCTION_NODE;
+    /**
+     * The node is a Text node.
+     */
+    public static short TEXT_NODE = Node.TEXT_NODE;
+    /**
+     * The node is an Error node.
+     */
+    public static short ERROR_NODE = Short.MAX_VALUE;
     
     //{{{ Private members
     
@@ -70,13 +118,21 @@ public abstract class XMLNode /* implements javax.swing.text.Element */ {
      */
     private Node m_domNode;
     
+    /**
+     * Used to keep track of children and XMLError nodes and keep them
+     * in the correct order.
+     */
+    private ArrayList m_children = new ArrayList();
+    
     //}}}
     
     //{{{ XMLNode constructor
     XMLNode(Node node) {
         m_domNode = node;
         //TODO: add UserDataHandler
-        m_domNode.setUserData(USER_DATA_KEY, this, null);
+        if (m_domNode != null) {
+            m_domNode.setUserData(USER_DATA_KEY, this, null);
+        }
     }//}}}
     
     //{{{ javax.swing.text.Element methods
@@ -102,13 +158,20 @@ public abstract class XMLNode /* implements javax.swing.text.Element */ {
     //{{{ getElement()
     
     public javax.swing.text.Element getElement(int index) {
-        return (javax.swing.text.Element)m_domNode.getChildNodes().item(index).getUserData(USER_DATA_KEY);
+        return (javax.swing.text.Element)m_children.get(index);
     }//}}}
     
     //{{{ getElementCount()
     
     public int getElementCount() {
-        return m_domNode.getChildNodes().getLength();
+        return m_children.size();
+    }//}}}
+    
+    //{{{ getElementIndex()
+    
+    public int getElementIndex(int offset) {
+        //TODO: implement offsets
+        return 0;
     }//}}}
     
     //{{{ getEndOffset()
@@ -133,7 +196,7 @@ public abstract class XMLNode /* implements javax.swing.text.Element */ {
     
     public javax.swing.text.Element getParentElement() {
         return (javax.swing.text.Element)m_domNode.getParentNode().getUserData(USER_DATA_KEY);
-    }//}}}
+    }//}}} 
     
     //{{{ getStartOffset() 
     
@@ -163,8 +226,24 @@ public abstract class XMLNode /* implements javax.swing.text.Element */ {
     
     //{{{ appendNode()
     public XMLNode appendNode(XMLNode newChild) throws DOMException {
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
         
-        m_domNode.appendChild(newChild.getNode());
+        if (newChild != null) {
+            if (!(newChild instanceof XMLError)) {
+                XMLNode parent = (XMLNode)newChild.getParentElement();
+                if (parent != null) {
+                    parent.removeNode(newChild);
+                }
+                ((XMLError)newChild).setParent(this);
+            }
+            
+            m_children.add(newChild);
+            if (!(newChild instanceof XMLError)) {
+                m_domNode.appendChild(newChild.getNode());
+            }
+        }
         
         return newChild;
     }//}}}
@@ -202,7 +281,24 @@ public abstract class XMLNode /* implements javax.swing.text.Element */ {
     //{{{ insertNode()
     
     public XMLNode insertNode(XMLNode node, int index) throws DOMException {
-        m_domNode.insertBefore(node.getNode(), m_domNode.getChildNodes().item(index));
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
+        
+        if (node != null) {
+            if (!(node instanceof XMLError)) {
+                XMLNode parent = (XMLNode)node.getParentElement();
+                if (parent != null) {
+                    parent.removeNode(node);
+                }
+                ((XMLError)node).setParent(this);
+            }
+            
+            m_children.add(index, node);
+            if (!(node instanceof XMLError)) {
+                m_domNode.insertBefore(node.getNode(), m_domNode.getChildNodes().item(index));
+            }
+        }
         return node;
     }//}}}
     
@@ -215,21 +311,40 @@ public abstract class XMLNode /* implements javax.swing.text.Element */ {
     //{{{ removeNode()
     
     public XMLNode removeNode(XMLNode child) throws DOMException {
-        Node childNode = child.getNode();
-        m_domNode.removeChild(childNode);
-        childNode.setUserData(USER_DATA_KEY, null, null);
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
+        
+        if (child != null) {
+            m_children.remove(child);
+            if (!(child instanceof XMLError)) {
+                Node childNode = child.getNode();
+                m_domNode.removeChild(childNode);
+                childNode.setUserData(USER_DATA_KEY, null, null);
+            } else {
+                ((XMLError)child).setParent(null);
+            }
+        }
         return child;
     }//}}}
     
     //{{{ setValue()
     
     public void setValue(String value) throws DOMException {
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
+        
         m_domNode.setNodeValue(value);
     }//}}}
     
     //{{{ setNSPrefix()
     
     public void setNSPrefix(String prefix) throws DOMException {
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
+        
         m_domNode.setPrefix(prefix);
     }//}}}
     
@@ -238,6 +353,10 @@ public abstract class XMLNode /* implements javax.swing.text.Element */ {
      * @param name the qualified name of the node.
      */
     public void setName(String name) {
+        if (((XMLDocument)getDocument()).isReadOnly()) {
+            throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
+        }
+        
         m_domNode = m_domNode.getOwnerDocument().renameNode(m_domNode, m_domNode.getNamespaceURI(), name);
     }//}}}
     
