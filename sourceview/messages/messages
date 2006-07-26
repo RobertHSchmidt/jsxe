@@ -20,3 +20,14 @@ SourceView.StyleEditor.Color=Text Color
 SourceView.StyleEditor.Bold=Bold
 SourceView.StyleEditor.Italics=Italics
 #}}}
+
+#{{{ Find Dialog
+SourceView.Find.title and Replace
+SourceView.Ignore.Case=Ignore Case
+SourceView.Search.For=Search for:
+SourceView.Replace.With=Replace With:
+SourceView.Replace.And.Find=Replace&Find
+SourceView.No.More.Matches.title=No More Matches
+SourceView.No.More.Matches.message="No more matches were found. Continue search from the beginning?"
+SourceView.Search.Error.title=Search Error
+#}}}
