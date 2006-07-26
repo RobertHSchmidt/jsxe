@@ -60,11 +60,6 @@ public class FindNextAction extends LocalizedAction {
         super("findnext");
     }//}}}
     
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.find");
-    }//}}}
-    
     //{{{ invoke()
     public void invoke(TabbedView view, ActionEvent evt) {
         /*

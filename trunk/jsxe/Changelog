@@ -1,3 +1,8 @@
+07/26/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the find and findnext actions to use proper messages
+      labels.
+
 07/24/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed a bug with the source view for new users that caused a

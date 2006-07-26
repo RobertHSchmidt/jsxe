@@ -23,7 +23,7 @@ common.moveDown=Move Down
 common.cut=Cut
 common.copy=Copy
 common.paste=Paste
-common.find=Find...
+common.find=Find
 common.findnext=Find Next
 
 common.ctrl=Ctrl
@@ -140,7 +140,10 @@ View.Menu=View
 Tools.Menu=Tools
 Help.Menu=Help
 
-#{{{ File Menu Items
+
+#}}}
+
+#{{{ Action Labels
 new-file.label=New
 open-file.label=Open...
 File.Recent=Recent Files
@@ -152,13 +155,16 @@ File.Recent=Recent Files
 close-file.label=Close
 close-all.label=Close All
 exit.label=Exit
-#}}}
+
+find.label=Find...
+findnext.label=Find Next
 
 general-options.label=Global Options...
 document-options.label=Document Options...
 plugin-manager.label=Plugin Manager...
 validation-errors.label=Validation Errors...
 about-jsxe.label=About jsXe...
+
 #}}}
 
 #{{{ Messages
