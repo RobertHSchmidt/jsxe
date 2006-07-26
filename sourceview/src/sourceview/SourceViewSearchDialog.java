@@ -140,6 +140,12 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         m_findComboBox.setName("FindComboBox");
         m_findComboBox.setEditable(true);
         
+        String last = jsXe.getProperty("SourceView.Search.Last");
+        if (last != null) {
+            m_findComboBox.setSelectedItem(last);
+            m_findComboBox.getEditor().selectAll();
+        }
+        
         m_replaceComboBox = new JComboBox();
         m_replaceComboBox.setName("ReplaceComboBox");
         m_replaceComboBox.setEditable(true);
@@ -287,7 +293,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
     
     private void find(boolean doReplace) {
         find(doReplace, m_view.getTextArea().getCaretPosition());
-    }
+    }//}}}
     
     //{{{ find()
     
@@ -343,6 +349,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
             }
             
             requestFocus();
+            jsXe.setProperty("SourceView.Search.Last", search);
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(m_view, ex, "Search Error", JOptionPane.WARNING_MESSAGE);
