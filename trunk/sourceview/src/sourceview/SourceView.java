@@ -85,7 +85,6 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
     
     //{{{ Public static members
     public static final String SOFT_TABS = SourceViewPlugin.PLUGIN_NAME+".soft.tabs";
-    public static final String LAST_FIND_STRING = SourceViewPlugin.PLUGIN_NAME+".last.find.string";
     public static final String END_OF_LINE_MARKS = SourceViewPlugin.PLUGIN_NAME+".end-of-line-markers";
     //}}}
     
