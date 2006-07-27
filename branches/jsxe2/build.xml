@@ -118,6 +118,10 @@
         <!--<include name="**/*.dtd"/>-->
 				<include name="**/*.jpg"/>
 				<include name="**/*.png"/>
+        
+        <!-- files in the source directory to ignore -->
+        <exclude name="net/sourceforge/jsxe/dom2/ls/XMLDocumentIORequest.java"/>
+        <exclude name="net/sourceforge/jsxe/io/**/*"/>
 			</fileset>
 		</copy>
     <mkdir dir="${build.messages}"/>
