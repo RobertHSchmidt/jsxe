@@ -26,6 +26,7 @@
 		<property name="build.help" value="${build.docs}/help"/>
     <property name="jsxe.dir" value="${root.dir}/../.."/>
     <property name="jsxe.jar" value="${jsxe.dir}/jsXe.jar"/>
+    <property name="jsxe.lib.dir" value="${jsxe.dir}/lib"/>
 		<property name="javac.debug" value="on"/>
 		<property name="javac.optimize" value="off"/>
 		<property name="javac.deprecation" value="on"/>
@@ -39,14 +40,18 @@
 		<property name="app.version" value="${major.version}.${minor.version}.${build.version}"/>
 		<property name="app_version" value="${major.version}_${minor.version}_${build.version}"/>
 		<property name="implementation.version" value="${major.version}.${minor.version}.${build.version}"/>
-        <property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
+    <property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
 		<property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>
-		<path id="classpath">
+		
+    <path id="classpath">
 			<pathelement location="${root.dir}"/>
 			<pathelement location="${build.dest}"/>
 			<pathelement location="${build.src}"/>
 			<pathelement location="${src.dir}"/>
       <pathelement location="${jsxe.jar}"/>
+      <fileset dir="${jsxe.lib.dir}">
+				<include name="**/*.jar"/>
+			</fileset>
 		</path>
 		<echo message="${readable.name} ${app.version}"/>
 		<echo message="----------------------------------------------------------"/>
