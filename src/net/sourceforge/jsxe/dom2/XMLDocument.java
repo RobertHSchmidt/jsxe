@@ -59,19 +59,23 @@ import javax.swing.event.UndoableEditListener;
 //}}}
 
 /**
- * The XMLDocument class represents an XML document as a  tree structure
+ * <p>The XMLDocument class represents an XML document as a  tree structure
  * that has nodes, implemented as XMLNodes, as well as text. Methods are
  * provided to allow user objects to interact with the XML document as text
- * or as a tree structure seamlessly.
+ * or as a tree structure seamlessly.</p>
  *
- * Properties of XMLDocuments are saved by jsXe as string values. And are loaded
- * later when if the document was loaded recently.
+ * <p>It is implemented in the spirit of the {@link javax.swing.text.Document}
+ *    class in that it represents a piece of structured text that can be
+ *    viewed and edited via the text or document structure</p>
+ *
+ * <p>Properties of XMLDocuments are saved by jsXe as string values. And are loaded
+ * later when if the document was loaded recently.</p>
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id: XMLDocument.java 999 2006-07-07 20:59:23Z ian_lewis $
  * @see XMLNode
  */
-public class XMLDocument implements javax.swing.text.Document {
+public class XMLDocument {
     
     //{{{ XMLDocument defined properties
     /**
@@ -152,7 +156,6 @@ public class XMLDocument implements javax.swing.text.Document {
      */
     public XMLDocument(String uri, InputStream reader, EntityResolver resolver, Map properties) throws IOException {
         m_entityResolver = resolver;
-        setDefaultProperties();
         setURI(uri);
         
         //add properties one by one
@@ -168,14 +171,13 @@ public class XMLDocument implements javax.swing.text.Document {
         reader.close();
     }//}}}
     
-    //{{{ swing.text.Document methods
-    
     //{{{ addDocumentListener
     /**
      * Registers a change listener with the XMLDocument
      * @param listener the listener to register with this document
      */
     public void addDocumentListener(DocumentListener listener) {
+        //TODO: Create XMLDocumentListeners
         if (listener != null) {
             m_docListeners.add(listener);
         }
@@ -189,90 +191,47 @@ public class XMLDocument implements javax.swing.text.Document {
         }
     }//}}}
     
-    //{{{ createPosition()
-    
-    public Position createPosition(int offs) throws BadLocationException {
-        if (offs < 0 || offs > m_content.getLength()) {
-            //TODO: fix error messages
-            throw new BadLocationException("createPosition(): Bad offset", offs);
-        }
-        
-        final int offset = offs;
-        return new Position() {
-            public int getOffset() {
-                return offset;
-            }
-        };
-    }//}}}
-    
     //{{{ getDefaultRootElement()
-    
-    public javax.swing.text.Element getDefaultRootElement() {
+    /**
+     * Gets the root document element.
+     */
+    public XMLElement getRootElement() {
         //TODO: return root element
         return null;
     }//}}}
     
-    //{{{ getEndPosition()
-    
-    public Position getEndPosition() {
-        try {
-            return createPosition(getLength()-1);
-        } catch (BadLocationException e) {
-            //Guaranteed to be good.
-            return null;
-        }
-    }//}}}
-    
     //{{{ getLength()
     /**
-     * Gets the total number of characters in the document.
+     * Gets the total number of characters in the document. This method is
+     * thread-safe.
      * @return the length of the document
      */
     public int getLength() {
+        // no need to lock since this just returns a value and that's it
         return m_content.getLength();
     }//}}}
     
-    //{{{ getProperty()
+    //{{{ getRootNodes()
     
-    public Object getProperty(Object key) {
-        return m_properties.get(key);
-    }//}}}
-    
-    //{{{ getRootElements()
-    
-    public javax.swing.text.Element[] getRootElements() {
+    public XMLNode[] getRootNodes() {
         //TODO: return root nodes
         return null;
     }//}}}
     
-    //{{{ getStartPosition()
-    
-    public Position getStartPosition() {
-        try {
-            return createPosition(0);
-        } catch (BadLocationException e) {
-            //Guaranteed to be good.
-            return null;
-        }
-    }//}}}
-    
     //{{{ getText()
-    public String getText(int offset, int length) throws BadLocationException {
+    public String getText(int offset, int length) {
         if (offset < 0 || length < 0 || offset + length > m_content.getLength()) {
-            //TODO: fix error messages
-            throw new BadLocationException("insertString(): Bad Offset", offset);
+            throw new ArrayIndexOutOfBoundsException(offset);
         }
         
         return m_content.getText(offset,length);
     }//}}}
     
     //{{{ getText()
-    
-    public void getText(int offset, int length, Segment txt) throws BadLocationException {
+    public void getText(int offset, int length, Segment txt) {
         
         if (offset < 0 || length < 0 || offset + length > m_content.getLength()) {
-            //TODO: fix error messages
-            throw new BadLocationException("insertString(): Bad Offset", offset);
+            throw new ArrayIndexOutOfBoundsException(offset);
         }
         
         m_content.getText(offset, length, txt);
@@ -302,10 +261,9 @@ public class XMLDocument implements javax.swing.text.Document {
      * @param a the attributes to associate with the inserted content.
      *          This attribute is ignored by XMLDocuments.
      */
-    public void insertString(int offset, String str, AttributeSet a) throws BadLocationException {
+    public void insertString(int offset, String str) {
         if (offset < 0 || str.length() < 0 || offset + str.length() > m_content.getLength()) {
-            //TODO: fix error messages
-            throw new BadLocationException("insertString(): Bad Offset", offset);
+            throw new ArrayIndexOutOfBoundsException(offset);
         }
         
         m_content.insert(offset, str);
@@ -315,24 +273,11 @@ public class XMLDocument implements javax.swing.text.Document {
         //TODO: implement undo
     }//}}}
     
-    //{{{ putProperty()
-    /**
-     * Add a property to the XMLDocument.
-     * They are saved in memory as objects however, jsXe saves properties as
-     * Strings when saving the Document to the recent buffers file, and when
-     * the document is opened later the property will be loaded as a String.
-     * Generally String properties are stored here.
-     */
-    public void putProperty(Object key, Object value) {
-        m_properties.put(key, value);
-    }//}}}
-    
     //{{{ remove()
     
-    public void remove(int offs, int len) throws BadLocationException {
+    public void remove(int offs, int len) {
         if (offs < 0 || len < 0 || offs + len > m_content.getLength()) {
-            //TODO: fix error messages
-            throw new BadLocationException("insertString(): Bad Offset", offs);
+            throw new ArrayIndexOutOfBoundsException(offs);
         }
         
         m_content.remove(offs, len);
@@ -359,12 +304,60 @@ public class XMLDocument implements javax.swing.text.Document {
     }//}}}
     
     //{{{ render()
-    
     public void render(Runnable r) {
-        //TODO: implement concurrency support.
+        VFSManager.runInWorkThread(new Runnable() {
+            public void run() {
+                try {
+                    readLock();
+                    
+                    r.run();
+                    
+                } finally {
+                    readUnlock();
+                }
+            }
+        });
     }//}}}
     
-    //}}}
+    //{{{ Thread safety
+
+	//{{{ readLock() method
+	/**
+	 * The buffer is guaranteed not to change between calls to
+	 * {@link #readLock()} and {@link #readUnlock()}.
+	 */
+	public void readLock() {
+		lock.readLock();
+	} //}}}
+
+	//{{{ readUnlock() method
+	/**
+	 * The buffer is guaranteed not to change between calls to
+	 * {@link #readLock()} and {@link #readUnlock()}.
+	 */
+	public void readUnlock() {
+		lock.readUnlock();
+	} //}}}
+
+	//{{{ writeLock() method
+	/**
+	 * Attempting to obtain read lock will block between calls to
+	 * {@link #writeLock()} and {@link #writeUnlock()}.
+	 */
+	public void writeLock() {
+		lock.writeLock();
+	} //}}}
+
+	//{{{ writeUnlock() method
+	/**
+	 * Attempting to obtain read lock will block between calls to
+	 * {@link #writeLock()} and {@link #writeUnlock()}.
+	 */
+	public void writeUnlock() {
+		lock.writeUnlock();
+	} //}}}
+
+	//}}}
     
     //{{{ getDocumentType()
     
@@ -382,6 +375,114 @@ public class XMLDocument implements javax.swing.text.Document {
     public Map getProperties() {
         return m_properties;
     }//}}}
+    
+    //{{{ getProperty()
+    
+    public String getProperty(String key) {
+        synchronized(propertyLock) {
+            // First try the buffer-local properties
+            String o = m_properties.getProperty(key);
+            if (o == null) {
+                // Now try xml.document.<property>
+                o = jsXe.getProperty("xml.document." + name);
+            }           
+            return o;
+        }
+    }//}}}
+    
+    //{{{ setProperty()
+    public void settProperty(String key, String value) {
+        synchronized(propertyLock) {
+            if (value == null) {
+                m_properties.remove(key);
+            } else {
+                m_properties.setProperty(key, value);
+            }
+        }
+    }//}}}
+    
+    //{{{ getStringProperty() method
+    /**
+     * Returns the value of a string property. This method is thread-safe.
+     * @param name The property name
+     */
+    public String getStringProperty(String name) {
+        Object obj = getProperty(name);
+        if (obj != null) {
+            return obj.toString();
+        } else {
+            return null;
+        }
+    } //}}}
+
+    //{{{ setStringProperty() method
+    /**
+     * Sets a string property.
+     * @param name The property name
+     * @param value The value
+     */
+    public void setStringProperty(String name, String value) {
+        setProperty(name,value);
+    } //}}}
+
+    //{{{ getBooleanProperty() method
+    /**
+     * Returns the value of a boolean property. This method is thread-safe.
+     * @param name The property name
+     */
+    public boolean getBooleanProperty(String name) {
+        Object obj = getProperty(name);
+        if (obj == null) {
+            return null;
+        }
+        
+        if (obj instanceof Boolean) {
+            return ((Boolean)obj).booleanValue();
+        } else {
+            return Boolean.valueOf(obj.toString()).booleanValue();
+        }
+    } //}}}
+
+    //{{{ setBooleanProperty() method
+    /**
+     * Sets a boolean property.
+     * @param name The property name
+     * @param value The value
+     */
+    public void setBooleanProperty(String name, boolean value) {
+        setProperty(name, Boolean.valueOf(value));
+    } //}}}
+
+    //{{{ getIntegerProperty() method
+    /**
+     * Returns the value of an integer property. This method is thread-safe.
+     * @param name The property name
+     */
+    public int getIntegerProperty(String name, int defaultValue) {
+        
+        boolean defaultValueFlag;
+        Object obj = getProperty();
+
+        if (obj == null) {
+            return defaultValue;
+        } else {
+            if (obj instanceof Number) {
+                return ((Number)obj).intValue();
+            } else {
+                return defaultValue;
+            }
+        }
+    } //}}}
+
+    //{{{ setIntegerProperty() method
+    /**
+     * Sets an integer property.
+     * @param name The property name
+     * @param value The value
+     */
+    public void setIntegerProperty(String name, int value) {
+        setProperty(name, new Integer(value));
+    } //}}}
     
     //{{{ setURI()
     /**
@@ -472,16 +573,6 @@ public class XMLDocument implements javax.swing.text.Document {
     //}}}
     
     //{{{ Private members
-    
-    //{{{ setDefaultProperties()
-    private void setDefaultProperties() {
-        putProperty(FORMAT_XML, "false");
-        putProperty(IS_USING_SOFT_TABS, "false");
-        putProperty(WS_IN_ELEMENT_CONTENT, "true");
-        putProperty(ENCODING, "UTF-8");
-        putProperty(INDENT, "4");
-        putProperty(IS_VALIDATING, "false");
-    }//}}}
     
     //{{{ ContentManager class
     /**
@@ -712,10 +803,13 @@ public class XMLDocument implements javax.swing.text.Document {
     
     private ContentManager m_content;
     
-    private HashMap m_properties = new HashMap();
+    private Properties m_properties = new Properties();
     
     private ArrayList m_docListeners = new ArrayList();
     private ArrayList m_undoListeners = new ArrayList();
+    
+    private Object propertyLock = new Object();
+    private ReadWriteLock lock = new ReadWriteLock();
     
     /**
      * The entity resolver to use when resolving external entities

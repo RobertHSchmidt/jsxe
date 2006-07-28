@@ -57,13 +57,13 @@ import org.gjt.sp.util.WorkThreadPool;
  *
  * @author Slava Pestov
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
- * @version $Id: VFSManager.java,v 1.15 2004/05/10 03:21:11 spestov Exp $
+ * @version $Id$
  */
 public class VFSManager {
     /**
      * The service type. See {@link org.gjt.sp.jedit.ServiceManager}.
      */
-    public static final String SERVICE = "org.gjt.sp.jedit.io.VFS";
+    public static final String SERVICE = "net.sourceforge.jsxe.io.VFS";
 
     //{{{ init() method
     /**
@@ -95,7 +95,6 @@ public class VFSManager {
     //{{{ getFileVFS() method
     /**
      * Returns the local filesystem VFS.
-     * @since jEdit 2.5pre1
      */
     public static VFS getFileVFS()
     {
@@ -105,7 +104,6 @@ public class VFSManager {
     //{{{ getUrlVFS() method
     /**
      * Returns the URL VFS.
-     * @since jEdit 2.5pre1
      */
     public static VFS getUrlVFS()
     {
@@ -130,7 +128,6 @@ public class VFSManager {
     /**
      * Returns the VFS for the specified protocol.
      * @param protocol The protocol
-     * @since jEdit 2.5pre1
      */
     public static VFS getVFSForProtocol(String protocol)
     {
@@ -153,7 +150,6 @@ public class VFSManager {
     /**
      * Returns the VFS for the specified path.
      * @param path The path
-     * @since jEdit 2.6pre4
      */
     public static VFS getVFSForPath(String path)
     {
@@ -189,7 +185,6 @@ public class VFSManager {
     //{{{ getVFSs() method
     /**
      * Returns a list of all registered filesystems.
-     * @since jEdit 4.2pre1
      */
     public static String[] getVFSs()
     {
@@ -227,7 +222,6 @@ public class VFSManager {
     //{{{ waitForRequests() method
     /**
      * Returns when all pending requests are complete.
-     * @since jEdit 2.5pre1
      */
     public static void waitForRequests()
     {
@@ -256,7 +250,6 @@ public class VFSManager {
     /**
      * Executes the specified runnable in the AWT thread once all
      * pending I/O requests are complete.
-     * @since jEdit 2.5pre1
      */
     public static void runInAWTThread(Runnable run)
     {
@@ -266,7 +259,6 @@ public class VFSManager {
     //{{{ runInWorkThread() method
     /**
      * Executes the specified runnable in one of the I/O threads.
-     * @since jEdit 2.6pre2
      */
     public static void runInWorkThread(Runnable run)
     {
@@ -318,7 +310,6 @@ public class VFSManager {
      * @param path The path name that caused the error
      * @param messageProp The error message property name
      * @param args Positional parameters
-     * @since jEdit 4.0pre3
      */
     public static void error(Component comp,
         final String path,
@@ -367,7 +358,6 @@ public class VFSManager {
      * @param path The path that changed
      * @param parent True if an update should be sent for the path's
      * parent too
-     * @since jEdit 2.6pre4
      */
     public static void sendVFSUpdate(VFS vfs, String path, boolean parent)
     {

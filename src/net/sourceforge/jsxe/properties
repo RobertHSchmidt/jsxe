@@ -45,4 +45,11 @@ metal.secondary.fontsize=12
 metal.secondary.fontstyle=0
 #}}}
 
-
+#{{{ XMLDocument default properties
+xml.document.encoding=UTF-8
+xml.document.element-content-whitespace=true
+xml.document.format-pretty-print=false
+xml.document.soft-tabs=false
+xml.document.indent=4
+xml.document.validating=false
+#}}}

@@ -53,6 +53,10 @@ import java.util.ArrayList;
  *    will correspond to text modifications to the XMLDocument. Direct text
  *    modifications are only allowed at the XMLDocument level.</p>
  *
+ * <p>It is implement in the spirit of the {@link javax.swing.text.Element}
+ *    class as it represents a piece of text as well as a structural element
+ *    in the document.</p>
+ *
  * <p>It implements a subset of the support offered by standard w3c DOM
  *    interfaces.</p>
  * 
@@ -61,7 +65,7 @@ import java.util.ArrayList;
  * @see XMLDocument
  * @since jsXe 0.5 pre2
  */
-public abstract class XMLNode implements javax.swing.text.Element {
+public abstract class XMLNode {
     
     protected static final String USER_DATA_KEY = "net.sourceforge.jsxe.dom.XMLNode";
     

@@ -23,22 +23,22 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package org.gjt.sp.jedit.buffer;
+package net.sourceforge.jsxe.dom2.ls;
 
 //{{{ Imports
 import javax.swing.text.Segment;
 import java.io.*;
 import java.util.zip.*;
 import java.util.Vector;
-import org.gjt.sp.jedit.io.*;
-import org.gjt.sp.jedit.*;
-import org.gjt.sp.util.*;
+import net.sourceforge.jsxe.io.*;
+import net.sourceforge.jsxe.*;
+import net.sourceforge.jsxe.util.*;
 //}}}
 
 /**
  * A document I/O request.
  * @author Slava Pestov
- * @version $Id: BufferIORequest.java,v 1.28 2004/08/29 02:58:43 spestov Exp $
+ * @version $Id$
  */
 public class XMLDocumentIORequest extends WorkRequest {
     
@@ -53,12 +53,12 @@ public class XMLDocumentIORequest extends WorkRequest {
      */
     public static final int PROGRESS_INTERVAL = 300;
 
-    public static final String LOAD_DATA = "BufferIORequest__loadData";
-    public static final String END_OFFSETS = "BufferIORequest__endOffsets";
-    public static final String NEW_PATH = "BufferIORequest__newPath";
+    public static final String LOAD_DATA = "XMLDocumentIORequest__loadData";
+    public static final String END_OFFSETS = "XMLDocumentIORequest__endOffsets";
+    public static final String NEW_PATH = "XMLDocumentIORequest__newPath";
 
     /**
-     * Buffer boolean property set when an error occurs.
+     * Boolean property set when an error occurs.
      */
     public static final String ERROR_OCCURRED = "XMLDocumentIORequest__error";
 
@@ -173,7 +173,7 @@ public class XMLDocumentIORequest extends WorkRequest {
     //{{{ Instance variables
     private int type;
     private View view;
-    private Buffer buffer;
+    private XMLDocument buffer;
     private Object session;
     private VFS vfs;
     private String path;
@@ -288,110 +288,96 @@ public class XMLDocumentIORequest extends WorkRequest {
      * Tries to detect if the stream is gzipped, and if it has an encoding
      * specified with an XML PI.
      */
-    private Reader autodetect(InputStream in) throws IOException
-    {
+    private Reader autodetect(InputStream in) throws IOException {
         in = new BufferedInputStream(in);
 
         String encoding = buffer.getStringProperty(Buffer.ENCODING);
-        if(!in.markSupported())
+        if (!in.markSupported()) {
             Log.log(Log.WARNING,this,"Mark not supported: " + in);
-        else if(buffer.getBooleanProperty(Buffer.ENCODING_AUTODETECT))
-        {
-            in.mark(XML_PI_LENGTH);
-            int b1 = in.read();
-            int b2 = in.read();
-            int b3 = in.read();
-
-            if(encoding.equals(MiscUtilities.UTF_8_Y))
-            {
-                // Java does not support this encoding so
-                // we have to handle it manually.
-                if(b1 != UTF8_MAGIC_1 || b2 != UTF8_MAGIC_2
-                    || b3 != UTF8_MAGIC_3)
-                {
-                    // file does not begin with UTF-8-Y
-                    // signature. reset stream, read as
-                    // UTF-8.
-                    in.reset();
-                }
-                else
-                {
-                    // file begins with UTF-8-Y signature.
-                    // discard the signature, and read
-                    // the remainder as UTF-8.
-                }
-
-                encoding = "UTF-8";
-            }
-            else if(b1 == GZIP_MAGIC_1 && b2 == GZIP_MAGIC_2)
-            {
-                in.reset();
-                in = new GZIPInputStream(in);
-                buffer.setBooleanProperty(Buffer.GZIPPED,true);
-                // auto-detect encoding within the gzip stream.
-                return autodetect(in);
-            }
-            else if((b1 == UNICODE_MAGIC_1
-                && b2 == UNICODE_MAGIC_2)
-                || (b1 == UNICODE_MAGIC_2
-                && b2 == UNICODE_MAGIC_1))
-            {
-                in.reset();
-                encoding = "UTF-16";
-                buffer.setProperty(Buffer.ENCODING,encoding);
-            }
-            else if(b1 == UTF8_MAGIC_1 && b2 == UTF8_MAGIC_2
-                && b3 == UTF8_MAGIC_3)
-            {
-                // do not reset the stream and just treat it
-                // like a normal UTF-8 file.
-                buffer.setProperty(Buffer.ENCODING,
-                    MiscUtilities.UTF_8_Y);
-
-                encoding = "UTF-8";
-            }
-            else
-            {
-                in.reset();
-
-                byte[] _xmlPI = new byte[XML_PI_LENGTH];
-                int offset = 0;
-                int count;
-                while((count = in.read(_xmlPI,offset,
-                    XML_PI_LENGTH - offset)) != -1)
-                {
-                    offset += count;
-                    if(offset == XML_PI_LENGTH)
-                        break;
-                }
-
-                String xmlPI = new String(_xmlPI,0,offset,
-                "ASCII");
-                if(xmlPI.startsWith("<?xml"))
-                {
-                    int index = xmlPI.indexOf("encoding=");
-                    if(index != -1
-                        && index + 9 != xmlPI.length())
-                    {
-                        char ch = xmlPI.charAt(index
-                        + 9);
-                        int endIndex = xmlPI.indexOf(ch,
-                            index + 10);
-                        encoding = xmlPI.substring(
-                            index + 10,endIndex);
-    
-                        if(MiscUtilities.isSupportedEncoding(encoding))
+        } else {
+            if(buffer.getBooleanProperty(Buffer.ENCODING_AUTODETECT)) {
+                in.mark(XML_PI_LENGTH);
+                int b1 = in.read();
+                int b2 = in.read();
+                int b3 = in.read();
+                
+                if (encoding.equals(MiscUtilities.UTF_8_Y)) {
+                    // Java does not support this encoding so
+                    // we have to handle it manually.
+                    if (b1 != UTF8_MAGIC_1 || b2 != UTF8_MAGIC_2 || b3 != UTF8_MAGIC_3) {
+                        // file does not begin with UTF-8-Y
+                        // signature. reset stream, read as
+                        // UTF-8.
+                        in.reset();
+                    } else {
+                        // file begins with UTF-8-Y signature.
+                        // discard the signature, and read
+                        // the remainder as UTF-8.
+                    }
+                    
+                    encoding = "UTF-8";
+                } else { 
+                    if (b1 == GZIP_MAGIC_1 && b2 == GZIP_MAGIC_2) {
+                        in.reset();
+                        in = new GZIPInputStream(in);
+                        buffer.setBooleanProperty(Buffer.GZIPPED,true);
+                        // auto-detect encoding within the gzip stream.
+                        return autodetect(in);
+                    } else {
+                        if ((b1 == UNICODE_MAGIC_1
+                            && b2 == UNICODE_MAGIC_2)
+                            || (b1 == UNICODE_MAGIC_2
+                            && b2 == UNICODE_MAGIC_1))
                         {
+                            in.reset();
+                            encoding = "UTF-16";
                             buffer.setProperty(Buffer.ENCODING,encoding);
-                        }
-                        else
-                        {
-                            Log.log(Log.WARNING,this,"XML PI specifies unsupported encoding: " + encoding);
+                        } else {
+                            if (b1 == UTF8_MAGIC_1 && b2 == UTF8_MAGIC_2
+                                && b3 == UTF8_MAGIC_3)
+                            {
+                                // do not reset the stream and just treat it
+                                // like a normal UTF-8 file.
+                                buffer.setProperty(Buffer.ENCODING,
+                                    MiscUtilities.UTF_8_Y);
+                                
+                                encoding = "UTF-8";
+                            } else {
+                                in.reset();
+                                
+                                byte[] _xmlPI = new byte[XML_PI_LENGTH];
+                                int offset = 0;
+                                int count;
+                                while((count = in.read(_xmlPI,offset,
+                                    XML_PI_LENGTH - offset)) != -1)
+                                {
+                                    offset += count;
+                                    if(offset == XML_PI_LENGTH)
+                                        break;
+                                }
+                                
+                                String xmlPI = new String(_xmlPI,0,offset,
+                                "ASCII");
+                                if (xmlPI.startsWith("<?xml")) {
+                                    int index = xmlPI.indexOf("encoding=");
+                                    if (index != -1 && index + 9 != xmlPI.length()) {
+                                        char ch = xmlPI.charAt(index + 9);
+                                        int endIndex = xmlPI.indexOf(ch, index + 10);
+                                        encoding = xmlPI.substring(index + 10,endIndex);
+                                        
+                                        if (MiscUtilities.isSupportedEncoding(encoding)) {
+                                            buffer.setProperty(Buffer.ENCODING,encoding);
+                                        } else {
+                                            Log.log(Log.WARNING,this,"XML PI specifies unsupported encoding: " + encoding);
+                                        }
+                                    }
+                                }
+                                
+                                in.reset();
+                            }
                         }
                     }
                 }
-
-                in.reset();
             }
         }
 
