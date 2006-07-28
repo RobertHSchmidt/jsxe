@@ -60,7 +60,7 @@ public class XMLDocumentIORequest extends WorkRequest {
     /**
      * Buffer boolean property set when an error occurs.
      */
-    public static final String ERROR_OCCURRED = "BufferIORequest__error";
+    public static final String ERROR_OCCURRED = "XMLDocumentIORequest__error";
 
     /**
      * A file load request.
@@ -105,12 +105,12 @@ public class XMLDocumentIORequest extends WorkRequest {
      * Creates a new buffer I/O request.
      * @param type The request type
      * @param view The view
-     * @param buffer The buffer
+     * @param buffer The document
      * @param session The VFS session
      * @param vfs The VFS
      * @param path The path
      */
-    public XMLDocumentIORequest(int type, View view, Buffer buffer,
+    public XMLDocumentIORequest(int type, TabbedView view, XMLDocument buffer,
         Object session, VFS vfs, String path)
     {
         this.type = type;
@@ -126,44 +126,42 @@ public class XMLDocumentIORequest extends WorkRequest {
     } //}}}
 
     //{{{ run() method
-    public void run()
-    {
-        switch(type)
-        {
-        case LOAD:
-            load();
-            break;
-        case SAVE:
-            save();
-            break;
-        case AUTOSAVE:
-            autosave();
-            break;
-        case INSERT:
-            insert();
-            break;
-        default:
-            throw new InternalError();
+    public void run() {
+        
+        switch(type) {
+            case LOAD:
+                load();
+                break;
+            case SAVE:
+                save();
+                break;
+            case AUTOSAVE:
+                autosave();
+                break;
+            case INSERT:
+                insert();
+                break;
+            default:
+                throw new InternalError();
         }
     } //}}}
 
     //{{{ toString() method
-    public String toString()
-    {
+    public String toString() {
+        
         String typeString;
-        switch(type)
-        {
-        case LOAD:
-            typeString = "LOAD";
-            break;
-        case SAVE:
-            typeString = "SAVE";
-            break;
-        case AUTOSAVE:
-            typeString = "AUTOSAVE";
-            break;
-        default:
-            typeString = "UNKNOWN!!!";
+        switch(type) {
+            case LOAD:
+                typeString = "LOAD";
+                break;
+            case SAVE:
+                typeString = "SAVE";
+                break;
+            case AUTOSAVE:
+                typeString = "AUTOSAVE";
+                break;
+            default:
+                typeString = "UNKNOWN!!!";
         }
 
         return getClass().getName() + "[type=" + typeString
@@ -183,18 +181,17 @@ public class XMLDocumentIORequest extends WorkRequest {
     //}}}
 
     //{{{ load() method
-    private void load()
-    {
+    private void load() {
+        
         InputStream in = null;
 
-        try
-        {
-            try
-            {
+        try {
+            try {
+                
                 String[] args = { vfs.getFileName(path) };
                 setAbortable(true);
-                if(!buffer.isTemporary())
-                {
+                
+                if (!buffer.isTemporary()) {
                     setStatus(jEdit.getProperty("vfs.status.load",args));
                     setProgressValue(0);
                 }
@@ -204,103 +201,83 @@ public class XMLDocumentIORequest extends WorkRequest {
                 VFS.DirectoryEntry entry = vfs._getDirectoryEntry(
                     session,path,view);
                 long length;
-                if(entry != null)
+                if (entry != null) {
                     length = entry.length;
-                else
+                } else {
                     length = 0L;
+                }
 
-                in = vfs._createInputStream(session,path,
-                    false,view);
-                if(in == null)
+                in = vfs._createInputStream(session,path,false,view);
+                if (in == null) {
                     return;
+                }
 
                 read(autodetect(in),length,false);
                 buffer.setNewFile(false);
-            }
-            catch(CharConversionException ch)
-            {
+            } catch(CharConversionException ch) {
                 Log.log(Log.ERROR,this,ch);
                 Object[] pp = { buffer.getProperty(Buffer.ENCODING),
                     ch.toString() };
                 VFSManager.error(view,path,"ioerror.encoding-error",pp);
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
-            }
-            catch(UnsupportedEncodingException uu)
-            {
+            
+            } catch(UnsupportedEncodingException uu) {
                 Log.log(Log.ERROR,this,uu);
                 Object[] pp = { buffer.getProperty(Buffer.ENCODING),
                     uu.toString() };
                 VFSManager.error(view,path,"ioerror.encoding-error",pp);
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
-            }
-            catch(IOException io)
-            {
+            
+            } catch(IOException io) {
                 Log.log(Log.ERROR,this,io);
                 Object[] pp = { io.toString() };
                 VFSManager.error(view,path,"ioerror.read-error",pp);
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
-            }
-            catch(OutOfMemoryError oom)
-            {
+            
+            } catch(OutOfMemoryError oom) {
                 Log.log(Log.ERROR,this,oom);
                 VFSManager.error(view,path,"out-of-memory-error",null);
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
             }
 
-            if(jEdit.getBooleanProperty("persistentMarkers"))
-            {
-                try
-                {
+            if (jEdit.getBooleanProperty("persistentMarkers")) {
+                try {
                     String[] args = { vfs.getFileName(path) };
-                    if(!buffer.isTemporary())
+                    if (!buffer.isTemporary()) {
                         setStatus(jEdit.getProperty("vfs.status.load-markers",args));
+                    }
                     setAbortable(true);
 
                     in = vfs._createInputStream(session,markersPath,true,view);
                     if(in != null)
                         readMarkers(buffer,in);
-                }
-                catch(IOException io)
-                {
+                } catch(IOException io) {
                     // ignore
                 }
             }
-        }
-        catch(WorkThread.Abort a)
-        {
-            if(in != null)
-            {
-                try
-                {
+        } catch(WorkThread.Abort a) {
+            if (in != null) {
+                try {
                     in.close();
                 }
-                catch(IOException io)
-                {
-                }
+                catch(IOException io) {}
             }
 
             buffer.setBooleanProperty(ERROR_OCCURRED,true);
-        }
-        finally
-        {
-            try
-            {
+        } finally {
+            try {
                 vfs._endVFSSession(session,view);
-            }
-            catch(IOException io)
-            {
+            } catch(IOException io) {
                 Log.log(Log.ERROR,this,io);
                 String[] pp = { io.toString() };
                 VFSManager.error(view,path,"ioerror.read-error",pp);
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
-            }
-            catch(WorkThread.Abort a)
-            {
+            } catch(WorkThread.Abort a) {
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
             }
         }
