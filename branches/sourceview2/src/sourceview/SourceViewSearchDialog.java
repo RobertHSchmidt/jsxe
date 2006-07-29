@@ -70,13 +70,19 @@ import java.io.IOException;
 
 //}}}
 
+/**
+ * The Find dialog for the source view. This allows users to search
+ * for strings in the document and possibly replace the strings with
+ * another.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ */
 public class SourceViewSearchDialog extends EnhancedDialog {
     
     //{{{ Private static members
     private static int m_dialogHeight = 200;
     private static int m_dialogWidth = 350;
     private static SourceViewSearchDialog m_dialog = null;
-    private static final String IGNORE_CASE = "source.ignore.case";
     //}}}
     
     //{{{ Public static members
@@ -108,15 +114,15 @@ public class SourceViewSearchDialog extends EnhancedDialog {
     //{{{ SourceViewSearchDialog constructor
     
     public SourceViewSearchDialog(Frame parentFrame, SourceView view) {
-        super(parentFrame, "Search and Replace", false);
+        super(parentFrame, Messages.getMessage("SourceView.Search.And.Replace"), false);
         
         m_view = view;
         
         JPanel frame = new JPanel();
         getContentPane().add(frame,BorderLayout.CENTER);
         
-        JButton findButton = new JButton("Find");
-        JButton replaceButton = new JButton("Replace&Find");
+        JButton findButton = new JButton(Messages.getMessage("common.find"));
+        JButton replaceButton = new JButton(Messages.getMessage("SourceView.Replace.And.Find"));
        // JButton replaceAllButton = new JButton("Replace All");
         JButton cancelButton = new JButton(Messages.getMessage("common.cancel"));
         
@@ -140,13 +146,20 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         m_findComboBox.setName("FindComboBox");
         m_findComboBox.setEditable(true);
         
+        DocumentBuffer buffer = m_view.getDocumentBuffer();
+        
+        String last = buffer.getProperty(SourceViewSearch.LAST_FIND_STRING);
+        if (last != null) {
+            m_findComboBox.setSelectedItem(last);
+            m_findComboBox.getEditor().selectAll();
+        }
+        
         m_replaceComboBox = new JComboBox();
         m_replaceComboBox.setName("ReplaceComboBox");
         m_replaceComboBox.setEditable(true);
         
-        DocumentBuffer buffer = m_view.getDocumentBuffer();
-        boolean ignoreCase = Boolean.valueOf(jsXe.getProperty(IGNORE_CASE)).booleanValue();
-        m_ignoreCaseCheckBox = new JCheckBox("Ignore Case", ignoreCase);
+        boolean ignoreCase = Boolean.valueOf(jsXe.getProperty(SourceViewSearch.IGNORE_CASE)).booleanValue();
+        m_ignoreCaseCheckBox = new JCheckBox(Messages.getMessage("SourceView.Ignore.Case"), ignoreCase);
         
         constraints.gridy      = 0;
         constraints.gridx      = 0;
@@ -158,7 +171,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         constraints.fill       = GridBagConstraints.BOTH;
         constraints.insets     = new Insets(1,0,1,0);
         
-        JLabel searchLabel = new JLabel("Search for:");
+        JLabel searchLabel = new JLabel(Messages.getMessage("SourceView.Search.For"));
         layout.setConstraints(searchLabel, constraints);
         frame.add(searchLabel);
         
@@ -185,7 +198,7 @@ public class SourceViewSearchDialog extends EnhancedDialog {
         constraints.fill       = GridBagConstraints.BOTH;
         constraints.insets     = new Insets(1,0,1,0);
         
-        JLabel replaceLabel = new JLabel("Replace With:");
+        JLabel replaceLabel = new JLabel(Messages.getMessage("SourceView.Replace.With"));
         layout.setConstraints(replaceLabel, constraints);
         frame.add(replaceLabel);
         
@@ -241,7 +254,6 @@ public class SourceViewSearchDialog extends EnhancedDialog {
     //{{{ cancel()
     
     public void cancel() {
-        jsXe.setProperty(IGNORE_CASE, String.valueOf(m_ignoreCaseCheckBox.isSelected()));
         dispose();
     }//}}}
     
@@ -286,67 +298,28 @@ public class SourceViewSearchDialog extends EnhancedDialog {
     //{{{ find()
     
     private void find(boolean doReplace) {
-        find(doReplace, m_view.getTextArea().getCaretPosition());
-    }
-    
-    //{{{ find()
-    
-    private void find(boolean doReplace, int startIndex) {
-        try {
-            Object searchItem = m_findComboBox.getSelectedItem();
-            Object replaceItem = m_replaceComboBox.getSelectedItem();
-            boolean ignoreCase = m_ignoreCaseCheckBox.isSelected();
-            
-            String search = "";
-            if (searchItem != null) {
-                search = searchItem.toString();
-            }
-            
-            String replace = "";
-            if (replaceItem != null) {
-                replace = replaceItem.toString();
-            }
-            
-            RESearchMatcher matcher = new RESearchMatcher(search, replace, ignoreCase);
-            
-            JEditTextArea textArea = m_view.getTextArea();
-            
-            //replace previous text
-            if (doReplace) {
-                String selText = textArea.getSelectedText();
-                if (selText != null && !selText.equals("")) { 
-                    String replaceString = matcher.substitute(selText);
-                    textArea.setSelectedText(replaceString);
-                }
-            }
-            
-            DocumentBuffer buffer = m_view.getDocumentBuffer();
-            Segment seg = buffer.getSegment(0, buffer.getLength());
-            int caretPosition = startIndex;
-            CharIndexedSegment charSeg = new CharIndexedSegment(seg, caretPosition);
-            
-            int[] match = matcher.nextMatch(charSeg, false, true, true, false);
-            
-            buffer.setProperty(SourceView.LAST_FIND_STRING, search);
-            
-            if (match != null) {
-                Log.log(Log.DEBUG, this, match[0] + " "+ match[1]);
-                int start = match[0]+caretPosition;
-                int end = match[1]+caretPosition;
-               // textArea.requestFocus();
-                textArea.select(start, end);
-            } else {
-                int again = JOptionPane.showConfirmDialog(m_view, "No more matches were found. Continue search from the beginning?", "No More Matches Found", JOptionPane.YES_NO_OPTION);
-                if (again == 0) {
-                    find(doReplace, 0);
-                }
-            }
-            
-            requestFocus();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(m_view, ex, "Search Error", JOptionPane.WARNING_MESSAGE);
+        Object searchItem = m_findComboBox.getSelectedItem();
+        Object replaceItem = m_replaceComboBox.getSelectedItem();
+        boolean ignoreCase = m_ignoreCaseCheckBox.isSelected();
+        
+        String search = "";
+        if (searchItem != null) {
+            search = searchItem.toString();
         }
+        
+        String replace = "";
+        if (replaceItem != null) {
+            replace = replaceItem.toString();
+        }
+        
+        SourceViewSearch searcher = new SourceViewSearch(m_view);
+        if (doReplace) {
+            searcher.replaceAndFind(search, replace, ignoreCase);
+        } else {
+            searcher.find(search, ignoreCase);
+        }
+        
+        requestFocus();
     }//}}}
     
     private SourceView m_view;

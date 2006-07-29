@@ -138,29 +138,6 @@ public class SourceViewDocument extends SyntaxDocument {
 
     //}}}
     
-   // private class SourceViewDocumentXMLDocumentListener implements XMLDocumentListener {//{{{
-   //     
-   //     public void propertiesChanged(XMLDocument source, String propertyKey) {
-   //         if (propertyKey.equals("encoding")) {
-   //             try {
-   //                 String text = getText(0, getLength());
-   //                 SourceViewDocument.super.remove(0, getLength());
-   //                 SourceViewDocument.super.insertString(0, document.getSource(), new SimpleAttributeSet());
-   //             } catch (BadLocationException ble) {
-   //                 //This should never happen. If it does however jsXe will
-   //                 //act abnormally so... crash.
-   //                 jsXe.exiterror(view, ble.toString(), 1);
-   //             } catch (IOException ioe) {
-   //                 //This might happen. If it does jsXe will
-   //                 //act abnormally so... crash.
-   //                 jsXe.exiterror(view, ioe.toString(), 1);
-   //             }
-   //         }
-   //     }
-   //     
-   //     public void fileChanged(XMLDocument source) {}
-   // }//}}}
-
     //{{{ Private members
     private XMLDocument m_document;
     //}}}

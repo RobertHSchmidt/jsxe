@@ -1,25 +1,26 @@
 #SourceView default document properties
 
 #{{{ Syntax Styles
-source.comment.color=color\:\#009933 style\:i
-source.cdata.color=color\:\#ffc800 style\:b
-source.invalid.color=color\:\#ff0000
-source.attribute.value.color=color\:\#000099
-source.namespace.prefix.color=color\:\#990033 style\:ib
-source.attribute.color=color\:\#000099 style\:b
-source.processing.instruction.color=color\:\#009999 style\:b
-source.element.color=color\:\#000000 style\:b
-source.markup.color=color\:\#808080
-source.entity.reference.color=color\:\#999900 style\:b
-source.doctype.color=color\:\#0000cc style\:ib
-source.text.color=color\:\#000000
+sourceview.comment.color=color\:\#009933 style\:i
+sourceview.cdata.color=color\:\#ffc800 style\:b
+sourceview.invalid.color=color\:\#ff0000
+sourceview.attribute.value.color=color\:\#000099
+sourceview.namespace.prefix.color=color\:\#990033 style\:ib
+sourceview.attribute.color=color\:\#000099 style\:b
+sourceview.processing.instruction.color=color\:\#009999 style\:b
+sourceview.element.color=color\:\#000000 style\:b
+sourceview.markup.color=color\:\#808080
+sourceview.entity.reference.color=color\:\#999900 style\:b
+sourceview.doctype.color=color\:\#0000cc style\:ib
+sourceview.text.color=color\:\#000000
 #}}}
 
 # Insert closing tag automatically after '</' typed
-source.close-complete=true
+sourceview.close-complete=true
 
 # Insert closing tag automatically after '>' typed
-source.close-complete-open=false
+sourceview.close-complete-open=false
 
 #end of line markers
-source.end-of-line-markers=true
+sourceview.end-of-line-markers=true
+

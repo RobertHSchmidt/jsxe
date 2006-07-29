@@ -30,6 +30,8 @@ import sourceview.*;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.util.Log;
@@ -37,12 +39,6 @@ import net.sourceforge.jsxe.util.Log;
 
 //{{{ AWT classes
 import java.awt.event.ActionEvent;
-//}}}
-
-//{{{ Swing classes
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.KeyStroke;
 //}}}
 
 //}}}
@@ -53,22 +49,23 @@ import javax.swing.KeyStroke;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class EditPasteAction extends AbstractAction {
+public class EditPasteAction extends LocalizedAction {
     
     //{{{ EditPasteAction constructor
-    
     public EditPasteAction() {
-        putValue(Action.NAME, Messages.getMessage("common.paste"));
-        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl V"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("P").getKeyCode()));
+        super(SourceViewPlugin.PLUGIN_NAME+".paste");
     }//}}}
     
-    //{{{ actionPerformed()
+    //{{{ getLabel()
+    public String getLabel() {
+        return Messages.getMessage("common.paste");
+    }//}}}
     
-    public void actionPerformed(ActionEvent e) {
-        DocumentView view = jsXe.getActiveView().getDocumentView();
-        if (view instanceof SourceView) {
-            SourceView sourceView = (SourceView)view;
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        DocumentView docView = view.getDocumentView();
+        if (docView instanceof SourceView) {
+            SourceView sourceView = (SourceView)docView;
             sourceView.getTextArea().paste();
         }
     }//}}}
