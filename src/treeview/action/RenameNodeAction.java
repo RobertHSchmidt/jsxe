@@ -24,15 +24,29 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package treeview.action;
 
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
+//{{{ imports
 
 import treeview.*;
+
+//{{{ AWT classes
+import java.awt.event.ActionEvent;
+//}}}
+
+//{{{ Swing classes
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+//}}}
+
+//{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.dom.AdapterNode;
+//}}}
+
+//}}}
 
 /**
  * An action that starts editing in the tree at the current selected node.
@@ -40,22 +54,19 @@ import net.sourceforge.jsxe.dom.AdapterNode;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class RenameNodeAction extends AbstractAction {
+public class RenameNodeAction extends LocalizedAction {
     
     //{{{ RenameNodeAction constructor
-    
     public RenameNodeAction() {
-        // putValue(Action.NAME, "Rename Node");
-        putValue(Action.NAME, Messages.getMessage("TreeView.RenameNode"));	
+        super("treeview.rename.node");
     }//}}}
     
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
-        DocumentView view = jsXe.getActiveView().getDocumentView();
-        if (view instanceof DefaultView) {
-            DefaultView defView = (DefaultView)view;
-            DefaultViewTree tree = defView.getDefaultViewTree();
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        DocumentView docView = view.getDocumentView();
+        if (docView instanceof DefaultView) {
+            DefaultView defView = (DefaultView)docView;
+            TreeViewTree tree = defView.getTree();
             AdapterNode selectedNode = tree.getSelectedNode();
             if (selectedNode != null) {
                 //only edits if the node is editable at that position.

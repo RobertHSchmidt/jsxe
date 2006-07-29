@@ -32,6 +32,7 @@ belongs to.
 */
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.util.Log;
@@ -86,7 +87,7 @@ import java.util.Enumeration;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @see DefaultView
- * @see DefaultViewTree
+ * @see TreeViewTree
  */
 public class DefaultViewTreeModel implements TreeModel {
     
@@ -246,10 +247,9 @@ public class DefaultViewTreeModel implements TreeModel {
     }//}}}
     
     //{{{ displayNode()
-    
     private boolean displayNode(AdapterNode adapter) {
-        boolean showComments = Boolean.valueOf(m_document.getProperty(DefaultView.SHOW_COMMENTS, "false")).booleanValue();
-        boolean showEmpty    = Boolean.valueOf(m_document.getProperty(DefaultView.SHOW_EMPTY_NODES, "false")).booleanValue();
+        boolean showComments = jsXe.getBooleanProperty(DefaultView.SHOW_COMMENTS, false);
+        boolean showEmpty    = jsXe.getBooleanProperty(DefaultView.SHOW_EMPTY_NODES, false);
         
         boolean displayNode = false;
         if (adapter != null) {

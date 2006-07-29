@@ -31,10 +31,11 @@ import treeview.*;
 //{{{ jsXe classes
 
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.DocumentView;
-
+import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
 //{{{ AWT classes
@@ -55,21 +56,19 @@ import javax.swing.JTable;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class AddAttributeAction extends AbstractAction {
+public class AddAttributeAction extends LocalizedAction {
     
     //{{{ AddAttributeAction contructor
-    
     public AddAttributeAction() {
-        putValue(Action.NAME, Messages.getMessage("TreeView.AddAttribute"));
+        super("treeview.add.attribute");
     }//}}}
     
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
-        DocumentView view = jsXe.getActiveView().getDocumentView();
-        if (view instanceof DefaultView) {
-            DefaultView defView = (DefaultView)view;
-            DefaultViewTree tree = defView.getDefaultViewTree();
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        DocumentView docView = view.getDocumentView();
+        if (docView instanceof DefaultView) {
+            DefaultView defView = (DefaultView)docView;
+            TreeViewTree tree = defView.getTree();
             AdapterNode selectedNode = tree.getSelectedNode();
             if (selectedNode != null && selectedNode.getNodeType() == AdapterNode.ELEMENT_NODE) {
                 JTable table = defView.getDefaultViewAttributeTable();

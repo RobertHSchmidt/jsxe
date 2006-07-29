@@ -49,8 +49,10 @@ import org.w3c.dom.DOMException;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.completion.ElementDecl;
 //}}}
@@ -63,7 +65,7 @@ import net.sourceforge.jsxe.dom.completion.ElementDecl;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class EditNodeAction extends AbstractAction {
+public class EditNodeAction extends LocalizedAction {
     
     //{{{ EditNodeAction constructor
     /**
@@ -71,16 +73,15 @@ public class EditNodeAction extends AbstractAction {
      * Node
      */
     public EditNodeAction() {
-        putValue(Action.NAME, Messages.getMessage("TreeView.EditNode"));
+        super("treeview.edit.node");
     }//}}}
     
-    //{{{ actionPerformed()
-  
-    public void actionPerformed(ActionEvent e) {
-        DocumentView view = jsXe.getActiveView().getDocumentView();
-        if (view instanceof DefaultView) {
-            DefaultView defView = (DefaultView)view;
-            DefaultViewTree tree = defView.getDefaultViewTree();
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        DocumentView docView = view.getDocumentView();
+        if (docView instanceof DefaultView) {
+            DefaultView defView = (DefaultView)docView;
+            TreeViewTree tree = defView.getTree();
             AdapterNode selectedNode = tree.getSelectedNode();
             AdapterNode addedNode = null;
             if (selectedNode != null && selectedNode.getNodeType() == AdapterNode.ELEMENT_NODE) {
@@ -109,4 +110,3 @@ public class EditNodeAction extends AbstractAction {
     }//}}}
   
 }
-

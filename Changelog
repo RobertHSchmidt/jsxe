@@ -1,3 +1,58 @@
+07/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated actions and messages for options.
+    * Added Japanese translation.
+
+07/13/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed problem where the shortcut for Adding an element node wasn't 
+      showing in the popup menu.
+    * Fixed problem where the shortcut for Adding and removing an attribute
+      wasn't showing in the popup menu.
+
+07/12/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated TreeViewTree to use the WrappingMenu instead of EnhancedMenu
+      since it was renamed.
+
+07/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated to support the new Messages format.
+
+06/25/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Feature Request 1494444: Updated the tree view so that if no attributes
+      are defined in the Schema/DTD for the element then the Edit Node dialog
+      will not be displayed.
+
+06/23/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added back rudimentary key bindings using Swing Actions so they get
+      dispached by Swing and are displayed in menus. But infrastructure is
+      in place to allow jsXe to catch key bindings itself.
+
+06/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated TreeViewTree to use the new package for EnhancedMenu so it
+      compiles properly.
+
+06/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the treeview's actions to extend the new LocalizedAction class.
+
+06/15/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated how properties are loaded for the tree view
+
+06/13/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the options pane extend AbstractOptionPane
+    * Renamed the DefaultViewTree to TreeViewTree
+
+06/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated version and dependency info
+
 06/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated the Tree View to use the new XMLDocumentListener interface
