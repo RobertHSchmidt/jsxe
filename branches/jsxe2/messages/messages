@@ -185,6 +185,8 @@ DocumentBuffer.Closed.Message={0} Closed
 DocumentBuffer.Loaded.Message={0} Loaded
 DocumentBuffer.Reloaded.Message={0} Reloaded
 
+DocumentBuffer.Loading.Message=Loading {0}
+
 #{0} plugin name
 DocumentView.Not.Found=No plugin a with name of {0} exists.
 
@@ -229,8 +231,21 @@ Plugin.Dependency.Failed.Load={0} requires plugin {1} but {1} did not load prope
 #{{{ Error Messages
 No.Xerces.Error.message={0} not found. jsXe requires Apache {0}.
 No.Xerces.Error.title={0} not found.
+
+IO.Error.caption=The following {0} I/O operations could not be completed:
+IO.Error.caption-1=The following {0} I/O operation could not be completed:
+
+IO.Error.Encoding.Error=Cannot load with "{0}" encoding.\n\
+	({1})\n\
+	Try selecting a different encoding.
+IO.Error.Read.Error=Cannot load: {0}
+IO.Error.Write.Error=Cannot save: {0}
+
 IO.Error.title=I/O Error
 IO.Error.message=An I/O error has occurred
+
+Out.Of.Memory.Error=There was insufficent Java heap memory to complete\n\
+	this request. Try increasing the maximum heap size.
 #}}}
 
 #}}}

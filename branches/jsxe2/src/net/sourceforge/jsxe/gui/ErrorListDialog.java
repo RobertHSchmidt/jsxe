@@ -44,79 +44,126 @@ import net.sourceforge.jsxe.util.Log;
  */
 public class ErrorListDialog extends EnhancedDialog {
     
-        //{{{ ErrorListDialog constructor
-        /**
-         * Creates a new ErrorListDialog.
-         * @param frame the parent component of this dialog
-         * @param title the title of the dialog
-         * @param caption the caption displayed on the dialog.
-         * @param messages a Vector containing objects used as error messages
-         * @param modal whether the dialog is modal
-         */
-        public ErrorListDialog(Frame frame, String title, String caption, Vector messages, boolean modal) {
-            super(frame,title,modal);
+    //{{{ ErrorEntry class
+    public static class ErrorEntry {
+        
+        String path;
+        String[] messages;
 
-            JPanel content = new JPanel(new BorderLayout(12,12));
-            content.setBorder(new EmptyBorder(12,12,12,12));
-            setContentPane(content);
+        public ErrorEntry(String path, String messageProp, Object[] args) {
+            
+            this.path = path;
 
-            Box iconBox = new Box(BoxLayout.Y_AXIS);
-            iconBox.add(new JLabel(UIManager.getIcon("OptionPane.errorIcon")));
-            iconBox.add(Box.createGlue());
-            content.add(BorderLayout.WEST,iconBox);
+            String message = Messages.getMessage(messageProp,args);
+            if (message == null) {
+                message = "Undefined property: " + messageProp;
+            }
 
-            JPanel centerPanel = new JPanel(new BorderLayout());
+            Log.log(Log.ERROR,this,path + ":");
+            Log.log(Log.ERROR,this,message);
 
-            JLabel label = new JLabel(caption);
-            label.setBorder(new EmptyBorder(0,0,6,0));
-            centerPanel.add(BorderLayout.NORTH,label);
+            Vector tokenizedMessage = new Vector();
+            int lastIndex = -1;
+            for (int i = 0; i < message.length(); i++) {
+                
+                if (message.charAt(i) == '\n') {
+                    tokenizedMessage.addElement(message.substring(lastIndex + 1,i));
+                    lastIndex = i;
+                }
+            }
 
-            JList errors = new JList(messages);
-           // errors.setCellRenderer(new ErrorListCellRenderer());
-            errors.setVisibleRowCount(Math.min(Math.max(messages.size(),4),10));
+            if (lastIndex != message.length()) {
+                tokenizedMessage.addElement(message.substring(
+                    lastIndex + 1));
+            }
 
-            // need this bullshit scroll bar policy for the preferred size
-            // hack to work
-            JScrollPane scrollPane = new JScrollPane(errors,
-                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-            Dimension size = scrollPane.getPreferredSize();
-            size.width = Math.max(size.width,400);
-            scrollPane.setPreferredSize(size);
+            messages = new String[tokenizedMessage.size()];
+            tokenizedMessage.copyInto(messages);
+        }
 
-            centerPanel.add(BorderLayout.CENTER,scrollPane);
+        public boolean equals(Object o) {
+            if (o instanceof ErrorEntry) {
+                ErrorEntry e = (ErrorEntry)o;
+                return e.path.equals(path);
+            } else {
+                return false;
+            }
+        }
+    } //}}}
+    
+    //{{{ ErrorListDialog constructor
+    /**
+     * Creates a new ErrorListDialog.
+     * @param frame the parent component of this dialog
+     * @param title the title of the dialog
+     * @param caption the caption displayed on the dialog.
+     * @param messages a Vector containing ErrorEntry objects used as error messages
+     * @param modal whether the dialog is modal
+     */
+    public ErrorListDialog(Frame frame, String title, String caption, Vector messages, boolean modal) {
+        super(frame,title,modal);
 
-            content.add(BorderLayout.CENTER,centerPanel);
+        JPanel content = new JPanel(new BorderLayout(12,12));
+        content.setBorder(new EmptyBorder(12,12,12,12));
+        setContentPane(content);
 
-            Box buttons = new Box(BoxLayout.X_AXIS);
-            buttons.add(Box.createGlue());
+        Box iconBox = new Box(BoxLayout.Y_AXIS);
+        iconBox.add(new JLabel(UIManager.getIcon("OptionPane.errorIcon")));
+        iconBox.add(Box.createGlue());
+        content.add(BorderLayout.WEST,iconBox);
 
-            ok = new JButton("OK");
-            ok.addActionListener(new ActionHandler());
+        JPanel centerPanel = new JPanel(new BorderLayout());
 
-            buttons.add(ok);
+        JLabel label = new JLabel(caption);
+        label.setBorder(new EmptyBorder(0,0,6,0));
+        centerPanel.add(BorderLayout.NORTH,label);
 
-            buttons.add(Box.createGlue());
-            content.add(BorderLayout.SOUTH,buttons);
+        JList errors = new JList(messages);
+        errors.setCellRenderer(new ErrorListCellRenderer());
+        errors.setVisibleRowCount(Math.min(Math.max(messages.size(),4),10));
 
-            getRootPane().setDefaultButton(ok);
+        // need this bullshit scroll bar policy for the preferred size
+        // hack to work
+        JScrollPane scrollPane = new JScrollPane(errors,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        Dimension size = scrollPane.getPreferredSize();
+        size.width = Math.max(size.width,400);
+        scrollPane.setPreferredSize(size);
 
-            pack();
-            setLocationRelativeTo(frame);
-            setVisible(true);
-        } //}}}
+        centerPanel.add(BorderLayout.CENTER,scrollPane);
 
-        //{{{ ok() method
-        public void ok() {
-            dispose();
-        } //}}}
+        content.add(BorderLayout.CENTER,centerPanel);
 
-        //{{{ cancel() method
-        public void cancel(){
-            dispose();
-        } //}}}
+        Box buttons = new Box(BoxLayout.X_AXIS);
+        buttons.add(Box.createGlue());
 
-        //{{{ Private members
+        ok = new JButton("OK");
+        ok.addActionListener(new ActionHandler());
+
+        buttons.add(ok);
+
+        buttons.add(Box.createGlue());
+        content.add(BorderLayout.SOUTH,buttons);
+
+        getRootPane().setDefaultButton(ok);
+
+        pack();
+        setLocationRelativeTo(frame);
+        setVisible(true);
+    } //}}}
+
+    //{{{ ok() method
+    public void ok() {
+        dispose();
+    } //}}}
+
+    //{{{ cancel() method
+    public void cancel(){
+        dispose();
+    } //}}}
+
+    //{{{ Private members
         private JButton ok;
         
         //{{{ ActionHandler class
