@@ -26,12 +26,67 @@ package net.sourceforge.jsxe.dom2.event;
 
 import net.sourceforge.jsxe.dom2.*;
 
+/**
+ * XMLDocumentEvents are modifications to the structure of the XMLDocument.
+ * As the XMLDocument represents structured text the XMLDocumentEvent represents
+ * a structured change to the XMLDocument.
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ * @see XMLDocument
+ * @since jsXe 0.5 pre3
+ */
 public interface XMLDocumentEvent extends EventListener {
     
-    public void propertyChanged(PropertyChangeEvent event);
+    private XMLDocument m_document;
+    private int m_offset;
+    private int m_length;
+    private short m_type;
     
-    public void insertUpdate(XMLDocumentEvent event);
+    public static short INSERT = 0;
+    public static short REMOVE = 1;
     
-    public void removeUpdate(XMLDocumentEvent event);
+    //{{{ XMLDocumentEvent constructor
+    /**
+     * Creates a new document event signifying an edit to the document.
+     * 
+     */
+    public XMLDocumentEvent(XMLDocument doc, int offset, String text, short type) {
+        m_document = doc;
+        m_type = type;
+        m_length = text.length();
+        m_offset = offset;
+    }//}}}
+    
+    //{{{ getDocument()
+    /**
+     * Gets the document that was updated.
+     */
+    public XMLDocument getDocument() {
+        return m_document;
+    }//}}}
+    
+    //{{{ getOffset()
+    /**
+     * Gets the offset into the document where the update occurred.
+     */
+    public int getOffset() {
+        return m_offset;
+    }//}}}
+    
+    //{{{ getLength()
+    /**
+     * Gets the length of the update.
+     */
+    public int getLength() {
+        return m_length;
+    }//}}}
+    
+    //{{{ getType()
+    /**
+     * Gets the type of edit done to the document.
+     */
+    public short getType() {
+        return m_type;
+    }//}}}
     
 }
