@@ -177,6 +177,16 @@ public class XMLDocument {
         }
     }//}}}
     
+    //{{{ removeDocumentListener()
+    
+    public void removeDocumentListener(DocumentListener listener) {
+        if (listener != null) {
+            m_docListeners.remove(listener);
+        }
+    }//}}}
+    
+    //{{{ Structure methods
+    
     //{{{ getDefaultRootElement()
     /**
      * Gets the root document element.
@@ -185,6 +195,17 @@ public class XMLDocument {
         //TODO: return root element
         return null;
     }//}}}
+    
+    //{{{ getRootNodes()
+    
+    public XMLNode[] getRootNodes() {
+        //TODO: return root nodes
+        return null;
+    }//}}}
+    
+    //}}}
+    
+    //{{{ Text methods
     
     //{{{ getLength()
     /**
@@ -195,13 +216,6 @@ public class XMLDocument {
     public int getLength() {
         // no need to lock since this just returns a value and that's it
         return m_content.getLength();
-    }//}}}
-    
-    //{{{ getRootNodes()
-    
-    public XMLNode[] getRootNodes() {
-        //TODO: return root nodes
-        return null;
     }//}}}
     
     //{{{ getText()
@@ -281,29 +295,7 @@ public class XMLDocument {
         }
     }//}}}
     
-    //{{{ removeDocumentListener()
-    
-    public void removeDocumentListener(DocumentListener listener) {
-        if (listener != null) {
-            m_docListeners.remove(listener);
-        }
-    }//}}}
-    
-    //{{{ render()
-    public void render(Runnable r) {
-        VFSManager.runInWorkThread(new Runnable() {
-            public void run() {
-                try {
-                    readLock();
-                    
-                    r.run();
-                    
-                } finally {
-                    readUnlock();
-                }
-            }
-        });
-    }//}}}
+    //}}}
     
     //{{{ Thread safety
 
@@ -345,16 +337,7 @@ public class XMLDocument {
 
 	//}}}
     
-    //{{{ getDocumentType()
-    
-    public XMLDocumentType getDocumentType() {
-        DocumentType docType = m_document.getDoctype();
-        if (docType != null) {
-            return (XMLDocumentType)docType.getUserData(XMLNode.USER_DATA_KEY);
-        } else {
-            return null;
-        }
-    }//}}}
+    //{{{ Properties methods
     
     //{{{ getProperties()
     public Enumeration getProperties() {
@@ -465,6 +448,21 @@ public class XMLDocument {
         setProperty(name, Integer.toString(value));
     } //}}}
     
+    //}}}
+    
+    //{{{ XMLDocument attributes
+    
+    //{{{ getDocumentType()
+    
+    public XMLDocumentType getDocumentType() {
+        DocumentType docType = m_document.getDoctype();
+        if (docType != null) {
+            return (XMLDocumentType)docType.getUserData(XMLNode.USER_DATA_KEY);
+        } else {
+            return null;
+        }
+    }//}}}
+    
     //{{{ setURI()
     /**
      * Sets the URI for the location of this document.
@@ -533,6 +531,8 @@ public class XMLDocument {
     public void setReadOnly(boolean readOnly) {
         m_readOnly = readOnly;
     }//}}}
+    
+    //}}}
     
     //{{{ Node Factory methods
     
