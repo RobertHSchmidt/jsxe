@@ -1,13 +1,31 @@
 /*
- * TextAreaPainter.java - Paints the text area
- * Copyright (C) 1999 Slava Pestov
- *
- * 08/05/2002	Cursor (caret) rendering fixed for JDK 1.4 (Anonymous)
- *
- * You may use and modify this package for any purpose. Redistribution is
- * permitted, in both source and binary form, provided that this notice
- * remains intact in all source distributions of this package.
- */
+TextAreaPainter.java
+:tabSize=4:indentSize=4:noTabs=true:
+:folding=explicit:collapseFolds=1:
+
+Copyright (C) 1999 Slava Pestov
+Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
+
+You may use and modify this package for any purpose. Redistribution is
+permitted, in both source and binary form, provided that this notice
+remains intact in all source distributions of this package.
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+Optionally, you may find a copy of the GNU General Public License
+from http://www.fsf.org/copyleft/gpl.txt
+*/
 
 package org.syntax.jedit;
 
@@ -25,6 +43,8 @@ import net.sourceforge.jsxe.jsXe;
  * The text area repaint manager. It performs double buffering and paints
  * lines of text.
  * @author Slava Pestov
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ *
  * @version $Id$
  */
 public class TextAreaPainter extends JComponent implements TabExpander
@@ -47,7 +67,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
 		currentLineIndex = -1;
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-
+        
 		setFont(new Font("Monospaced",Font.PLAIN,14));
 		setForeground(Color.black);
 		setBackground(Color.white);
@@ -66,7 +86,28 @@ public class TextAreaPainter extends JComponent implements TabExpander
 		eolMarkerColor = defaults.eolMarkerColor;
 		eolMarkers = defaults.eolMarkers;
 	}
+    
+    //{{{ setBounds() method
+    /**
+     * It is a bad idea to override this, but we need to get the component
+     * event before the first repaint.
+     */
+    public void setBounds(int x, int y, int width, int height) {
+        if (x == getX() && y == getY() && width == getWidth() && height == getHeight()) {
+            return;
+        }
 
+        super.setBounds(x,y,width,height);
+
+        textArea.recalculateVisibleLines();
+       // if (textArea.getBuffer().isLoaded()) {
+       //     textArea.recalculateLastPhysicalLine();
+       // }
+       // textArea.propertiesChanged();
+        textArea.updateMaxHorizontalScrollWidth();
+        textArea.scrollBarsInitialized = true;
+    } //}}}
+    
 	/**
 	 * Returns if this component can be traversed by pressing the
 	 * Tab key. This returns false.
@@ -352,8 +393,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
 	 * cached font metrics and to recalculate which lines are visible.
 	 * @param font The font
 	 */
-	public void setFont(Font font)
-	{
+	public void setFont(Font font) {
 		super.setFont(font);
         //TODO: this is deprecated, figure out how to do it the right way.
 		fm = Toolkit.getDefaultToolkit().getFontMetrics(font);
@@ -364,10 +404,8 @@ public class TextAreaPainter extends JComponent implements TabExpander
 	 * Repaints the text.
 	 * @param g The graphics context
 	 */
-	public void paint(Graphics gfx)
-	{
-		tabSize = fm.charWidth(' ') * ((Integer)textArea
-			.getDocument().getProperty(
+	public void paint(Graphics gfx) {
+		tabSize = fm.charWidth(' ') * ((Integer)textArea.getDocument().getProperty(
 			PlainDocument.tabSizeAttribute)).intValue();
 
 		Rectangle clipRect = gfx.getClipBounds();
@@ -385,25 +423,22 @@ public class TextAreaPainter extends JComponent implements TabExpander
 		// too many lines will always be painted.
 		int lastInvalid = firstLine + (clipRect.y + clipRect.height - 1) / height;
 
-		try
-		{
-			TokenMarker tokenMarker = textArea.getDocument()
-				.getTokenMarker();
+		try {
+			TokenMarker tokenMarker = textArea.getDocument().getTokenMarker();
 			int x = textArea.getHorizontalOffset();
 
-			for(int line = firstInvalid; line <= lastInvalid; line++)
-			{
+			for(int line = firstInvalid; line <= lastInvalid; line++) {
 				paintLine(gfx,tokenMarker,line,x);
 			}
 
-			if(tokenMarker != null && tokenMarker.isNextLineRequested())
-			{
+			if (tokenMarker != null && tokenMarker.isNextLineRequested()) {
 				int h = clipRect.y + clipRect.height;
 				repaint(0,h,getWidth(),getHeight() - h);
 			}
-		}
-		catch(Exception e)
-		{
+            
+            textArea.updateMaxHorizontalScrollWidth();
+            
+		} catch(Exception e) {
 			System.err.println("Error repainting line"
 				+ " range {" + firstInvalid + ","
 				+ lastInvalid + "}:");
@@ -502,7 +537,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
 	protected FontMetrics fm;
 
 	protected Highlight highlights;
-
+    
 	protected void paintLine(Graphics gfx, TokenMarker tokenMarker,
 		int line, int x)
 	{
@@ -696,7 +731,7 @@ public class TextAreaPainter extends JComponent implements TabExpander
 			fm.getHeight() - 1);
 	}
 
-protected void paintCaret(Graphics gfx, int line, int y)
+    protected void paintCaret(Graphics gfx, int line, int y)
 	{
 		if(textArea.isCaretVisible())
 		{

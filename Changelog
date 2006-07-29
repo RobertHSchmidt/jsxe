@@ -1,3 +1,40 @@
+07/26/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Addded support for the findnext action
+
+07/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added better horizontal scrolling support. It isn't perfect because
+      it's hard to know the true width of the line because parts of it
+      can have bold text while other parts don't.
+
+07/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added Japanese translation
+    * Fixed syntax highlighting colors when you first load jsXe
+
+07/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated to support the new Messages format.
+
+06/23/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added back rudimentary key bindings using Swing Actions so they get
+      dispached by Swing and are displayed in menus. But infrastructure is
+      in place to allow jsXe to catch key bindings itself.
+
+06/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the sourceview's actions to extend the new LocalizedAction class.
+
+06/13/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the source view options panel to extend AbstractOptionPane
+
+06/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated version and dependency info
+
 06/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated the SourceView to use the new XMLDocumentListener interface

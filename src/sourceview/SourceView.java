@@ -34,12 +34,11 @@ belongs to.
 //{{{ jsXe classes
 import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.gui.Messages;
-import net.sourceforge.jsxe.gui.OptionsPanel;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
-import net.sourceforge.jsxe.dom.XMLDocumentEvent;
+import net.sourceforge.jsxe.msg.PropertyChanged;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
@@ -82,19 +81,11 @@ import java.util.ArrayList;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class SourceView extends JPanel implements DocumentView {
-    
-    // Temporary Hack
-    protected static ArrayList m_sourceviews = new ArrayList();
-    
-    //{{{ Private static members
-    private static final String _VIEWNAME = "source";
-    //}}}
+public class SourceView extends JPanel implements DocumentView, EBListener {
     
     //{{{ Public static members
-    public static final String SOFT_TABS = _VIEWNAME+".soft.tabs";
-    public static final String LAST_FIND_STRING = _VIEWNAME+".last.find.string";
-    public static final String END_OF_LINE_MARKS = _VIEWNAME+".end-of-line-markers";
+    public static final String SOFT_TABS = SourceViewPlugin.PLUGIN_NAME+".soft.tabs";
+    public static final String END_OF_LINE_MARKS = SourceViewPlugin.PLUGIN_NAME+".end-of-line-markers";
     //}}}
     
     //{{{ SourceView constructor
@@ -118,19 +109,19 @@ public class SourceView extends JPanel implements DocumentView {
         TextAreaPainter painter = m_textarea.getPainter();
         painter.setEOLMarkersPainted(jsXe.getBooleanProperty(SourceView.END_OF_LINE_MARKS, true));
         painter.setStyles(
-            new SyntaxStyle[] { SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.text.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.comment.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.doctype.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.attribute.value.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.attribute.value.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.cdata.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.entity.reference.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.element.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.attribute.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.processing.instruction.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.namespace.prefix.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.markup.color")),
-                                SourceViewOptionsPanel.parseStyle(jsXe.getProperty("source.invalid.color")),
+            new SyntaxStyle[] { SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.text.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.comment.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.doctype.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.attribute.value.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.attribute.value.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.cdata.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.entity.reference.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.element.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.attribute.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.processing.instruction.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.namespace.prefix.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.markup.color")),
+                                SourceViewOptionPane.parseStyle(jsXe.getProperty("sourceview.invalid.color")),
                                 });
        // textarea.setFont(new Font("Monospaced", 0, 12));
         m_textarea.setCaretPosition(0);
@@ -142,14 +133,16 @@ public class SourceView extends JPanel implements DocumentView {
         //{{{ create popup menu
         
         JPopupMenu popup = new JPopupMenu();
-        JMenuItem menuItem = new JMenuItem(jsXe.getAction("sourceview.cut"));
+        JMenuItem menuItem = new JMenuItem(ActionManager.getAction("cut"));
         popup.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.copy"));
+        menuItem = new JMenuItem(ActionManager.getAction("copy"));
         popup.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.paste"));
+        menuItem = new JMenuItem(ActionManager.getAction("paste"));
         popup.add(menuItem);
         popup.addSeparator();
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.find"));
+        menuItem = new JMenuItem(ActionManager.getAction("find"));
+        popup.add(menuItem);
+        menuItem = new JMenuItem(ActionManager.getAction("findnext"));
         popup.add(menuItem);
         
         m_textarea.setRightClickPopup(popup);
@@ -169,20 +162,18 @@ public class SourceView extends JPanel implements DocumentView {
        // menuItem.addActionListener( new EditRedoAction() );
        // menu.add(menuItem);
        // menu.addSeparator();
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.cut"));
+        menuItem = new JMenuItem(ActionManager.getAction("cut"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.copy"));
+        menuItem = new JMenuItem(ActionManager.getAction("copy"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.paste"));
+        menuItem = new JMenuItem(ActionManager.getAction("paste"));
         m_editMenu.add(menuItem);
         m_editMenu.addSeparator();
-        menuItem = new JMenuItem(jsXe.getAction("sourceview.find"));
+        menuItem = new JMenuItem(ActionManager.getAction("find"));
         m_editMenu.add(menuItem);
-       // menuItem = new JMenuItem(new EditFindNextAction());
-       // menu.add(menuItem);
+        menuItem = new JMenuItem(ActionManager.getAction("findnext"));
+        m_editMenu.add(menuItem);
         //}}}
-        
-        m_sourceviews.add(this);
         
         setDocumentBuffer(document);
         
@@ -202,6 +193,37 @@ public class SourceView extends JPanel implements DocumentView {
             
         });//}}}
         
+        EditBus.addToBus(this);
+    }//}}}
+    
+    //{{{ handleMessage()
+    public void handleMessage(EBMessage message) {
+        if (message instanceof PropertyChanged) {
+            String key = ((PropertyChanged)message).getKey();
+            TextAreaPainter painter = getTextArea().getPainter();
+            if (key.equals("source.end-of-line-markers")) {
+                painter.setEOLMarkersPainted(jsXe.getBooleanProperty("source.end-of-line-markers", false));
+            }
+            
+            if (key.startsWith("source.") && key.endsWith(".color")) {
+                painter.setStyles(
+                    new SyntaxStyle[] {
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.text.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.comment.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.doctype.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.attribute.value.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.attribute.value.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.cdata.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.entity.reference.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.element.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.attribute.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.processing.instruction.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.namespace.prefix.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.markup.color")),
+                                        SourceViewOptionPane.parseStyle(jsXe.getProperty("source.invalid.color")),
+                                      });
+            }
+        }
     }//}}}
     
     //{{{ getTextArea()
@@ -226,7 +248,6 @@ public class SourceView extends JPanel implements DocumentView {
             dialog.dispose();
         }
         m_document.removeXMLDocumentListener(docListener);
-        m_sourceviews.remove(this);
         return true;
     }//}}}
     
@@ -285,52 +306,6 @@ public class SourceView extends JPanel implements DocumentView {
     
     //{{{ Private members
     
-    //{{{ EditUndoAction class
-    
-    private class EditUndoAction implements ActionListener {
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            //undo does nothing for now
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ EditRedoAction class
-    
-    private class EditRedoAction implements ActionListener {
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            //redo action does nothing for now.
-        }//}}}
-        
-    }//}}}
-    
-    //{{{ EditFindNextAction class
-    
-    private class EditFindNextAction extends AbstractAction {
-        
-        //{{{ EditFindNextAction constructor
-        
-        public EditFindNextAction() {
-            //putValue(Action.NAME, "Find Next");
-        	putValue(Action.NAME,  Messages.getMessage("SourceView.FindNext"));
-            putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl G"));
-            putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("N").getKeyCode()));
-        }//}}}
-        
-        //{{{ actionPerformed()
-        
-        public void actionPerformed(ActionEvent e) {
-            //use previous find string
-            
-        }//}}}
-        
-    }//}}}
-    
     //{{{ SourceViewXMLDocumentListener class
     
     private class SourceViewXMLDocumentListener implements XMLDocumentListener {
@@ -350,14 +325,6 @@ public class SourceView extends JPanel implements DocumentView {
         //{{{ structureChanged()
         public void structureChanged(XMLDocument source, AdapterNode location) {}//}}}
         
-        //{{{ insertUpdate()
-        public void insertUpdate(XMLDocumentEvent event) {}//}}}
-        
-        //{{{ removeUpdate()
-        public void removeUpdate(XMLDocumentEvent event) {}//}}}
-        
-        //{{{ changeUpdate()
-        public void changeUpdate(XMLDocumentEvent event) {}//}}}
     }//}}}
     
     //{{{ SourceViewEnter

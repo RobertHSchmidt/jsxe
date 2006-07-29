@@ -1,9 +1,9 @@
 /*
-EditFindAction.java
+EditFindNextAction.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
+Copyright (C) 2006 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -43,21 +43,22 @@ import java.awt.event.ActionEvent;
 //}}}
 
 /**
- * This action that opens the find dialog.
+ * This action that searches the file for the last value searched for using
+ * the find dialog.
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
 
-public class EditFindAction extends LocalizedAction {
+public class EditFindNextAction extends LocalizedAction {
     
-    //{{{ EditFindAction constructor
-    public EditFindAction() {
-        super(SourceViewPlugin.PLUGIN_NAME+".find");
+    //{{{ EditFindNextAction constructor
+    public EditFindNextAction() {
+        super(SourceViewPlugin.PLUGIN_NAME+".findnext");
     }//}}}
     
     //{{{ getLabel()
     public String getLabel() {
-        return Messages.getMessage("common.find");
+        return Messages.getMessage("common.findnext");
     }//}}}
     
     //{{{ invoke()
@@ -65,10 +66,9 @@ public class EditFindAction extends LocalizedAction {
         DocumentView docView = view.getDocumentView();
         if (docView instanceof SourceView) {
             SourceView sourceView = (SourceView)docView;
-            SourceViewSearchDialog.showSearchDialog(sourceView);
+            SourceViewSearch search = new SourceViewSearch(sourceView);
+            search.findNext();
         }
-        
-        
     }//}}}
     
 }

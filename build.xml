@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-     This is a build.xml file for building the Source View for jsXe.
-     Version: $Id$
+    :tabSize=2:indentSize=2:noTabs=true:
+    :folding=explicit:collapseFolds=1:
+    
+    This is a build.xml file for building the Source View for jsXe.
+    Version: $Id$
 -->
 <project basedir="." default="usage" name="sourceview">
 	
@@ -26,6 +29,7 @@
 		<property name="build.help" value="${build.docs}/help"/>
     <property name="jsxe.dir" value="${root.dir}/../.."/>
     <property name="jsxe.jar" value="${jsxe.dir}/jsXe.jar"/>
+    <property name="jsxe.lib.dir" value="${jsxe.dir}/../lib"/>
 		<property name="javac.debug" value="on"/>
 		<property name="javac.optimize" value="off"/>
 		<property name="javac.deprecation" value="on"/>
@@ -34,7 +38,7 @@
 		<property name="javadoc.link" value="http://java.sun.com/j2se/1.3/docs/api/"/>
     <property name="main.class" value="sourceview.SourceViewPlugin"/>
 		<property name="major.version" value="0"/>
-		<property name="minor.version" value="4"/>
+		<property name="minor.version" value="5"/>
 		<property name="build.version" value="3"/>
 		<property name="app.version" value="${major.version}.${minor.version}.${build.version}"/>
 		<property name="app_version" value="${major.version}_${minor.version}_${build.version}"/>
@@ -47,6 +51,9 @@
 			<pathelement location="${build.src}"/>
 			<pathelement location="${src.dir}"/>
       <pathelement location="${jsxe.jar}"/>
+      <fileset dir="${jsxe.lib.dir}">
+				<include name="**/*.jar"/>
+			</fileset>
 		</path>
 		<echo message="${readable.name} ${app.version}"/>
 		<echo message="----------------------------------------------------------"/>
@@ -67,11 +74,15 @@
 	<target depends="init" name="prepare">
 		<mkdir dir="${build.dir}"/>
     <mkdir dir="${build.messages}"/>
-    <copy todir="${build.messages}">
+    
+    <!--<copy todir="${build.messages}">
       <fileset dir="${messages.dir}">
         <include name="**/messages.*"/>
       </fileset>
-    </copy>
+    </copy>-->
+    
+    <!-- run native2ascii on these files -->
+    <native2ascii encoding="UTF-8" src="${messages.dir}" dest="${build.messages}" includes="messages*"/>
 	</target>
 	<!-- }}} -->
 	<!-- {{{ ============ Prepares the documentation ======================= -->
@@ -133,7 +144,7 @@
     
 		<jar jarfile="${root.dir}/../${app.name}.jar" manifest="${app.name}.manifest">
 			<fileset dir="${build.dir}">
-        <include name="messages/messages.*"/>
+        <include name="messages/messages*"/>
       </fileset>
       <fileset dir="${build.dest}">
 				<include name="**/*.class"/>
