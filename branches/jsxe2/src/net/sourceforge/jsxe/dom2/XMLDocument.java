@@ -29,6 +29,7 @@ package net.sourceforge.jsxe.dom2;
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.dom2.ls.*;
+import net.sourceforge.jsxe.dom2.event.*;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
@@ -170,7 +171,7 @@ public class XMLDocument {
      * Registers a change listener with the XMLDocument
      * @param listener the listener to register with this document
      */
-    public void addDocumentListener(DocumentListener listener) {
+    public void addDocumentListener(XMLDocumentListener listener) {
         //TODO: Create XMLDocumentListeners
         if (listener != null) {
             m_docListeners.add(listener);
@@ -179,7 +180,7 @@ public class XMLDocument {
     
     //{{{ removeDocumentListener()
     
-    public void removeDocumentListener(DocumentListener listener) {
+    public void removeDocumentListener(XMLDocumentListener listener) {
         if (listener != null) {
             m_docListeners.remove(listener);
         }

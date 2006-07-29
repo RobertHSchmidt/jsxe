@@ -55,7 +55,7 @@ import java.util.Map;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @see XMLDocument
- * @since jsXe 0.5 pre2
+ * @since jsXe 0.5 pre3
  */
 public class XMLElement extends XMLNode {
     
@@ -70,21 +70,21 @@ public class XMLElement extends XMLNode {
     
     //{{{ getAttributes()
     /**
-     * Returns a read only set of attributes in this node. The AttributeSet
+     * Returns a read only set of attributes in this node. The Map
      * maps the attribute name to the attribute's value.
      */
-    public AttributeSet getAttributes() {
+    public Map getAttributes() {
         //TODO: create resolving parent for the attributes for default node
         //      values from a DTD or schema?
         
-        SimpleAttributeSet attrSet = new SimpleAttributeSet();
+        HashMap attrSet = new HashMap();
         NamedNodeMap attributes = getNode().getAttributes();
         
         int len = attributes.getLength();
         for (int i=0; i<len; i++) {
             Node attr = attributes.item(i);
             XMLAttribute xmlAttr = (XMLAttribute)attr.getUserData(USER_DATA_KEY);
-            attrSet.addAttribute(xmlAttr.getName(), xmlAttr.getValue());
+            attrSet.put(xmlAttr.getName(), xmlAttr.getValue());
         }
         return attrSet;
     }//}}}
