@@ -24,6 +24,8 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package net.sourceforge.jsxe;
 
+import net.sourceforge.jsxe.gui.Messages;
+
 /**
  * Signals that an unrecognized DocumentView has been requested.
  * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
@@ -35,7 +37,7 @@ public class UnrecognizedPluginException extends RuntimeException {
     //{{{ UnrecognizedPluginException constructor
     
     public UnrecognizedPluginException(String type) {
-        super("No plugin a with name of "+type+" exists");
+        super(Messages.getMessage("DocumentView.Not.Found", new Object[] { type }));
     }//}}}
 
 }

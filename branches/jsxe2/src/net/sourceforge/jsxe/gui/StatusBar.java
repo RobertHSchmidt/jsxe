@@ -37,9 +37,8 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.CompoundBorder;
 
-import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.DocumentBufferListener;
-import net.sourceforge.jsxe.OperatingSystem;
+import net.sourceforge.jsxe.*;
+import net.sourceforge.jsxe.msg.DocumentBufferUpdate;
 //}}}
 
 /**
@@ -48,7 +47,7 @@ import net.sourceforge.jsxe.OperatingSystem;
  * @version $Id$
  * @since jsXe 0.5 pre1
  */
-public class StatusBar extends JPanel implements DocumentBufferListener {
+public class StatusBar extends JPanel implements EBListener {
     //TODO: use multithreading to make jsXe more responsive and communicate
     //background processing to the user using the status bar
     
@@ -75,6 +74,7 @@ public class StatusBar extends JPanel implements DocumentBufferListener {
         m_centerLabel.setForeground(Color.BLACK);
         
         add(BorderLayout.CENTER, m_mainPanel);
+        EditBus.addToBus(this);
     }//}}}
     
     //{{{ setCenterMessage()
@@ -111,21 +111,28 @@ public class StatusBar extends JPanel implements DocumentBufferListener {
          return m_leftLabel.getText();
     }//}}}
     
-    //{{{ DocumentBufferListener methods
-    
-    //{{{ nameChanged()
-    public void nameChanged(DocumentBuffer source, String newName) {}//}}}
-    
-    //{{{ bufferSaved()
-    public void bufferSaved(DocumentBuffer source) {
-        setCenterMessage(Messages.getMessage("DocumentBuffer.Saved.Message", new String[] { source.getName() }));
+    //{{{ EBListener methods
+    public void handleMessage(EBMessage message) {
+        if (message instanceof DocumentBufferUpdate) {
+            Object what = ((DocumentBufferUpdate)message).getWhat();
+            DocumentBuffer source = (DocumentBuffer)message.getSource();
+            String msgName;
+            if (!source.isUntitled()) {
+                if (what.equals(DocumentBufferUpdate.SAVED)) {
+                    msgName = "DocumentBuffer.Saved.Message";
+                    setCenterMessage(Messages.getMessage(msgName, new String[] { source.getName() }));
+                }
+                if (what.equals(DocumentBufferUpdate.LOADED)) {
+                    msgName = "DocumentBuffer.Loaded.Message";
+                    setCenterMessage(Messages.getMessage(msgName, new String[] { source.getName() }));
+                }
+                if (what.equals(DocumentBufferUpdate.CLOSED)) {
+                    msgName = "DocumentBuffer.Closed.Message";
+                    setCenterMessage(Messages.getMessage(msgName, new String[] { source.getName() }));
+                }
+            }
+        }
     }//}}}
-    
-    //{{{ statusChanged()
-    
-    public void statusChanged(DocumentBuffer source, int statusType, boolean oldStatus) {}//}}}
-    
-    //}}}
     
     //{{{ Private members
     /**

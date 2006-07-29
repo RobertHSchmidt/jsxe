@@ -4,7 +4,7 @@ ActivityLogAction.java
 :folding=explicit:collapseFolds=1:
 
 Copyright (C) 2005 Trish Harnett (trishah136@member.fsf.org)
-Portions Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
+Portions Copyright (C) 2006 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -26,24 +26,12 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.action;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.gui.ActivityLogDialog;
 import net.sourceforge.jsxe.util.Log;
-//}}}
-
-//{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 //}}}
 
 //{{{ AWT components
@@ -53,40 +41,35 @@ import java.awt.event.ActionEvent;
 //}}}
 
 /**
- * The action that is executed when the clicks on the Activity Log option under the Help Menu
+ * The action that is executed when the clicks on the Activity Log
+ * option under the Help Menu
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class ActivityLogAction extends AbstractAction {
-		
-	//	{{{ Public members
-    private TabbedView view;
-   // private boolean activityLogUpdated = false;
-    private ActivityLogDialog dialog = new ActivityLogDialog(view);      
+public class ActivityLogAction extends LocalizedAction {
+    
+    //{{{ Private Members
+    private ActivityLogDialog m_dialog;
     //}}}
     
-    //{{{ ActivityLogAction 
-	 /**
-     * @param TabbedView parent view containing the JSXE editor.
+    //{{{ ActivityLogAction constructor 
+     /**
      * Constructor for the ActivityLogActionclass
      * @since jsXe 0.3pre15
      */
-    public ActivityLogAction(TabbedView parent) {
-    	putValue(Action.NAME, Messages.getMessage("ActivityLogDialog.Open"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("L").getKeyCode()));
-        view = parent;
+    public ActivityLogAction() {
+        super("activity-log");
     }//}}}
     
-    //{{{ actionPerformed()   
-    public void actionPerformed(ActionEvent e) {
-        dialog.refreshContents();
-        dialog.show();  
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        if (m_dialog == null) {
+            m_dialog = new ActivityLogDialog(view);
+        }
+        m_dialog.refreshContents();
+        m_dialog.setVisible(true);  
     }//}}}
-    
-    /*
-	public void updateDialog(){
-		dialog.refreshContents();
-	}*/
 }

@@ -26,7 +26,6 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe;
 
 import java.util.*;
-import javax.swing.Action;
 
 /**
  * A set of actions.
@@ -39,7 +38,6 @@ import javax.swing.Action;
 public class ActionSet {
    
    //{{{ ActionSet constructor
-   
    /**
     * Creates a new action set.
     */
@@ -48,7 +46,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ ActionSet constructor
-   
    /**
     * Creates a new action set.
     * @param label The label for the action set
@@ -59,7 +56,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ getLabel()
-   
    /**
     * Return the action source label.
     */
@@ -68,7 +64,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ setLabel()
-   
    /**
     * Sets the action source label.
     * @param label The label
@@ -78,18 +73,17 @@ public class ActionSet {
    }//}}}
 
    //{{{ addAction()
-   
    /**
-    * Adds an action to the action set.
-    * @param name the internal name for the action
+    * Adds an action to the action set. The action can
+    * be retrieved via the <code>getName()</code> method of
+    * the LocalizedAction.
     * @param action The action
     */
-   public void addAction(String name, Action action) {
-      actions.put(name,action);
+   public void addAction(LocalizedAction action) {
+      actions.put(action.getName(),action);
    }//}}}
-
-   //{{{ removeAction()
    
+   //{{{ removeAction()
    /**
     * Removes an action from the action set.
     * @param name The internal action name
@@ -99,7 +93,6 @@ public class ActionSet {
    }//}}}
 
    //{{{ removeAllActions()
-   
    /**
     * Removes all actions from the action set.
     */
@@ -108,46 +101,57 @@ public class ActionSet {
    }//}}}
 
    //{{{ getAction()
-   
    /**
-    * Returns an action with the specified name.
+    * Returns the action with the specified name.
     * @param name The action name
     */
-   public Action getAction(String name) {
-      return (Action)actions.get(name);
+   public LocalizedAction getAction(String name) {
+      return (LocalizedAction)actions.get(name);
    }//}}}
 
    //{{{ getActionCount()
-   
    /**
     * Returns the number of actions in the set.
     */
    public int getActionCount() {
       return actions.size();
    }//}}}
-
-   //{{{ getActions()
    
+   //{{{ getActionNames() method
+	/**
+	 * Returns an array of all action names in this action set.
+	 * @since jsXe 0.5 pre1
+	 */
+	public String[] getActionNames() {
+		String[] retVal = new String[actions.size()];
+		Enumeration e = actions.keys();
+		int i = 0;
+		while(e.hasMoreElements()) {
+			retVal[i++] = (String)e.nextElement();
+		}
+		return retVal;
+	} //}}}
+   
+   //{{{ getActions()
    /**
     * Returns an array of all actions in this action set.
     */
-   public Action[] getActions() {
-      Action[] retVal = new Action[actions.size()];
-      Enumeration enum = actions.elements();
+   public LocalizedAction[] getActions() {
+      LocalizedAction[] retVal = new LocalizedAction[actions.size()];
+      Enumeration elements = actions.elements();
       int i = 0;
-      while(enum.hasMoreElements()) {
-         retVal[i++] = (Action)enum.nextElement();
+      while(elements.hasMoreElements()) {
+         retVal[i++] = (LocalizedAction)elements.nextElement();
       }
       return retVal;
    }//}}}
 
    //{{{ contains()
-   
    /**
     * Returns if this action set contains the specified action.
     * @param action The action
     */
-   public boolean contains(Action action) {
+   public boolean contains(LocalizedAction action) {
       return actions.contains(action);
    }//}}}
 

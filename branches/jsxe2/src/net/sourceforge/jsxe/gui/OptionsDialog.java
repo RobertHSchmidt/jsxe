@@ -48,41 +48,59 @@ import net.sourceforge.jsxe.OperatingSystem;
 public abstract class OptionsDialog extends EnhancedDialog implements ActionListener, TreeSelectionListener {
 
     //{{{ OptionsDialog constructor
-    public OptionsDialog(Frame frame, String name, String title, String pane)
-    {
+    /**
+     * Initializes an OptionsDialog
+     * @param frame the parent frame
+     * @param name the name of the dialog. Used in properties to save the
+     *             geometry
+     * @param title the title of the dialog
+     * @param pane the name of the options pane to select first upon display.
+     */
+    public OptionsDialog(Frame frame, String name, String title, String pane) {
         super(frame, title, true);
         init(name,pane);
     } //}}}
 
     //{{{ OptionsDialog constructor
-    public OptionsDialog(Dialog dialog, String name, String title, String pane)
-    {
+    /**
+     * Initializes an OptionsDialog
+     * @param frame the parent frame
+     * @param name the name of the dialog. Used in properties to save the
+     *             geometry
+     * @param title the title of the dialog
+     * @param pane the name of the options pane to select first upon display.
+     */
+    public OptionsDialog(Dialog dialog, String name, String title, String pane) {
         super(dialog, title, true);
         init(name,pane);
     } //}}}
 
     //{{{ addOptionGroup() method
-    public void addOptionGroup(OptionGroup group)
-    {
+    /**
+     * Adds a new option group to the OptionPane tree.
+     * @param group the option group to add
+     */
+    public void addOptionGroup(OptionGroup group) {
         addOptionGroup(group, getDefaultGroup());
     } //}}}
 
     //{{{ addOptionPane() method
-    public void addOptionPane(OptionPane pane)
-    {
+    /**
+     * Adds a new option pane to the OptionPane tree.
+     * @param group the option pane to add
+     */
+    public void addOptionPane(OptionPane pane) {
         addOptionPane(pane, getDefaultGroup());
     } //}}}
 
     //{{{ ok() method
-    public void ok()
-    {
+    public void ok() {
         jsXe.setProperty(name + ".last",currentPane);
         ok(true);
     } //}}}
 
     //{{{ cancel() method
-    public void cancel()
-    {
+    public void cancel() {
         jsXe.setProperty(name + ".last",currentPane);
         saveGeometry(this, name);
         jsXe.setIntegerProperty(name + ".splitter", splitter.getDividerLocation());
@@ -90,8 +108,7 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
     } //}}}
 
     //{{{ ok() method
-    public void ok(boolean dispose)
-    {
+    public void ok(boolean dispose) {
         OptionTreeModel m = (OptionTreeModel) paneTree.getModel();
         ((OptionGroup) m.getRoot()).save();
         saveGeometry(this, name);
@@ -99,37 +116,35 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
         jsXe.setIntegerProperty(name + ".splitter", splitter.getDividerLocation());
         
         // get rid of this dialog if necessary
-        if(dispose) {
+        if (dispose) {
             dispose();
         }
     } //}}}
 
     //{{{ actionPerformed() method
-    public void actionPerformed(ActionEvent evt)
-    {
+    public void actionPerformed(ActionEvent evt) {
         Object source = evt.getSource();
 
-        if(source == ok)
-        {
+        if (source == ok) {
             ok();
-        }
-        else if(source == cancel)
-        {
-            cancel();
-        }
-        else if(source == apply)
-        {
-            ok(false);
+        } else {
+            if (source == cancel) {
+                cancel();
+            } else {
+                if (source == apply) {
+                    ok(false);
+                }
+            }
         }
     } //}}}
 
     //{{{ valueChanged() method
-    public void valueChanged(TreeSelectionEvent evt)
-    {
+    public void valueChanged(TreeSelectionEvent evt) {
         TreePath path = evt.getPath();
 
-        if (path == null || !(path.getLastPathComponent() instanceof
-            OptionPane)) return;
+        if (path == null || !(path.getLastPathComponent() instanceof OptionPane)) {
+            return;
+        }
 
         Object[] nodes = path.getPath();
 
@@ -140,25 +155,20 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
 
         int lastIdx = nodes.length - 1;
 
-        for (int i = paneTree.isRootVisible() ? 0 : 1;
-            i <= lastIdx; i++)
-        {
+        for (int i = paneTree.isRootVisible() ? 0 : 1; i <= lastIdx; i++) {
             String label = null;
-            if (nodes[i] instanceof OptionPane)
-            {
+            if (nodes[i] instanceof OptionPane) {
                 optionPane = (OptionPane)nodes[i];
                 name = optionPane.getName();
                 label = optionPane.getTitle();
-            }
-            else if (nodes[i] instanceof OptionGroup)
-            {
-                OptionGroup group = (OptionGroup)nodes[i];
-                name = group.getName();
-                label = group.getTitle();
-            }
-            else
-            {
-                continue;
+            } else {
+                if (nodes[i] instanceof OptionGroup) {
+                    OptionGroup group = (OptionGroup)nodes[i];
+                    name = group.getName();
+                    label = group.getTitle();
+                } else {
+                    continue;
+                }
             }
 
             if (name != null) {
@@ -169,7 +179,9 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
                 }
             }
 
-            if (i != lastIdx) buf.append(": ");
+            if (i != lastIdx) {
+                buf.append(": ");
+            }
         }
 
         currentLabel.setText(buf.toString());
@@ -191,21 +203,20 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
     protected abstract OptionGroup getDefaultGroup();
 
     //{{{ addOptionGroup() method
-    protected void addOptionGroup(OptionGroup child, OptionGroup parent)
-    {
-        Enumeration enum = child.getMembers();
+    protected void addOptionGroup(OptionGroup child, OptionGroup parent) {
+        
+        Enumeration members = child.getMembers();
 
-        while (enum.hasMoreElements())
-        {
-            Object elem = enum.nextElement();
+        while (members.hasMoreElements()) {
+            
+            Object elem = members.nextElement();
 
-            if (elem instanceof OptionPane)
-            {
+            if (elem instanceof OptionPane) {
                 addOptionPane((OptionPane) elem, child);
-            }
-            else if (elem instanceof OptionGroup)
-            {
-                addOptionGroup((OptionGroup) elem, child);
+            } else {
+                if (elem instanceof OptionGroup) {
+                    addOptionGroup((OptionGroup) elem, child);
+                }
             }
         }
 
@@ -318,7 +329,7 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
         // in case saved geometry is too small
         updateSize();
 
-        show();
+        setVisible(true);
     } //}}}
 
     //{{{ selectPane() method
@@ -328,19 +339,18 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
     } //}}}
 
     //{{{ selectPane() method
-    private boolean selectPane(OptionGroup node, String name, ArrayList path)
-    {
+    private boolean selectPane(OptionGroup node, String name, ArrayList path) {
+        
         path.add(node);
 
-        Enumeration enum = node.getMembers();
-        while(enum.hasMoreElements())
-        {
-            Object obj = enum.nextElement();
-            if(obj instanceof OptionGroup)
-            {
+        Enumeration members = node.getMembers();
+        while (members.hasMoreElements()) {
+            
+            Object obj = members.nextElement();
+            if (obj instanceof OptionGroup) {
+                
                 OptionGroup grp = (OptionGroup)obj;
-                if(grp.getName().equals(name))
-                {
+                if (grp.getName().equals(name)) {
                     path.add(grp);
                     path.add(grp.getMember(0));
                     TreePath treePath = new TreePath(
@@ -348,18 +358,16 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
                     paneTree.scrollPathToVisible(treePath);
                     paneTree.setSelectionPath(treePath);
                     return true;
+                } else {
+                    if (selectPane((OptionGroup)obj,name,path)) {
+                        return true;
+                    }
                 }
-                else if(selectPane((OptionGroup)obj,name,path))
-                    return true;
-            }
-            else
-            {
+            } else {
                 OptionPane pane = (OptionPane)obj;
-                if(pane.getName().equals(name))
-                {
+                if (pane.getName().equals(name)) {
                     path.add(pane);
-                    TreePath treePath = new TreePath(
-                        path.toArray());
+                    TreePath treePath = new TreePath(path.toArray());
                     paneTree.scrollPathToVisible(treePath);
                     paneTree.setSelectionPath(treePath);
                     return true;
@@ -392,10 +400,9 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
     //}}}
 
     //{{{ PaneNameRenderer class
-    static class PaneNameRenderer extends DefaultTreeCellRenderer
-    {
-        public PaneNameRenderer()
-        {
+    static class PaneNameRenderer extends DefaultTreeCellRenderer {
+        
+        public PaneNameRenderer() {
             paneFont = UIManager.getFont("Tree.font");
             groupFont = paneFont.deriveFont(Font.BOLD);
         }
@@ -404,32 +411,27 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
             Object value, boolean selected, boolean expanded,
             boolean leaf, int row, boolean hasFocus)
         {
-            super.getTreeCellRendererComponent(tree,value,
-                selected,expanded,leaf,row,hasFocus);
+            super.getTreeCellRendererComponent(tree,value,selected,expanded,leaf,row,hasFocus);
 
             String name = null;
             String label = null;
-            if (value instanceof OptionGroup)
-            {
+            if (value instanceof OptionGroup) {
                 OptionGroup group = ((OptionGroup)value);
                 name = group.getName();
                 label = group.getTitle();
                 this.setFont(groupFont);
-            }
-            else if (value instanceof OptionPane)
-            {
-                OptionPane pane = ((OptionPane)value);
-                label = pane.getTitle();
-                name = pane.getName();
-                this.setFont(paneFont);
+            } else {
+                if (value instanceof OptionPane) {
+                    OptionPane pane = ((OptionPane)value);
+                    label = pane.getTitle();
+                    name = pane.getName();
+                    this.setFont(paneFont);
+                }
             }
 
-            if (name == null)
-            {
+            if (name == null) {
                 setText(null);
-            }
-            else
-            {
+            } else {
                 if (value instanceof OptionPane) {
                     
                 } else {
@@ -440,12 +442,9 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
                     }
                 }
 
-                if (label == null)
-                {
+                if (label == null) {
                     setText("NO TITLE: " + name);
-                }
-                else
-                {
+                } else {
                     setText(label);
                 }
             }
@@ -460,89 +459,67 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
     } //}}}
 
     //{{{ OptionTreeModel class
-    public static class OptionTreeModel implements TreeModel
-    {
-        public void addTreeModelListener(TreeModelListener l)
-        {
+    public static class OptionTreeModel implements TreeModel {
+        
+        public void addTreeModelListener(TreeModelListener l) {
             listenerList.add(TreeModelListener.class, l);
         }
 
-        public void removeTreeModelListener(TreeModelListener l)
-        {
+        public void removeTreeModelListener(TreeModelListener l) {
             listenerList.remove(TreeModelListener.class, l);
         }
 
-        public Object getChild(Object parent, int index)
-        {
-            if (parent instanceof OptionGroup)
-            {
+        public Object getChild(Object parent, int index) {
+            if (parent instanceof OptionGroup) {
                 return ((OptionGroup)parent).getMember(index);
-            }
-            else
-            {
+            } else {
                 return null;
             }
         }
 
-        public int getChildCount(Object parent)
-        {
-            if (parent instanceof OptionGroup)
-            {
+        public int getChildCount(Object parent) {
+            if (parent instanceof OptionGroup) {
                 return ((OptionGroup)parent).getMemberCount();
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }
 
-        public int getIndexOfChild(Object parent, Object child)
-        {
-            if (parent instanceof OptionGroup)
-            {
-                return ((OptionGroup)parent)
-                    .getMemberIndex(child);
-            }
-            else
-            {
+        public int getIndexOfChild(Object parent, Object child) {
+            if (parent instanceof OptionGroup) {
+                return ((OptionGroup)parent).getMemberIndex(child);
+            } else {
                 return -1;
             }
         }
 
-        public Object getRoot()
-        {
+        public Object getRoot() {
             return root;
         }
 
-        public boolean isLeaf(Object node)
-        {
+        public boolean isLeaf(Object node) {
             return node instanceof OptionPane;
         }
 
-        public void valueForPathChanged(TreePath path, Object newValue)
-        {
+        public void valueForPathChanged(TreePath path, Object newValue) {
             // this model may not be changed by the TableCellEditor
         }
 
-        protected void fireNodesChanged(Object source, Object[] path,
-            int[] childIndices, Object[] children)
-        {
+        protected void fireNodesChanged(Object source, Object[] path, int[] childIndices, Object[] children) {
+            
             Object[] listeners = listenerList.getListenerList();
 
             TreeModelEvent modelEvent = null;
-            for (int i = listeners.length - 2; i >= 0; i -= 2)
-            {
-                if (listeners[i] != TreeModelListener.class)
+            for (int i = listeners.length - 2; i >= 0; i -= 2) {
+                if (listeners[i] != TreeModelListener.class) {
                     continue;
-
-                if (modelEvent == null)
-                {
-                    modelEvent = new TreeModelEvent(source,
-                        path, childIndices, children);
                 }
 
-                ((TreeModelListener)listeners[i + 1])
-                    .treeNodesChanged(modelEvent);
+                if (modelEvent == null) {
+                    modelEvent = new TreeModelEvent(source, path, childIndices, children);
+                }
+
+                ((TreeModelListener)listeners[i + 1]).treeNodesChanged(modelEvent);
             }
         }
 
@@ -552,19 +529,16 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
             Object[] listeners = listenerList.getListenerList();
 
             TreeModelEvent modelEvent = null;
-            for (int i = listeners.length - 2; i >= 0; i -= 2)
-            {
-                if (listeners[i] != TreeModelListener.class)
+            for (int i = listeners.length - 2; i >= 0; i -= 2) {
+                if (listeners[i] != TreeModelListener.class) {
                     continue;
-
-                if (modelEvent == null)
-                {
-                    modelEvent = new TreeModelEvent(source,
-                        path, childIndices, children);
                 }
 
-                ((TreeModelListener)listeners[i + 1])
-                    .treeNodesInserted(modelEvent);
+                if (modelEvent == null) {
+                    modelEvent = new TreeModelEvent(source, path, childIndices, children);
+                }
+
+                ((TreeModelListener)listeners[i + 1]).treeNodesInserted(modelEvent);
             }
         }
 
@@ -574,19 +548,16 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
             Object[] listeners = listenerList.getListenerList();
 
             TreeModelEvent modelEvent = null;
-            for (int i = listeners.length - 2; i >= 0; i -= 2)
-            {
-                if (listeners[i] != TreeModelListener.class)
+            for (int i = listeners.length - 2; i >= 0; i -= 2) {
+                if (listeners[i] != TreeModelListener.class) {
                     continue;
-
-                if (modelEvent == null)
-                {
-                    modelEvent = new TreeModelEvent(source,
-                        path, childIndices, children);
                 }
 
-                ((TreeModelListener)listeners[i + 1])
-                    .treeNodesRemoved(modelEvent);
+                if (modelEvent == null) {
+                    modelEvent = new TreeModelEvent(source, path, childIndices, children);
+                }
+
+                ((TreeModelListener)listeners[i + 1]).treeNodesRemoved(modelEvent);
             }
         }
 
@@ -596,19 +567,16 @@ public abstract class OptionsDialog extends EnhancedDialog implements ActionList
             Object[] listeners = listenerList.getListenerList();
 
             TreeModelEvent modelEvent = null;
-            for (int i = listeners.length - 2; i >= 0; i -= 2)
-            {
-                if (listeners[i] != TreeModelListener.class)
+            for (int i = listeners.length - 2; i >= 0; i -= 2) {
+                if (listeners[i] != TreeModelListener.class) {
                     continue;
-
-                if (modelEvent == null)
-                {
-                    modelEvent = new TreeModelEvent(source,
-                        path, childIndices, children);
                 }
 
-                ((TreeModelListener)listeners[i + 1])
-                    .treeStructureChanged(modelEvent);
+                if (modelEvent == null) {
+                    modelEvent = new TreeModelEvent(source, path, childIndices, children);
+                }
+
+                ((TreeModelListener)listeners[i + 1]).treeStructureChanged(modelEvent);
             }
         }
 

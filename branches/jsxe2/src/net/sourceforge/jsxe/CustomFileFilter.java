@@ -66,10 +66,13 @@ public class CustomFileFilter extends FileFilter {
     }//}}}
     
     //{{{ accept()
-    
+    /**
+     * Whether the given file is accepted by this filter.
+     */
     public boolean accept(File f) {
-        if(f != null) {
-            if(f.isDirectory()) {
+        if (f != null) {
+            //Allow users to see all directories.
+            if (f.isDirectory()) {
                 return true;
             }
             String ext = getExtension(f);
@@ -84,7 +87,9 @@ public class CustomFileFilter extends FileFilter {
     }//}}}
     
     //{{{ getDescription()
-    
+    /**
+     * The description of this filter.
+     */
     public String getDescription() {
         return description;
     }//}}}
@@ -92,9 +97,11 @@ public class CustomFileFilter extends FileFilter {
     //{{{ Private members
     
     //{{{ getExtension()
-    
+    /**
+     * Gets the file extension for the file.
+     */
     private String getExtension(File f) {
-        if(f != null) {
+        if (f != null) {
             String filename = f.getName();
             int i = filename.lastIndexOf('.');
             if (i>0 && i<filename.length()-1) {

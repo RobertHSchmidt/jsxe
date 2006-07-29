@@ -99,7 +99,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		newTabbedView = parent;
 		newDirtyBuffers = dirtyBuffers;
 		
-		loadGeometry(this, m_geometryName);
+		loadGeometry(this, m_geometryName); 
 		
 		dirtyFiles = getDirtyFileNames(dirtyBuffers);
 		dirtyFilesJListModel = new DefaultListModel();
@@ -109,7 +109,6 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		dirtyFilesJList = new JList(dirtyFilesJListModel);
 		dirtyFilesJList.setLayoutOrientation(JList.VERTICAL);
 		initComponents(dirtyFilesJList);
-		selectAllJButtonActionPerformed(); // select all the files for convenience
 	}//}}}
 	
 	//{{{ setCancelFlag()
@@ -197,7 +196,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		buttons.add(selectAllJButton);
 
 		saveSelectedJButton.setText(Messages.getMessage("DirtyFilesDialog.Button.SaveSelected.Title"));
-		saveSelectedJButton	.addActionListener(new ActionListener() {
+		saveSelectedJButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				saveSelectedJButtonActionPerformed();
 			}
@@ -225,6 +224,8 @@ public class DirtyFilesDialog extends EnhancedDialog {
 		
 		getContentPane().add(buttons, BorderLayout.SOUTH);
 
+		dirtyFilesJList.setSelectedIndex(0);
+		
 	//	pack();
 		setVisible(true);
 	}//}}}
@@ -289,7 +290,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 			}
 		} catch (IOException e) {
 			Log.log(Log.ERROR, this, e);
-			JOptionPane.showMessageDialog(newTabbedView, e.getMessage(), Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(newTabbedView, e.getMessage(), Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
 		}
 	}//}}}
 
@@ -323,7 +324,7 @@ public class DirtyFilesDialog extends EnhancedDialog {
 							}
 						} catch (IOException e) {
 							Log.log(Log.ERROR, this, e);
-							JOptionPane.showMessageDialog(newTabbedView, e.getMessage(), Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+							JOptionPane.showMessageDialog(newTabbedView, e.getMessage(), Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
 						}
 						continue test;
 					}

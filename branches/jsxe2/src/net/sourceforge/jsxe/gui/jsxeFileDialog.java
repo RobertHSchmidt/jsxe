@@ -76,14 +76,14 @@ public class jsxeFileDialog extends JFileChooser {
     //{{{ showOpenDialog()
     
     public int showOpenDialog(Component parent) {
-        setDialogTitle("Open");
+        setDialogTitle(Messages.getMessage("common.open"));
         return super.showOpenDialog(parent);
     }//}}}
     
     //{{{ showSaveDialog()
     
     public int showSaveDialog(Component parent) {
-        setDialogTitle("Save As");
+        setDialogTitle(Messages.getMessage("common.save.as"));
         return super.showSaveDialog(parent);
     }//}}}
     

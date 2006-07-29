@@ -33,10 +33,14 @@ import java.awt.event.*;
 import java.awt.*;
 
 /**
- * A dialog box that handles window closing, the ENTER key and the ESCAPE
+ * <p>A dialog box that handles window closing, the ENTER key and the ESCAPE
  * key for you. All you have to do is implement ok() (called when
  * Enter is pressed) and cancel() (called when Escape is pressed, or window
- * is closed).
+ * is closed).</p>
+ *
+ * <p>For consistency, plugins should implement this class for any dialogs
+ * that are displayed by the plugin</p>
+ *
  * @author Slava Pestov
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
@@ -44,14 +48,24 @@ import java.awt.*;
 public abstract class EnhancedDialog extends JDialog {
     
     //{{{ EnhancedDialog constructor
-    
+    /**
+     * Creates a new EnhancedDialog as a child of a frame.
+     * @param parent the parent frame
+     * @param title the title of the dialog
+     * @param modal true of the dialog is modal
+     */
     public EnhancedDialog(Frame parent, String title, boolean modal) {
         super(parent,title,modal);
         _init();
     }//}}}
     
     //{{{ EnhancedDialog constructor
-    
+    /**
+     * Creates a new EnhancedDialog as a child of a frame.
+     * @param parent the parent frame
+     * @param title the title of the dialog
+     * @param modal true of the dialog is modal
+     */
     public EnhancedDialog(Dialog parent, String title, boolean modal) {
         super(parent,title,modal);
         _init();
@@ -107,18 +121,20 @@ public abstract class EnhancedDialog extends JDialog {
         Rectangle desired = new Rectangle(x,y,width,height);
         win.setBounds(desired);
 
-        if ((win instanceof Frame) && OperatingSystem.hasJava14()) {
+        
+        if (win instanceof Frame) {
             int extState = jsXe.getIntegerProperty(name +   ".extendedState", Frame.NORMAL);
-
-            try {
-                java.lang.reflect.Method meth = Frame.class.getMethod("setExtendedState", new Class[] {int.class});
-
-                meth.invoke(win, new Object[] {new Integer(extState)});
-            } catch(NoSuchMethodException e) {}
-              catch(SecurityException e2) {}
-              catch(IllegalAccessException e3) {}
-              catch(java.lang.reflect.InvocationTargetException e4) {}
+            ((Frame)win).setExtendedState(extState);
         }
+        
+       // try {
+       //     java.lang.reflect.Method meth = Frame.class.getMethod("setExtendedState", new Class[] {int.class});
+
+       //     meth.invoke(win, new Object[] {new Integer(extState)});
+       // } catch(NoSuchMethodException e) {}
+       //   catch(SecurityException e2) {}
+       //   catch(IllegalAccessException e3) {}
+       //   catch(java.lang.reflect.InvocationTargetException e4) {}
     } //}}}
     
     //{{{ saveGeometry() method
@@ -132,23 +148,30 @@ public abstract class EnhancedDialog extends JDialog {
      */
     public static void saveGeometry(Window win, String name) {
         
-        if ((win instanceof Frame) && OperatingSystem.hasJava14()) {
-            try {
-                java.lang.reflect.Method meth = Frame.class.getMethod("getExtendedState",   new Class[0]);
-
-                Integer extState = (Integer)meth.invoke(win, new Object[0]);
-
-                jsXe.setIntegerProperty(name + ".extendedState", extState.intValue());
-
-                if (extState.intValue() != Frame.NORMAL) {
-                    return;
-                }
+        if (win instanceof Frame) {
+            int extState = ((Frame)win).getExtendedState();
+            jsXe.setIntegerProperty(name + ".extendedState", extState);
+            
+            if (extState != Frame.NORMAL) {
+                return;
             }
-            catch(NoSuchMethodException e) {}
-            catch(SecurityException e2) {}
-            catch(IllegalAccessException e3) {}
-            catch(java.lang.reflect.InvocationTargetException e4) {}
         }
+        
+       // try {
+       //     java.lang.reflect.Method meth = Frame.class.getMethod("getExtendedState",   new Class[0]);
+
+       //     Integer extState = (Integer)meth.invoke(win, new Object[0]);
+
+       //     jsXe.setIntegerProperty(name + ".extendedState", extState.intValue());
+
+       //     if (extState.intValue() != Frame.NORMAL) {
+       //         return;
+       //     }
+       // }
+       // catch(NoSuchMethodException e) {}
+       // catch(SecurityException e2) {}
+       // catch(IllegalAccessException e3) {}
+       // catch(java.lang.reflect.InvocationTargetException e4) {}
 
         Rectangle bounds = win.getBounds();
         jsXe.setIntegerProperty(name + ".x",bounds.x);
@@ -157,8 +180,21 @@ public abstract class EnhancedDialog extends JDialog {
         jsXe.setIntegerProperty(name + ".height",bounds.height);
     } //}}}
 
-    public abstract void ok();
-    public abstract void cancel();
+    //{{{ ok()
+    /**
+     * The method that is called when enter is pressed when viewing the dialog.
+     * In options dialogs this would corresponding to when the OK button is
+     * pressed.
+     */
+    public abstract void ok();//}}}
+    
+    //{{{ cancel()
+    /**
+     * The method that is called when escape is pressed when viewing the dialog.
+     * In options dialogs this would corresponding to when the Cancel button is
+     * pressed.
+     */
+    public abstract void cancel();//}}}
 
     //{{{ Private members
     
@@ -171,7 +207,7 @@ public abstract class EnhancedDialog extends JDialog {
         keyHandler = new KeyHandler();
         addKeyListener(keyHandler);
         addWindowListener(new WindowHandler());
-
+        setResizable(true);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }//}}}
 

@@ -25,10 +25,15 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package net.sourceforge.jsxe;
 
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import javax.swing.UIManager;
 import java.io.File;
+import java.util.Vector;
+import java.util.Enumeration;
 
 /**
  * Operating system detection routines.
@@ -40,7 +45,12 @@ import java.io.File;
 public class OperatingSystem {
     
     //{{{ getScreenBounds()
-    
+    /**
+     * Gets the screen boundries. Due to some slight differences in the
+     * operating system desktops, this method massages the screen boundries
+     * so they are exactly correct.
+     * @return the screen boundries.
+     */
     public static final Rectangle getScreenBounds() {
         int screenX = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         int screenY = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
@@ -67,6 +77,84 @@ public class OperatingSystem {
         
         return new Rectangle(x,y,w,h);
     }//}}}
+    
+    //{{{ getScreenBounds() method
+    /**
+     * Returns the bounds of the (virtual) screen that the window should be in
+     * @param window The bounds of the window to get the screen for
+     * @since jsXe 0.5 pre1
+     */
+    public static final Rectangle getScreenBounds(Rectangle window) {
+        GraphicsDevice[] gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+        Vector intersects = new Vector();
+
+        // Get available screens
+        // O(n^3), this is nasty, but since we aren't dealling with
+        // many items it should be fine
+        for (int i=0; i < gd.length; i++) {
+            GraphicsConfiguration gc = gd[i].getDefaultConfiguration();
+            // Don't add duplicates
+            if (window.intersects(gc.getBounds())) {
+                for (Enumeration e = intersects.elements(); e.hasMoreElements();) {
+                    GraphicsConfiguration gcc = (GraphicsConfiguration)e.nextElement();
+                    if (gcc.getBounds().equals(gc.getBounds())) {
+                        break;
+                    }
+                }
+                intersects.add(gc);
+            }
+        }
+        
+        GraphicsConfiguration choice = null;
+        if (intersects.size() > 0) {
+            // Pick screen with largest intersection
+            for (Enumeration e = intersects.elements(); e.hasMoreElements();) {
+                GraphicsConfiguration gcc = (GraphicsConfiguration)e.nextElement();
+                if (choice == null) {
+                    choice = gcc;
+                } else {
+                    Rectangle int1 = choice.getBounds().intersection(window);
+                    Rectangle int2 = gcc.getBounds().intersection(window);
+                    int area1 = int1.width * int1.height;
+                    int area2 = int2.width * int2.height;
+                    if (area2 > area1) {
+                        choice = gcc;
+                    }
+                }
+            }
+        } else {
+            choice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+        }
+        
+        // Make adjustments for some OS's
+        int screenX = (int)choice.getBounds().x;
+        int screenY = (int)choice.getBounds().y;
+        int screenW = (int)choice.getBounds().width;
+        int screenH = (int)choice.getBounds().height;
+        int x, y, w, h;
+        
+        if (isMacOS()) {
+            x = screenX;
+            y = screenY + 22;
+            w = screenW;
+            h = screenH - y - 4;//shadow size
+        } else {
+            if (isWindows()) {
+                x = screenX - 4;
+                y = screenY - 4;
+                w = screenW - 2*x;
+                h = screenH - 2*y;
+            } else {
+                x = screenX;
+                y = screenY;
+                w = screenW;
+                h = screenH;
+            }
+        }
+        
+        // Yay, we're finally there
+        return new Rectangle(x,y,w,h);
+    } //}}}
     
     //{{{ isDOSDerived() method
     /**
@@ -132,15 +220,19 @@ public class OperatingSystem {
         return (isMacOS() && UIManager.getLookAndFeel().isNativeLookAndFeel());
     }//}}}
 
-    //{{{ isJava14() method
+    //{{{ isJava15() method
     /**
-     * Returns if Java 2 version 1.4 is in use.
+     * Returns if Java 2 version 1.5 is in use.
      */
-    public static final boolean hasJava14() {
-        return java14;
+    public static final boolean hasJava15() {
+        return java15;
     } //}}}
 
     //{{{ Private members
+    
+    //{{{ Operating System constructor
+    public OperatingSystem() {}//}}}
+    
     private static final int UNIX = 0x31337;
     private static final int WINDOWS_9x = 0x640;
     private static final int WINDOWS_NT = 0x666;
@@ -149,7 +241,7 @@ public class OperatingSystem {
     private static final int UNKNOWN = 0xBAD;
 
     private static int os;
-    private static boolean java14;
+    private static boolean java15;
 
     //{{{ Class initializer
     static {
@@ -176,8 +268,8 @@ public class OperatingSystem {
             }
         }
 
-        if (System.getProperty("java.version").compareTo("1.4") >= 0) {
-            java14 = true;
+        if (System.getProperty("java.version").compareTo("1.5") >= 0) {
+            java15 = true;
         }
     } //}}}
 

@@ -1,0 +1,92 @@
+# JSXE Japanese properties file
+# $Id$
+# Maintained by Ian Lewis
+#:mode=properties:
+#:tabSize=4:indentSize=4:noTabs=true:
+#:folding=explicit:collapseFolds=1:
+
+#{{{ common properties
+
+common.ok=決定
+common.cancel=キャンセル
+common.apply=適用
+common.add=追加
+common.remove=削除
+
+#}}}
+
+#{{{ XML Terminology
+
+#{{{ XML Node Types
+xml.element=要素
+xml.processing.instruction=処理命令
+xml.cdata=CDATAセクション
+xml.text=テキスト
+xml.entity.reference=エンティティ参照
+xml.notation=表記法
+xml.entity=エンティティ
+xml.comment=コメント
+xml.attribute=属性
+xml.doctype=文書型
+#}}}
+
+xml.attribute.value.short=値
+xml.attribute.value=属性値
+xml.document=XMLドキュメント
+xml.namespace=ネームスペース
+xml.namespace.prefix=ネームスペース前置修飾子
+xml.namespace.prefix.short=前置修飾子
+xml.doctypedef=文書型
+xml.doctype.name=DTDの名前
+xml.doctype.public=公開識別子
+xml.doctype.system=システム識別子
+xml.schema=XMLスキーマ
+
+#}}}
+
+#{{{ Document Options
+Document.Options.Title=ドキュメント設定
+Document.Options.Encoding=エンコーディング:
+#}}}
+
+#{{{ Menu Items
+
+File.Menu=ファイル
+Edit.Menu=編集
+Help.Menu=ヘルプ
+Tools.Menu=ツール
+View.Menu=表示
+
+#{{{ File Menu Items
+open-file.label=開く...
+save-file.label=保管
+reload-file.label=再ロード
+close-file.label=閉じる
+close-all.label=すべてを閉じる
+exit.label=終了
+#}}}
+
+document-options.label=ドキュメント設定...
+about-jsxe.label=jsXeについて...
+
+#}}}
+
+#{{{ Dialogs
+
+#{{{ About dialag
+about.title=jsXeについて
+about.message=Released under the terms of the GNU General Public License\n\n\
+    Active Contributors:\n\
+    \ \ \ \ Ian Lewis <IanLewis@member.fsf.org>\n\
+    \ \ \ \ Trish Hartnett <trishah136@users.sourceforge.net>\n\n\
+    翻訳者:\n\
+    \ \ \ \ ドイツ語 (de) - Bianca Shöen\n\
+    \ \ \ \ スウェーデン語 (sv) - Patrik Johansson <patjoh@itstud.chalmers.se>\n\n\
+    Past Contributers:\n\
+    \ \ \ \ Aaron Flatten  <aflatten@users.sourceforge.net>\n\
+    \ \ \ \ Bilel Remmache <rbilel@users.sourceforge.net>\n\
+    \ \ \ \ SVM <svmcoranto@users.sourceforge.net>\n\n\
+    ホームページ: http://jsxe.sourceforge.net/
+#}}}
+
+#}}}

@@ -34,13 +34,11 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
 //}}}
 
 //{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
 //}}}
 
 //{{{ AWT components
@@ -56,22 +54,19 @@ import java.awt.event.ActionEvent;
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
  * @version $Id$
  */
-public class jsxeAboutDialog extends AbstractAction {
+public class jsxeAboutDialog extends LocalizedAction {
     
     //{{{ jsxeAboutDialog constructor
-    
-    public jsxeAboutDialog(Component parent) {
-	    //putValue(Action.NAME, "About jsXe...");
-	    putValue(Action.NAME, Messages.getMessage("Help.About"));	    	
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("A").getKeyCode()));
-        view = parent;
+    public jsxeAboutDialog() {
+	    super("about-jsxe");
+       // putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("A").getKeyCode()));
     }//}}}
     
-    //{{{ actionPerformed()
+    //{{{ invoke()
     /**
      * Displays jsXe's About dialog
      */
-    public void actionPerformed(ActionEvent e) {
+    public void invoke(TabbedView view, ActionEvent evt) {
         String aboutMsg = 
         jsXe.getAppTitle() + " " + jsXe.getVersion()+" "+"\n"+
         "Java Simple XML Editor\n"+
@@ -91,7 +86,4 @@ public class jsxeAboutDialog extends AbstractAction {
             okButton[0]);
     }//}}}
     
-    //{{{ Private Members
-    private Component view;
-    //}}}
 }
