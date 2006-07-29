@@ -206,71 +206,79 @@ public class XMLDocument {
     
     //{{{ getText()
     public String getText(int offset, int length) {
-        if (offset < 0 || length < 0 || offset + length > m_content.getLength()) {
-            throw new ArrayIndexOutOfBoundsException(offset);
+        try {
+            
+            readLock();
+            
+            if (offset < 0 || length < 0 || offset + length > m_content.getLength()) {
+                throw new ArrayIndexOutOfBoundsException(offset);
+            }
+            
+            return m_content.getText(offset,length);
+        } finally {
+            readUnlock();
         }
-        
-        return m_content.getText(offset,length);
     }//}}}
     
     //{{{ getText()
     public void getText(int offset, int length, Segment txt) {
         
-        if (offset < 0 || length < 0 || offset + length > m_content.getLength()) {
-            throw new ArrayIndexOutOfBoundsException(offset);
+        try {
+            
+            readLock();
+            
+            if (offset < 0 || length < 0 || offset + length > m_content.getLength()) {
+                throw new ArrayIndexOutOfBoundsException(offset);
+            }
+            
+            m_content.getText(offset, length, txt);
+            
+        } finally {
+            readUnlock();
         }
-        
-        m_content.getText(offset, length, txt);
     }//}}}
     
     //{{{ insertString()
-    /**
-     * <p>Inserts a string of content. This will cause a DocumentEvent of type
-     *    DocumentEvent.EventType.INSERT to be sent to the registered
-     *    DocumentListers, unless an exception is thrown. The DocumentEvent will
-     *    be delivered by calling the insertUpdate method on the
-     *    DocumentListener. The offset and length of the generated DocumentEvent
-     *    will indicate what change was actually made to the Document.</p>
-     *
-     * <p>If the Document structure changed as result of the insertion, the
-     *    details of what Elements were inserted and removed in response to the 
-     *    change will also be contained in the generated DocumentEvent. It is up 
-     *    to the implementation of a Document to decide how the structure should 
-     *    change in response to an insertion.</p>
-     * 
-     * <p>If the Document supports undo/redo, an UndoableEditEvent will also be
-     *    generated.</p>
-     * @param offset the offset into the document to insert the content >= 0.
-     *               All positions that track change at or after the given
-     *               location will move.
-     * @param str the string to insert
-     * @param a the attributes to associate with the inserted content.
-     *          This attribute is ignored by XMLDocuments.
-     */
     public void insertString(int offset, String str) {
-        if (offset < 0 || str.length() < 0 || offset + str.length() > m_content.getLength()) {
-            throw new ArrayIndexOutOfBoundsException(offset);
+        
+        try {
+            
+            writeLock();
+        
+            if (offset < 0 || str.length() < 0 || offset + str.length() > m_content.getLength()) {
+                throw new ArrayIndexOutOfBoundsException(offset);
+            }
+            
+            m_content.insert(offset, str);
+        
+            //TODO: document structure must change
+            //TODO: notify listeners
+            //TODO: implement undo
+        } finally {
+            writeUnlock();
         }
-        
-        m_content.insert(offset, str);
-        
-        //TODO: document structure must change
-        //TODO: notify listeners
-        //TODO: implement undo
     }//}}}
     
     //{{{ remove()
     
     public void remove(int offs, int len) {
-        if (offs < 0 || len < 0 || offs + len > m_content.getLength()) {
-            throw new ArrayIndexOutOfBoundsException(offs);
+        
+        try {
+            
+            writeLock();
+            
+            if (offs < 0 || len < 0 || offs + len > m_content.getLength()) {
+                throw new ArrayIndexOutOfBoundsException(offs);
+            }
+            
+            m_content.remove(offs, len);
+            
+            //TODO: document structure must change
+            //TODO: notify listeners
+            //TODO: implement undo
+        } finally {
+            writeUnlock();
         }
-        
-        m_content.remove(offs, len);
-        
-        //TODO: document structure must change
-        //TODO: notify listeners
-        //TODO: implement undo
     }//}}}
     
     //{{{ removeDocumentListener()
@@ -349,9 +357,8 @@ public class XMLDocument {
     }//}}}
     
     //{{{ getProperties()
-    
-    public Map getProperties() {
-        return m_properties;
+    public Enumeration getProperties() {
+        return m_properties.propertyNames();
     }//}}}
     
     //{{{ getProperty()
@@ -363,7 +370,7 @@ public class XMLDocument {
             if (o == null) {
                 // Now try xml.document.<property>
                 o = jsXe.getProperty("xml.document." + name);
-            }           
+            }
             return o;
         }
     }//}}}
@@ -409,16 +416,12 @@ public class XMLDocument {
      * @param name The property name
      */
     public boolean getBooleanProperty(String name) {
-        Object obj = getProperty(name);
+        String obj = getProperty(name);
         if (obj == null) {
             return null;
         }
         
-        if (obj instanceof Boolean) {
-            return ((Boolean)obj).booleanValue();
-        } else {
-            return Boolean.valueOf(obj.toString()).booleanValue();
-        }
+        return Boolean.valueOf(obj).booleanValue();
     } //}}}
 
     //{{{ setBooleanProperty() method
@@ -428,7 +431,7 @@ public class XMLDocument {
      * @param value The value
      */
     public void setBooleanProperty(String name, boolean value) {
-        setProperty(name, Boolean.valueOf(value));
+        setProperty(name, Boolean.toString(value));
     } //}}}
 
     //{{{ getIntegerProperty() method
@@ -439,14 +442,14 @@ public class XMLDocument {
     public int getIntegerProperty(String name, int defaultValue) {
         
         boolean defaultValueFlag;
-        Object obj = getProperty();
+        String obj = getProperty();
 
         if (obj == null) {
             return defaultValue;
         } else {
-            if (obj instanceof Number) {
-                return ((Number)obj).intValue();
-            } else {
+            try {
+                return Integer.parseInt(obj);
+            } catch (NumberFormatException e) {
                 return defaultValue;
             }
         }
@@ -459,7 +462,7 @@ public class XMLDocument {
      * @param value The value
      */
     public void setIntegerProperty(String name, int value) {
-        setProperty(name, new Integer(value));
+        setProperty(name, Integer.toString(value));
     } //}}}
     
     //{{{ setURI()
@@ -486,7 +489,14 @@ public class XMLDocument {
      * document is standalone. This is false when unspecified.
      */
     public void setStandalone(boolean standalone) throws DOMException {
-        m_document.setXmlStandalone(standalone);
+        try {
+            writeLock();
+            
+            m_document.setXmlStandalone(standalone);
+            //TODO: update text
+        } finally {
+            writeUnlock();
+        }
     }//}}}
     
     //{{{ isStandalone()
@@ -495,7 +505,13 @@ public class XMLDocument {
      * document is standalone. This is false when unspecified.
      */
     public boolean isStandalone() {
-        return m_document.getXmlStandalone();
+        try {
+            readLock();
+            
+            return m_document.getXmlStandalone();
+        } finally {
+            readUnlock();
+        }
     }//}}}
     
     //{{{ isReadOnly()
@@ -523,7 +539,23 @@ public class XMLDocument {
     //{{{ newElementNode()
     /**
      * Create a new XMLElement node with the given name.
+     *
      * @param name the qualified name of the new node.
+     * @throws DOMException INVALID_CHARACTER_ERR: Raised if the specified 
+     *                      qualifiedName is not an XML name according to the 
+     *                      XML version in use specified in the xml version
+     *                      attribute.
+     * @throws DOMException NAMESPACE_ERR: Raised if the qualifiedName is a
+     *                      malformed qualified name, if the qualifiedName has
+     *                      a prefix and the namespaceURI is null, or if the 
+     *                      qualifiedName has a prefix that is "xml" and the 
+     *                      namespaceURI is different from "  
+     *                      http://www.w3.org/XML/1998/namespace" 
+     *                      [XML Namespaces] , or if the qualifiedName or its 
+     *                      prefix is "xmlns" and the namespaceURI is different 
+     *                      from "http://www.w3.org/2000/xmlns/", or if the 
+     *                      namespaceURI is "http://www.w3.org/2000/xmlns/" and 
+     *                      neither the qualifiedName nor its prefix is "xmlns".
      */
     public XMLElement newElementNode(String name) throws DOMException {
         return new XMLElement(m_document.createElementNS("", name));
@@ -536,6 +568,48 @@ public class XMLDocument {
      */
     public XMLAttribute newAttributeNode(String name) throws DOMException {
         return new XMLAttribute(m_document.createAttributeNS("", name));
+    }//}}}
+    
+    //{{{ newCDATASection()
+    /**
+     * Creates a CDATASection node whose value is the specified string.
+     * @param data The data for the CDATASection contents.
+     */
+    public XMLCDATASection newCDATASection(String data) {
+        return new XMLCDATASection(m_document.createCDATASection(data));
+    }//}}}
+    
+    //{{{ newCommentNode()
+    /**
+     * Creates a Comment node given the specified string.
+     * @param data the text contents of the comment
+     */
+    public XMLComment newCommentNode(String data) {
+        return new XMLComment(m_document.createCommentNode(data));
+    }//}}}
+    
+    //{{{ newProcessingInstruction()
+    /**
+     * Creates a ProcessingInstruction node given the specified name and data strings.
+     * @param target The target part of the processing instruction.
+     * @param data The data for the node.
+     * @throws DOMException INVALID_CHARACTER_ERR: Raised if the specified 
+     *                      target is not an XML name according to the XML
+     *                      version in use specified in the xml version
+     *                      attribute.
+     */
+    public XMLProcessingInstruction newProcessingInstruction(String target, String data) throws DOMException {
+        //TODO: make sure the target is namespace-well-formed
+        return new XMLProcessingInstruction(m_document.createProcessingInstruction(target, data));
+    }//}}}
+    
+    //{{{ newTextNode()
+    /**
+     * Creates a Text node given the specified string.
+     * @param data the text contents of this node
+     */
+    public XMLText newTextNode(String data) {
+        return new XMLText(m_document.createTextNode(data));
     }//}}}
     
     //{{{ newErrorNode()
