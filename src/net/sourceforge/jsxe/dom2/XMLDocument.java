@@ -50,12 +50,6 @@ import java.util.HashMap;
 import java.net.URI;
 //}}}
 
-//{{{ Swing classes
-import javax.swing.text.*;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.UndoableEditListener;
-//}}}
-
 //}}}
 
 /**
@@ -183,14 +177,6 @@ public class XMLDocument {
         }
     }//}}}
     
-    //{{{ addUndoableEditListener()
-    
-    public void addUndoableEditListener(UndoableEditListener listener) {
-        if (listener != null) {
-            m_undoListeners.add(listener);
-        }
-    }//}}}
-    
     //{{{ getDefaultRootElement()
     /**
      * Gets the root document element.
@@ -292,14 +278,6 @@ public class XMLDocument {
     public void removeDocumentListener(DocumentListener listener) {
         if (listener != null) {
             m_docListeners.remove(listener);
-        }
-    }//}}}
-    
-    //{{{ removeUndoableEditListener()
-    
-    public void removeUndoableEditListener(UndoableEditListener listener) {
-        if (listener != null) {
-            m_undoListeners.remove(listener);
         }
     }//}}}
     
