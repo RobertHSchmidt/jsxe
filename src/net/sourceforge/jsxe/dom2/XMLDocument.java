@@ -69,6 +69,7 @@ import java.net.URI;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id: XMLDocument.java 999 2006-07-07 20:59:23Z ian_lewis $
  * @see XMLNode
+ * @since jsXe 0.5 pre3
  */
 public class XMLDocument {
     

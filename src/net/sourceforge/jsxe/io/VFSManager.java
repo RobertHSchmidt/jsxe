@@ -4,7 +4,7 @@ VFSManager.java
 :folding=explicit:collapseFolds=1:
 
 Copyright (C) 2000, 2003 Slava Pestov
-Portions Copyright (C) 2004 Ian Lewis (IanLewis@member.fsf.org)
+Portions Copyright (C) 2006 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -58,6 +58,7 @@ import org.gjt.sp.util.WorkThreadPool;
  * @author Slava Pestov
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @since jsXe 0.5 pre3
  */
 public class VFSManager {
     /**
@@ -69,13 +70,11 @@ public class VFSManager {
     /**
      * Do not call.
      */
-    public static void init()
-    {
-        int count = jEdit.getIntegerProperty("ioThreadCount",4);
-        ioThreadPool = new WorkThreadPool("jEdit I/O",count);
+    public static void init() {
+        int count = jsXe.getIntegerProperty("ioThreadCount", 4);
+        ioThreadPool = new WorkThreadPool("jsXe I/O",count);
         JARClassLoader classLoader = new JARClassLoader();
-        for(int i = 0; i < ioThreadPool.getThreadCount(); i++)
-        {
+        for (int i = 0; i < ioThreadPool.getThreadCount(); i++) {
             ioThreadPool.getThread(i).setContextClassLoader(
                 classLoader);
         }
@@ -85,8 +84,7 @@ public class VFSManager {
     /**
      * Do not call.
      */
-    public static void start()
-    {
+    public static void start() {
         ioThreadPool.start();
     } //}}}
 
@@ -96,8 +94,7 @@ public class VFSManager {
     /**
      * Returns the local filesystem VFS.
      */
-    public static VFS getFileVFS()
-    {
+    public static VFS getFileVFS() {
         return fileVFS;
     } //}}}
 
@@ -105,8 +102,7 @@ public class VFSManager {
     /**
      * Returns the URL VFS.
      */
-    public static VFS getUrlVFS()
-    {
+    public static VFS getUrlVFS() {
         return urlVFS;
     } //}}}
 
@@ -269,41 +265,6 @@ public class VFSManager {
 
     //{{{ error() method
     /**
-     * @deprecated Call the other <code>error()</code> method instead.
-     */
-    public static void error(final Component comp, final String error, final Object[] args)
-    {
-        // if we are already in the AWT thread, take a shortcut
-        if(SwingUtilities.isEventDispatchThread())
-        {
-            GUIUtilities.error(comp,error,args);
-            return;
-        }
-
-        // the 'error' chicanery ensures that stuff like:
-        // VFSManager.waitForRequests()
-        // if(VFSManager.errorOccurred())
-        //         ...
-        // will work (because the below runnable will only be
-        // executed in the next event)
-        VFSManager.error = true;
-
-        runInAWTThread(new Runnable()
-        {
-            public void run()
-            {
-                VFSManager.error = false;
-
-                if(comp == null || !comp.isShowing())
-                    GUIUtilities.error(null,error,args);
-                else
-                    GUIUtilities.error(comp,error,args);
-            }
-        });
-    } //}}}
-
-    //{{{ error() method
-    /**
      * Reports an I/O error.
      *
      * @param comp The component
@@ -318,31 +279,27 @@ public class VFSManager {
     {
         final Frame frame = JOptionPane.getFrameForComponent(comp);
 
-        synchronized(errorLock)
-        {
+        synchronized(errorLock) {
+            
             error = true;
 
-            errors.addElement(new ErrorListDialog.ErrorEntry(
-                path,messageProp,args));
+            errors.addElement(new ErrorListDialog.ErrorEntry(path, messageProp, args));
 
-            if(errors.size() == 1)
-            {
+            if (errors.size() == 1) {
                 
 
-                VFSManager.runInAWTThread(new Runnable()
-                {
-                    public void run()
-                    {
-                        String caption = jEdit.getProperty(
-                            "ioerror.caption" + (errors.size() == 1
-                            ? "-1" : ""),new Integer[] {
-                            new Integer(errors.size()) });
+                VFSManager.runInAWTThread(new Runnable() {
+                    public void run() {
+                        String caption = Messages.getMessage("IO.Error.caption" + (errors.size() == 1 ? "-1" : ""), 
+                                                             new Integer[] { new Integer(errors.size()) });
+                        
                         new ErrorListDialog(
                             frame.isShowing()
                             ? frame
-                            : jEdit.getFirstView(),
-                            jEdit.getProperty("ioerror.title"),
+                            : jsXe.getActiveView(),
+                            Messages.getMessage("IO.Error.title"),
                             caption,errors,false);
+                        
                         errors.removeAllElements();
                         error = false;
                     }

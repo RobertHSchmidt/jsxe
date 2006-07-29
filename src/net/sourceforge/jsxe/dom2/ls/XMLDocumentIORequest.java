@@ -38,7 +38,9 @@ import net.sourceforge.jsxe.util.*;
 /**
  * A document I/O request.
  * @author Slava Pestov
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
+ * @since jsXe 0.5 pre3
  */
 public class XMLDocumentIORequest extends WorkRequest {
     
@@ -192,14 +194,14 @@ public class XMLDocumentIORequest extends WorkRequest {
                 setAbortable(true);
                 
                 if (!buffer.isTemporary()) {
-                    setStatus(jEdit.getProperty("vfs.status.load",args));
+                    setStatus(Messages.getMessage("DocumentBuffer.Loading.Message",args));
                     setProgressValue(0);
                 }
 
                 path = vfs._canonPath(session,path,view);
 
-                VFS.DirectoryEntry entry = vfs._getDirectoryEntry(
-                    session,path,view);
+                VFS.DirectoryEntry entry = vfs._getDirectoryEntry(session,path,view);
+                
                 long length;
                 if (entry != null) {
                     length = entry.length;
@@ -214,11 +216,13 @@ public class XMLDocumentIORequest extends WorkRequest {
 
                 read(autodetect(in),length,false);
                 buffer.setNewFile(false);
+                
             } catch(CharConversionException ch) {
                 Log.log(Log.ERROR,this,ch);
-                Object[] pp = { buffer.getProperty(Buffer.ENCODING),
-                    ch.toString() };
-                VFSManager.error(view,path,"ioerror.encoding-error",pp);
+                
+                Object[] pp = { buffer.getProperty(Buffer.ENCODING), ch.toString() };
+                
+                VFSManager.error(view,path,"IO.Error.Encoding.Error",pp);
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
             
@@ -226,39 +230,38 @@ public class XMLDocumentIORequest extends WorkRequest {
                 Log.log(Log.ERROR,this,uu);
                 Object[] pp = { buffer.getProperty(Buffer.ENCODING),
                     uu.toString() };
-                VFSManager.error(view,path,"ioerror.encoding-error",pp);
+                VFSManager.error(view,path,"IO.Error.Encoding.Error",pp);
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
             
             } catch(IOException io) {
                 Log.log(Log.ERROR,this,io);
                 Object[] pp = { io.toString() };
-                VFSManager.error(view,path,"ioerror.read-error",pp);
+                VFSManager.error(view,path,"IO.Error.Read.Error",pp);
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
             
             } catch(OutOfMemoryError oom) {
                 Log.log(Log.ERROR,this,oom);
-                VFSManager.error(view,path,"out-of-memory-error",null);
+                VFSManager.error(view,path,"Out.Of.Memory.Error",null);
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
             }
 
-            if (jEdit.getBooleanProperty("persistentMarkers")) {
-                try {
-                    String[] args = { vfs.getFileName(path) };
-                    if (!buffer.isTemporary()) {
-                        setStatus(jEdit.getProperty("vfs.status.load-markers",args));
-                    }
-                    setAbortable(true);
-
-                    in = vfs._createInputStream(session,markersPath,true,view);
-                    if(in != null)
-                        readMarkers(buffer,in);
-                } catch(IOException io) {
-                    // ignore
-                }
-            }
+           // if (jEdit.getBooleanProperty("persistentMarkers")) {
+           //     try {
+           //         String[] args = { vfs.getFileName(path) };
+           //         if (!buffer.isTemporary()) {
+           //             setStatus(jEdit.getProperty("vfs.status.load-markers",args));
+           //         }
+           //         setAbortable(true);
+           //         in = vfs._createInputStream(session,markersPath,true,view);
+           //         if(in != null)
+           //             readMarkers(buffer,in);
+           //     } catch(IOException io) {
+           //         // ignore
+           //     }
+           // }
         } catch(WorkThread.Abort a) {
             if (in != null) {
                 try {
@@ -274,7 +277,7 @@ public class XMLDocumentIORequest extends WorkRequest {
             } catch(IOException io) {
                 Log.log(Log.ERROR,this,io);
                 String[] pp = { io.toString() };
-                VFSManager.error(view,path,"ioerror.read-error",pp);
+                VFSManager.error(view,path,"IO.Error.Read.Error",pp);
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
             } catch(WorkThread.Abort a) {
@@ -338,8 +341,7 @@ public class XMLDocumentIORequest extends WorkRequest {
                             {
                                 // do not reset the stream and just treat it
                                 // like a normal UTF-8 file.
-                                buffer.setProperty(Buffer.ENCODING,
-                                    MiscUtilities.UTF_8_Y);
+                                buffer.setProperty(XMLDocument.ENCODING, MiscUtilities.UTF_8_Y);
                                 
                                 encoding = "UTF-8";
                             } else {
@@ -356,8 +358,8 @@ public class XMLDocumentIORequest extends WorkRequest {
                                         break;
                                 }
                                 
-                                String xmlPI = new String(_xmlPI,0,offset,
-                                "ASCII");
+                                String xmlPI = new String(_xmlPI,0,offset, "ASCII");
+                                
                                 if (xmlPI.startsWith("<?xml")) {
                                     int index = xmlPI.indexOf("encoding=");
                                     if (index != -1 && index + 9 != xmlPI.length()) {
@@ -366,7 +368,7 @@ public class XMLDocumentIORequest extends WorkRequest {
                                         encoding = xmlPI.substring(index + 10,endIndex);
                                         
                                         if (MiscUtilities.isSupportedEncoding(encoding)) {
-                                            buffer.setProperty(Buffer.ENCODING,encoding);
+                                            buffer.setProperty(XMLDocument.ENCODING, encoding);
                                         } else {
                                             Log.log(Log.WARNING,this,"XML PI specifies unsupported encoding: " + encoding);
                                         }

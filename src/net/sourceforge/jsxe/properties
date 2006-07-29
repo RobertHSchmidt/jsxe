@@ -13,6 +13,8 @@ xml.network=true
 # Resource Cache
 xml.cache=true
 
+ioThreadCount=4
+
 #{{{ Plugin Manager Default Dimensions
 #pluginmgr.x=100
 #pluginmgr.y=100
