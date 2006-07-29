@@ -34,8 +34,9 @@ import java.awt.Component;
  * method. The label displayed in the option pane's tab is obtained from the
  * <code>getTitle()</code> method.
  *
- * Note that you should extend the {@link net.sourceforge.jsxe.gui.OptionPanel}
- * if creating an OptionPane for use with jsXe.
+ * Note that you may want to extend the
+ * {@link net.sourceforge.jsxe.options.AbstractOptionPane} if creating an
+ * OptionPane for use with jsXe.
  *
  * @see OptionGroup
  * @see net.sourceforge.jsxe.gui.OptionsDialog#addOptionPane(OptionPane)
@@ -55,6 +56,9 @@ public interface OptionPane {
     //}}}
     
     //{{{ getTitle()
+    /**
+     * Get the human readable title of the option pane
+     */
     public String getTitle();
     //}}}
 

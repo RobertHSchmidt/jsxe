@@ -26,16 +26,12 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.action;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
 //{{{ Java classes
@@ -43,9 +39,6 @@ import java.io.IOException;
 //}}}
 
 //{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
 import javax.swing.JOptionPane;
 //}}}
 
@@ -57,33 +50,25 @@ import java.awt.event.ActionEvent;
 
 /**
  * The action executed when the user selects 'close' from the file menu.
+ *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
  * @version $Id$
  */
-public class FileCloseAction extends AbstractAction {
+public class FileCloseAction extends LocalizedAction {
     
     //{{{ FileCloseAction constructor
-    
-    public FileCloseAction(TabbedView parent) {
-        //putValue(Action.NAME, "Close");
-        putValue(Action.NAME, Messages.getMessage("File.Close"));
-        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl W"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("C").getKeyCode()));
-        m_view = parent;
+    public FileCloseAction() {
+        super("close-file");
     }//}}}
     
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
         try {
-            jsXe.closeDocumentBuffer(m_view, m_view.getDocumentBuffer());
+            jsXe.closeDocumentBuffer(view, view.getDocumentBuffer());
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(m_view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.ERROR_MESSAGE);
         }
     }//}}}
-    
-    //{{{ Private members
-    private TabbedView m_view;
-    //}}}
+
 }

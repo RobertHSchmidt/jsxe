@@ -1,6 +1,14 @@
+07/28/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added some multi-threaded support.
+
 07/26/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added support for error nodes in the new data model
+    * Updated the find and findnext actions to use proper messages
+      labels.
+    * Fixed a bug where the shortcuts for Built-In commands were not being 
+      honored.
 
 07/25/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
@@ -12,11 +20,89 @@
       types.
     * Added some support for the URIs and standalone properties in
       XMLDocument.
+    * Fixed a bug with the source view for new users that caused a
+      NullPointerException to be thrown when opening the source view.
+    * Added a wrapper exe for windows users using jSmooth
+
+07/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed bug 1509575. Files that are reloaded should always be loaded in a
+      view that can accep the reloaded file.
 
 07/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Xerces needs to be installed in the java endorsed directory now to make
       use of DOM3 classes.
+    * Released 0.5pre1
+    * Keyboard shortcuts are now fully supported.
+    * Added Japanese translation
+
+07/12/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added functionality to save keyboard shortcuts. The shortcuts themselves
+      work but the shortcut labels for menu items are not updated when the
+      action is updated. This is a bug that is fixed in the beta for Java 6
+      but obviously it can't wait that long.
+    * Renamed EnhancedMenu to WrappingMenu. I think it's more descriptive.
+    * Updated messages to load the messages files in UTF-8
+
+07/10/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added the Shortcuts option pane. However, it currently it doesn't work. 
+      It only displays the built in options and the combo box.
+    * Updated the shortcuts option pane so that it shows the select shortcut
+      dialog.
+
+07/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Rewrote the Messages class. Now it loads messages on demand and only
+      loads the messages that it needs but allows the Locale to be changed at
+      any time. It also now supports different countries and variants.
+
+06/27/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added the GUIUtilities class for handling utility functions in jsXe.
+    * Added the GrabKeyDialog which will be used to assign shortcuts.
+    * Updated many classes for supporting shortcuts.
+
+06/23/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added back rudimentary key bindings using Swing Actions so they get
+      dispached by Swing and are displayed in menus. But infrastructure is
+      in place to allow jsXe to catch key bindings itself.
+
+06/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Moved EnhancedMenu to it's own package. I will be creating a new menu
+      class that is specially designed for jsXe's LocalizedActions
+    * Created a new option for how many items can be in menus before they spill
+      over.
+
+06/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated actions in jsXe so that actions can be easily localized and
+      so that they can be assigned shortcuts. Future actions that are registered
+      with jsXe will extend this class. The ActionManager now manages ActionSets
+      and key bindings within jsXe.
+
+06/15/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added a new Status column to the Plugin Manager dialog
+    * Added new plugin properties for the plugin author and release date
+
+06/14/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added the EditAction class for future actions in jsXe.
+      The messages, menu mnemonics, and tooltips will be able to be
+      localized and the shortcuts will be able to be set via the
+      InputManager.
+
+06/13/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added the InputManager for maintaining the key bindings for actions in
+      jsXe.
+    * Updated the param string for PropertyChanged messages.
+    * Moved the general options pane to it's own file.
 
 06/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
@@ -28,6 +114,27 @@
     * Added a new XMLDocumentType class
     * Added factory methods for XMLElements and XMLAttributes to the
       XMLDocument class.
+    * Added a PropertyChanged event for when one of jsXe's properties changes.
+    * Updated lots of javadoc
+    * jsXe's global options now implements AbstractOptionPane
+
+06/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the document options to use abstract classes to lay out the
+      dialog. OptionsPanel is now deprecated in favor of using the OptionPane
+      and AbstractOptionPane classes.
+    * Updated dialogs to use setVisible() instead of show()
+
+06/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added a new Document Options Dialog which handles settings on a per
+      document basis.
+    * Updated the Global Options so that they don't include the per document
+      options anymore.
+    * Updated the DirtyFilesDialog so that it selects the first entry by
+      default.
+    * Updated EnhancedDialogs to be resizable by default.
+    * Updated the file dialog to use localized messages in the title
 
 06/04/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
@@ -42,6 +149,11 @@
 
     * Added insertUpdate and removeUpdate methods to the XMLDocumentListener
     * Updated XMLDocument to notify listeners on insert and remove events.
+
+05/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * All plugins now implement EBListener and are added to the EditBus
+    * Updated the use of EditBus messages
 
 05/24/2006  Ian Lewis   <IanLewis@member.fsf.org>
 

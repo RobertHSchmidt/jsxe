@@ -47,6 +47,7 @@ import java.awt.Component;
  * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
  * @version $Id$
  * @see OptionsDialog
+ * @deprecated implement OptionPane directly or use AbstractOptionPane
  */
 public abstract class OptionsPanel extends JPanel implements OptionPane {
     

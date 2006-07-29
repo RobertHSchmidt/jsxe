@@ -35,6 +35,7 @@ belongs to.
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.BufferHistory;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
@@ -65,7 +66,6 @@ import java.io.File;
 public class OpenRecentFileAction extends AbstractAction {
     
     //{{{ OpenRecentFileAction constructor
-    
     public OpenRecentFileAction(TabbedView parent, BufferHistory.BufferHistoryEntry entry) {
         String path = entry.getPath();
         String fileName = path.substring(path.lastIndexOf(System.getProperty("file.separator"))+1);
@@ -78,13 +78,12 @@ public class OpenRecentFileAction extends AbstractAction {
     }//}}}
     
     //{{{ actionPerformed()
-    
     public void actionPerformed(ActionEvent e) {
         try {
             File file = new File(m_entry.getPath());
             jsXe.openXMLDocument(m_view, file, m_entry.getProperties(), m_entry.getViewName());
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(m_view, ioe, "IO Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(m_view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
         }
         
     }//}}}

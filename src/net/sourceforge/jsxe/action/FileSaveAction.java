@@ -26,30 +26,16 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.action;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.dom.XMLDocument;
-import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.TabbedView;
-//}}}
-
-//{{{ DOM classes
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import javax.xml.parsers.ParserConfigurationException;
+import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
 //{{{ Swing components
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
 import javax.swing.JOptionPane;
 //}}}
 
@@ -69,30 +55,21 @@ import java.io.IOException;
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
  * @version $Id$
  */
-public class FileSaveAction extends AbstractAction {
+public class FileSaveAction extends LocalizedAction {
     
     //{{{ FileSaveAction constructor
-    
-    public FileSaveAction(TabbedView parent) {
-        // putValue(Action.NAME, "Save");   
-    	putValue(Action.NAME, Messages.getMessage("File.Save"));	
-        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl S"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("S").getKeyCode()));
-        view = parent;
+    public FileSaveAction() {
+        super("save-file");
     }//}}}
     
-    //{{{ actionPerformed()
-    
-    public void actionPerformed(ActionEvent e) {
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
         DocumentBuffer buffer = view.getDocumentBuffer();
         try {
             buffer.save(view);
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(view, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
         }
     }//}}}
     
-    //{{{ Private members
-    private TabbedView view;
-    //}}}
 }

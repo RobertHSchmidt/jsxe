@@ -33,7 +33,9 @@ belongs to.
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.*;
+import net.sourceforge.jsxe.msg.*;
 import net.sourceforge.jsxe.action.*;
+import net.sourceforge.jsxe.gui.menu.*;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
@@ -53,15 +55,8 @@ import javax.swing.event.ChangeEvent;
 //}}}
 
 //{{{ AWT components
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 //}}}
 
 //{{{ Java base classes
@@ -163,13 +158,14 @@ public class TabbedView extends JFrame {
         
         if (plugin != null) {
             DocumentView newDocView = plugin.newDocumentView(buffer);
-        
+            
             buffer.addDocumentBufferListener(m_docBufListener);
-            buffer.addDocumentBufferListener(m_statusBar);
-            m_statusBar.setCenterMessage(Messages.getMessage("DocumentBuffer.Loaded.Message", new Object[] { buffer.getName() }));
             
             m_documentViews.add(newDocView);
             Component comp = newDocView.getDocumentViewComponent();
+            
+            //Add key listeners to the DocumentView and sub components
+            addKeyHandler(comp);
             
             tabbedPane.addTab(buffer.getName(), getTabIcon(buffer), comp);
             tabbedPane.setSelectedComponent(comp);
@@ -205,7 +201,7 @@ public class TabbedView extends JFrame {
                 }
             }
             
-            String msg = "Could not open buffer in any installed document views";
+            String msg = Messages.getMessage("DocumentView.Open.Message");
             String error = buf.toString();
             if (!error.equals("")) {
                 msg=msg+"\n\n"+error;
@@ -254,8 +250,6 @@ public class TabbedView extends JFrame {
                     //only close if we _mean_ it.
                     if (docView.close()) {
                         buffer.removeDocumentBufferListener(m_docBufListener);
-                        buffer.removeDocumentBufferListener(m_statusBar);
-                        m_statusBar.setCenterMessage(Messages.getMessage("DocumentBuffer.Closed.Message", new Object[] { buffer.getName() }));
                         tabbedPane.remove(i);
                         m_documentViews.remove(docView);
                         //if the tab removed is not the rightmost tab
@@ -271,6 +265,56 @@ public class TabbedView extends JFrame {
             }
         }
         return false;
+    }//}}}
+    
+    //{{{ reload()
+    /**
+     * Reloads the current DocumentBuffer and makes sure that the
+     * reloaded document is opened in an appropriate DocumentView.
+     * @param buffer the DocumentBuffer to reload.
+     */
+    public void reload() throws IOException {
+        DocumentBuffer buffer = getDocumentBuffer();
+        ViewPlugin plugin = getDocumentView().getViewPlugin();
+        
+        /*
+        try to open it in the current view first. If that doesn't work
+        loop through the other views
+        */
+        
+        StringBuffer buf = new StringBuffer();
+        
+        buffer.reload(this);
+        
+        try {
+            DocumentView view = plugin.newDocumentView(buffer);
+            setDocumentView(view);
+            return;
+        } catch (IOException ioe) {
+            
+            buf.append(buffer.getName() + ": "+ioe.getMessage() + "\n");
+            
+            Iterator types = jsXe.getPluginLoader().getViewPlugins().iterator();
+            
+            while (types.hasNext()) {
+                plugin = (ViewPlugin)types.next();
+                try {
+                    DocumentView view = plugin.newDocumentView(buffer);
+                    setDocumentView(view);
+                    return;
+                } catch (IOException ioe2) {
+                    buf.append(buffer.getName() + ": "+ioe.getMessage() + "\n");
+                }
+            }
+        }
+        
+        String msg = Messages.getMessage("DocumentView.Open.Message");
+        String error = buf.toString();
+        if (!error.equals("")) {
+            msg=msg+"\n\n"+error;
+        }
+        throw new IOException(msg);
+        
     }//}}}
     
     //{{{ getBufferCount()
@@ -324,7 +368,18 @@ public class TabbedView extends JFrame {
         
         return true;
     }//}}}
-
+    
+    //{{{ processKeyEvent()
+    /**
+     * Processes key events checking for registered key bindings and
+     * invoking the appropriate actions.
+     */
+    protected void processKeyEvent(KeyEvent e) {
+        //TODO: process shortcuts
+       // Log.log(Log.DEBUG, this, e.toString());
+        ActionManager.handleKey(e);
+    }//}}}
+    
     //{{{ Private static members
     
     private static final String _WIDTH = "tabbedview.width";
@@ -395,7 +450,6 @@ public class TabbedView extends JFrame {
     }//}}}
     
     //{{{ updateRecentFilesMenu()
-    
     private void updateRecentFilesMenu() {
         /*
         TODO: Make this more efficient
@@ -439,19 +493,26 @@ public class TabbedView extends JFrame {
         
         //{{{ build and add action set
         ActionSet set = new ActionSet("Built-In Commands");
-        set.addAction("open-file", new FileOpenAction(this));
-        set.addAction("save-file", new FileSaveAction(this));
-        set.addAction("save-as", new FileSaveAsAction(this));
-        set.addAction("reload-file", new FileReloadAction(this));
-        set.addAction("close-file", new FileCloseAction(this));
-        set.addAction("close-all", new FileCloseAllAction(this));
-        set.addAction("exit", new FileExitAction(this));
-        set.addAction("general-options", new ToolsOptionsAction(this));
-        set.addAction("plugin-manager", new ToolsPluginManagerAction(this));
-        set.addAction("about-jsxe", new jsxeAboutDialog(this));
-        set.addAction("activity-log", new ActivityLogAction(this));
-        set.addAction("validation-errors", new ValidationErrorsAction(this));
-        jsXe.addActionSet(set);
+        set.addAction(new FileNewAction());
+        set.addAction(new FileOpenAction());
+        set.addAction(new FileSaveAction());
+        set.addAction(new FileSaveAsAction());
+        set.addAction(new FileReloadAction());
+        set.addAction(new FileCloseAction());
+        set.addAction(new FileCloseAllAction());
+        set.addAction(new FileExitAction());
+        set.addAction(new DocumentOptionsAction());
+        set.addAction(new ToolsOptionsAction());
+        set.addAction(new ToolsPluginManagerAction());
+        set.addAction(new jsxeAboutDialog());
+        set.addAction(new ActivityLogAction());
+        set.addAction(new ValidationErrorsAction());
+        set.addAction(new CutAction());
+        set.addAction(new CopyAction());
+        set.addAction(new PasteAction());
+        set.addAction(new FindAction());
+        set.addAction(new FindNextAction());
+        ActionManager.addActionSet(set);
         //}}}
         
         createDefaultMenuItems();
@@ -480,6 +541,31 @@ public class TabbedView extends JFrame {
         
         setBounds(new Rectangle(x, y, width, height));
         
+        EditBus.addToBus(new EBListener() {
+            public void handleMessage(EBMessage message) {
+                if (message instanceof PropertyChanged) {
+                    PropertyChanged msg = (PropertyChanged)message;
+                    if (msg.getKey().endsWith(".shortcut")) {
+                        //hack to get the menubar to display the correct
+                        //shortcuts as the menu accelerators
+                        createDefaultMenuItems();
+                        updateMenuBar();
+                    }
+                }
+                
+                /*
+                Catch when a document is reloaded and make sure the view
+                can still handle the structure..
+                */
+                if (message instanceof DocumentBufferUpdate) {
+                    DocumentBufferUpdate msg = (DocumentBufferUpdate)message;
+                    if (DocumentBufferUpdate.LOADED.equals(msg.getWhat())) {
+                        
+                    }
+                }
+            }
+        });
+        
     }//}}}
     
     //{{{ createDefaultMenuItems()
@@ -489,29 +575,29 @@ public class TabbedView extends JFrame {
         //{{{ Create File Menu
         m_fileMenu = new JMenu(Messages.getMessage("File.Menu"));
         m_fileMenu.setMnemonic('F');
-            JMenuItem menuItem = new JMenuItem(new FileNewAction(this));
+            JMenuItem menuItem = new JMenuItem(ActionManager.getAction("new-file"));
             m_fileMenu.add( menuItem );
-            menuItem = new JMenuItem(jsXe.getAction("open-file"));
+            menuItem = new JMenuItem(ActionManager.getAction("open-file"));
             m_fileMenu.add( menuItem );
             
             //Add recent files menu
-            m_recentFilesMenu = new EnhancedMenu(Messages.getMessage("File.Recent"), 20);
+            m_recentFilesMenu = new WrappingMenu(Messages.getMessage("File.Recent"), jsXe.getIntegerProperty("menu.spill.over", 20));
             m_fileMenu.add(m_recentFilesMenu);
             
             m_fileMenu.addSeparator();
-            menuItem = new JMenuItem(jsXe.getAction("save-file"));
+            menuItem = new JMenuItem(ActionManager.getAction("save-file"));
             m_fileMenu.add( menuItem );
-            menuItem = new JMenuItem(jsXe.getAction("save-as"));
-            m_fileMenu.add( menuItem );
-            m_fileMenu.addSeparator();
-            menuItem = new JMenuItem(jsXe.getAction("reload-file"));
+            menuItem = new JMenuItem(ActionManager.getAction("save-as"));
             m_fileMenu.add( menuItem );
             m_fileMenu.addSeparator();
-            menuItem = new JMenuItem(jsXe.getAction("close-file"));
+            menuItem = new JMenuItem(ActionManager.getAction("reload-file"));
             m_fileMenu.add( menuItem );
-            menuItem = new JMenuItem(jsXe.getAction("close-all"));
+            m_fileMenu.addSeparator();
+            menuItem = new JMenuItem(ActionManager.getAction("close-file"));
             m_fileMenu.add( menuItem );
-            menuItem = new JMenuItem(jsXe.getAction("exit"));
+            menuItem = new JMenuItem(ActionManager.getAction("close-all"));
+            m_fileMenu.add( menuItem );
+            menuItem = new JMenuItem(ActionManager.getAction("exit"));
             m_fileMenu.add( menuItem );
         //}}}
         
@@ -532,11 +618,13 @@ public class TabbedView extends JFrame {
         //{{{ Create Tools Menu
         m_toolsMenu = new JMenu(Messages.getMessage("Tools.Menu"));
         m_toolsMenu.setMnemonic('T');
-            menuItem = new JMenuItem(jsXe.getAction("general-options"));
+            menuItem = new JMenuItem(ActionManager.getAction("document-options"));
             m_toolsMenu.add(menuItem);
-            menuItem = new JMenuItem(jsXe.getAction("plugin-manager"));
+            menuItem = new JMenuItem(ActionManager.getAction("general-options"));
             m_toolsMenu.add(menuItem);
-            menuItem = new JMenuItem(jsXe.getAction("validation-errors"));
+            menuItem = new JMenuItem(ActionManager.getAction("plugin-manager"));
+            m_toolsMenu.add(menuItem);
+            menuItem = new JMenuItem(ActionManager.getAction("validation-errors"));
             m_toolsMenu.add(menuItem);
             
             ArrayList plugins = jsXe.getPluginLoader().getAllPlugins();
@@ -552,9 +640,9 @@ public class TabbedView extends JFrame {
         //{{{ Create Help Menu
         m_helpMenu = new JMenu(Messages.getMessage("Help.Menu"));
         m_helpMenu.setMnemonic('H');
-            menuItem = new JMenuItem(jsXe.getAction("activity-log"));
+            menuItem = new JMenuItem(ActionManager.getAction("activity-log"));
             m_helpMenu.add(menuItem);
-            menuItem = new JMenuItem(jsXe.getAction("about-jsxe"));
+            menuItem = new JMenuItem(ActionManager.getAction("about-jsxe"));
             m_helpMenu.add(menuItem);
         //}}}
 
@@ -577,17 +665,21 @@ public class TabbedView extends JFrame {
             
             DocumentBuffer currentBuffer = getDocumentBuffer();
             
+            //Add key listeners to the DocumentView and sub components
+            Component comp = newView.getDocumentViewComponent();
+            addKeyHandler(comp);
+            
             //no exceptions? cool. register the new view
             m_documentViews.remove(oldView);
             m_documentViews.add(index, newView);
             tabbedPane.remove(index);
-            tabbedPane.add(newView.getDocumentViewComponent(), index);
+            tabbedPane.add(comp, index);
             tabbedPane.setIconAt(index, getTabIcon(currentBuffer));
             tabbedPane.setTitleAt(index, currentBuffer.getName());
             tabbedPane.setSelectedIndex(index);
             
             //not sure why stateChanged doesn't get called above but
-            //update manually
+            //update manually.
             updateMenuBar();
         }
     }//}}}
@@ -604,6 +696,50 @@ public class TabbedView extends JFrame {
         return m_cleanIcon;
     }//}}}
     
+    //{{{ ContainerHandler class
+    /**
+     * Recursively adds our key listener to sub-components
+     */
+    private class ContainerHandler extends ContainerAdapter {
+        
+        //{{{ componentAdded()
+        public void componentAdded(ContainerEvent evt) {
+            addKeyHandler(evt.getChild());
+        }//}}}
+
+        //{{{ componentRemoved()
+        public void componentRemoved(ContainerEvent evt) {
+            removeKeyHandler(evt.getChild());
+        }//}}}
+        
+    }//}}}
+    
+    //{{{ addKeyHandler()
+    private void addKeyHandler(Component comp) {
+        comp.addKeyListener(m_keyHandler);
+        if(comp instanceof Container) {
+            Container cont = (Container)comp;
+            cont.addContainerListener(m_containerHandler);
+            Component[] comps = cont.getComponents();
+            for(int i = 0; i < comps.length; i++) {
+                addKeyHandler(comps[i]);
+            }
+        }
+    }//}}}
+    
+    //{{{ removeKeyHandler()
+    private void removeKeyHandler(Component comp) {
+        comp.removeKeyListener(m_keyHandler);
+        if(comp instanceof Container) {
+            Container cont = (Container)comp;
+            cont.removeContainerListener(m_containerHandler);
+            Component[] comps = cont.getComponents();
+            for(int i = 0; i < comps.length; i++) {
+                removeKeyHandler(comps[i]);
+            }
+        }
+    }//}}}
+    
     //{{{ SetViewAction class
     /**
      * Temporary class to change views.
@@ -615,9 +751,7 @@ public class TabbedView extends JFrame {
         //}}}
         
         //{{{ SetDefaultViewAction constructor
-        
         public SetViewAction(ViewPlugin view) throws UnrecognizedPluginException {
-            
             //need to get the human readable name.
             m_view = view;
             putValue(Action.NAME, jsXe.getPluginLoader().getPluginProperty(m_view, JARClassLoader.PLUGIN_HUMAN_READABLE_NAME));
@@ -633,7 +767,7 @@ public class TabbedView extends JFrame {
                 setDocumentView(view);
             } catch (IOException ioe) {
                 Log.log(Log.WARNING, TabbedView.this, ioe.getMessage());
-                JOptionPane.showMessageDialog(TabbedView.this, ioe, "I/O Error", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(TabbedView.this, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
             }
         }//}}}
         
@@ -644,18 +778,27 @@ public class TabbedView extends JFrame {
     private class WindowHandler extends WindowAdapter {
         
         //{{{ windowClosing()
-        
         public void windowClosing(WindowEvent e) {
             jsXe.exit(TabbedView.this);
         }//}}}
         
     }//}}}
     
+    //{{{ KeyHandler class
+    private class KeyHandler extends KeyAdapter {
+        
+        //{{{ keyPressed()
+        public void keyPressed(KeyEvent evt) {
+            processKeyEvent(evt);
+        }//}}}
+    
+    }//}}}
+    
     private JMenu m_fileMenu;
     private JMenu m_viewMenu;
     private JMenu m_toolsMenu;
     private JMenu m_helpMenu;
-    private EnhancedMenu m_recentFilesMenu;
+    private WrappingMenu m_recentFilesMenu;
     private ArrayList m_documentViews = new ArrayList();
     
     private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -695,5 +838,8 @@ public class TabbedView extends JFrame {
             }//}}}
             
     };//}}}
+    
+    private KeyHandler m_keyHandler = new KeyHandler();
+    private ContainerHandler m_containerHandler = new ContainerHandler();
     //}}}
 }

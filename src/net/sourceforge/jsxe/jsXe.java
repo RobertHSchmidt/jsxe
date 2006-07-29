@@ -39,7 +39,10 @@ belongs to.
 import net.sourceforge.jsxe.gui.*;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.options.AbstractOptionPane;
+import net.sourceforge.jsxe.options.OptionPane;
 import net.sourceforge.jsxe.action.ActivityLogAction;
+import net.sourceforge.jsxe.msg.PropertyChanged;
 //}}}
 
 //{{{ Swing classes
@@ -74,7 +77,7 @@ import java.text.ParseException;
  */
 public class jsXe {
     
-    //{{{ static instance variables\
+    //{{{ static instance variables
     /**
      * The minimum version of the Java Runtime Environment needed to run
      * and compile jsXe
@@ -101,8 +104,8 @@ public class jsXe {
             String javaVersion = System.getProperty("java.version");
             if(javaVersion.compareTo(MIN_JAVA_VERSION) < 0)
             {
-                System.err.println(getAppTitle() + ": ERROR: You are running Java version " + javaVersion + ".");
-                System.err.println(getAppTitle() + ": ERROR:" + getAppTitle()+" requires Java "+MIN_JAVA_VERSION+" or later.");
+                System.err.println("jsXe: ERROR: You are running Java version " + javaVersion + ".");
+                System.err.println("jsXe: ERROR: jsXe requires Java "+MIN_JAVA_VERSION+" or later.");
                 System.exit(1);
             }//}}}
             
@@ -120,7 +123,7 @@ public class jsXe {
             if(!_pluginsDirectory.exists())
                 _pluginsDirectory.mkdirs();
             
-            String jsXeHome = System.getProperty("jsxe.home");
+            jsXeHome = System.getProperty("jsxe.home");
             if (jsXeHome == null) {
                 String classpath = System.getProperty("java.class.path");
                 int index = classpath.toLowerCase().indexOf("jsxe.jar");
@@ -140,18 +143,32 @@ public class jsXe {
             
             //}}}
             
-            //{{{ start locale
-            Messages.initializePropertiesObject(null, jsXeHome+fileSep+"messages");
-            //}}}
-            
             //{{{ get and load the configuration files
             initDefaultProps();
+            //}}}
+            
+            //{{{ start logging
+            Log.init(true, Log.ERROR, false);
+            try {
+                BufferedWriter stream = new BufferedWriter(new FileWriter(getSettingsDirectory()+fileSep+"jsXe.log"));
+                stream.flush();
+                stream.write("Log file created on " + new Date());
+                stream.write(System.getProperty("line.separator"));
+                
+                Log.setLogWriter(stream);
+              
+            } catch (IOException ioe) {
+                Log.log(Log.ERROR, jsXe.class, ioe);
+            }
+            //}}}
+            
+            //{{{ start locale
+            Messages.initMessages();
             //}}}
             
             //{{{ parse command line arguments
             String viewname = null;
             ArrayList files = new ArrayList();
-            boolean debug = false;
             for (int i=0; i<args.length; i++) {
                 if (args[i].equals("--help") || args[i].equals("-h")) {
                     printUsage();
@@ -163,7 +180,7 @@ public class jsXe {
                 }
                 
                 if (args[i].equals("--debug")) {
-                    debug = true;
+                    Log.setDebug(true);
                 } else {
                     files.add(args[i]);
                 }
@@ -190,30 +207,21 @@ public class jsXe {
             int y = (dim.height-h)/2;
             progressScreen.setLocation(x, y);
             progressScreen.setVisible(true);
-            //}}}
             
-            //{{{ start logging
-            Log.init(true, Log.ERROR, debug);
-            try {
-                BufferedWriter stream = new BufferedWriter(new FileWriter(getSettingsDirectory()+fileSep+"jsXe.log"));
-                stream.flush();
-                stream.write("Log file created on " + new Date());
-                stream.write(System.getProperty("line.separator"));
-                
-                Log.setLogWriter(stream);
-              
-            } catch (IOException ioe) {
-                Log.log(Log.ERROR, jsXe.class, ioe);
-            }
             progressScreen.updateSplashScreenDialog(10);
             //}}}
             
             //{{{ check Xerces version
-            String xercesVersion = org.apache.xerces.impl.Version.getVersion();
+            String xercesVersion = "0";
+            try {
+                xercesVersion = org.apache.xerces.impl.Version.getVersion();
+            } catch (Throwable e) {}
+            
             if (MiscUtilities.compareStrings(xercesVersion, MIN_XERCES_VERSION, false) < 0) {
-                String msg = Messages.getMessage("No.Xerces.Error", new String[] { MIN_XERCES_VERSION });
-                Log.log(Log.ERROR, jsXe.class, msg);
-                JOptionPane.showMessageDialog(null, msg, Messages.getMessage("No.Xerces.Error.Title", new String[] { MIN_XERCES_VERSION }), JOptionPane.WARNING_MESSAGE);
+                //close the splash screen so they can see the message
+                progressScreen.dispose();
+                
+                GUIUtilities.error(null, "No.Xerces.Error", new String[] { MIN_XERCES_VERSION });
                 System.exit(1);
             }
             progressScreen.updateSplashScreenDialog(20);
@@ -250,7 +258,6 @@ public class jsXe {
             //}}}
 
             //{{{ start plugins
-            
             Log.log(Log.NOTICE, jsXe.class, "Starting plugins");
             pluginMessages.addAll(m_pluginLoader.startPlugins());
             Vector pluginErrors = new Vector();
@@ -283,7 +290,10 @@ public class jsXe {
                     setProperty(name, props.getProperty(name));
                 }
                 
-                addActionSet(plugin.getActionSet());
+                ActionManager.addActionSet(plugin.getActionSet());
+                
+                //add the plugin to the editbus
+                EditBus.addToBus(plugin);
             }
             progressScreen.updateSplashScreenDialog(60);
             //}}}
@@ -311,6 +321,32 @@ public class jsXe {
             initPLAF();
             //}}}
             
+            //{{{ Add EditBus Listener to update key bindings when properties are changed
+            /*
+             This must be done before creating the TabbedView so that
+             the ActionManager's listener is notified of changes first.
+            */
+            
+            EditBus.addToBus(new EBListener() {
+
+                //{{{ handleMessage()
+                public void handleMessage(EBMessage message) {
+                    if (message instanceof PropertyChanged) {
+                        PropertyChanged msg = (PropertyChanged)message;
+                        if (msg.getKey().endsWith(".shortcut")) {
+                            String actionName = msg.getKey().substring(0, msg.getKey().lastIndexOf("."));
+                            String keyBinding = jsXe.getProperty(msg.getKey());
+                            if (keyBinding != null) {
+                                ActionManager.addKeyBinding(keyBinding, actionName);
+                            } else {
+                                ActionManager.removeKeyBinding(msg.getOldValue());
+                            }
+                        }
+                    }
+                }//}}}
+            
+            });//}}}
+            
             //{{{ create the TabbedView
             Log.log(Log.NOTICE, jsXe.class, "Starting the main window");
             TabbedView tabbedview = null;
@@ -331,11 +367,24 @@ public class jsXe {
                
             } catch (IOException ioe) {
                 Log.log(Log.ERROR, jsXe.class, ioe);
-                JOptionPane.showMessageDialog(null, ioe.getMessage()+".", Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+                
+                //close the splashscreen so they can see the messages
+                progressScreen.dispose();
+                
+                //show the error list dialog here too
+                if (pluginErrors.size() > 0) {
+                    new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), false);
+                }
+                
+                JOptionPane.showMessageDialog(null, ioe.getMessage()+".", Messages.getMessage("IO.Error.title"), JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
             }
             m_activeView = tabbedview;
             progressScreen.updateSplashScreenDialog(85);
+            //}}}
+            
+            //{{{ init key bindings
+            ActionManager.initKeyBindings();
             //}}}
             
             //{{{ Parse files to open on the command line
@@ -358,7 +407,7 @@ public class jsXe {
             
             //Show plugin error dialog
             if (pluginErrors.size() > 0) {
-                new ErrorListDialog(tabbedview, "Plugin Error", "The following plugins could not be loaded:", new Vector(pluginErrors), true);
+                new ErrorListDialog(tabbedview, Messages.getMessage("Plugin.Error.title"), Messages.getMessage("Plugin.Error.List.message"), new Vector(pluginErrors), false);
             }
             
             Log.log(Log.NOTICE, jsXe.class, "jsXe started in "+(System.currentTimeMillis()-startTime)+" milliseconds");
@@ -436,6 +485,22 @@ public class jsXe {
         return jsXeIcon;
     }//}}}
     
+    //{{{ getHomeDirectory() method
+    /**
+     * Returns the path to where jsXe is installed
+     */
+    public static String getInstallDirectory() {
+        return jsXeHome;
+    } //}}}
+    
+    //{{{ getHomeDirectory() method
+    /**
+     * Returns the path to the user's home directory.
+     */
+    public static String getHomeDirectory() {
+        return m_homeDirectory;
+    } //}}}
+    
     //{{{ getSettingsDirectory() method
     /**
      * Returns the path of the directory where user-specific settings
@@ -500,7 +565,7 @@ public class jsXe {
                         } catch (IOException ioe) {
                             //I/O error doesn't change value of success
                             Log.log(Log.WARNING, jsXe.class, ioe);
-                            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
                         }
                     }
                 }
@@ -778,7 +843,11 @@ public class jsXe {
     }//}}}
     
     //{{{ getBufferHistory()
-    
+    /**
+     * Gets jsXe's buffer history. This is the history of the
+     * of the last files that were opened by jsXe.
+     * @return jsXe's buffer history
+     */
     public static BufferHistory getBufferHistory() {
         return m_bufferHistory;
     }//}}}
@@ -874,7 +943,7 @@ public class jsXe {
         } catch (IOException ioe) {
             //failed save of a dirty buffer
             Log.log(Log.ERROR, jsXe.class, ioe);
-            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
             m_exiting = false;
         }
     }//}}}
@@ -906,6 +975,8 @@ public class jsXe {
         System.exit(errorcode);
     }//}}}
     
+    //{{{ Properties methods
+    
     //{{{ setProperty()
     /**
      * Sets a global property to jsXe.
@@ -914,12 +985,17 @@ public class jsXe {
      * @return The previous value for the key, or null if there was none.
      */
     public static Object setProperty(String key, String value) {
-        if (value == null) {
-            props.remove(key);
-            return null;
-        } else {
-            return props.setProperty(key, value);
+        String oldValue = getProperty(key);
+        
+        if (oldValue != value) {
+            if (value == null) {
+                props.remove(key);
+            } else {
+                props.setProperty(key, value);
+            }
+            EditBus.send(new PropertyChanged(key, oldValue));
         }
+        return oldValue;
     }//}}}
     
     //{{{ getDefaultProperty()
@@ -975,7 +1051,11 @@ public class jsXe {
             try {
                 return Integer.parseInt(value.trim());
             } catch(NumberFormatException nf) {
-                return defaultValue;
+                try {
+                    return Integer.parseInt(jsXe.getDefaultProperty(key));
+                } catch(NumberFormatException nf2) {
+                    return defaultValue;
+                }
             }
         }
     }//}}}
@@ -1065,13 +1145,21 @@ public class jsXe {
 			try {
 				size = Integer.parseInt(sizeString);
 			} catch(NumberFormatException nf) {
-				return def;
+				try {
+                    size = Integer.parseInt(jsXe.getDefaultProperty(name+"size"));
+                } catch(NumberFormatException nf2) {
+                    return def;
+                }
 			}
 
 			try {
 				style = Integer.parseInt(styleString);
 			} catch(NumberFormatException nf) {
-				return def;
+				try {
+                    style = Integer.parseInt(jsXe.getDefaultProperty(name+"style"));
+                } catch(NumberFormatException nf2) {
+                    return def;
+                }
 			}
 
 			return new Font(family,style,size);
@@ -1099,44 +1187,7 @@ public class jsXe {
 		setIntegerProperty(name + "style",value.getStyle());
 	} //}}}
     
-    //{{{ addActionSet()
-    
-    public static void addActionSet(ActionSet set) {
-        m_actionSets.add(set);
-    }//}}}
-    
-    //{{{ getAction()
-    /**
-     * Gets the action set with the given name
-     */
-    public static Action getAction(String name) {
-        for (int i = 0; i < m_actionSets.size(); i++) {
-            Action action = ((ActionSet)m_actionSets.get(i)).getAction(name);
-            if (action != null) {
-                return action;
-            }
-        }
-        return null;
-    }//}}}
-    
-    //{{{ getActionSets()
-    /**
-     * Gets all action sets that have been registered with jsXe
-     * @return an ArrayList of ActionSet objects
-     */
-    public ArrayList getActionSets() {
-        return m_actionSets;
-    }//}}}
-    
-    //{{{ getOptionsPanel()
-    /**
-     * Gets the options panel for the jsXe application.
-     * @return The OptionsPanel with the options for jsXe.
-     */
-    public static final OptionsPanel getOptionsPanel() {
-        jsXeOptions = new jsXeOptionsPanel();
-        return jsXeOptions;
-    }//}}}
+    //}}}
     
     //{{{ getPluginLoader()
     /**
@@ -1163,7 +1214,7 @@ public class jsXe {
     private jsXe() {}
     //}}}
     
-    // {{{ Private static members
+    //{{{ Private static members
 
     //{{{ fontStyleToString() method
 	private static String fontStyleToString(int style) {
@@ -1243,7 +1294,7 @@ public class jsXe {
                 } catch (IOException ioe) {
                     //I/O error doesn't change value of success
                     Log.log(Log.WARNING, jsXe.class, ioe);
-                    JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.Title"), JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(view, ioe, Messages.getMessage("IO.Error.title"), JOptionPane.WARNING_MESSAGE);
                 }
             }
         }
@@ -1292,140 +1343,6 @@ public class jsXe {
         
     }//}}}
     
-    //{{{ jsXeOptionsPanel class
-    
-    private static class jsXeOptionsPanel extends OptionsPanel {
-        
-        //{{{ jsXeOptionsPanel constructor
-        
-        public jsXeOptionsPanel() {
-            
-            GridBagLayout layout = new GridBagLayout();
-            GridBagConstraints constraints = new GridBagConstraints();
-            
-            setLayout(layout);
-            
-            int gridY = 0;
-            
-            int maxRecentFiles = 20;
-            try {
-                maxRecentFiles = Integer.parseInt(jsXe.getProperty("max.recent.files"));
-            } catch (NumberFormatException nfe) {
-                try {
-                    maxRecentFiles = Integer.parseInt(jsXe.getDefaultProperty("max.recent.files"));
-                } catch (NumberFormatException nfe2) {
-                    Log.log(Log.ERROR, jsXe.class, "Could not read max.recent.files property");
-                }
-            }
-            
-            JLabel maxRecentFilesLabel = new JLabel(Messages.getMessage("Global.Options.Max.Recent.Files"));
-            maxRecentFilesLabel.setToolTipText(Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
-            
-            Vector sizes = new Vector(4);
-            sizes.add("10");
-            sizes.add("20");
-            sizes.add("30");
-            sizes.add("40");
-            maxRecentFilesComboBox = new JComboBox(sizes);
-            maxRecentFilesComboBox.setEditable(true);
-            maxRecentFilesComboBox.setSelectedItem(Integer.toString(maxRecentFiles));
-            
-            maxRecentFilesComboBox.setToolTipText(Messages.getMessage("Global.Options.Max.Recent.Files.ToolTip"));
-            
-            JLabel networkLabel = new JLabel(Messages.getMessage("Global.Options.network"));
-            
-            String[] networkValues = {
-                Messages.getMessage("Global.Options.network-always"),
-                Messages.getMessage("Global.Options.network-cache"),
-                Messages.getMessage("Global.Options.network-off")
-
-            };
-            
-            network = new JComboBox(networkValues);
-            network.setSelectedIndex(jsXe.getIntegerProperty("xml.cache", 1));
-            
-            constraints.gridy      = gridY;
-            constraints.gridx      = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(maxRecentFilesLabel, constraints);
-            add(maxRecentFilesLabel);
-            
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 1;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(maxRecentFilesComboBox, constraints);
-            add(maxRecentFilesComboBox);
-            
-            constraints.gridy      = gridY;
-            constraints.gridx      = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(networkLabel, constraints);
-            add(networkLabel);
-            
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 1;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(network, constraints);
-            add(network);
-        }//}}}
-        
-        //{{{ getName()
-        
-        public String getName() {
-            return "jsxeoptions";
-        }//}}}
-        
-        //{{{ save()
-        public void save() {
-            try {
-                //don't need to set dirty, no change to text
-                jsXe.setProperty("max.recent.files", (new Integer(maxRecentFilesComboBox.getSelectedItem().toString())).toString());
-            } catch (NumberFormatException nfe) {
-                //Bad input, don't save.
-            }
-            jsXe.setIntegerProperty("xml.cache",network.getSelectedIndex());
-            CatalogManager.propertiesChanged();
-        }//}}}
-        
-        //{{{ getTitle()
-        
-        public String getTitle() {
-            return Messages.getMessage("Global.Options.Title");
-        }//}}}
-        
-        //{{{ toString()
-        
-        public String toString() {
-            return getTitle();
-        }//}}}
-        
-        //{{{ Private Members
-        private JComboBox maxRecentFilesComboBox;
-        private JComboBox network;
-        //}}}
-        
-    }//}}}
-    
     //{{{ printUsage()
     
     private static void printUsage() {
@@ -1457,13 +1374,13 @@ public class jsXe {
     private static final Properties defaultProps = new Properties();
     private static Properties props = new Properties();
     private static BufferHistory m_bufferHistory;
-    private static ArrayList m_actionSets = new ArrayList();
     private static JARClassLoader m_pluginLoader;
     private static TabbedView m_activeView;
     private static String m_settingsDirectory;
     private static String m_homeDirectory;
+    private static String jsXeHome;
     
-    private static OptionsPanel jsXeOptions;
+    private static OptionPane jsXeOptions;
     //}}}
     
 }

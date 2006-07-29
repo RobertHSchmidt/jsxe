@@ -103,7 +103,33 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
                 DefaultListSelectionModel model = (DefaultListSelectionModel)e.getSource();
                 for (int i=0;i<m_pluginNames.size();i++) {
                     if (model.isSelectedIndex(i)) {
-                        descArea.setText(jsXe.getPluginLoader().getPluginProperty(m_pluginNames.get(i).toString(), JARClassLoader.PLUGIN_DESCRIPTION));
+                        JARClassLoader loader = jsXe.getPluginLoader();
+                        String releaseDate = loader.getPluginProperty(m_pluginNames.get(i).toString(), JARClassLoader.PLUGIN_RELEASE_DATE);
+                        String author = loader.getPluginProperty(m_pluginNames.get(i).toString(), JARClassLoader.PLUGIN_AUTHOR);
+                        String url = loader.getPluginProperty(m_pluginNames.get(i).toString(), JARClassLoader.PLUGIN_URL);
+                        String desc = loader.getPluginProperty(m_pluginNames.get(i).toString(), JARClassLoader.PLUGIN_DESCRIPTION);
+                        
+                        StringBuffer text = new StringBuffer();
+                        if (author != null && !author.equals("")) {
+                            text.append("Author: ");
+                            text.append(author);
+                            text.append("\n");
+                        }
+                        if (releaseDate != null && !releaseDate.equals("")) {
+                            text.append("Release Date: ");
+                            text.append(releaseDate);
+                            text.append("\n");
+                        }
+                        if (url != null && !url.equals("")) {
+                            text.append("URL: ");
+                            text.append(url);
+                            text.append("\n");
+                        }
+                        if (desc != null) {
+                            text.append(desc);
+                        }
+                        
+                        descArea.setText(text.toString());
                     }
                 }
             }
@@ -133,7 +159,8 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         content.add(buttons, BorderLayout.SOUTH);
         
         loadGeometry(this, "pluginmgr");
-        show();
+        
+        setVisible(true);
     }//}}}
 
     //{{{ ok()
@@ -162,62 +189,65 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
     } //}}}
     
     //{{{ PluginManagerTableModel class
-    
     private class PluginManagerTableModel implements TableModel {
         
         //{{{ addTableModelListener()
-        
         public void addTableModelListener(TableModelListener l) {
             //nothing
         }//}}}
         
         //{{{ getColumnClass()
-        
         public Class getColumnClass(int columnIndex) {
             return "".getClass();
         }//}}}
         
         //{{{ getColumnCount()
-        
         public int getColumnCount() {
-            return 2;
+            return 3;
         }//}}}
         
         //{{{ getColumnName()
-        
         public String getColumnName(int columnIndex) {
             String name = null;
-            if (columnIndex == 0) {
-                name = "Name";
+            switch (columnIndex) {
+                case 0:
+                    return Messages.getMessage("Plugin.Manager.Name.Column.Header");
+                case 1:
+                    return Messages.getMessage("Plugin.Manager.Version.Column.Header");
+                case 2:
+                    return Messages.getMessage("Plugin.Manager.Status.Column.Header");
+                default:
+                    throw new Error("Column out of range");
             }
-            if (columnIndex == 1) {
-                name = "Version";
-            }
-            return name;
         }//}}}
         
         //{{{ getRowCount()
-        
         public int getRowCount() {
             return m_pluginNames.size();
         }//}}}
         
         //{{{ getValueAt()
-        
         public Object getValueAt(int rowIndex, int columnIndex) {
             String value = null;
             JARClassLoader loader = jsXe.getPluginLoader();
-            if (columnIndex == 0) {
-                value = loader.getPluginProperty(m_pluginNames.get(rowIndex).toString(), JARClassLoader.PLUGIN_HUMAN_READABLE_NAME);
+            switch (columnIndex) {
+                case 0:
+                    return loader.getPluginProperty(m_pluginNames.get(rowIndex).toString(), JARClassLoader.PLUGIN_HUMAN_READABLE_NAME);
+                case 1:
+                    return loader.getPluginProperty(m_pluginNames.get(rowIndex).toString(), JARClassLoader.PLUGIN_VERSION);
+                case 2:
+                    ActionPlugin plugin = loader.getPlugin(m_pluginNames.get(rowIndex).toString());
+                    if (plugin instanceof ActionPlugin.Broken) {
+                        return Messages.getMessage("Plugin.Manager.Broken.Status");
+                    } else {
+                        return Messages.getMessage("Plugin.Manager.Loaded.Status");
+                    }
+                default:
+                    throw new Error("Column out of range");
             }
-            if (columnIndex == 1) {
-                value = loader.getPluginProperty(m_pluginNames.get(rowIndex).toString(), JARClassLoader.PLUGIN_VERSION);
-            }
-            return value;
         }//}}}
         
         //{{{ isCellEditable()
-        
         public boolean isCellEditable(int rowIndex, int columnIndex) {
             return false;
         }//}}}
@@ -229,7 +259,6 @@ public class PluginManagerDialog extends EnhancedDialog implements ActionListene
         }//}}}
         
         //{{{ setValueAt()
-        
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             // nothing. not supported.
         }//}}}

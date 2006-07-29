@@ -29,7 +29,7 @@ package net.sourceforge.jsxe;
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.gui.DocumentView;
-import net.sourceforge.jsxe.gui.OptionsPanel;
+import net.sourceforge.jsxe.options.OptionPane;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
@@ -57,7 +57,7 @@ import java.util.Enumeration;
  * @since jsXe 0.3 beta
  * @version $Id$
  */
-public abstract class ActionPlugin {
+public abstract class ActionPlugin implements EBListener {
     
     //{{{ Private members
     private ActionSet m_actionSet;
@@ -82,13 +82,13 @@ public abstract class ActionPlugin {
         return null;
     }//}}}
     
-    //{{{ getOptionsPanel()
+    //{{{ getOptionPane()
     /**
-     * Gets the options panel for setting general plugin options. The default
+     * Gets the option pane for setting general plugin options. The default
      * implementation returns null.
-     * @return an OptionsPanel for editing this plugin's options
+     * @return an OptionPane for editing this plugin's options
      */
-    public OptionsPanel getOptionsPanel(DocumentBuffer buffer) {
+    public OptionPane getOptionPane(DocumentBuffer buffer) {
         return null;
     }//}}}
     
@@ -109,8 +109,8 @@ public abstract class ActionPlugin {
      * @param name the name of the action
      * @param action the action itself
      */
-    protected void addAction(String name, Action action) {
-        m_actionSet.addAction(name, action);
+    protected void addAction(LocalizedAction action) {
+        m_actionSet.addAction(action);
     }//}}}
     
     //{{{ getActionSet()
@@ -122,6 +122,9 @@ public abstract class ActionPlugin {
     public ActionSet getActionSet() {
         return m_actionSet;
     }//}}}
+    
+    //{{{ handleMessage()
+    public void handleMessage(EBMessage message) {}//}}}
     
     //{{{ Broken class
     

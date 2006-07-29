@@ -30,9 +30,14 @@ package net.sourceforge.jsxe.util;
 //{{{ Imports
 import net.sourceforge.jsxe.OperatingSystem;
 import javax.swing.text.Segment;
-import javax.swing.JMenuItem;
 import java.io.*;
 import java.util.*;
+
+import javax.swing.JMenuItem;
+
+import javax.swing.JPopupMenu;
+import java.awt.Component;
+import javax.swing.JComponent;
 //}}}
 
 /**
@@ -1140,7 +1145,7 @@ loop:       for(int i = 0; i < str.length(); i++)
 
         return permissions;
     } //}}}
-
+    
     //{{{ XML Methods
     
     //{{{ getLocalNameFromQualifiedName()
@@ -1301,6 +1306,44 @@ loop:       for(int i = 0; i < str.length(); i++)
     } //}}}
     
     //}}}
+    
+    //{{{ mergeProperties()
+    /**
+     * Merges two Properties sets together into a new Properties object
+     * giving precidence to the properties in the first argument. If either
+     * Properties object is null, the other Properties object is returned. 
+     * If both are null then null is returned.
+     *
+     * @param props1 the first Properties object whose properties are given
+     *               precidence.
+     * @param props2 the second Properties object whose properties are merged
+     *               with that of the first.
+     */
+    public static Properties mergeProperties(Properties props1, Properties props2) {
+        if (props1 == null) {
+            return props2;
+        }
+        
+        if (props2 == null) {
+            return props1;
+        }
+        
+        Properties props = new Properties();
+        
+        Enumeration names = props2.propertyNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement().toString();
+            props.setProperty(name, props2.getProperty(name));
+        }
+        
+        names = props1.propertyNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement().toString();
+            props.setProperty(name, props1.getProperty(name));
+        }
+        
+        return props;
+    }//}}}
     
     //{{{ isTrue()
     /**

@@ -35,10 +35,12 @@ belongs to.
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.dom.AdapterNode;
+import net.sourceforge.jsxe.options.AbstractOptionPane;
 import net.sourceforge.jsxe.options.OptionPane;
 import net.sourceforge.jsxe.gui.*;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.msg.DocumentBufferUpdate;
 //}}}
 
 //{{{ Java base classes
@@ -83,6 +85,9 @@ import org.xml.sax.SAXException;
  */
 public class DocumentBuffer extends XMLDocument {
     
+    /**
+     * A status that indicates the file is dirty.
+     */
     public static final int DIRTY = 1;
     
     //{{{ DocumentBuffer constructor
@@ -108,6 +113,7 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = file;
         m_name = file.getName();
+        EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.LOADED));
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -123,6 +129,7 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = null;
         m_name = getUntitledLabel();
+        EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.LOADED));
     }//}}}
     
     //{{{ DocumentBuffer constructor
@@ -139,6 +146,7 @@ public class DocumentBuffer extends XMLDocument {
         setEntityResolver(new DocumentBufferResolver());
         m_file = file;
         m_name = file.getName();
+        EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.LOADED));
     }//}}}
     
     //{{{ close()
@@ -151,7 +159,8 @@ public class DocumentBuffer extends XMLDocument {
      * @throws IOException if the user chooses to save and the file could not be saved
      */
     public boolean close(TabbedView view, boolean confirmClose) throws IOException {
-    	
+    	boolean reallyClose = true;
+        
         if (getStatus(DIRTY) && confirmClose) {
             //If it's dirty ask if you want to save.
             String msg = Messages.getMessage("DocumentBuffer.Close.Message", new String[] { getName() });
@@ -166,13 +175,17 @@ public class DocumentBuffer extends XMLDocument {
                                 messageType);
             
             if (returnVal == JOptionPane.YES_OPTION) {
-                return save(view);
+                reallyClose = save(view);
             } else {
-                return !(returnVal == JOptionPane.CANCEL_OPTION);
+                reallyClose = !(returnVal == JOptionPane.CANCEL_OPTION);
             }
-        } else {
-            return true;
         }
+        
+        if (reallyClose) {
+            EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.CLOSED));
+        }
+        
+        return reallyClose;
     }//}}}
     
     //{{{ addDocumentBufferListener()
@@ -293,6 +306,7 @@ public class DocumentBuffer extends XMLDocument {
                 reader.close();
             }
             setDirty(false);
+            EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.LOADED));
             return true;
         } else {
             return false;
@@ -396,6 +410,8 @@ public class DocumentBuffer extends XMLDocument {
         if (file != null) {
             try {
                 Log.log(Log.NOTICE, this, "Saving file "+getName());
+                EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.SAVING));
+                
                 FileOutputStream out = new FileOutputStream(file);
                 serialize(out);
                 
@@ -464,14 +480,17 @@ public class DocumentBuffer extends XMLDocument {
         return equalsOnDisk(buffer.getFile());
     }//}}}
     
-    //{{{ getOptionsPanel()
+    //{{{ getOptionPane()
     
     /**
      * Gets the pane for editing options for this DocumentBuffer.
      * @return the option pane specific to this DocumentBuffer
      */
-    public OptionsPanel getOptionsPanel() {
-        return new DocumentBufferOptionsPanel();
+    public OptionPane getOptionPane() {
+        if (m_optionPane == null) {
+            m_optionPane = new DocumentBufferOptionPane();
+        }
+        return m_optionPane;
     }//}}}
     
     //{{{ fireStructureChanged()
@@ -519,6 +538,7 @@ public class DocumentBuffer extends XMLDocument {
             boolean oldDirty = m_dirty;
             m_dirty=dirty;
             fireStatusChanged(DIRTY, oldDirty);
+            EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.DIRTY_CHANGED));
         }
     }//}}}
     
@@ -546,31 +566,26 @@ public class DocumentBuffer extends XMLDocument {
         return "Untitled-" + Integer.toString(untitledNo+1);
     }//}}}
     
-    //{{{ DocumentBufferOptionsPane class
+    //{{{ DocumentBufferOptionPane class
+    private class DocumentBufferOptionPane extends AbstractOptionPane {
     
-    private class DocumentBufferOptionsPanel extends OptionsPanel {
-    
-        //{{{ DocumentBufferOptionsPanel()
+        //{{{ DocumentBufferOptionPane()
+        public DocumentBufferOptionPane() {
+            super("documentbuffer");
+        }//}}}
         
-        public DocumentBufferOptionsPanel() {
+        //{{{ _init()
+        protected void _init() {
             
-            GridBagLayout layout = new GridBagLayout();
-            GridBagConstraints constraints = new GridBagConstraints();
-            
-            //the grid y coordinate.
-            int gridY = 0;
-            
-            setLayout(layout);
-            
-            //Set up line separator combo-box
+            //{{{ line separator
             m_m_lineSeparators.put("Unix (\\n)", "\n");
             m_m_lineSeparators.put("DOS/Windows (\\r\\n)", "\r\n");
             m_m_lineSeparators.put("MacOS (\\r)", "\r");
-            JLabel lineSeparatorLabel = new JLabel(Messages.getMessage("Document.Options.Line.Separator"));
-            lineSeparatorLabel.setToolTipText(Messages.getMessage("Document.Options.Line.Separator.ToolTip"));
+           // JLabel lineSeparatorLabel = new JLabel(Messages.getMessage("Document.Options.Line.Separator"));
+           // lineSeparatorLabel.setToolTipText(Messages.getMessage("Document.Options.Line.Separator.ToolTip"));
             m_m_lineSeparatorComboBox = new JComboBox(new Vector(m_m_lineSeparators.keySet()));
             m_m_lineSeparatorComboBox.setName("LineSeparatorComboBox");
-            m_m_lineSeparatorComboBox.setToolTipText(Messages.getMessage("Document.Options.Line.Separator.ToolTip"));
+           // m_m_lineSeparatorComboBox.setToolTipText(Messages.getMessage("Document.Options.Line.Separator.ToolTip"));
             
             String lineSep = getProperty(LINE_SEPARATOR);
             if (lineSep.equals("\r\n")) {
@@ -580,15 +595,21 @@ public class DocumentBuffer extends XMLDocument {
             } else {
                 m_m_lineSeparatorComboBox.setSelectedItem("Unix (\\n)");
             }
+           
+            addComponent(Messages.getMessage("Document.Options.Line.Separator"),
+                         m_m_lineSeparatorComboBox,
+                         Messages.getMessage("Document.Options.Line.Separator.ToolTip"));
             
-            //set up the encoding combo-box.
+           //}}}
+            
+            //{{{ encoding
             String[] encodings = MiscUtilities.getSupportedEncodings();
-            JLabel encodingLabel = new JLabel(Messages.getMessage("Document.Options.Encoding"));
-            encodingLabel.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
+           // JLabel encodingLabel = new JLabel(Messages.getMessage("Document.Options.Encoding"));
+           // encodingLabel.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
             encodingComboBox = new JComboBox(encodings);
             encodingComboBox.setName("EncodingComboBox");
             encodingComboBox.setEditable(false);
-            encodingComboBox.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
+           // encodingComboBox.setToolTipText(Messages.getMessage("Document.Options.Encoding.ToolTip"));
             
             for (int i=0; i<encodings.length; i++) {
                 if (getProperty(ENCODING).equals(encodings[i])) {
@@ -596,8 +617,15 @@ public class DocumentBuffer extends XMLDocument {
                 }
             }
             
-            JLabel indentLabel = new JLabel(Messages.getMessage("Document.Options.Indent.Width"));
-            indentLabel.setToolTipText(Messages.getMessage("Document.Options.Indent.Width.ToolTip"));
+            addComponent(Messages.getMessage("Document.Options.Encoding"),
+                         encodingComboBox,
+                         Messages.getMessage("Document.Options.Encoding.ToolTip"));
+            
+            //}}}
+            
+            //{{{ indent width
+           // JLabel indentLabel = new JLabel(Messages.getMessage("Document.Options.Indent.Width"));
+           // indentLabel.setToolTipText(Messages.getMessage("Document.Options.Indent.Width.ToolTip"));
             Vector sizes = new Vector(3);
             sizes.add("2");
             sizes.add("4");
@@ -606,168 +634,75 @@ public class DocumentBuffer extends XMLDocument {
             indentComboBox.setName("IndentComboBox");
             indentComboBox.setEditable(true);
             indentComboBox.setSelectedItem(getProperty(INDENT));
-            indentComboBox.setToolTipText(Messages.getMessage("Document.Options.Indent.Width.ToolTip"));
+           // indentComboBox.setToolTipText(Messages.getMessage("Document.Options.Indent.Width.ToolTip"));
             
+            addComponent(Messages.getMessage("Document.Options.Indent.Width"),
+                         indentComboBox,
+                         Messages.getMessage("Document.Options.Indent.Width.ToolTip"));
             
-           // boolean whitespace    = Boolean.valueOf(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, "true")).booleanValue();
+            //}}}
+            
+            //{{{ format output
             boolean formatOutput = Boolean.valueOf(getProperty(XMLDocument.FORMAT_XML, "false")).booleanValue();
+            formatCheckBox = new JCheckBox(Messages.getMessage("Document.Options.Format.XML"), formatOutput);
             
-           // whitespaceCheckBox = new JCheckBox("Whitespace in element content", whitespace);
-            formatCheckBox     = new JCheckBox(Messages.getMessage("Document.Options.Format.XML"), formatOutput);
+            addComponent(formatCheckBox, Messages.getMessage("Document.Options.Format.XML.ToolTip"));
+            //}}}
             
-           // whitespaceCheckBox.addChangeListener(new WhiteSpaceChangeListener());
-            
+            //{{{ validate
             boolean validating = Boolean.valueOf(getProperty(XMLDocument.IS_VALIDATING, "false")).booleanValue();
             m_m_validatingCheckBox = new JCheckBox(Messages.getMessage("Document.Options.Validate"), validating);
             
-           // formatCheckBox.setEnabled(!whitespace);
+            addComponent(m_m_validatingCheckBox, Messages.getMessage("Document.Options.Validate.ToolTip"));
+            //}}}
             
-            constraints.gridy      = gridY;
-            constraints.gridx      = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(lineSeparatorLabel, constraints);
-            add(lineSeparatorLabel);
-            
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 1;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(m_m_lineSeparatorComboBox, constraints);
-            add(m_m_lineSeparatorComboBox);
-            
-            constraints.gridy      = gridY;
-            constraints.gridx      = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(encodingLabel, constraints);
-            add(encodingLabel);
-            
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 1;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(encodingComboBox, constraints);
-            add(encodingComboBox);
-            
-            constraints.gridy      = gridY;
-            constraints.gridx      = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(indentLabel, constraints);
-            add(indentLabel);
-            
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 1;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = 1;
-            constraints.weightx    = 1.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(indentComboBox, constraints);
-            add(indentComboBox);
-            
-           // constraints.gridy      = gridY++;
-           // constraints.gridx      = 0;
-           // constraints.gridheight = 1;
-           // constraints.gridwidth  = GridBagConstraints.REMAINDER;
-           // constraints.weightx    = 0.0f;
-           // constraints.fill       = GridBagConstraints.BOTH;
-           // constraints.insets     = new Insets(1,0,1,0);
-            
-           // layout.setConstraints(whitespaceCheckBox, constraints);
-           // add(whitespaceCheckBox);
-            
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = GridBagConstraints.REMAINDER;
-            constraints.weightx    = 0.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(formatCheckBox, constraints);
-            add(formatCheckBox);
-            formatCheckBox.setToolTipText(Messages.getMessage("Document.Options.Format.XML.ToolTip"));
-            
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = GridBagConstraints.REMAINDER;
-            constraints.weightx    = 0.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(m_m_validatingCheckBox, constraints);
-            add(m_m_validatingCheckBox);
-            m_m_validatingCheckBox.setToolTipText(Messages.getMessage("Document.Options.Validate.ToolTip"));
-            
+            //{{{ soft tabs
             boolean softTabs = Boolean.valueOf(getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
-        
             m_m_softTabsCheckBox = new JCheckBox(Messages.getMessage("Document.Options.Soft.Tabs"), softTabs);
             
-            constraints.gridy      = gridY++;
-            constraints.gridx      = 0;
-            constraints.gridheight = 1;
-            constraints.gridwidth  = GridBagConstraints.REMAINDER;
-            constraints.weightx    = 0.0f;
-            constraints.fill       = GridBagConstraints.BOTH;
-            constraints.insets     = new Insets(1,0,1,0);
-            
-            layout.setConstraints(m_m_softTabsCheckBox, constraints);
-            add(m_m_softTabsCheckBox);
-            m_m_softTabsCheckBox.setToolTipText(Messages.getMessage("Document.Options.Soft.Tabs.ToolTip"));
+            addComponent(m_m_softTabsCheckBox, Messages.getMessage("Document.Options.Soft.Tabs.ToolTip"));
+            ////}}}
             
         }//}}}
         
-        //{{{ save()
-        
-        public void save() {
+        //{{{ _save()
+        protected void _save() {
+            //{{{ line separator
             if (!(m_m_lineSeparators.get(m_m_lineSeparatorComboBox.getSelectedItem()).toString().equals(getProperty(LINE_SEPARATOR)))) {
                 setDirty(true);
                 setProperty(LINE_SEPARATOR, m_m_lineSeparators.get(m_m_lineSeparatorComboBox.getSelectedItem()).toString());
-            }
+            }//}}}
             
+            //{{{ formatting
             if (!String.valueOf(formatCheckBox.isSelected()).equals(getProperty(XMLDocument.FORMAT_XML))) {
                 setDirty(true);
                 setProperty(XMLDocument.FORMAT_XML, String.valueOf(formatCheckBox.isSelected()));
             }
+            //}}}
+            
+            //{{{ soft tabs
             if (!String.valueOf(m_m_softTabsCheckBox.isSelected()).equals(getProperty(XMLDocument.IS_USING_SOFT_TABS))) {
                 setDirty(true);
                 setProperty(XMLDocument.IS_USING_SOFT_TABS, String.valueOf(m_m_softTabsCheckBox.isSelected()));
             }
+            //}}}
+            
+            //{{{ validating
+            
             if (!String.valueOf(m_m_validatingCheckBox.isSelected()).equals(getProperty(XMLDocument.IS_VALIDATING))) {
                 setProperty(XMLDocument.IS_VALIDATING, String.valueOf(m_m_validatingCheckBox.isSelected()));
             }
-           // if (!String.valueOf(whitespaceCheckBox.isSelected()).equals(m_document.getProperty(XMLDocument.WS_IN_ELEMENT_CONTENT))) {
-           //     setDirty(true);
-           //     m_document.setProperty(XMLDocument.WS_IN_ELEMENT_CONTENT, String.valueOf(whitespaceCheckBox.isSelected()));
-           // }
+            //}}}
+            
+            //{{{ encoding
+            
             if (!encodingComboBox.getSelectedItem().toString().equals(getProperty(XMLDocument.ENCODING))) {
                 setDirty(true);
                 setProperty(XMLDocument.ENCODING, encodingComboBox.getSelectedItem().toString());
             }
+            //}}}
+            
+            //{{{ indent width
             
             if (!getProperty(XMLDocument.INDENT).equals(indentComboBox.getSelectedItem().toString())) {
                 try {
@@ -784,38 +719,20 @@ public class DocumentBuffer extends XMLDocument {
                     //Bad input, don't save.
                 }
             }
+            //}}}
         };//}}}
         
         //{{{ getName()
-        
         public String getName() {
             return "documentbuffer";
         }//}}}
         
         //{{{ getTitle()
-        
         public String getTitle() {
             return Messages.getMessage("Document.Options.Title");
-        };//}}}
-        
-       // //{{{ WhiteSpaceChangeListener class
-        
-       // private class WhiteSpaceChangeListener implements ChangeListener {
-            
-       //     //{{{ stateChanged()
-            
-       //     public void stateChanged(ChangeEvent e) {
-       //         boolean whitespace = whitespaceCheckBox.isSelected();
-       //         if (whitespace) {
-       //             formatCheckBox.setSelected(false);
-       //         }
-       //         formatCheckBox.setEnabled(!whitespace);
-       //     }//}}}
-            
-       // }//}}}
+        }//}}}
         
         //{{{ Private members
-        
         private DocumentBuffer m_buffer;
         private JCheckBox m_m_softTabsCheckBox;
         private JComboBox encodingComboBox;
@@ -842,6 +759,7 @@ public class DocumentBuffer extends XMLDocument {
     //{{{ fireBufferSaved()
     
     private void fireBufferSaved() {
+        EditBus.send(new DocumentBufferUpdate(this, DocumentBufferUpdate.SAVED));
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
             DocumentBufferListener listener = (DocumentBufferListener)iterator.next();
@@ -863,6 +781,6 @@ public class DocumentBuffer extends XMLDocument {
     private File m_file;
     private ArrayList m_listeners = new ArrayList();
     private boolean m_dirty=false;
-    
+    private OptionPane m_optionPane;
     //}}}
 }

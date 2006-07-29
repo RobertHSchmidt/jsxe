@@ -44,17 +44,16 @@ import java.util.Iterator;
  */
 public class GlobalOptionsDialog extends OptionsDialog {
     
-    private DocumentBuffer m_buffer;
-    private OptionGroup m_defaultGroup;
-    
     //{{{ GlobalOptionsDialog constructor
-    
+    /**
+     * Creates the jsXe global options dialog.
+     * @param view The view that created this dialog
+     */
     public GlobalOptionsDialog(TabbedView view) {
         super(view, "global", Messages.getMessage("Global.Options.Dialog.Title"), jsXe.getProperty("global.last"));
     }//}}}
     
     //{{{ createOptionTreeModel()
-    
     protected OptionTreeModel createOptionTreeModel() {
         m_defaultGroup = new OptionGroup("jsxe", "jsXe");
         OptionTreeModel paneTreeModel = new OptionTreeModel();
@@ -64,33 +63,33 @@ public class GlobalOptionsDialog extends OptionsDialog {
         
         DocumentBuffer buffer = view.getDocumentView().getDocumentBuffer();
         
-        OptionPane pane = jsXe.getOptionsPanel();
-        if (pane != null) {
-            addOptionPane(pane);
-        }
+        // General Options
+        addOptionPane(new GeneralOptionPane());
+        
+        // Shortcuts
+        addOptionPane(new ShortcutsOptionPane());
         
         Iterator pluginItr = jsXe.getPluginLoader().getAllPlugins().iterator();
         while (pluginItr.hasNext()) {
             ActionPlugin plugin = (ActionPlugin)pluginItr.next();
-            pane = plugin.getOptionsPanel(buffer);
+            OptionPane pane = plugin.getOptionPane(buffer);
             if (pane != null) {
                 addOptionPane(pane);
             }
         }
         
-        pane = buffer.getOptionsPanel();
-        if (pane != null) {
-            addOptionPane(pane);
-        }
         addOptionGroup(m_defaultGroup, rootGroup);
         
         return paneTreeModel;
     }//}}}
     
     //{{{ getDefaultGroup()
-    
 	protected OptionGroup getDefaultGroup() {
         return m_defaultGroup;
     }//}}}
     
+    //{{{ Private members
+    private DocumentBuffer m_buffer;
+    private OptionGroup m_defaultGroup;
+    //}}}
 }

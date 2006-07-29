@@ -38,17 +38,25 @@ public class PluginLoadException extends RuntimeException {
     
     public PluginLoadException(JarFile file) {
         super(file.getName() + " cannot be loaded as a plugin");
+        m_jarFile = file;
     }//}}}
     
     //{{{ PluginLoadException constructor
     
     public PluginLoadException(JarFile file, String message) {
-        super(file.getName() + " cannot be loaded as a plugin: "+message);
+        super(file.getName() + ": "+message);
+        m_jarFile = file;
     }//}}}
-
-    //{{{ PluginLoadException constructor
     
-    public PluginLoadException(String message) {
-        super(message);
+    //{{{ getJarFile()
+    /**
+     * Gets the jar file that caused this load error.
+     */
+    public JarFile getJarFile() {
+        return m_jarFile;
     }//}}}
+    
+    //{{{ Private Members
+    private JarFile m_jarFile;
+    //}}}
 }

@@ -9,40 +9,40 @@
 
 common.ok=OK
 common.cancel=Avbryt
-common.close=Stäng
-common.apply=Verkställ
+common.close=StÃ¤ng
+common.apply=VerkstÃ¤ll
 common.more=Mer
 common.insert=Infoga
-common.add=Lägg till
+common.add=LÃ¤gg till
 common.remove=Ta bort
 common.moveUp=Flytta upp
 common.moveDown=Flytta ner
 common.cut=Klipp ut
 common.copy=Kopiera
 common.paste=Klistra in
-common.find=Sök...
-common.findnext=Sök nästa
+common.find=SÃ¶k...
+common.findnext=SÃ¶k nÃ¤sta
 
 #}}}
 
 #{{{ Global Options
-global.options.title=Globala inställningar
+global.options.title=Globala instÃ¤llningar
 #}}}
 
 #{{{ File Menu Items
 File.New=Ny
-File.Open=Öppna...
+File.Open=Ã–ppna...
 File.Recent=Senaste filer
 File.Save=Spara
 File.SaveAs=Spara som...
-File.Reload=Läs om
+File.Reload=LÃ¤s om
 File.Recent=Senaste filer
-File.Close=Stäng
-File.CloseAll=Stäng alla
+File.Close=StÃ¤ng
+File.CloseAll=StÃ¤ng alla
 File.Exit=Avsluta
 #}}}
 
-Tools.Options=Inställningar...
-Tools.Plugin=Hanterare för insticksprogram...
-Plugin.Manager.Title=Hanterare för insticksprogram
+Tools.Options=InstÃ¤llningar...
+Tools.Plugin=Hanterare fÃ¶r insticksprogram...
+Plugin.Manager.Title=Hanterare fÃ¶r insticksprogram
 Help.About=Om jsXe...

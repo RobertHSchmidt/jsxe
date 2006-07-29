@@ -1,5 +1,5 @@
 /*
-EnhancedMenu.java
+WrappingMenu.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
@@ -22,45 +22,64 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package net.sourceforge.jsxe.gui;
+package net.sourceforge.jsxe.gui.menu;
 
-import net.sourceforge.jsxe.util.Log;
+//{{{ imports
 
+//{{{ jsXe classes
+import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.EBListener;
+//}}}
+
+//{{{ Java classes
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.Action;
 import java.awt.Component;
 import java.util.*;
+//}}}
+
+//}}}
 
 /**
  * A Menu class that handles wrapping the menu items into sub-menus for you.
+ *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class EnhancedMenu extends JMenu {
+public class WrappingMenu extends JMenu {
     
-    //{{{ EnhancedMenu constructor
+    //{{{ WrappingMenu constructor
     /**
-     * Constructs a EnhancedPopupMenu without an "invoker" and the default wrap count of 20.
+     * Constructs a WrappingMenu without an "invoker" and the default wrap count of 20.
      */
-    public EnhancedMenu() {
+    public WrappingMenu() {
         super();
         m_addToMenus.push(this);
     }//}}}
     
-    //{{{ EnhancedMenu constructor
-    public EnhancedMenu(int wrapCount) {
+    //{{{ WrappingMenu constructor
+    /**
+     * Constructs a WrappingMenu without an "invoker" and the wrap count
+     * specified.
+     * @param wrapCount the number of components that are added to menu before
+     *                  it wraps.
+     */
+    public WrappingMenu(int wrapCount) {
         super();
         m_wrapCount = wrapCount;
         m_addToMenus.push(this);
     }//}}}
     
-    //{{{ EnhancedMenu constructor
+    //{{{ WrappingMenu constructor
     /**
-     * Constructs a JPopupMenu with the specified title.
-     * @param label the string that a UI may use to display as a title for the popup menu.
+     * Constructs an WrappingMenu with the specified title.
+     * @param label the string that a UI may use to display as a title for the
+     *              popup menu.
+     * @param wrapCount the number of components that are added to menu before
+     *                  it wraps.
      */
-    public EnhancedMenu(String label, int wrapCount) {
+    public WrappingMenu(String label, int wrapCount) {
         super(label);
         m_wrapCount = wrapCount;
         m_addToMenus.push(this);
@@ -253,7 +272,10 @@ public class EnhancedMenu extends JMenu {
     }//}}}
     
     //{{{ getMenuComponent()
-    
+    /**
+     * Returns the the component in this menu or a submenu.
+     * @param int the index into this menu and submenus.
+     */
     public Component getMenuComponent(int n) {
         int addIndex = (int)(n / m_wrapCount);
         int addSubIndex = (n % m_wrapCount);
@@ -266,15 +288,50 @@ public class EnhancedMenu extends JMenu {
     }//}}}
     
     //{{{ getMenuComponentCount
-    
+    /**
+     * Gets the total number of components in this menu
+     * and submenus.
+     * @return the total number of components.
+     */
     public int getMenuComponentCount() {
         return m_menuHash.keySet().size();
     }//}}}
     
+    //{{{ MoreMenu class
+    /**
+     * A submenu used by the <code>WrappingMenu</code>. Classes that extend 
+     * WrappingMenu may wish to create an extension to <code>MoreMenu</code>
+     * which implements new functionality, and override the
+     * <code>createMoreMenu()</code> factory method.
+     */
+    public static class MoreMenu extends JMenu {
+        
+        public MoreMenu() {
+            super(Messages.getMessage("common.more"));
+        }
+        
+    }//}}}
+    
+    //{{{ Protected members
+    
+    //{{{ createMoreMenu()
+    /**
+     * Creates an internal menu that is used for wrapping this
+     * WrappingMenu. This should be overridded by subclasses which
+     * wish to implement new functionality.
+     */
+    protected MoreMenu createMoreMenu() {
+        return new MoreMenu();
+    }//}}}
+    
+    //}}}
+    
     //{{{ Private members
     
     //{{{ getTrueMenuItemCount()
-    
+    /**
+     * Gets the true item count for a sub-menu
+     */
     private int getTrueMenuItemCount(JMenu menu) {
         if (menu == this) {
             return super.getMenuComponentCount();
@@ -287,13 +344,15 @@ public class EnhancedMenu extends JMenu {
     /**
      * Gets the current menu that we are adding to.
      */
-    public JMenu getCurrentMenu() {
+    private JMenu getCurrentMenu() {
         return ((JMenu)m_addToMenus.peek());
     }//}}}
     
     //{{{ updateSubMenus()
-    
-    public void updateSubMenus() {
+    /**
+     * Updates the submenus after adding or removing a component
+     */
+    private void updateSubMenus() {
         //must call m_addToMenus.size() here since we may remove menus in the loop.
         for (int i=0; i<m_addToMenus.size(); i++) {
             JMenu menu = (JMenu)m_addToMenus.get(i);
@@ -306,7 +365,7 @@ public class EnhancedMenu extends JMenu {
                 try {
                     nextMenu = (JMenu)m_addToMenus.get(i+1);
                 } catch (IndexOutOfBoundsException e) {
-                    MoreMenu moreMenu = new MoreMenu();
+                    MoreMenu moreMenu = createMoreMenu();
                     menu.add(moreMenu);
                     m_addToMenus.push(moreMenu);
                     nextMenu = moreMenu;
@@ -342,23 +401,13 @@ public class EnhancedMenu extends JMenu {
     /**
      * Updates the menu that we are truly adding to.
      */
-    public void maybeAddMenu() {
+    private void maybeAddMenu() {
         int componentCount = getTrueMenuItemCount(getCurrentMenu());
         if (componentCount >= m_wrapCount) {
-            MoreMenu menu = new MoreMenu();
+            MoreMenu menu = createMoreMenu();
             ((JMenu)m_addToMenus.peek()).add(menu);
             m_addToMenus.push(menu);
         }
-    }//}}}
-    
-    //{{{ MoreMenu class
-    
-    private static class MoreMenu extends JMenu {
-        
-        public MoreMenu() {
-            super(Messages.getMessage("common.more"));
-        }
-        
     }//}}}
     
     private int m_wrapCount = 20;

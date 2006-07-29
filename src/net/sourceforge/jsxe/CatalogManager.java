@@ -53,6 +53,19 @@ import org.xml.sax.*;
 public class CatalogManager {
 
     //{{{ resolve() method
+    /**
+     * Attempts to resolve an external entity. The internal cache is
+     * checked to see if the entity is cached on disk and if so it
+     * is retrieved from the cache. If not, it is read from the external
+     * source.
+     * 
+     * Local files are resolved relative to the current file.
+     *
+     * @param current the uri of the file where the external entity reference
+     *                is located.
+     * @param publicId the public ID of the external entity reference.
+     * @param systemId the system ID of the external entity reference.
+     */
     public static InputSource resolve(String current, String publicId, String systemId) throws Exception {
         load();
 
@@ -209,6 +222,11 @@ public class CatalogManager {
     } *///}}}
 
     //{{{ isLocal() method
+    /**
+     * Tests whether an entry in the resource cache has a file
+     * cached locally on disk.
+     * @param e the entry
+     */
     public static boolean isLocal(Entry e) {
         if (e == null || jsXe.getSettingsDirectory() == null)
             return false;
@@ -223,6 +241,10 @@ public class CatalogManager {
     } //}}}
 
     //{{{ propertiesChanged() method
+    /**
+     * Notifies the CatalogManager that the application properties have
+     * changed and that cache properties need to be reloaded.
+     */
     public static void propertiesChanged() {
         
         if (jsXe.getSettingsDirectory() == null) {
@@ -239,6 +261,9 @@ public class CatalogManager {
     } //}}}
 
     //{{{ save() method
+    /**
+     * Saves the resource cache to jsXe's properties.
+     */
     public static void save() {
         if (loadedCache) {
             int systemCount = 0;
@@ -271,6 +296,11 @@ public class CatalogManager {
     } //}}}
 
     //{{{ clearCache() method
+    /**
+     * Clears the resource cache. If an external entity needs to be
+     * resolved after the resource cache has been cleared then it
+     * will be reloaded at that time.
+     */
     public static void clearCache() {
         load();
 
@@ -287,12 +317,19 @@ public class CatalogManager {
     } //}}}
 
     //{{{ reloadCatalogs() method
-    public static void reloadCatalogs() {
-        loadedCatalogs = false;
-    } //}}}
+    /**
+     * Marks that the the catalogs need to be reloaded.
+     * Specifying catalogs is currently not supported.
+     */
+   // public static void reloadCatalogs() {
+   //     loadedCatalogs = false;
+   // } //}}}
 
     //{{{ Private members
-
+    
+    //{{{ CatalogManager constructor
+    private CatalogManager() {}//}}}
+    
     //{{{ Static variables
     private static boolean loadedCache;
     private static boolean loadedCatalogs;
@@ -318,8 +355,7 @@ public class CatalogManager {
      * Don't want this public because then invoking {@link clearCache()}
      * will remove this file, not what you would expect!
      */
-    private static void addUserResource(String publicId, String systemId, String url)
-    {
+    private static void addUserResource(String publicId, String systemId, String url) {
         if (publicId != null) {
             Entry pe = new Entry( Entry.PUBLIC, publicId, url );
             resourceCache.put( pe, url );
@@ -333,14 +369,16 @@ public class CatalogManager {
     //{{{ copyToLocalFile() method
     private static File copyToLocalFile(String path) throws IOException {
         
-        if(jsXe.getSettingsDirectory() == null)
+        if (jsXe.getSettingsDirectory() == null) {
             return null;
+        }
 
         String userDir = jsXe.getSettingsDirectory();
 
         File _resourceDir = new File(resourceDir);
-        if (!_resourceDir.exists())
+        if (!_resourceDir.exists()) {
             _resourceDir.mkdir();
+        }
 
         InputStream stream;
         if (MiscUtilities.isURL(path)) {
@@ -358,8 +396,9 @@ public class CatalogManager {
 
         byte[] buf = new byte[4096];
         int count = 0;
-        while ((count = in.read(buf)) != -1)
+        while ((count = in.read(buf)) != -1) {
             out.write(buf,0,count);
+        }
         out.close();
 
         return localFile;
@@ -369,31 +408,38 @@ public class CatalogManager {
     private static String resolvePublic(String systemId, String publicId) throws Exception {
         Entry e = new Entry(Entry.PUBLIC,publicId,null);
         String uri = (String)resourceCache.get(e);
-        if (uri == null)
+        if (uri == null) {
             return catalog.resolvePublic(publicId,null);
-        else if (uri == IGNORE)
-            return null;
-        else
-            return uri;
+        } else {
+            if (uri == IGNORE) {
+                return null;
+            } else {
+                return uri;
+            }
+        }
     } //}}}
 
     //{{{ resolveSystem() method
     private static String resolveSystem(String id) throws Exception {
         Entry e = new Entry(Entry.SYSTEM,id,null);
         String uri = (String)resourceCache.get(e);
-        if (uri == null)
+        if (uri == null) {
             return catalog.resolveSystem(id);
-        else if (uri == IGNORE)
-            return null;
-        else
-            return uri;
+        } else {
+            if (uri == IGNORE) {
+                return null;
+            } else {
+                return uri;
+            }
+        }
     } //}}}
 
     //{{{ showDownloadResourceDialog() method
     private static boolean showDownloadResourceDialog(Component comp, String systemId) {
         Entry e = new Entry(Entry.SYSTEM,systemId,null);
-        if (resourceCache.get(e) == IGNORE)
+        if (resourceCache.get(e) == IGNORE) {
             return false;
+        }
 
         int result = JOptionPane.showConfirmDialog(comp,
             Messages.getMessage("xml.download-resource.message", new String[] { systemId }),
@@ -485,36 +531,57 @@ public class CatalogManager {
             }
         }
     } //}}}
-
-    //}}}
-
+    
     //{{{ Entry class
-    public static class Entry {
+    /**
+     * An Entry is an entry in the resource cache.
+     */
+    private static class Entry {
+        
+        //{{{ Public static members
+        /**
+         * A system ID entry
+         */
         public static final int SYSTEM = 0;
+        /**
+         * A public ID entry
+         */
         public static final int PUBLIC = 1;
-
+        //}}}
+        
         public int type;
         public String id;
         public String uri;
 
+        //{{{ Entry constructor
+        /**
+         * Creates a new Entry for a PUBLIC or SYSTEM identifier.
+         * @param type the Entry type
+         * @param id the id
+         * @param uri the uri of the identifier
+         */
         public Entry(int type, String id, String uri) {
             this.type = type;
             this.id = id;
             this.uri = uri;
-        }
+        }//}}}
 
+        //{{{ equals()
         public boolean equals(Object o) {
             if (o instanceof Entry) {
                 Entry e = (Entry)o;
                 return e.type == type && e.id.equals(id);
             } else
                 return false;
-        }
+        }//}}}
 
+        //{{{ hashCode
         public int hashCode() {
             return id.hashCode();
-        }
+        }//}}}
     } //}}}
+    
+    //}}}
 
    // //{{{ VFSUpdateHandler class
    // /**
