@@ -49,7 +49,7 @@ import java.util.*;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @see DefaultView
- * @see DefaultViewTree
+ * @see TreeViewTree
  * @see DefaultViewTreeModel
  */
 public class TransferableNode implements Transferable {

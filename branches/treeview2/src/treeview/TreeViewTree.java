@@ -1,17 +1,9 @@
 /*
-DefaultViewTree.java
+TreeViewTree.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editorh
-jsXe is a gui application that can edit an XML document and create a tree view.
-The user can then edit this tree and the content in the tree and save the
-document.
-
-This file contains the tree class that is used in the default view.
-
-This file written by Ian Lewis (IanLewis@member.fsf.org)
-Copyright (C) 2002 Ian Lewis
+Copyright (C) 2002 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -38,8 +30,9 @@ import treeview.action.AddNodeAction;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.ActionManager;
 import net.sourceforge.jsxe.gui.Messages;
-import net.sourceforge.jsxe.gui.EnhancedMenu;
+import net.sourceforge.jsxe.gui.menu.*;
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.dom.completion.*;
 import net.sourceforge.jsxe.util.Log;
@@ -72,25 +65,25 @@ import java.util.*;
 //}}}
 
 /**
- * The DefaultViewTree is the tree that is displayed in the upper-left of
- * the DefaultView in jsXe. This class defines methods specific to the tree
+ * The TreeViewTree is the tree that is displayed in the upper-left of
+ * the TreeView in jsXe. This class defines methods specific to the tree
  * display.
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
- * @see DefaultView
+ * @see TreeView
  */
-public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner {
+public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
     
     //{{{ Properties
     private final String NODE_EXPANDED = "tree.expandedstate";
     //}}}
     
-    //{{{ DefaultViewTree constructor
+    //{{{ TreeViewTree constructor
     /**
-     * Creates a new DefaultViewTree with the default TreeModel
+     * Creates a new TreeViewTree with the default TreeModel
      */
-    public DefaultViewTree() {
+    public TreeViewTree() {
         
         //{{{ intitalize Drag n Drop
         m_dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_MOVE, m_treeDGListener);
@@ -379,7 +372,6 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
     //{{{ toString()
     /**
      * Creates the string that will be displayed in the tree node
-     * @param showattrs "ID only", "All" or "None"
      */
     private static String toString(AdapterNode node) {
         StringBuffer s = new StringBuffer();
@@ -392,12 +384,14 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                 NamedNodeMap attributes = node.getAttributes();
                 ElementDecl decl = node.getElementDecl();
                 XMLDocument document = node.getOwnerDocument();
-                String showAttrs = document.getProperty(DefaultView.SHOW_ATTRIBUTES);
+                int showAttrs = jsXe.getIntegerProperty(DefaultView.SHOW_ATTRIBUTES, 0);
                 for (int i=0; i<attributes.getLength(); i++) {
                     Node attr = attributes.item(i);
                     ElementDecl.AttributeDecl attrDecl = (decl != null) ? decl.getAttribute(attr.getNodeName()) : null;
-                    if (showAttrs.equals("All") ||
-                    (showAttrs.equals("ID only") && 
+                    
+                    // 0 = None; 1 = ID only; 2 = All
+                    if (showAttrs == 2 ||
+                    (showAttrs == 1 && 
                         ((attr.getNodeName().equalsIgnoreCase("id") || 
                         (attrDecl != null && attrDecl.type.equals("ID"))))))
                     {
@@ -457,32 +451,32 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     
-                    JMenu addElement = new EnhancedMenu(Messages.getMessage("xml.element"), 20);
+                    JMenu addElement = new WrappingMenu(Messages.getMessage("xml.element"), 20);
                     addNodeItem.add(addElement);
                     
-                    addElement.add(jsXe.getAction("treeview.add.element.node"));
+                    addElement.add(ActionManager.getAction("treeview.add.element.node"));
                     Iterator allowedElements = selectedNode.getAllowedElements().iterator();
                     while (allowedElements.hasNext()) {
                         ElementDecl decl = (ElementDecl)allowedElements.next();
-                        addElement.add(new AddNodeAction(decl, decl.name));
+                        addElement.add(new ActionManager.Wrapper(new AddNodeAction(decl)));
                     }
                     
                     //Add the allowed entities even if no matter what
                     
-                    JMenu addEntity = new EnhancedMenu(Messages.getMessage("xml.entity.reference"), 20);
+                    JMenu addEntity = new WrappingMenu(Messages.getMessage("xml.entity.reference"), 20);
                     addNodeItem.add(addEntity);
                     
                     Iterator allowedEntities = ownerDocument.getAllowedEntities().iterator();
                     while (allowedEntities.hasNext()) {
                         EntityDecl decl = (EntityDecl)allowedEntities.next();
-                        popupMenuItem = new JMenuItem(new AddNodeAction(decl.name, decl.name, decl.value, AdapterNode.ENTITY_REFERENCE_NODE));
+                        popupMenuItem = new JMenuItem(new ActionManager.Wrapper(new AddNodeAction(decl)));
                         addEntity.add(popupMenuItem);
                     }
                     
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.text.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.add.text.node"));
                     popupMenuItem.setText(Messages.getMessage("xml.text"));
                     addNodeItem.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.cdata.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.add.cdata.node"));
                     popupMenuItem.setText(Messages.getMessage("xml.cdata"));
                     addNodeItem.add(popupMenuItem);
                     
@@ -494,7 +488,7 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                 
                 if (selectedNode.getNodeType() == Node.DOCUMENT_NODE) {
                     if (ownerDocument.getDocType() == null) {
-                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.doctype.node"));
+                        popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.add.doctype.node"));
                         popupMenuItem.setText(Messages.getMessage("xml.doctypedef"));
                         addNodeItem.add(popupMenuItem);
                         showpopup = true;
@@ -502,10 +496,10 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                 }
                 
                 if (selectedNode.getNodeType() == Node.DOCUMENT_NODE || selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.processing.instruction.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.add.pi.node"));
                     popupMenuItem.setText(Messages.getMessage("xml.processing.instruction"));
                     addNodeItem.add(popupMenuItem);
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.add.comment.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.add.comment.node"));
                     popupMenuItem.setText(Messages.getMessage("xml.comment"));
                     addNodeItem.add(popupMenuItem);
                     addNodeShown = true;
@@ -518,13 +512,13 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                 
                 //Add the edit node action
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE && ownerDocument.getElementDecl(selectedNode.getNodeName()) != null) {
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.edit.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.edit.node"));
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE || selectedNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.rename.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.rename.node"));
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
@@ -534,7 +528,7 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                     !(selectedNode.getNodeType() == Node.ELEMENT_NODE &&
                     selectedNode.getParentNode().getNodeType() == Node.DOCUMENT_NODE))
                 {
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.remove.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("treeview.remove.node"));
                     popup.add(popupMenuItem);
                     showpopup = true;
                 }
@@ -546,15 +540,15 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                     if(!(selectedNode.getNodeType() == Node.ELEMENT_NODE &&
                        selectedNode.getParentNode().getNodeType() == Node.DOCUMENT_NODE))
                     {
-                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.cut.node"));
+                        popupMenuItem = new JMenuItem(ActionManager.getAction("cut"));
                         popup.add(popupMenuItem);
                     }
                     
-                    popupMenuItem = new JMenuItem(jsXe.getAction("treeview.copy.node"));
+                    popupMenuItem = new JMenuItem(ActionManager.getAction("copy"));
                     popup.add(popupMenuItem);
                     
                     if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
-                        popupMenuItem = new JMenuItem(jsXe.getAction("treeview.paste.node"));
+                        popupMenuItem = new JMenuItem(ActionManager.getAction("paste"));
                         popup.add(popupMenuItem);
                     }
                     showpopup = true;
@@ -592,7 +586,7 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
             try {
                 AdapterNode node = (AdapterNode)value;
                 type = node.getNodeType();
-                setText(DefaultViewTree.toString(node));
+                setText(TreeViewTree.toString(node));
             } catch (ClassCastException e) {}
             
             this.selected = selected;
@@ -750,7 +744,7 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
             //HACK
             //Use prepareForEditing to initialize the renderer
             TreePath path = getLeadSelectionPath();
-            JTree tree = DefaultViewTree.this;
+            JTree tree = TreeViewTree.this;
             Object value = getLastSelectedPathComponent();
             boolean isSelected = isPathSelected(path);
             boolean expanded = isExpanded(path);
@@ -984,7 +978,7 @@ public class DefaultViewTree extends JTree implements Autoscroll, ClipboardOwner
                 dtde.acceptDrop(m_acceptableActions);
             } catch (DOMException dome) {
                 dtde.rejectDrop();
-                JOptionPane.showMessageDialog(DefaultViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(TreeViewTree.this, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
             }
             m_dragOverTarget = null;
             paintImmediately(m_cueLine);

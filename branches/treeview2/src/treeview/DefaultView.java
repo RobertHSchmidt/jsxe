@@ -31,13 +31,11 @@ import treeview.action.*;
 //{{{ jsXe classes
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.dom.completion.ElementDecl;
-import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.DocumentBuffer;
-import net.sourceforge.jsxe.ViewPlugin;
-import net.sourceforge.jsxe.gui.OptionsPanel;
+import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.Log;
+import net.sourceforge.jsxe.msg.PropertyChanged;
 //}}}
 
 //{{{ Swing components
@@ -75,7 +73,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class DefaultView extends JPanel implements DocumentView {
+public class DefaultView extends JPanel implements DocumentView, EBListener {
     
     //{{{ Private static members
     private static final Properties m_defaultProperties;
@@ -107,6 +105,8 @@ public class DefaultView extends JPanel implements DocumentView {
     public DefaultView(DocumentBuffer document, TreeViewPlugin plugin) throws IOException {
         
         m_plugin = plugin;
+        
+        enableEvents(java.awt.AWTEvent.KEY_EVENT_MASK); 
         
         setLayout(new BorderLayout());
         
@@ -168,11 +168,11 @@ public class DefaultView extends JPanel implements DocumentView {
         //TODO: get cut/copy/paste to work in the right hand text window
         m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
         m_editMenu.setMnemonic('E');
-        JMenuItem menuItem = new JMenuItem(jsXe.getAction("treeview.cut.node"));
+        JMenuItem menuItem = new JMenuItem(ActionManager.getAction("cut"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("treeview.copy.node"));
+        menuItem = new JMenuItem(ActionManager.getAction("copy"));
         m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(jsXe.getAction("treeview.paste.node"));
+        menuItem = new JMenuItem(ActionManager.getAction("paste"));
         m_editMenu.add(menuItem);
         //}}}
         
@@ -203,8 +203,8 @@ public class DefaultView extends JPanel implements DocumentView {
                 Container parent = getParent();
                 if (parent != null) {
                     Dimension size = parent.getSize();
-                    float vertPercent = Integer.valueOf(m_document.getProperty(VERT_SPLIT_LOCATION)).floatValue();
-                    float horizPercent = Integer.valueOf(m_document.getProperty(HORIZ_SPLIT_LOCATION)).floatValue();
+                    float vertPercent = Integer.valueOf(jsXe.getProperty(VERT_SPLIT_LOCATION)).floatValue();
+                    float horizPercent = Integer.valueOf(jsXe.getProperty(HORIZ_SPLIT_LOCATION)).floatValue();
                     
                     int vertLoc = (int)((vertPercent/100.0)*size.getHeight());
                     int horizLoc = (int)((horizPercent/100.0)*size.getWidth());
@@ -219,12 +219,13 @@ public class DefaultView extends JPanel implements DocumentView {
         });//}}}
         
         setDocumentBuffer(document);
+        
+        EditBus.addToBus(this);
     }//}}}
     
     //{{{ DocumentView methods
 
     //{{{ close()
-    
     public boolean close() {
         
         //m_document should only be null if setDocumentBuffer was never called.
@@ -236,12 +237,14 @@ public class DefaultView extends JPanel implements DocumentView {
                 String vert = Integer.toString((int)(vertSplitPane.getDividerLocation()/size.getHeight()*100));
                 String horiz = Integer.toString((int)(horizSplitPane.getDividerLocation()/size.getWidth()*100));
                 
-                m_document.setProperty(VERT_SPLIT_LOCATION,vert);
-                m_document.setProperty(HORIZ_SPLIT_LOCATION,horiz);
+                jsXe.setProperty(VERT_SPLIT_LOCATION,vert);
+                jsXe.setProperty(HORIZ_SPLIT_LOCATION,horiz);
                 
                 m_document.removeXMLDocumentListener(m_documentListener);
             }
         }
+        
+        EditBus.removeFromBus(this);
         
         return true;
     }//}}}
@@ -271,7 +274,6 @@ public class DefaultView extends JPanel implements DocumentView {
     }//}}}
     
     //{{{ setDocumentBuffer()
-    
     public void setDocumentBuffer(DocumentBuffer document) throws IOException {
         
         try {
@@ -283,8 +285,6 @@ public class DefaultView extends JPanel implements DocumentView {
         } catch (ParserConfigurationException e) {
             throw new IOException(e.toString());
         }
-        
-        ensureDefaultProps(document);
         
         AdapterNode adapter = document.getAdapterNode();
         
@@ -304,7 +304,7 @@ public class DefaultView extends JPanel implements DocumentView {
         styledDoc.addDocumentListener(docListener);
         
         //get the splitpane layout options
-        boolean layout = Boolean.valueOf(document.getProperty(CONTINUOUS_LAYOUT)).booleanValue();
+        boolean layout = Boolean.valueOf(jsXe.getProperty(CONTINUOUS_LAYOUT)).booleanValue();
         vertSplitPane.setContinuousLayout(layout);
         horizSplitPane.setContinuousLayout(layout);
         
@@ -330,12 +330,27 @@ public class DefaultView extends JPanel implements DocumentView {
     
     //}}}
     
-    //{{{ getDefaultViewTree()
+    //{{{ handleMessage()
+    public void handleMessage(EBMessage message) {
+        if (message instanceof PropertyChanged) {
+            String key = ((PropertyChanged)message).getKey();
+            if (CONTINUOUS_LAYOUT.equals(key)) {
+                boolean layout = Boolean.valueOf(jsXe.getProperty(CONTINUOUS_LAYOUT)).booleanValue();
+                vertSplitPane.setContinuousLayout(layout);
+                horizSplitPane.setContinuousLayout(layout);
+            }
+            if (CONTINUOUS_LAYOUT.equals(key) || SHOW_COMMENTS.equals(key) || SHOW_ATTRIBUTES.equals(key)) {
+                tree.updateUI();
+            }
+        }
+    }//}}}
+    
+    //{{{ getTree()
     /**
      * Gets the tree component for this DefaultView.
      * @return the tree component
      */
-    public DefaultViewTree getDefaultViewTree() {
+    public TreeViewTree getTree() {
         return tree;
     }//}}}
     
@@ -364,18 +379,6 @@ public class DefaultView extends JPanel implements DocumentView {
     
     private boolean canEditInJEditorPane(AdapterNode node) {
         return (node.getNodeValue() != null);
-    }//}}}
-    
-    //{{{ ensureDefaultProps()
-    
-    private void ensureDefaultProps(XMLDocument document) {
-        //get default properties from jsXe
-        document.setProperty(CONTINUOUS_LAYOUT, document.getProperty(CONTINUOUS_LAYOUT, m_defaultProperties.getProperty(CONTINUOUS_LAYOUT)));
-        document.setProperty(HORIZ_SPLIT_LOCATION, document.getProperty(HORIZ_SPLIT_LOCATION, m_defaultProperties.getProperty(HORIZ_SPLIT_LOCATION)));
-        document.setProperty(VERT_SPLIT_LOCATION, document.getProperty(VERT_SPLIT_LOCATION, m_defaultProperties.getProperty(VERT_SPLIT_LOCATION)));
-        document.setProperty(SHOW_COMMENTS, document.getProperty(SHOW_COMMENTS, m_defaultProperties.getProperty(SHOW_COMMENTS)));
-        document.setProperty(SHOW_ATTRIBUTES, document.getProperty(SHOW_ATTRIBUTES, m_defaultProperties.getProperty(SHOW_ATTRIBUTES)));
-       // document.setProperty(SHOW_EMPTY_NODES, document.getProperty(SHOW_EMPTY_NODES, m_defaultProperties.getProperty(SHOW_EMPTY_NODES)));
     }//}}}
     
     //{{{ TablePopupListener class
@@ -410,14 +413,10 @@ public class DefaultView extends JPanel implements DocumentView {
                 JPopupMenu popup = new JPopupMenu();
                 JMenuItem popupMenuItem;
                 
-                popupMenuItem = new JMenuItem("Add Attribute");
-                popupMenuItem.addActionListener(jsXe.getAction("treeview.add.attribute"));
-                popup.add(popupMenuItem);
+                popup.add(ActionManager.getAction("treeview.add.attribute"));
                 
                 if (row != attributesTable.getRowCount()-1) {
-                    popupMenuItem = new JMenuItem("Remove Attribute");
-                    popupMenuItem.addActionListener(jsXe.getAction("treeview.remove.attribute"));
-                    popup.add(popupMenuItem);
+                    popup.add(ActionManager.getAction("treeview.remove.attribute"));
                 }
                 popup.show(e.getComponent(), e.getX(), e.getY());
             }
@@ -524,7 +523,7 @@ public class DefaultView extends JPanel implements DocumentView {
         
     }//}}}
     
-    private DefaultViewTree tree = new DefaultViewTree();
+    private TreeViewTree tree = new TreeViewTree();
     private JTextArea m_valueTextArea = new JTextArea("");
     private DefaultViewTable attributesTable = new DefaultViewTable();
     private JSplitPane vertSplitPane;
@@ -577,17 +576,8 @@ public class DefaultView extends JPanel implements DocumentView {
     };//}}}
     private XMLDocumentListener m_documentListener = new XMLDocumentListener() {///{{{
         
-        //{{{ propertiesChanged
-        public void propertyChanged(XMLDocument source, String key, String oldValue) {
-            if (CONTINUOUS_LAYOUT.equals(key)) {
-                boolean layout = Boolean.valueOf(source.getProperty(CONTINUOUS_LAYOUT)).booleanValue();
-                vertSplitPane.setContinuousLayout(layout);
-                horizSplitPane.setContinuousLayout(layout);
-            }
-            if (CONTINUOUS_LAYOUT.equals(key) || SHOW_COMMENTS.equals(key) || SHOW_ATTRIBUTES.equals(key)) {
-                tree.updateUI();
-            }
-        }//}}}
+        //{{{ propertiesChanged()
+        public void propertyChanged(XMLDocument source, String key, String oldValue) {}//}}}
         
         //{{{ structureChanged()
         public void structureChanged(XMLDocument source, AdapterNode location) {
@@ -599,21 +589,6 @@ public class DefaultView extends JPanel implements DocumentView {
             //TODO: update the attributes table to handle this
             ((DefaultViewTableModel)attributesTable.getModel()).updateTable();
             attributesTable.updateUI();
-        }//}}}
-        
-        //{{{ insertUpdate()
-        public void insertUpdate(XMLDocumentEvent event) {
-            structureChanged(event.getXMLDocument(), null);
-        }//}}}
-        
-        //{{{ removeUpdate()
-        public void removeUpdate(XMLDocumentEvent event) {
-            structureChanged(event.getXMLDocument(), null);
-        }//}}}
-        
-        //{{{ changeUpdate()
-        public void changeUpdate(XMLDocumentEvent event) {
-            structureChanged(event.getXMLDocument(), null);
         }//}}}
         
     };//}}}

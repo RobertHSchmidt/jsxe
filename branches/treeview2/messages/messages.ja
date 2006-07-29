@@ -1,0 +1,29 @@
+# JSXE tree view Japanese properties file
+# $Id$
+# Maintained by Ian Lewis
+#:mode=properties:
+#:tabSize=4:indentSize=4:noTabs=true:
+#:folding=explicit:collapseFolds=1:
+
+TreeView.Options.Title=ツリー表示
+
+TreeView.Options.Show.Comments=コメントノードを表示する
+TreeView.Options.Show.Attributes=要素の属性を表示する:
+Show.Attributes.None=なし
+Show.Attributes.ID.Only=IDだけ
+Show.Attributes.All=全て
+
+treeview.rename.node.label=ノードをリネーム
+treeview.remove.node.label=ノードを削除
+treeview.add.attribute.label=属性を追加
+treeview.remove.attribute.label=属性を削除
+treeview.add.doctype.node.label=DTDを追加
+treeview.edit.node.label=ノードを編集
+TreeView.EditDocType.Title=DTDを編集
+Edit.Node.Dialog.Title=ノードを編集
+
+treeview.add.element.node.label=要素を追加
+treeview.add.text.node.label=テキストを追加
+treeview.add.cdata.node.label=CDATA セクションを追加
+treeview.add.pi.node.label=処理命令を追加
+treeview.add.comment.node.label=コメントを追加

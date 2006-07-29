@@ -24,18 +24,34 @@ from http://www.fsf.org/copyleft/gpl.txt
 
 package treeview.action;
 
+//{{{ imports
+
+import treeview.*;
+
+//{{{ AWT classes
 import java.awt.event.ActionEvent;
+//}}}
+
+//{{{ Swing classes
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
+//}}}
 
+//{{{ DOM classes
 import org.w3c.dom.DOMException;
+//}}}
 
-import treeview.*;
+//{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.dom.AdapterNode;
+//}}}
+
+//}}}
 
 /**
  * An action that removes the current selected node from the tree.
@@ -43,22 +59,19 @@ import net.sourceforge.jsxe.dom.AdapterNode;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class RemoveNodeAction extends AbstractAction {
+public class RemoveNodeAction extends LocalizedAction {
     
     //{{{ RemoveNodeAction constructor
-    
     public RemoveNodeAction() {
-        putValue(Action.NAME, Messages.getMessage("TreeView.RemoveNode"));
+        super("treeview.remove.node");
     }//}}}
   
-    //{{{ actionPerformed()
-  
-    public void actionPerformed(ActionEvent e) {
-         DocumentView view = jsXe.getActiveView().getDocumentView();
-        if (view instanceof DefaultView) {
-            
-            DefaultView defView = (DefaultView)view;
-            DefaultViewTree tree = defView.getDefaultViewTree();
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+         DocumentView docView = view.getDocumentView();
+        if (docView instanceof DefaultView) {
+            DefaultView defView = (DefaultView)docView;
+            TreeViewTree tree = defView.getTree();
             AdapterNode selectedNode = tree.getSelectedNode();
             if (selectedNode != null) {
                 try {

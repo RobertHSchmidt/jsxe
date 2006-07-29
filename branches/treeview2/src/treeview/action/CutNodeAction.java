@@ -48,8 +48,10 @@ import org.w3c.dom.DOMException;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.util.Log;
 //}}}
@@ -63,7 +65,7 @@ import net.sourceforge.jsxe.util.Log;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class CutNodeAction extends AbstractAction {
+public class CutNodeAction extends LocalizedAction {
     
     //{{{ CutNodeAction constructor
     /**
@@ -71,19 +73,21 @@ public class CutNodeAction extends AbstractAction {
      * the clipboard.
      */
     public CutNodeAction() {
-        putValue(Action.NAME, Messages.getMessage("common.cut"));
-        putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
-        putValue(Action.MNEMONIC_KEY, new Integer(KeyStroke.getKeyStroke("C").getKeyCode()));
+        super(TreeViewPlugin.PLUGIN_NAME+".cut");
+       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
     }//}}}
     
-    //{{{ actionPerformed()
-  
-    public void actionPerformed(ActionEvent e) {
-        Log.log(Log.DEBUG, this, "cut");
-        DocumentView view = jsXe.getActiveView().getDocumentView();
-        if (view instanceof DefaultView) {
-            DefaultView defView = (DefaultView)view;
-            DefaultViewTree tree = defView.getDefaultViewTree();
+    //{{{ getLabel()
+    public String getLabel() {
+        return Messages.getMessage("common.cut");
+    }//}}}
+    
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        DocumentView docView = view.getDocumentView();
+        if (docView instanceof DefaultView) {
+            DefaultView defView = (DefaultView)docView;
+            TreeViewTree tree = defView.getTree();
             try {
                 tree.cut();
             } catch (DOMException dome) {
