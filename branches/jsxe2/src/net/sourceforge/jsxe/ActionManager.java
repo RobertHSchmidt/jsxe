@@ -254,9 +254,9 @@ public class ActionManager {
      */
     public static void handleKey(KeyEvent event) {
         KeyEventTranslator.Key key = KeyEventTranslator.translateKeyEvent(event);
-        Log.log(Log.DEBUG, ActionManager.class, "Key: "+key.toString());
-        Log.log(Log.DEBUG, ActionManager.class, "key.key: "+key.key);
-        Log.log(Log.DEBUG, ActionManager.class, "key.input: "+key.input);
+       // Log.log(Log.DEBUG, ActionManager.class, "Key: "+key.toString());
+       // Log.log(Log.DEBUG, ActionManager.class, "key.key: "+key.key);
+       // Log.log(Log.DEBUG, ActionManager.class, "key.input: "+key.input);
         
         //Gets the action for the Key.
         Action action = (Action)m_keyBindingMap.get(key);
