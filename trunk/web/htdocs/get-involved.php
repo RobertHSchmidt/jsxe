@@ -28,7 +28,7 @@
       <p>If you are interested in working on jsXe, please
       <a href="http://lists.sourceforge.net/mailman/listinfo/jsxe-devel">subscribe</a>
       and send a mail to the jsxe-devel mailing list. The developers can help
-      get you started. Developers should be know how to use SVN and have some
+      get you started. Developers should know how to use SVN and have some
       experience with Java swing or XML.</p>
       
       <h3>Translators</h3>
@@ -39,7 +39,7 @@
       knowlegeable of SVN, you can check out the messages files from jsXe's 
       <a href="http://svn.sourceforge.net/viewcvs.cgi/jsxe/trunk/jsxe/">SVN repository</a>.
       But even if you are not versed in SVN, the developers on the
-      mailing list can help get you.</p>
+      mailing list can help get you started.</p>
       
       <h3>Web Developers</h3>
       
