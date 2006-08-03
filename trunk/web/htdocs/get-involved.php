@@ -22,6 +22,8 @@
          you can become involved in the project. The easiest is probably by
          subscribing to the mailing lists, however there are many methods at
          your disposal.</p>
+         
+      <p>Note: Contributers will be expected to give their real names.</p> 
       
       <h3>Developers</h3>
       
