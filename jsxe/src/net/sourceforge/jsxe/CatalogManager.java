@@ -3,9 +3,9 @@ CatalogManager.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
- * Copyright (C) 2001, 2003 Slava Pestov
- * Portions Copyright (C) 2002 Chris Stevenson
- * Portions Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
+Copyright (C) 2001, 2003 Slava Pestov
+Portions Copyright (C) 2002 Chris Stevenson
+Portions Copyright (C) 2005 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
