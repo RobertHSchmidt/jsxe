@@ -7,8 +7,11 @@
 TreeView.Options.Title=Tree View
 
 TreeView.Options.Show.Comments=Show comment nodes
+TreeView.Options.Show.Comments.ToolTip=If this checkbox is checked then comment nodes will be shown in the tree.
 TreeView.Options.Continuous.Layout=Continuous layout for split-panes
+TreeView.Options.Continuous.Layout.ToolTip=<html>If this checkbox is checked then split panes will continuously repaint as you resize them.<br>Otherwise a black line is drawn to show the resize.</html> 
 TreeView.Options.Show.Attributes=Show element attributes in tree:
+TreeView.Options.Show.Attributes.ToolTip=<html>This option specifies what attributes are shown in the tree.<ul><li><strong>None</strong> - No attrributes are shown.</li><li><strong>ID only</strong> - Only the attribute specified as the ID is shown.</li><li><strong>All</strong> - All attributes are shown.</li></ul></html>
 Show.Attributes.None=None
 Show.Attributes.ID.Only=ID only
 Show.Attributes.All=All
