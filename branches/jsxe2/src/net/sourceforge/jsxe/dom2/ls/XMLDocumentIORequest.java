@@ -121,10 +121,6 @@ public class XMLDocumentIORequest extends WorkRequest {
         this.session = session;
         this.vfs = vfs;
         this.path = path;
-
-        markersPath = vfs.getParentOfPath(path)
-            + '.' + vfs.getFileName(path)
-            + ".marks";
     } //}}}
 
     //{{{ run() method
@@ -179,7 +175,6 @@ public class XMLDocumentIORequest extends WorkRequest {
     private Object session;
     private VFS vfs;
     private String path;
-    private String markersPath;
     //}}}
 
     //{{{ load() method
@@ -247,21 +242,6 @@ public class XMLDocumentIORequest extends WorkRequest {
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
             }
-
-           // if (jEdit.getBooleanProperty("persistentMarkers")) {
-           //     try {
-           //         String[] args = { vfs.getFileName(path) };
-           //         if (!buffer.isTemporary()) {
-           //             setStatus(jEdit.getProperty("vfs.status.load-markers",args));
-           //         }
-           //         setAbortable(true);
-           //         in = vfs._createInputStream(session,markersPath,true,view);
-           //         if(in != null)
-           //             readMarkers(buffer,in);
-           //     } catch(IOException io) {
-           //         // ignore
-           //     }
-           // }
         } catch(WorkThread.Abort a) {
             if (in != null) {
                 try {
@@ -274,13 +254,13 @@ public class XMLDocumentIORequest extends WorkRequest {
         } finally {
             try {
                 vfs._endVFSSession(session,view);
-            } catch(IOException io) {
+            } catch (IOException io) {
                 Log.log(Log.ERROR,this,io);
                 String[] pp = { io.toString() };
                 VFSManager.error(view,path,"IO.Error.Read.Error",pp);
 
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
-            } catch(WorkThread.Abort a) {
+            } catch (WorkThread.Abort a) {
                 buffer.setBooleanProperty(ERROR_OCCURRED,true);
             }
         }
@@ -397,8 +377,7 @@ public class XMLDocumentIORequest extends WorkRequest {
         // only true if the file size is known
         boolean trackProgress = (!buffer.isTemporary() && length != 0);
 
-        if(trackProgress)
-        {
+        if (trackProgress) {
             setProgressValue(0);
             setProgressMaximum((int)length);
         }
@@ -538,20 +517,23 @@ public class XMLDocumentIORequest extends WorkRequest {
         setAbortable(false);
 
         String lineSeparator;
-        if(seg.count == 0)
-        {
-            // fix for "[ 865589 ] 0-byte files should open using
+        if(seg.count == 0) {
+            // 0-byte files should open using
             // the default line seperator"
-            lineSeparator = jEdit.getProperty(
-                "buffer.lineSeparator",
+            lineSeparator = jsXe.getProperty(
+                "xml.document."+XMLDocumen.LINE_SEPARATOR,
                 System.getProperty("line.separator"));
+        } else {
+            if (CRLF) {
+                lineSeparator = "\r\n";
+            } else {
+                if(CROnly) {
+                    lineSeparator = "\r";
+                } else {
+                    lineSeparator = "\n";
+                }
+            }
         }
-        else if(CRLF)
-            lineSeparator = "\r\n";
-        else if(CROnly)
-            lineSeparator = "\r";
-        else
-            lineSeparator = "\n";
 
         in.close();
 
@@ -594,37 +576,6 @@ public class XMLDocumentIORequest extends WorkRequest {
 
         // used in insert()
         return seg;
-    } //}}}
-
-    //{{{ readMarkers() method
-    private void readMarkers(Buffer buffer, InputStream _in)
-        throws IOException
-    {
-        // For `reload' command
-        buffer.removeAllMarkers();
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(_in));
-
-        try
-        {
-            String line;
-            while((line = in.readLine()) != null)
-            {
-                // compatibility kludge for jEdit 3.1 and earlier
-                if(!line.startsWith("!"))
-                    continue;
-
-                char shortcut = line.charAt(1);
-                int start = line.indexOf(';');
-                int end = line.indexOf(';',start + 1);
-                int position = Integer.parseInt(line.substring(start + 1,end));
-                buffer.addMarker(shortcut,position);
-            }
-        }
-        finally
-        {
-            in.close();
-        }
     } //}}}
 
     //{{{ save() method
@@ -693,23 +644,6 @@ public class XMLDocumentIORequest extends WorkRequest {
                     {
                         if(!vfs._rename(session,savePath,path,view))
                             throw new IOException("Rename failed: " + savePath);
-                    }
-
-                    // We only save markers to VFS's that support deletion.
-                    // Otherwise, we will accumilate stale marks files.
-                    if((vfs.getCapabilities() & VFS.DELETE_CAP) != 0)
-                    {
-                        if(jEdit.getBooleanProperty("persistentMarkers")
-                            && buffer.getMarkers().size() != 0)
-                        {
-                            setStatus(jEdit.getProperty("vfs.status.save-markers",args));
-                            setProgressValue(0);
-                            out = vfs._createOutputStream(session,markersPath,view);
-                            if(out != null)
-                                writeMarkers(buffer,out);
-                        }
-                        else
-                            vfs._delete(session,markersPath,view);
                     }
                 }
                 else
@@ -880,34 +814,6 @@ public class XMLDocumentIORequest extends WorkRequest {
                 out.close();
             else
                 _out.close();
-        }
-    } //}}}
-
-    //{{{ writeMarkers() method
-    private void writeMarkers(Buffer buffer, OutputStream out)
-        throws IOException
-    {
-        Writer o = new BufferedWriter(new OutputStreamWriter(out));
-        try
-        {
-            Vector markers = buffer.getMarkers();
-            for(int i = 0; i < markers.size(); i++)
-            {
-                Marker marker = (Marker)markers.elementAt(i);
-                o.write('!');
-                o.write(marker.getShortcut());
-                o.write(';');
-
-                String pos = String.valueOf(marker.getPosition());
-                o.write(pos);
-                o.write(';');
-                o.write(pos);
-                o.write('\n');
-            }
-        }
-        finally
-        {
-            o.close();
         }
     } //}}}
 
