@@ -376,7 +376,7 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
     private static String toString(AdapterNode node) {
         StringBuffer s = new StringBuffer();
         if (node.getNodeType() == Node.DOCUMENT_NODE)
-            return "Document Root";
+            return Messages.getMessage("treeview.document.root");
         String nodeName = node.getNodeName();
         if (! nodeName.startsWith("#")) {   
             s.append(nodeName);

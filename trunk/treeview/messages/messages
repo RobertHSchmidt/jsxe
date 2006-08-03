@@ -13,6 +13,7 @@ Show.Attributes.None=None
 Show.Attributes.ID.Only=ID only
 Show.Attributes.All=All
 
+treeview.document.root=Document Root
 
 treeview.rename.node.label=Rename Node
 treeview.remove.node.label=Remove Node
