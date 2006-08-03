@@ -93,7 +93,8 @@ public class Messages {
    // static {
    //    // Locale.setDefault(new Locale("sv"));
    //    // Locale.setDefault(Locale.GERMANY);
-   //     Locale.setDefault(Locale.JAPAN);
+   //    // Locale.setDefault(Locale.JAPAN);
+   //     Locale.setDefault(new Locale("ru", "RU"));
    // }
     private static Locale m_locale = Locale.getDefault();
     
