@@ -32,6 +32,8 @@ import java.util.zip.*;
 import java.util.Vector;
 import net.sourceforge.jsxe.io.*;
 import net.sourceforge.jsxe.*;
+import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.dom2.XMLDocument;
 import net.sourceforge.jsxe.util.*;
 //}}}
 
@@ -82,7 +84,7 @@ public class XMLDocumentIORequest extends WorkRequest {
     /**
      * An insert file request.
      */
-    public static final int INSERT = 3;
+   // public static final int INSERT = 3;
 
     /**
      * Magic numbers used for auto-detecting Unicode and GZIP files.
@@ -136,14 +138,22 @@ public class XMLDocumentIORequest extends WorkRequest {
             case AUTOSAVE:
                 autosave();
                 break;
-            case INSERT:
-                insert();
-                break;
+           // case INSERT:
+           //     insert();
+           //     break;
             default:
                 throw new InternalError();
         }
     } //}}}
-
+    
+    //{{{ getLoadData()
+    /**
+     * Gets the data loaded from a load request.
+     */
+    public SegmentBuffer getLoadData() {
+        return m_loadData;
+    }//}}}
+    
     //{{{ toString() method
     public String toString() {
         
@@ -175,6 +185,7 @@ public class XMLDocumentIORequest extends WorkRequest {
     private Object session;
     private VFS vfs;
     private String path;
+    private SegmentBuffer m_loadData;
     //}}}
 
     //{{{ load() method
@@ -215,7 +226,7 @@ public class XMLDocumentIORequest extends WorkRequest {
             } catch(CharConversionException ch) {
                 Log.log(Log.ERROR,this,ch);
                 
-                Object[] pp = { buffer.getProperty(Buffer.ENCODING), ch.toString() };
+                Object[] pp = { buffer.getProperty(XMLDocument.ENCODING), ch.toString() };
                 
                 VFSManager.error(view,path,"IO.Error.Encoding.Error",pp);
 
@@ -223,7 +234,7 @@ public class XMLDocumentIORequest extends WorkRequest {
             
             } catch(UnsupportedEncodingException uu) {
                 Log.log(Log.ERROR,this,uu);
-                Object[] pp = { buffer.getProperty(Buffer.ENCODING),
+                Object[] pp = { buffer.getProperty(XMLDocument.ENCODING),
                     uu.toString() };
                 VFSManager.error(view,path,"IO.Error.Encoding.Error",pp);
 
@@ -274,11 +285,11 @@ public class XMLDocumentIORequest extends WorkRequest {
     private Reader autodetect(InputStream in) throws IOException {
         in = new BufferedInputStream(in);
 
-        String encoding = buffer.getStringProperty(Buffer.ENCODING);
+        String encoding = buffer.getStringProperty(XMLDocument.ENCODING);
         if (!in.markSupported()) {
             Log.log(Log.WARNING,this,"Mark not supported: " + in);
         } else {
-            if(buffer.getBooleanProperty(Buffer.ENCODING_AUTODETECT)) {
+            if(buffer.getBooleanProperty(XMLDocument.ENCODING_AUTODETECT)) {
                 in.mark(XML_PI_LENGTH);
                 int b1 = in.read();
                 int b2 = in.read();
@@ -300,13 +311,13 @@ public class XMLDocumentIORequest extends WorkRequest {
                     
                     encoding = "UTF-8";
                 } else { 
-                    if (b1 == GZIP_MAGIC_1 && b2 == GZIP_MAGIC_2) {
-                        in.reset();
-                        in = new GZIPInputStream(in);
-                        buffer.setBooleanProperty(Buffer.GZIPPED,true);
-                        // auto-detect encoding within the gzip stream.
-                        return autodetect(in);
-                    } else {
+                   // if (b1 == GZIP_MAGIC_1 && b2 == GZIP_MAGIC_2) {
+                   //     in.reset();
+                   //     in = new GZIPInputStream(in);
+                   //     buffer.setBooleanProperty(Buffer.GZIPPED,true);
+                   //     // auto-detect encoding within the gzip stream.
+                   //     return autodetect(in);
+                   // } else {
                         if ((b1 == UNICODE_MAGIC_1
                             && b2 == UNICODE_MAGIC_2)
                             || (b1 == UNICODE_MAGIC_2
@@ -314,7 +325,7 @@ public class XMLDocumentIORequest extends WorkRequest {
                         {
                             in.reset();
                             encoding = "UTF-16";
-                            buffer.setProperty(Buffer.ENCODING,encoding);
+                            buffer.setProperty(XMLDocument.ENCODING,encoding);
                         } else {
                             if (b1 == UTF8_MAGIC_1 && b2 == UTF8_MAGIC_2
                                 && b3 == UTF8_MAGIC_3)
@@ -358,7 +369,7 @@ public class XMLDocumentIORequest extends WorkRequest {
                                 in.reset();
                             }
                         }
-                    }
+                   // }
                 }
             }
         }
@@ -367,15 +378,14 @@ public class XMLDocumentIORequest extends WorkRequest {
     } //}}}
 
     //{{{ read() method
-    private SegmentBuffer read(Reader in, long length,
-        boolean insert) throws IOException
-    {
+    private SegmentBuffer read(Reader in, long length, boolean insert) throws IOException {
+    
         /* we guess an initial size for the array */
-        IntegerArray endOffsets = new IntegerArray(
-            Math.max(1,(int)(length / 50)));
+       // IntegerArray endOffsets = new IntegerArray(
+       //     Math.max(1,(int)(length / 50)));
 
         // only true if the file size is known
-        boolean trackProgress = (!buffer.isTemporary() && length != 0);
+        boolean trackProgress = (length != 0);
 
         if (trackProgress) {
             setProgressValue(0);
@@ -447,7 +457,7 @@ public class XMLDocumentIORequest extends WorkRequest {
                     seg.append(buf,lastLine,i -
                         lastLine);
                     seg.append('\n');
-                    endOffsets.add(seg.count);
+                   // endOffsets.add(seg.count);
                     if(trackProgress && lineCount++ % PROGRESS_INTERVAL == 0)
                         setProgressValue(seg.count);
 
@@ -485,7 +495,7 @@ public class XMLDocumentIORequest extends WorkRequest {
                         seg.append(buf,lastLine,
                             i - lastLine);
                         seg.append('\n');
-                        endOffsets.add(seg.count);
+                       // endOffsets.add(seg.count);
                         if(trackProgress && lineCount++ % PROGRESS_INTERVAL == 0)
                             setProgressValue(seg.count);
                         lastLine = i + 1;
@@ -539,39 +549,36 @@ public class XMLDocumentIORequest extends WorkRequest {
 
         // Chop trailing newline and/or ^Z (if any)
         int bufferLength = seg.count;
-        if(bufferLength != 0)
-        {
+        if (bufferLength != 0) {
             char ch = seg.array[bufferLength - 1];
             if(ch == 0x1a /* DOS ^Z */)
                 seg.count--;
         }
 
-        buffer.setBooleanProperty(Buffer.TRAILING_EOL,false);
-        if(bufferLength != 0 && jEdit.getBooleanProperty("stripTrailingEOL"))
-        {
-            char ch = seg.array[bufferLength - 1];
-            if(ch == '\n')
-            {
-                buffer.setBooleanProperty(Buffer.TRAILING_EOL,true);
-                seg.count--;
-                endOffsets.setSize(endOffsets.getSize() - 1);
-            }
-        }
+       // buffer.setBooleanProperty(Buffer.TRAILING_EOL,false);
+       // if (bufferLength != 0 && jEdit.getBooleanProperty("stripTrailingEOL")) {
+       //     char ch = seg.array[bufferLength - 1];
+       //     if (ch == '\n') {
+       //         buffer.setBooleanProperty(Buffer.TRAILING_EOL,true);
+       //         seg.count--;
+       //        // endOffsets.setSize(endOffsets.getSize() - 1);
+       //     }
+       // }
 
         // add a line marker at the end for proper offset manager
         // operation
-        endOffsets.add(seg.count + 1);
+       // endOffsets.add(seg.count + 1);
 
         // to avoid having to deal with read/write locks and such,
         // we insert the loaded data into the buffer in the
         // post-load cleanup runnable, which runs in the AWT thread.
-        if(!insert)
-        {
-            buffer.setProperty(LOAD_DATA,seg);
-            buffer.setProperty(END_OFFSETS,endOffsets);
-            buffer.setProperty(NEW_PATH,path);
-            if(lineSeparator != null)
-                buffer.setProperty(Buffer.LINESEP,lineSeparator);
+        if (!insert) {
+            m_loadData = seg;
+           // buffer.setProperty(END_OFFSETS,endOffsets);
+           // buffer.setProperty(NEW_PATH,path);
+            if (lineSeparator != null) {
+                buffer.setProperty(XMLDocument.LINE_SEPARATOR, lineSeparator);
+            }
         }
 
         // used in insert()
@@ -586,7 +593,7 @@ public class XMLDocumentIORequest extends WorkRequest {
         try
         {
             String[] args = { vfs.getFileName(path) };
-            setStatus(jEdit.getProperty("vfs.status.save",args));
+            setStatus(Messages.getMessage("vfs.status.save",args));
 
             // the entire save operation can be aborted...
             setAbortable(true);
@@ -595,12 +602,12 @@ public class XMLDocumentIORequest extends WorkRequest {
                 path = MiscUtilities.resolveSymlinks(path);
 
             // Only backup once per session
-            if(buffer.getProperty(Buffer.BACKED_UP) == null
-                || jEdit.getBooleanProperty("backupEverySave"))
-            {
-                vfs._backup(session,path,view);
-                buffer.setBooleanProperty(Buffer.BACKED_UP,true);
-            }
+           // if(buffer.getProperty(Buffer.BACKED_UP) == null
+           //     || jEdit.getBooleanProperty("backupEverySave"))
+           // {
+           //     vfs._backup(session,path,view);
+           //     buffer.setBooleanProperty(Buffer.BACKED_UP,true);
+           // }
 
             /* if the VFS supports renaming files, we first
              * save to #<filename>#save#, then rename that
@@ -614,7 +621,7 @@ public class XMLDocumentIORequest extends WorkRequest {
             String savePath;
 
             boolean twoStageSave = (vfs.getCapabilities() & VFS.RENAME_CAP) != 0
-                && jEdit.getBooleanProperty("twoStageSave");
+                && jsXe.getBooleanProperty("twoStageSave");
             if(twoStageSave)
                 savePath = vfs.getTwoStageSaveName(path);
             else
@@ -632,11 +639,11 @@ public class XMLDocumentIORequest extends WorkRequest {
                     // Can't use buffer.getName() here because
                     // it is not changed until the save is
                     // complete
-                    if(savePath.endsWith(".gz"))
-                        buffer.setBooleanProperty(Buffer.GZIPPED,true);
+                   // if(savePath.endsWith(".gz"))
+                   //     buffer.setBooleanProperty(Buffer.GZIPPED,true);
 
-                    if(buffer.getBooleanProperty(Buffer.GZIPPED))
-                        out = new GZIPOutputStream(out);
+                   // if(buffer.getBooleanProperty(Buffer.GZIPPED))
+                   //     out = new GZIPOutputStream(out);
 
                     write(buffer,out);
 
@@ -710,7 +717,7 @@ public class XMLDocumentIORequest extends WorkRequest {
         try
         {
             String[] args = { vfs.getFileName(path) };
-            setStatus(jEdit.getProperty("vfs.status.autosave",args));
+            setStatus(Messages.getMessage("vfs.status.autosave",args));
 
             // the entire save operation can be aborted...
             setAbortable(true);
@@ -756,152 +763,204 @@ public class XMLDocumentIORequest extends WorkRequest {
     } //}}}
 
     //{{{ write() method
-    private void write(Buffer buffer, OutputStream _out)
-        throws IOException
-    {
-        BufferedWriter out = null;
+   // private void write(XMLDocument buffer, OutputStream _out) throws IOException {
+   //     BufferedWriter out = null;
 
-        try
-        {
-            String encoding = buffer.getStringProperty(Buffer.ENCODING);
-            if(encoding.equals(MiscUtilities.UTF_8_Y))
-            {
-                // not supported by Java...
-                _out.write(UTF8_MAGIC_1);
-                _out.write(UTF8_MAGIC_2);
-                _out.write(UTF8_MAGIC_3);
-                _out.flush();
-                encoding = "UTF-8";
-            }
+   //     try {
+   //         String encoding = buffer.getStringProperty(Buffer.ENCODING);
+   //         if (encoding.equals(MiscUtilities.UTF_8_Y)) {
+   //             // not supported by Java...
+   //             _out.write(UTF8_MAGIC_1);
+   //             _out.write(UTF8_MAGIC_2);
+   //             _out.write(UTF8_MAGIC_3);
+   //             _out.flush();
+   //             encoding = "UTF-8";
+   //         }
 
-            out = new BufferedWriter(
-                new OutputStreamWriter(_out,encoding),
-                IOBUFSIZE);
+   //         out = new BufferedWriter(new OutputStreamWriter(_out,encoding), IOBUFSIZE);
 
-            Segment lineSegment = new Segment();
-            String newline = buffer.getStringProperty(Buffer.LINESEP);
-            if(newline == null)
-                newline = System.getProperty("line.separator");
+   //         Segment lineSegment = new Segment();
+   //         String newline = buffer.getStringProperty(Buffer.LINESEP);
+   //         if (newline == null) {
+   //             newline = System.getProperty("line.separator");
+   //         }
 
-            setProgressMaximum(buffer.getLineCount() / PROGRESS_INTERVAL);
-            setProgressValue(0);
+   //         setProgressMaximum(buffer.getLineCount() / PROGRESS_INTERVAL);
+   //         setProgressValue(0);
 
-            int i = 0;
-            while(i < buffer.getLineCount())
-            {
-                buffer.getLineText(i,lineSegment);
-                out.write(lineSegment.array,lineSegment.offset,
-                    lineSegment.count);
+   //         int i = 0;
+   //         while (i < buffer.getLineCount()) {
+   //             buffer.getLineText(i,lineSegment);
+   //             out.write(lineSegment.array, lineSegment.offset, lineSegment.count);
 
-                if(i != buffer.getLineCount() - 1)
-                {
-                    out.write(newline);
-                }
+   //             if (i != buffer.getLineCount() - 1) {
+   //                 out.write(newline);
+   //             }
 
-                if(++i % PROGRESS_INTERVAL == 0)
-                    setProgressValue(i / PROGRESS_INTERVAL);
-            }
+   //             if (++i % PROGRESS_INTERVAL == 0) {
+   //                 setProgressValue(i / PROGRESS_INTERVAL);
+   //             }
+   //         }
 
-            if(jEdit.getBooleanProperty("stripTrailingEOL")
-                && buffer.getBooleanProperty(Buffer.TRAILING_EOL))
-            {
-                out.write(newline);
-            }
+   //        // if(jEdit.getBooleanProperty("stripTrailingEOL")
+   //        //     && buffer.getBooleanProperty(Buffer.TRAILING_EOL))
+   //        // {
+   //        //     out.write(newline);
+   //        // }
+   //     } finally {
+   //         if (out != null) {
+   //             out.close();
+   //         } else {
+   //             _out.close();
+   //         }
+   //     }
+   // } //}}}
+    
+    //{{{ write()
+    private void write(XMLDocument buffer, OutputStream out) throws IOException {
+        
+        String newLine = getProperty(XMLDocument.LINE_SEPARATOR);
+        
+        String encoding = getProperty(XMLDocument.ENCODING);
+        if (encoding.equals(MiscUtilities.UTF_8_Y)) {
+            // not supported by Java...
+            out.write(UTF8_MAGIC_1);
+            out.write(UTF8_MAGIC_2);
+            out.write(UTF8_MAGIC_3);
+            out.flush();
+            encoding = "UTF-8";
         }
-        finally
-        {
-            if(out != null)
-                out.close();
-            else
-                _out.close();
-        }
-    } //}}}
-
-    //{{{ insert() method
-    private void insert()
-    {
-        InputStream in = null;
-
-        try
-        {
-            try
-            {
-                String[] args = { vfs.getFileName(path) };
-                setStatus(jEdit.getProperty("vfs.status.load",args));
-                setAbortable(true);
-
-                path = vfs._canonPath(session,path,view);
-
-                VFS.DirectoryEntry entry = vfs._getDirectoryEntry(
-                    session,path,view);
-                long length;
-                if(entry != null)
-                    length = entry.length;
-                else
-                    length = 0L;
-
-                in = vfs._createInputStream(session,path,false,view);
-                if(in == null)
-                    return;
-
-                final SegmentBuffer seg = read(
-                    autodetect(in),length,true);
-
-                /* we don't do this in Buffer.insert() so that
-                   we can insert multiple files at once */
-                VFSManager.runInAWTThread(new Runnable()
-                {
-                    public void run()
-                    {
-                        view.getTextArea().setSelectedText(
-                            seg.toString());
-                    }
-                });
+        
+        //now just write out the text.
+        int length = buffer.getLength();
+        int index = 0;
+        BufferedWriter outbuf = new BufferedWriter(new OutputStreamWriter(out, encoding), IO_BUFFER_SIZE);
+        Segment seg = new Segment();
+        
+        while (index < length) {
+            int size = WRITE_SIZE;
+            try {
+                size = Math.min(length - index, WRITE_SIZE);
+            } catch(NumberFormatException nf) {
+                Log.log(Log.ERROR, this, nf);
             }
-            catch(IOException io)
-            {
-                Log.log(Log.ERROR,this,io);
-                String[] pp = { io.toString() };
-                VFSManager.error(view,path,"ioerror.read-error",pp);
-
-                buffer.setBooleanProperty(ERROR_OCCURRED,true);
-            }
-        }
-        catch(WorkThread.Abort a)
-        {
-            if(in != null)
-            {
-                try
-                {
-                    in.close();
-                }
-                catch(IOException io)
-                {
+            
+           // out.write(m_content.getText(index, size).getBytes(getProperty(ENCODING)), index, size);
+            buffer.getText(index, size, seg);
+            
+            int startOffset = seg.offset;
+            int endOffset = size + seg.offset;
+            
+            for (int i=startOffset; i<endOffset; i++) {
+                if (seg.array[i]=='\n') {
+                    outbuf.write(seg.array, seg.offset, i - seg.offset);
+                    outbuf.write(newLine.toCharArray(), 0, newLine.length());
+                    
+                    //add 1 because of \n character,
+                    seg.count -= i-seg.offset+1;
+                    seg.offset += i-seg.offset+1;
                 }
             }
-
-            buffer.setBooleanProperty(ERROR_OCCURRED,true);
+            
+            //write the rest
+            outbuf.write(seg.array, seg.offset, seg.count);
+            index += size;
         }
-        finally
-        {
-            try
-            {
-                vfs._endVFSSession(session,view);
-            }
-            catch(IOException io)
-            {
-                Log.log(Log.ERROR,this,io);
-                String[] pp = { io.toString() };
-                VFSManager.error(view,path,"ioerror.read-error",pp);
+        
+        outbuf.close();
+    }//}}}
+    
+   // //{{{ insert() method
+   // private void insert()
+   // {
+   //     InputStream in = null;
 
-                buffer.setBooleanProperty(ERROR_OCCURRED,true);
-            }
-            catch(WorkThread.Abort a)
-            {
-                buffer.setBooleanProperty(ERROR_OCCURRED,true);
-            }
-        }
-    } //}}}
+   //     try
+   //     {
+   //         try
+   //         {
+   //             String[] args = { vfs.getFileName(path) };
+   //             setStatus(jEdit.getProperty("vfs.status.load",args));
+   //             setAbortable(true);
 
+   //             path = vfs._canonPath(session,path,view);
+
+   //             VFS.DirectoryEntry entry = vfs._getDirectoryEntry(
+   //                 session,path,view);
+   //             long length;
+   //             if(entry != null)
+   //                 length = entry.length;
+   //             else
+   //                 length = 0L;
+
+   //             in = vfs._createInputStream(session,path,false,view);
+   //             if(in == null)
+   //                 return;
+
+   //             final SegmentBuffer seg = read(
+   //                 autodetect(in),length,true);
+
+   //             /* we don't do this in Buffer.insert() so that
+   //                we can insert multiple files at once */
+   //             VFSManager.runInAWTThread(new Runnable()
+   //             {
+   //                 public void run()
+   //                 {
+   //                     view.getTextArea().setSelectedText(
+   //                         seg.toString());
+   //                 }
+   //             });
+   //         }
+   //         catch(IOException io)
+   //         {
+   //             Log.log(Log.ERROR,this,io);
+   //             String[] pp = { io.toString() };
+   //             VFSManager.error(view,path,"ioerror.read-error",pp);
+
+   //             buffer.setBooleanProperty(ERROR_OCCURRED,true);
+   //         }
+   //     }
+   //     catch(WorkThread.Abort a)
+   //     {
+   //         if(in != null)
+   //         {
+   //             try
+   //             {
+   //                 in.close();
+   //             }
+   //             catch(IOException io)
+   //             {
+   //             }
+   //         }
+
+   //         buffer.setBooleanProperty(ERROR_OCCURRED,true);
+   //     }
+   //     finally
+   //     {
+   //         try
+   //         {
+   //             vfs._endVFSSession(session,view);
+   //         }
+   //         catch(IOException io)
+   //         {
+   //             Log.log(Log.ERROR,this,io);
+   //             String[] pp = { io.toString() };
+   //             VFSManager.error(view,path,"ioerror.read-error",pp);
+
+   //             buffer.setBooleanProperty(ERROR_OCCURRED,true);
+   //         }
+   //         catch(WorkThread.Abort a)
+   //         {
+   //             buffer.setBooleanProperty(ERROR_OCCURRED,true);
+   //         }
+   //     }
+   // } //}}}
+
+    //{{{ Private static members
+    private static final int READ_SIZE = 5120;
+    private static final int WRITE_SIZE = 5120;
+    private static final int IO_BUFFER_SIZE = 32768;
+    //}}}
+    
     //}}}
 }

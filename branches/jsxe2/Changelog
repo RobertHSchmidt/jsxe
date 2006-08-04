@@ -1,3 +1,7 @@
+08/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * More porting of jEdit's VFS classes to jsXe
+
 07/29/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added some more code for multi-threaded IO support.

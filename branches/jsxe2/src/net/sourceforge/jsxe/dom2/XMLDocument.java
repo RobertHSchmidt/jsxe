@@ -32,6 +32,11 @@ import net.sourceforge.jsxe.dom2.ls.*;
 import net.sourceforge.jsxe.dom2.event.*;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.util.ReadWriteLock;
+//}}}
+
+//{{{ Swing classes
+import javax.swing.text.Segment;
 //}}}
 
 //{{{ DOM classes
@@ -44,10 +49,7 @@ import org.xml.sax.EntityResolver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 import java.net.URI;
 //}}}
 
@@ -112,6 +114,8 @@ public class XMLDocument {
      * serialize method.
      */
     public static final String LINE_SEPARATOR = "line-separator";
+    
+    public static final String ENCODING_AUTODETECT = "encoding.autodetect";
     //}}}
     
     //{{{ XMLDocument constructor
@@ -361,7 +365,7 @@ public class XMLDocument {
     }//}}}
     
     //{{{ setProperty()
-    public void settProperty(String key, String value) {
+    public void setProperty(String key, String value) {
         synchronized(propertyLock) {
             if (value == null) {
                 m_properties.remove(key);

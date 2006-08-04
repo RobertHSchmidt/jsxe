@@ -179,6 +179,15 @@ DocumentBuffer.SaveAs.Message.Title=File Exists
 DocumentBuffer.Close.Message={0} unsaved! Save it now?
 DocumentBuffer.Close.Message.Title=Unsaved Changes
 
+#{{{ I/O status messages
+vfs.status.load=Loading {0}
+vfs.status.save=Saving {0}
+vfs.status.autosave=Autosaving {0}
+vfs.status.listing-directory=Listing {0}
+vfs.status.deleting=Deleting {0}
+vfs.status.renaming=Renaming {0} to {1}
+#}}}
+
 #{0} file name
 DocumentBuffer.Saved.Message={0} Saved
 DocumentBuffer.Closed.Message={0} Closed
@@ -248,6 +257,21 @@ Out.Of.Memory.Error=There was insufficent Java heap memory to complete\n\
 	this request. Try increasing the maximum heap size.
 #}}}
 
+#}}}
+
+#{{{ VFS
+vfs.browser.name=Name
+vfs.browser.type=Type
+vfs.browser.type.file=File
+vfs.browser.type.directory=Directory
+vfs.browser.type.filesystem=File system
+vfs.browser.status=Status
+vfs.browser.status.no=No access
+vfs.browser.status.ro=Read only
+vfs.browser.status.append=Append only
+vfs.browser.status.rw=Read/write
+vfs.browser.size=Size
+vfs.browser.modified=Last modified
 #}}}
 
 #{{{ Dialogs

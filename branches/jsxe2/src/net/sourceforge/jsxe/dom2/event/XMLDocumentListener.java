@@ -25,10 +25,11 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.dom2.event;
 
 import net.sourceforge.jsxe.dom2.*;
+import java.util.EventListener;
 
 public interface XMLDocumentListener extends EventListener {
     
-    public void propertyChanged(PropertyChangeEvent event);
+    public void propertyChanged(PropertyChangedEvent event);
     
     public void insertUpdate(XMLDocumentEvent event);
     

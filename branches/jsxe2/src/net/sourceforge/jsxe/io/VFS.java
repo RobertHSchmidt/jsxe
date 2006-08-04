@@ -23,7 +23,7 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package net.sourceforge.jsxe.io.io;
+package net.sourceforge.jsxe.io;
 
 //{{{ Imports
 import gnu.regexp.*;
@@ -33,6 +33,9 @@ import java.io.*;
 import java.util.*;
 import net.sourceforge.jsxe.msg.PropertiesChanged;
 import net.sourceforge.jsxe.util.Log;
+import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.dom2.ls.XMLDocumentIORequest;
+import net.sourceforge.jsxe.gui.Messages;
 //}}}
 
 /**
@@ -345,27 +348,26 @@ public abstract class VFS {
      * @param buffer The buffer
      * @param path The path
      */
-    public boolean load(View view, Buffer buffer, String path)
-    {
-        if((getCapabilities() & READ_CAP) == 0)
-        {
+    public boolean load(TabbedView view, XMLDocument buffer, String path) {
+        if((getCapabilities() & READ_CAP) == 0) {
             VFSManager.error(view,path,"vfs.not-supported.load",new String[] { name });
             return false;
         }
 
         Object session = createVFSSession(path,view);
-        if(session == null)
+        if (session == null) {
             return false;
+        }
 
-        if((getCapabilities() & WRITE_CAP) == 0)
+        if ((getCapabilities() & WRITE_CAP) == 0) {
             buffer.setReadOnly(true);
+        }
 
-        BufferIORequest request = new BufferIORequest(
-            BufferIORequest.LOAD,view,buffer,session,this,path);
-        if(buffer.isTemporary())
-            // this makes HyperSearch much faster
-            request.run();
-        else
+        XMLDocumentIORequest request = new XMLDocumentIORequest(XMLDocumentIORequest.LOAD,view,buffer,session,this,path);
+       // if(buffer.isTemporary())
+       //     // this makes HyperSearch much faster
+       //     request.run();
+       // else
             VFSManager.runInWorkThread(request);
 
         return true;
@@ -379,55 +381,54 @@ public abstract class VFS {
      * @param buffer The buffer
      * @param path The path
      */
-    public boolean save(View view, Buffer buffer, String path)
+    public boolean save(TabbedView view, XMLDocument buffer, String path)
     {
-        if((getCapabilities() & WRITE_CAP) == 0)
-        {
+        if ((getCapabilities() & WRITE_CAP) == 0) {
             VFSManager.error(view,path,"vfs.not-supported.save",new String[] { name });
             return false;
         }
 
         Object session = createVFSSession(path,view);
-        if(session == null)
+        if (session == null) {
             return false;
+        }
 
         /* When doing a 'save as', the path to save to (path)
          * will not be the same as the buffer's previous path
          * (buffer.getPath()). In that case, we want to create
          * a backup of the new path, even if the old path was
          * backed up as well (BACKED_UP property set) */
-        if(!path.equals(buffer.getPath()))
-            buffer.unsetProperty(Buffer.BACKED_UP);
+        // if (!path.equals(buffer.getPath())) {
+        //    buffer.unsetProperty(Buffer.BACKED_UP);
+        // }
 
-        VFSManager.runInWorkThread(new BufferIORequest(
-            BufferIORequest.SAVE,view,buffer,session,this,path));
+        VFSManager.runInWorkThread(new XMLDocumentIORequest(XMLDocumentIORequest.SAVE,view,buffer,session,this,path));
         return true;
     } //}}}
 
-    //{{{ insert() method
-    /**
-     * Inserts a file into the specified buffer. The default implementation
-     * posts an I/O request to the I/O thread.
-     * @param view The view
-     * @param buffer The buffer
-     * @param path The path
-     */
-    public boolean insert(View view, Buffer buffer, String path)
-    {
-        if((getCapabilities() & READ_CAP) == 0)
-        {
-            VFSManager.error(view,path,"vfs.not-supported.load",new String[] { name });
-            return false;
-        }
+   // //{{{ insert() method
+   // /**
+   //  * Inserts a file into the specified buffer. The default implementation
+   //  * posts an I/O request to the I/O thread.
+   //  * @param view The view
+   //  * @param buffer The buffer
+   //  * @param path The path
+   //  */
+   // public boolean insert(View view, Buffer buffer, String path)  {
+        
+   //     if ((getCapabilities() & READ_CAP) == 0) {
+   //         VFSManager.error(view,path,"vfs.not-supported.load",new String[] { name });
+   //         return false;
+   //     }
 
-        Object session = createVFSSession(path,view);
-        if(session == null)
-            return false;
+   //     Object session = createVFSSession(path,view);
+   //     if(session == null)
+   //         return false;
 
-        VFSManager.runInWorkThread(new BufferIORequest(
-            BufferIORequest.INSERT,view,buffer,session,this,path));
-        return true;
-    } //}}}
+   //     VFSManager.runInWorkThread(new XMLDocumentIORequest(
+   //         XMLDocumentIORequest.INSERT,view,buffer,session,this,path));
+   //     return true;
+   // } //}}}
 
     // A method name that starts with _ requires a session object
 
@@ -583,11 +584,11 @@ public abstract class VFS {
                 
                 switch(type) {
                     case FILE:
-                        return jEdit.getProperty("vfs.browser.type.file");
+                        return Messages.getMessage("vfs.browser.type.file");
                     case DIRECTORY:
-                        return jEdit.getProperty("vfs.browser.type.directory");
+                        return Messages.getMessage("vfs.browser.type.directory");
                     case FILESYSTEM:
-                        return jEdit.getProperty("vfs.browser.type.filesystem");
+                        return Messages.getMessage("vfs.browser.type.filesystem");
                     default:
                         throw new IllegalArgumentException();
                 }
@@ -595,15 +596,15 @@ public abstract class VFS {
                 if(name.equals(EA_STATUS)) {
                     if (canRead) {
                         if (canWrite) {
-                            return jEdit.getProperty("vfs.browser.status.rw");
+                            return Messages.getMessage("vfs.browser.status.rw");
                         } else {
-                            return jEdit.getProperty("vfs.browser.status.ro");
+                            return Messages.getMessage("vfs.browser.status.ro");
                         }
                     } else {
                         if (canWrite) {
-                            return jEdit.getProperty("vfs.browser.status.append");
+                            return Messages.getMessage("vfs.browser.status.append");
                         } else {
-                            return jEdit.getProperty("vfs.browser.status.no");
+                            return Messages.getMessage("vfs.browser.status.no");
                         }
                     }
                 } else {
@@ -620,15 +621,15 @@ public abstract class VFS {
             }
         } //}}}
 
-        //{{{ getColor() method
-        public Color getColor() {
-            if (!colorCalculated) {
-                colorCalculated = true;
-                color = getDefaultColorFor(name);
-            }
+       // //{{{ getColor() method
+       // public Color getColor() {
+       //     if (!colorCalculated) {
+       //         colorCalculated = true;
+       //         color = getDefaultColorFor(name);
+       //     }
 
-            return color;
-        } //}}}
+       //     return color;
+       // } //}}}
 
         //{{{ toString() method
         public String toString() {
@@ -742,7 +743,7 @@ public abstract class VFS {
      * @param comp The component that will parent error dialog boxes
      * @exception IOException If an I/O error occurs
      */
-    public void _saveComplete(Object session, Buffer buffer, String path,
+    public void _saveComplete(Object session, XMLDocument buffer, String path,
         Component comp) throws IOException {} //}}}
 
     //{{{ _endVFSSession() method
@@ -764,22 +765,22 @@ public abstract class VFS {
      * Returns color of the specified file name, by matching it against
      * user-specified regular expressions.
      */
-    public static Color getDefaultColorFor(String name) {
-        synchronized(lock) {
-            if (colors == null) {
-                loadColors();
-            }
+   // public static Color getDefaultColorFor(String name) {
+   //     synchronized(lock) {
+   //         if (colors == null) {
+   //             loadColors();
+   //         }
 
-            for (int i = 0; i < colors.size(); i++) {
-                ColorEntry entry = (ColorEntry)colors.elementAt(i);
-                if (entry.re.isMatch(name)) {
-                    return entry.color;
-                }
-            }
+   //         for (int i = 0; i < colors.size(); i++) {
+   //             ColorEntry entry = (ColorEntry)colors.elementAt(i);
+   //             if (entry.re.isMatch(name)) {
+   //                 return entry.color;
+   //             }
+   //         }
 
-            return null;
-        }
-    } //}}}
+   //         return null;
+   //     }
+   // } //}}}
 
     //{{{ DirectoryEntryCompare class
     /**
@@ -819,26 +820,21 @@ public abstract class VFS {
     private String name;
     private int caps;
     private String[] extAttrs;
-    private static Vector colors;
+   // private static Vector colors;
     private static Object lock = new Object();
 
     //{{{ Class initializer
-    static
-    {
-        EditBus.addToBus(new EBComponent()
-        {
-            public void handleMessage(EBMessage msg)
-            {
-                if(msg instanceof PropertiesChanged)
-                {
-                    synchronized(lock)
-                    {
-                        colors = null;
-                    }
-                }
-            }
-        });
-    } //}}}
+   // static {
+   //     EditBus.addToBus(new EBListener() {
+   //         public void handleMessage(EBMessage msg) {
+   //             if (msg instanceof PropertiesChanged) {
+   //                 synchronized(lock) {
+   //                     colors = null;
+   //                 }
+   //             }
+   //         }
+   //     });
+   // } //}}}
 
     //{{{ _listDirectory() method
     private void _listDirectory(Object session, ArrayList stack,
@@ -892,38 +888,38 @@ public abstract class VFS {
     } //}}}
 
     //{{{ loadColors() method
-    private static void loadColors()
-    {
-        synchronized(lock)
-        {
-            colors = new Vector();
+   // private static void loadColors()
+   // {
+   //     synchronized(lock)
+   //     {
+   //         colors = new Vector();
 
-            if(!jEdit.getBooleanProperty("vfs.browser.colorize"))
-                return;
+   //         if(!jEdit.getBooleanProperty("vfs.browser.colorize"))
+   //             return;
 
-            String glob;
-            int i = 0;
-            while((glob = jEdit.getProperty("vfs.browser.colors." + i + ".glob")) != null)
-            {
-                try
-                {
-                    colors.addElement(new ColorEntry(
-                        new RE(MiscUtilities.globToRE(glob)),
-                        jEdit.getColorProperty(
-                        "vfs.browser.colors." + i + ".color",
-                        Color.black)));
-                }
-                catch(REException e)
-                {
-                    Log.log(Log.ERROR,VFS.class,"Invalid regular expression: "
-                        + glob);
-                    Log.log(Log.ERROR,VFS.class,e);
-                }
+   //         String glob;
+   //         int i = 0;
+   //         while((glob = jEdit.getProperty("vfs.browser.colors." + i + ".glob")) != null)
+   //         {
+   //             try
+   //             {
+   //                 colors.addElement(new ColorEntry(
+   //                     new RE(MiscUtilities.globToRE(glob)),
+   //                     jEdit.getColorProperty(
+   //                     "vfs.browser.colors." + i + ".color",
+   //                     Color.black)));
+   //             }
+   //             catch(REException e)
+   //             {
+   //                 Log.log(Log.ERROR,VFS.class,"Invalid regular expression: "
+   //                     + glob);
+   //                 Log.log(Log.ERROR,VFS.class,e);
+   //             }
 
-                i++;
-            }
-        }
-    } //}}}
+   //             i++;
+   //         }
+   //     }
+   // } //}}}
 
     //{{{ ColorEntry class
     static class ColorEntry

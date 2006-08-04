@@ -30,6 +30,7 @@ import java.awt.Component;
 import java.io.*;
 import java.text.*;
 import java.util.Date;
+import net.sourceforge.jsxe.OperatingSystem;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
@@ -89,10 +90,8 @@ public class FileVFS extends VFS {
     } //}}}
 
     //{{{ save() method
-    public boolean save(View view, Buffer buffer, String path)
-    {
-        if(OperatingSystem.isUnix())
-        {
+    public boolean save(TabbedView view, XMLDocument buffer, String path) {
+        if (OperatingSystem.isUnix()) {
             int permissions = getPermissions(buffer.getPath());
             Log.log(Log.DEBUG,this,buffer.getPath() + " has permissions 0"
                 + Integer.toString(permissions,8));
@@ -103,30 +102,30 @@ public class FileVFS extends VFS {
     } //}}}
 
     //{{{ insert() method
-    public boolean insert(View view, Buffer buffer, String path)
-    {
-        File file = new File(path);
+   // public boolean insert(View view, Buffer buffer, String path)
+   // {
+   //     File file = new File(path);
 
-        //{{{ Check if file is valid
-        if(!file.exists())
-            return false;
+   //     //{{{ Check if file is valid
+   //     if(!file.exists())
+   //         return false;
 
-        if(file.isDirectory())
-        {
-            VFSManager.error(view,file.getPath(),
-                "ioerror.open-directory",null);
-            return false;
-        }
+   //     if(file.isDirectory())
+   //     {
+   //         VFSManager.error(view,file.getPath(),
+   //             "ioerror.open-directory",null);
+   //         return false;
+   //     }
 
-        if(!file.canRead())
-        {
-            VFSManager.error(view,file.getPath(),
-                "ioerror.no-read",null);
-            return false;
-        } //}}}
+   //     if(!file.canRead())
+   //     {
+   //         VFSManager.error(view,file.getPath(),
+   //             "ioerror.no-read",null);
+   //         return false;
+   //     } //}}}
 
-        return super.insert(view,buffer,path);
-    } //}}}
+   //     return super.insert(view,buffer,path);
+   // } //}}}
 
     //{{{ _canonPath() method
     /**
@@ -323,47 +322,47 @@ public class FileVFS extends VFS {
         return retVal;
     } //}}}
 
-    //{{{ _backup() method
-    public void _backup(Object session, String path, Component comp)
-        throws IOException
-    {
-        // Fetch properties
-        int backups = jEdit.getIntegerProperty("backups",1);
+   // //{{{ _backup() method
+   // public void _backup(Object session, String path, Component comp)
+   //     throws IOException
+   // {
+   //     // Fetch properties
+   //     int backups = jsXe.getIntegerProperty("backups",1);
 
-        if(backups == 0)
-            return;
+   //     if(backups == 0)
+   //         return;
 
-        String backupPrefix = jEdit.getProperty("backup.prefix");
-        String backupSuffix = jEdit.getProperty("backup.suffix");
+   //     String backupPrefix = jsXe.getProperty("backup.prefix");
+   //     String backupSuffix = jsXe.getProperty("backup.suffix");
 
-        String backupDirectory = jEdit.getProperty("backup.directory");
+   //     String backupDirectory = jsXe.getProperty("backup.directory");
 
-        int backupTimeDistance = jEdit.getIntegerProperty("backup.minTime",0);
-        File file = new File(path);
+   //     int backupTimeDistance = jsXe.getIntegerProperty("backup.minTime",0);
+   //     File file = new File(path);
 
-        // Check for backup.directory, and create that
-        // directory if it doesn't exist
-        if(backupDirectory == null || backupDirectory.length() == 0)
-            backupDirectory = file.getParent();
-        else
-        {
-            backupDirectory = MiscUtilities.constructPath(
-                System.getProperty("user.home"),backupDirectory);
+   //     // Check for backup.directory, and create that
+   //     // directory if it doesn't exist
+   //     if(backupDirectory == null || backupDirectory.length() == 0)
+   //         backupDirectory = file.getParent();
+   //     else
+   //     {
+   //         backupDirectory = MiscUtilities.constructPath(
+   //             System.getProperty("user.home"),backupDirectory);
 
-            // Perhaps here we would want to guard with
-            // a property for parallel backups or not.
-            backupDirectory = MiscUtilities.concatPath(
-                backupDirectory,file.getParent());
+   //         // Perhaps here we would want to guard with
+   //         // a property for parallel backups or not.
+   //         backupDirectory = MiscUtilities.concatPath(
+   //             backupDirectory,file.getParent());
 
-            File dir = new File(backupDirectory);
+   //         File dir = new File(backupDirectory);
 
-            if (!dir.exists())
-                dir.mkdirs();
-        }
+   //         if (!dir.exists())
+   //             dir.mkdirs();
+   //     }
 
-        MiscUtilities.saveBackup(file,backups,backupPrefix,
-            backupSuffix,backupDirectory,backupTimeDistance);
-    } //}}}
+   //     MiscUtilities.saveBackup(file,backups,backupPrefix,
+   //         backupSuffix,backupDirectory,backupTimeDistance);
+   // } //}}}
 
     //{{{ _createInputStream() method
     public InputStream _createInputStream(Object session, String path,
@@ -390,7 +389,7 @@ public class FileVFS extends VFS {
     } //}}}
 
     //{{{ _saveComplete() method
-    public void _saveComplete(Object session, Buffer buffer, String path,
+    public void _saveComplete(Object session, XMLDocument buffer, String path,
         Component comp)
     {
         int permissions = buffer.getIntegerProperty(PERMISSIONS_PROPERTY,0);
@@ -410,7 +409,7 @@ public class FileVFS extends VFS {
     public static int getPermissions(String path) {
         int permissions = 0;
 
-        if (jEdit.getBooleanProperty("chmodDisabled")) {
+        if (jsXe.getBooleanProperty("chmodDisabled")) {
             return permissions;
         }
 
@@ -448,7 +447,7 @@ public class FileVFS extends VFS {
      * does nothing.
      */
     public static void setPermissions(String path, int permissions) {
-        if (jEdit.getBooleanProperty("chmodDisabled"))
+        if (jsXe.getBooleanProperty("chmodDisabled"))
             return;
 
         if (permissions != 0) {

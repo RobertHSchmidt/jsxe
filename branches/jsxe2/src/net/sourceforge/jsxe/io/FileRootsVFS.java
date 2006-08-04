@@ -1,5 +1,5 @@
 /*
-FileVFS.java
+FileRootsVFS.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
@@ -25,7 +25,7 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package org.gjt.sp.jedit.io;
+package net.sourceforge.jsxe.io;
 
 //{{{ Imports
 import javax.swing.filechooser.FileSystemView;

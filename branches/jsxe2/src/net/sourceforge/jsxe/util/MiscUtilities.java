@@ -34,7 +34,7 @@ import java.io.*;
 import java.util.*;
 
 import javax.swing.JMenuItem;
-
+import java.text.DecimalFormat;
 import javax.swing.JPopupMenu;
 import java.awt.Component;
 import javax.swing.JComponent;
@@ -872,6 +872,28 @@ loop:       for(int i = 0; i < str.length(); i++)
             return s1.equals(s2);
     } //}}}
 
+    //{{{ formatFileSize() method
+	public static final DecimalFormat KB_FORMAT = new DecimalFormat("#.# KB");
+	public static final DecimalFormat MB_FORMAT = new DecimalFormat("#.# MB");
+
+	/**
+	 * Formats the given file size into a nice string (123 bytes, 10.6 KB,
+	 * 1.2 MB).
+	 * @param length The size
+	 * @since jsXe 0.5 pre3
+	 */
+	public static String formatFileSize(long length) {
+		if (length < 1024) {
+			return length + " bytes";
+		} else {
+            if (length < 1024*1024) {
+                return KB_FORMAT.format((double)length / 1024);
+            } else {
+                return MB_FORMAT.format((double)length / 1024 / 1024);
+            }
+        }
+	} //}}}
+    
     //}}}
 
     //{{{ Sorting methods
