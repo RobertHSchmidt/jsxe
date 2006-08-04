@@ -25,6 +25,7 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.dom2.event;
 
 import net.sourceforge.jsxe.dom2.*;
+import java.util.EventObject;
 
 /**
  * XMLDocumentEvents are modifications to the structure of the XMLDocument.
@@ -35,9 +36,8 @@ import net.sourceforge.jsxe.dom2.*;
  * @see XMLDocument
  * @since jsXe 0.5 pre3
  */
-public interface XMLDocumentEvent extends EventListener {
+public class XMLDocumentEvent extends EventObject {
     
-    private XMLDocument m_document;
     private int m_offset;
     private int m_length;
     private short m_type;
@@ -51,7 +51,7 @@ public interface XMLDocumentEvent extends EventListener {
      * 
      */
     public XMLDocumentEvent(XMLDocument doc, int offset, String text, short type) {
-        m_document = doc;
+        super(doc);
         m_type = type;
         m_length = text.length();
         m_offset = offset;
@@ -62,7 +62,7 @@ public interface XMLDocumentEvent extends EventListener {
      * Gets the document that was updated.
      */
     public XMLDocument getDocument() {
-        return m_document;
+        return (XMLDocument)getSource();
     }//}}}
     
     //{{{ getOffset()

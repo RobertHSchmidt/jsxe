@@ -23,7 +23,7 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package org.gjt.sp.jedit.io;
+package net.sourceforge.jsxe.io;
 
 //{{{ Imports
 import javax.swing.JOptionPane;
@@ -37,11 +37,10 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
-import org.gjt.sp.jedit.gui.ErrorListDialog;
-import org.gjt.sp.jedit.msg.VFSUpdate;
-import org.gjt.sp.jedit.*;
-import org.gjt.sp.util.Log;
-import org.gjt.sp.util.WorkThreadPool;
+import net.sourceforge.jsxe.gui.ErrorListDialog;
+import net.sourceforge.jsxe.msg.VFSUpdate;
+import net.sourceforge.jsxe.util.Log;
+import net.sourceforge.jsxe.WorkThreadPool;
 //}}}
 
 /**

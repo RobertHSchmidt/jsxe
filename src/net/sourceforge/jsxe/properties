@@ -15,6 +15,12 @@ xml.cache=true
 
 ioThreadCount=4
 
+encoding.autodetect=true
+
+twoStageSave=false
+
+chmodDisabled=true
+
 #{{{ Plugin Manager Default Dimensions
 #pluginmgr.x=100
 #pluginmgr.y=100
