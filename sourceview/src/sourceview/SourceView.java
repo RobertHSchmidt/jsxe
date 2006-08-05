@@ -155,13 +155,11 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
         m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
         m_editMenu.setMnemonic('E');
        // These don't do anything yet.
-       // JMenuItem menuItem = new JMenuItem("Undo");
-       // menuItem.addActionListener( new EditUndoAction() );
-       // menu.add( menuItem );
-       // menuItem = new JMenuItem("Redo");
-       // menuItem.addActionListener( new EditRedoAction() );
-       // menu.add(menuItem);
-       // menu.addSeparator();
+        menuItem = new JMenuItem(ActionManager.getAction("undo"));
+        m_editMenu.add( menuItem );
+        menuItem = new JMenuItem(ActionManager.getAction("redo"));
+        m_editMenu.add(menuItem);
+        m_editMenu.addSeparator();
         menuItem = new JMenuItem(ActionManager.getAction("cut"));
         m_editMenu.add(menuItem);
         menuItem = new JMenuItem(ActionManager.getAction("copy"));
