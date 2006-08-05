@@ -55,6 +55,10 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.GapContent;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleContext;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.undo.*;
 //}}}
 
 //{{{ DOM classes
@@ -96,50 +100,103 @@ public class SourceViewDocument extends SyntaxDocument {
                 //buffer is actually loaded in the text area at any
                 //given time(?)
                 super.insertString(0, document.getText(0,document.getLength()), null);
+                m_initialized = true;
             } catch (BadLocationException ble) {
                 Log.log(Log.ERROR, this, ble);
             }
         }
+        
+        addUndoableEditListener(new UndoableEditListener() {
+            public void undoableEditHappened(UndoableEditEvent e) {
+                m_undoManager.addEdit(e.getEdit());
+            }
+        });
     }//}}}
 
     //{{{ DefaultStyledDocument methods
     
-    //{{{ insertString()
+   // //{{{ insertString()
     
-    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+   // public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+   //     Log.log(Log.DEBUG, this, "insert: "+str);
+   //     try {
+   //         super.insertString(offs, str, a);
+   //         m_document.insertText(offs, str);
+   //     } catch (DOMException dome) {
+   //         Log.log(Log.ERROR, this, dome);
+   //         Toolkit.getDefaultToolkit().beep();
+   //     } catch (IOException ioe) {
+   //         Log.log(Log.ERROR, this, ioe);
+   //     }
+
+   // }//}}}
+
+   // //{{{ remove()
+    
+   // public void remove(int offs, int len) throws BadLocationException {
+   //     Log.log(Log.DEBUG, this, "remove");
+   //     try {
+   //         super.remove(offs, len);
+   //         m_document.removeText(offs, len);
+   //     } catch (DOMException dome) {
+   //         Log.log(Log.ERROR, this, dome);
+   //         Toolkit.getDefaultToolkit().beep();
+   //     } catch (IOException ioe) {
+   //         Log.log(Log.ERROR, this, ioe);
+   //     }
         
+   // }//}}}
+
+    protected void fireInsertUpdate(DocumentEvent e) {
         try {
-            super.insertString(offs, str, a);
-            m_document.insertText(offs, str);
-        } catch (DOMException dome) {
-            Log.log(Log.ERROR, this, dome);
-            Toolkit.getDefaultToolkit().beep();
+            Log.log(Log.DEBUG, this, "insert: "+getText(e.getOffset(), e.getLength()));
+            if (m_initialized) {
+                m_document.insertText(e.getOffset(), getText(e.getOffset(), e.getLength()));
+            }
+            super.fireInsertUpdate(e);
+        } catch (IOException ioe) {
+            Log.log(Log.ERROR, this, ioe);
+        } catch (BadLocationException ble) {
+            Log.log(Log.ERROR, this, ble);
+        }
+    }
+    
+    protected  void fireRemoveUpdate(DocumentEvent e) {
+        try {
+            Log.log(Log.DEBUG, this, "remove: "+e.getOffset()+":"+e.getLength());
+            if (m_initialized) {
+                m_document.removeText(e.getOffset(), e.getLength());
+            }
+            super.fireRemoveUpdate(e);
         } catch (IOException ioe) {
             Log.log(Log.ERROR, this, ioe);
         }
-
-    }//}}}
-
-    //{{{ remove()
+    }
     
-    public void remove(int offs, int len) throws BadLocationException {
-        
-        try {
-            super.remove(offs, len);
-            m_document.removeText(offs, len);
-        } catch (DOMException dome) {
-            Log.log(Log.ERROR, this, dome);
-            Toolkit.getDefaultToolkit().beep();
-        } catch (IOException ioe) {
-            Log.log(Log.ERROR, this, ioe);
-        }
-        
-    }//}}}
-
     //}}}
     
+    //{{{ undo()
+    public void undo() {
+        try {
+            m_undoManager.undo();
+        } catch (CannotUndoException e) {
+            Log.log(Log.WARNING, this, "Cannot undo");
+        }
+    }//}}}
+    
+    //{{{ redo()
+    public void redo() throws CannotUndoException {
+        try {
+            m_undoManager.redo();
+        } catch (CannotUndoException e) {
+            Log.log(Log.WARNING, this, "Cannot redo");
+        }
+    }//}}}
+    
     //{{{ Private members
+    private boolean m_initialized = false;
     private XMLDocument m_document;
+    private UndoManager m_undoManager = new UndoManager();
     //}}}
 
 }
