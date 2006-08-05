@@ -62,4 +62,6 @@ copy.shortcut=C+c
 paste.shortcut=C+v
 find.shortcut=C+v
 findnext.shortcut=C+g
+undo.shortcut=C+z
+redo.shortcut=C+y
 #}}}
