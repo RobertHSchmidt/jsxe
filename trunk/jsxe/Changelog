@@ -1,3 +1,9 @@
+08/05/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added core support for Undo/Redo. Undo/Redo will temporarily be view
+      specific. Eventually it will be entirely part of core after the
+      new data model is complete.
+
 08/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added Russian translation thanks to Segrer.

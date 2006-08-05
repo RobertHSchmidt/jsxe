@@ -25,6 +25,8 @@ common.copy=Copy
 common.paste=Paste
 common.find=Find
 common.findnext=Find Next
+common.undo=Undo
+common.redo=Redo
 
 common.ctrl=Ctrl
 common.alt=Alt

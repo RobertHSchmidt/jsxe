@@ -79,6 +79,8 @@ public class ActionManager {
     public static final String PASTE_SUFFIX = ".paste";
     public static final String FIND_SUFFIX = ".find";
     public static final String FIND_NEXT_SUFFIX = ".findnext";
+    public static final String UNDO_SUFFIX = ".undo";
+    public static final String REDO_SUFFIX = ".redo";
     
     //}}}
     
@@ -272,7 +274,9 @@ public class ActionManager {
                 actionName.endsWith(COPY_SUFFIX) ||
                 actionName.endsWith(PASTE_SUFFIX) ||
                 actionName.endsWith(FIND_SUFFIX) ||
-                actionName.endsWith(FIND_NEXT_SUFFIX));
+                actionName.endsWith(FIND_NEXT_SUFFIX) ||
+                actionName.endsWith(UNDO_SUFFIX) ||
+                actionName.endsWith(REDO_SUFFIX));
     }//}}}
     
     //{{{ Wrapper class
