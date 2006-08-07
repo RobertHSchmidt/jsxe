@@ -375,30 +375,6 @@ public class XMLDocument {
         }
     }//}}}
     
-    //{{{ getStringProperty() method
-    /**
-     * Returns the value of a string property. This method is thread-safe.
-     * @param name The property name
-     */
-    public String getStringProperty(String name) {
-        Object obj = getProperty(name);
-        if (obj != null) {
-            return obj.toString();
-        } else {
-            return null;
-        }
-    } //}}}
-
-    //{{{ setStringProperty() method
-    /**
-     * Sets a string property.
-     * @param name The property name
-     * @param value The value
-     */
-    public void setStringProperty(String name, String value) {
-        setProperty(name,value);
-    } //}}}
-
     //{{{ getBooleanProperty() method
     /**
      * Returns the value of a boolean property. This method is thread-safe.
