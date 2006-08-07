@@ -1,3 +1,8 @@
+08/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Removed get/setStringProperty methods from XMLDocument since they aren't
+      needed
+
 08/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * More porting of jEdit's VFS classes to jsXe
