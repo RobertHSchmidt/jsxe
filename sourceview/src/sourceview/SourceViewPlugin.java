@@ -65,8 +65,6 @@ public class SourceViewPlugin extends ViewPlugin {
         addAction(new EditPasteAction());
         addAction(new EditFindAction());
         addAction(new EditFindNextAction());
-        addAction(new UndoAction());
-        addAction(new RedoAction());
     }//}}}
     
     //{{{ newDocumentView()
