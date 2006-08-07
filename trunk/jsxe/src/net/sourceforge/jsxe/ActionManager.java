@@ -79,8 +79,6 @@ public class ActionManager {
     public static final String PASTE_SUFFIX = ".paste";
     public static final String FIND_SUFFIX = ".find";
     public static final String FIND_NEXT_SUFFIX = ".findnext";
-    public static final String UNDO_SUFFIX = ".undo";
-    public static final String REDO_SUFFIX = ".redo";
     
     //}}}
     
@@ -216,9 +214,9 @@ public class ActionManager {
             KeyEventTranslator.Key key = KeyEventTranslator.parseKey(keyBinding);
             m_keyBindingMap.put(key, wrapper);
             
-            Log.log(Log.DEBUG, ActionManager.class, "Adding binding: "+key.toString());
-            Log.log(Log.DEBUG, ActionManager.class, "key.key: "+key.key);
-            Log.log(Log.DEBUG, ActionManager.class, "key.input: "+key.input);
+           // Log.log(Log.DEBUG, ActionManager.class, "Adding binding: "+key.toString());
+           // Log.log(Log.DEBUG, ActionManager.class, "key.key: "+key.key);
+           // Log.log(Log.DEBUG, ActionManager.class, "key.input: "+key.input);
             
             //need to do this so that the accelerator key is rendered on menu items
             wrapper.putValue(Action.ACCELERATOR_KEY, KeyEventTranslator.getKeyStroke(keyBinding));
@@ -252,14 +250,14 @@ public class ActionManager {
      */
     public static void handleKey(KeyEvent event) {
         KeyEventTranslator.Key key = KeyEventTranslator.translateKeyEvent(event);
-        Log.log(Log.DEBUG, ActionManager.class, "Key: "+key.toString());
-        Log.log(Log.DEBUG, ActionManager.class, "key.key: "+key.key);
-        Log.log(Log.DEBUG, ActionManager.class, "key.input: "+key.input);
+       // Log.log(Log.DEBUG, ActionManager.class, "Key: "+key.toString());
+       // Log.log(Log.DEBUG, ActionManager.class, "key.key: "+key.key);
+       // Log.log(Log.DEBUG, ActionManager.class, "key.input: "+key.input);
         
         //Gets the action for the Key.
         Action action = (Action)m_keyBindingMap.get(key);
         if (action != null) {
-            Log.log(Log.DEBUG, ActionManager.class, "Key mapping match for "+((Wrapper)action).getName());
+           // Log.log(Log.DEBUG, ActionManager.class, "Key mapping match for "+((Wrapper)action).getName());
             action.actionPerformed(translateKeyEvent(event));
             event.consume();
         }
@@ -274,9 +272,7 @@ public class ActionManager {
                 actionName.endsWith(COPY_SUFFIX) ||
                 actionName.endsWith(PASTE_SUFFIX) ||
                 actionName.endsWith(FIND_SUFFIX) ||
-                actionName.endsWith(FIND_NEXT_SUFFIX) ||
-                actionName.endsWith(UNDO_SUFFIX) ||
-                actionName.endsWith(REDO_SUFFIX));
+                actionName.endsWith(FIND_NEXT_SUFFIX));
     }//}}}
     
     //{{{ Wrapper class
@@ -353,7 +349,7 @@ public class ActionManager {
     private static void removeKeyBinding(KeyEventTranslator.Key key) {
         Action action = (Action)m_keyBindingMap.get(key);
         if (action != null) {
-            Log.log(Log.DEBUG, ActionManager.class, "removing key binding: "+key.toString());
+           // Log.log(Log.DEBUG, ActionManager.class, "removing key binding: "+key.toString());
             action.putValue(Action.ACCELERATOR_KEY, null);
             m_keyBindingMap.remove(key);
         }
