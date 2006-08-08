@@ -1,3 +1,7 @@
+08/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * The Edit menu has been moved to jsXe core.
+
 08/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added some English tooltip messages to the Global Options Pane for the

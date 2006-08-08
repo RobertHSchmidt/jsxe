@@ -163,19 +163,6 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
        // });//}}}
         //}}}
         
-        //{{{ Construct Edit Menu
-        //TODO: get the keyboard shortcuts to work,
-        //TODO: get cut/copy/paste to work in the right hand text window
-        m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
-        m_editMenu.setMnemonic('E');
-        JMenuItem menuItem = new JMenuItem(ActionManager.getAction("cut"));
-        m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("copy"));
-        m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("paste"));
-        m_editMenu.add(menuItem);
-        //}}}
-        
         //{{{ Create and set up the splitpanes
         vertSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, treeView, attrView);
         vertSplitPane.setContinuousLayout(false);
@@ -264,7 +251,7 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
     //{{{ getMenus()
     
     public JMenu[] getMenus() {
-        return new JMenu[] { m_editMenu };
+        return null;
     }//}}}
     
     //{{{ getDocumentBuffer()
@@ -531,7 +518,6 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
     private DocumentBuffer m_document;
     private boolean m_viewShown = false;
     private TreeViewPlugin m_plugin;
-    private JMenu m_editMenu;
     
     private EditTagDialog.ComboValueRenderer m_comboRenderer = new EditTagDialog.ComboValueRenderer();
     
