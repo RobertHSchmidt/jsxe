@@ -1,6 +1,8 @@
 08/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added temporary support for undo to jsXe.
+    * Added support for undo of text insert and delete.
+    * Added support for undo of changes to a node's name, value, and prefix.
 
 08/05/2006  Ian Lewis   <IanLewis@member.fsf.org>
 

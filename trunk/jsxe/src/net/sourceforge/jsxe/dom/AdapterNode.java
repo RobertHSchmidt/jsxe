@@ -277,9 +277,24 @@ public class AdapterNode {
      * NAMESPACE_ERR: Raised if the specified prefix is malformed per the Namespaces in XML specification, if the namespaceURI of this node is null, if the specified prefix is "xml" and the namespaceURI of this node is different from "http://www.w3.org/XML/1998/namespace", if this node is an attribute and the specified prefix is "xmlns" and the namespaceURI of this node is different from " http://www.w3.org/2000/xmlns/", or if this node is an attribute and the qualifiedName of this node is "xmlns" .
      */
     public void setNSPrefix(String prefix) throws DOMException {
-        String oldPrefix = getNSPrefix();
-        m_domNode.setPrefix(prefix);
-        fireNamespaceChanged(this, oldPrefix, prefix);
+        XMLDocument doc = getOwnerDocument();
+        try {
+            doc.beginCompoundEdit();
+            String oldPrefix = getNSPrefix();
+            /*
+            for whatever reason if I set a prefix on an node with no prefix
+            you get DOMException.NAMESPACE_ERRs. If we are adding a NS then
+            just rename the node.
+            */
+            if (oldPrefix != null && !oldPrefix.equals("")) {
+                m_domNode.setPrefix(prefix);
+            } else {
+                renameElementNode(prefix, getLocalName());
+            }
+            fireNamespaceChanged(this, oldPrefix, prefix);
+        } finally {
+            doc.endCompoundEdit();
+        }
     }//}}}
     
     //{{{ getNodeName()
@@ -312,14 +327,15 @@ public class AdapterNode {
                 throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "An attempt was made to rename a node that is not supported.");
             }
         }
-        
+        XMLDocument doc = getOwnerDocument();
+        doc.beginCompoundEdit();
         if (!MiscUtilities.equals(oldPrefix, prefix)) {
             fireNamespaceChanged(this, oldPrefix, prefix);
         }
         if (!MiscUtilities.equals(oldLocalName, localName)) {
             fireLocalNameChanged(this, oldLocalName, localName);
         }
-        
+        doc.endCompoundEdit();
     }//}}}
     
     //{{{ getLocalName()
