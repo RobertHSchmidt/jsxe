@@ -1,6 +1,6 @@
 # JSXE English properties file
 # $Id:
-# Maintained by Sagrer[GG] (sagrer@yandex.ru)
+# Maintained by Alexandr Gridnev (alexandr-gridnev@yandex.ru)
 #:mode=properties:
 #:tabSize=4:indentSize=4:noTabs=true:
 #:folding=explicit:collapseFolds=1:
