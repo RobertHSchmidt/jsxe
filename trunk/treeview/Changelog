@@ -1,3 +1,7 @@
+08/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed undo when adding/editing a node that is specified in a DTD/Schema.
+
 08/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * The Edit menu has been moved to jsXe core.
