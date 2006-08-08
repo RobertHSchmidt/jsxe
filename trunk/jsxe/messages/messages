@@ -20,13 +20,6 @@ common.add=Add
 common.remove=Remove
 common.moveUp=Move Up
 common.moveDown=Move Down
-common.cut=Cut
-common.copy=Copy
-common.paste=Paste
-common.find=Find
-common.findnext=Find Next
-common.undo=Undo
-common.redo=Redo
 
 common.ctrl=Ctrl
 common.alt=Alt
@@ -158,6 +151,11 @@ close-file.label=Close
 close-all.label=Close All
 exit.label=Exit
 
+undo.label=Undo
+redo.label=Redo
+cut.label=Cut
+copy.label=Copy
+paste.label=Paste
 find.label=Find...
 findnext.label=Find Next
 

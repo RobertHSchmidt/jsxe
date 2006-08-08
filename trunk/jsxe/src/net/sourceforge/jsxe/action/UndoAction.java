@@ -59,11 +59,6 @@ public class UndoAction extends LocalizedAction {
         super("undo");
     }//}}}
     
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.undo");
-    }//}}}
-    
     //{{{ invoke()
     public void invoke(TabbedView view, ActionEvent evt) {
         view.getDocumentBuffer().undo();

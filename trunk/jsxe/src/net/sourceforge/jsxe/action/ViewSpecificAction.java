@@ -1,5 +1,5 @@
 /*
-FindNextAction.java
+ViewSpecificAction.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
@@ -46,18 +46,36 @@ import java.awt.event.ActionEvent;
 //}}}
 
 /**
- * The find action invokes a DocumentView specific action defined for find.
- * The action should be defined by the view as <i>viewname</i>.find
+ * The ViewSpecificAction is a class that defines actions that are
+ * view specific. i.e. Actions that are defined by jsXe but whose
+ * implementation is determined by the currently active view.
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
- * @since jsXe 0.5 pre1
+ * @since jsXe 0.5 pre3
  */
-public class FindNextAction extends ViewSpecificAction {
+public abstract class ViewSpecificAction extends LocalizedAction {
     
-    //{{{ FindNextAction constructor
-    public FindNextAction() {
-        super("findnext");
+    //{{{ ViewSpecificAction constructor
+    public ViewSpecificAction(String name) {
+        super(name);
     }//}}}
     
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        /*
+        invoke the action registered for the current DocumentView named
+        viewname.actionname if there is one.
+        */
+        ActionManager.invokeAction(getViewActionName(view), evt);
+    }//}}}
+    
+    //{{{ getViewActionName()
+    /**
+     * Gets the view specific action name for the current DocumentView in the
+     * given TabbedView.
+     */
+    private String getViewActionName(TabbedView view) {
+        return jsXe.getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME)+"."+getName();
+    }//}}}
 }
