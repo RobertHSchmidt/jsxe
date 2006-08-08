@@ -13,6 +13,8 @@ xml.network=true
 # Resource Cache
 xml.cache=true
 
+undo.limit=100
+
 #{{{ Plugin Manager Default Dimensions
 #pluginmgr.x=100
 #pluginmgr.y=100

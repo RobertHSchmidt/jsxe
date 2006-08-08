@@ -46,8 +46,7 @@ import java.awt.event.ActionEvent;
 //}}}
 
 /**
- * The undo action invokes a DocumentView specific action defined for undo.
- * The action should be defined by the view as <i>viewname</i>.undo
+ * The undo action invokes a undo on the current XMLDocument.
  *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
@@ -67,11 +66,7 @@ public class UndoAction extends LocalizedAction {
     
     //{{{ invoke()
     public void invoke(TabbedView view, ActionEvent evt) {
-        /*
-        invoke the action registered for the current DocumentView named
-        viewname.undo if there is one.
-        */
-        ActionManager.invokeAction(jsXe.getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME)+ActionManager.UNDO_SUFFIX, evt);
+        view.getDocumentBuffer().undo();
     }//}}}
 
 }

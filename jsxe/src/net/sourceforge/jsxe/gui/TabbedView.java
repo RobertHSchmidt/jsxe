@@ -427,7 +427,9 @@ public class TabbedView extends JFrame {
             updateRecentFilesMenu();
             
             menubar.add(m_fileMenu);
-
+            
+            menubar.add(m_editMenu);
+            
             //Add View Specific Menus
             JMenu[] menus = currentDocView.getMenus();
             if (menus != null) {
@@ -601,6 +603,27 @@ public class TabbedView extends JFrame {
             m_fileMenu.add( menuItem );
             menuItem = new JMenuItem(ActionManager.getAction("exit"));
             m_fileMenu.add( menuItem );
+        //}}}
+        
+        //{{{ Create Edit Menu
+        m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
+        m_editMenu.setMnemonic('E');
+            menuItem = new JMenuItem(ActionManager.getAction("undo"));
+            m_editMenu.add(menuItem);
+            menuItem = new JMenuItem(ActionManager.getAction("redo"));
+            m_editMenu.add(menuItem);
+            m_editMenu.addSeparator();
+            menuItem = new JMenuItem(ActionManager.getAction("cut"));
+            m_editMenu.add(menuItem);
+            menuItem = new JMenuItem(ActionManager.getAction("copy"));
+            m_editMenu.add(menuItem);
+            menuItem = new JMenuItem(ActionManager.getAction("paste"));
+            m_editMenu.add(menuItem);
+            m_editMenu.addSeparator();
+            menuItem = new JMenuItem(ActionManager.getAction("find"));
+            m_editMenu.add(menuItem);
+            menuItem = new JMenuItem(ActionManager.getAction("findnext"));
+            m_editMenu.add(menuItem);
         //}}}
         
         //{{{ Create View Menu
@@ -797,6 +820,7 @@ public class TabbedView extends JFrame {
     }//}}}
     
     private JMenu m_fileMenu;
+    private JMenu m_editMenu;
     private JMenu m_viewMenu;
     private JMenu m_toolsMenu;
     private JMenu m_helpMenu;
