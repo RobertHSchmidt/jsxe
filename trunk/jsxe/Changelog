@@ -1,3 +1,7 @@
+08/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Addded undo/redo support for attributes.
+
 08/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added temporary support for undo to jsXe.

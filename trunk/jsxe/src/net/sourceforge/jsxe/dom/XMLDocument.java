@@ -203,7 +203,6 @@ public class XMLDocument {
      */
     protected boolean addUndoableEdit(UndoableEdit edit) {
         if (!getFlag(UNDO_IN_PROGRESS)) {
-            Log.log(Log.DEBUG, this, edit);
             if (insideCompoundEdit()) {
                 m_addedToCompoundEdits = true;
                 return m_compoundEdit.addEdit(edit);
