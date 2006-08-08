@@ -1,5 +1,5 @@
 /*
-RemoveEdit.java
+NodeNameChange.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
@@ -27,36 +27,38 @@ package net.sourceforge.jsxe.dom.undo;
 //{{{ imports
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.dom.XMLDocument;
+import net.sourceforge.jsxe.dom.AdapterNode;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ Swing classes
 import javax.swing.undo.*;
 //}}}
 
-import java.io.IOException;
+//{{{ DOM classes
+import org.w3c.dom.DOMException;
+//}}}
 
 //}}}
 
 /**
- * An undoable edit sigifying a removal from an XMLDocument.
- *
+ * An undoable edit sigifying a change of an AdapterNode's local name.
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @see net.sourceforge.jsxe.dom.XMLDocument
+ * @see net.sourceforge.jsxe.dom.AdapterNode
  */
-public class RemoveEdit extends AbstractUndoableEdit {
+public class NodeNameChange extends AbstractUndoableEdit {
     
-    private XMLDocument m_document;
-    private String m_text;
-    private int m_offset;
+    AdapterNode m_node;
+    String m_oldValue;
+    String m_newValue;
     
-    //{{{ RemoveEdit constructor
-    
-    public RemoveEdit(XMLDocument document, int offset, String text) {
-        m_document = document;
-        m_offset = offset;
-        m_text = text;
+    //{{{ NodeNameChange constructor
+    public NodeNameChange(AdapterNode node, String oldValue, String newValue) {
+        m_node = node;
+        m_oldValue = oldValue;
+        m_newValue = newValue;
     }//}}}
     
     //{{{ undo()
@@ -64,8 +66,8 @@ public class RemoveEdit extends AbstractUndoableEdit {
     public void undo() throws CannotUndoException {
         super.undo();
         try {
-            m_document.insertText(m_offset, m_text);
-        } catch (IOException ioe) {
+            m_node.setNodeName(m_oldValue);
+        } catch (DOMException ioe) {
             throw new CannotUndoException();
         }
     }//}}}
@@ -75,8 +77,8 @@ public class RemoveEdit extends AbstractUndoableEdit {
     public void redo() throws CannotRedoException {
         super.redo();
         try {
-            m_document.removeText(m_offset, m_text.length());
-        } catch (IOException ioe) {
+            m_node.setNodeName(m_newValue);
+        } catch (DOMException ioe) {
             throw new CannotRedoException();
         }
     }//}}}

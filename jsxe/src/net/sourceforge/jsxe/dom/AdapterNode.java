@@ -26,16 +26,12 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.dom;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.dom.undo.*;
 import net.sourceforge.jsxe.dom.completion.*;
 //}}}
 
@@ -281,8 +277,9 @@ public class AdapterNode {
      * NAMESPACE_ERR: Raised if the specified prefix is malformed per the Namespaces in XML specification, if the namespaceURI of this node is null, if the specified prefix is "xml" and the namespaceURI of this node is different from "http://www.w3.org/XML/1998/namespace", if this node is an attribute and the specified prefix is "xmlns" and the namespaceURI of this node is different from " http://www.w3.org/2000/xmlns/", or if this node is an attribute and the qualifiedName of this node is "xmlns" .
      */
     public void setNSPrefix(String prefix) throws DOMException {
+        String oldPrefix = getNSPrefix();
         m_domNode.setPrefix(prefix);
-        fireNamespaceChanged(this);
+        fireNamespaceChanged(this, oldPrefix, prefix);
     }//}}}
     
     //{{{ getNodeName()
@@ -317,10 +314,10 @@ public class AdapterNode {
         }
         
         if (!MiscUtilities.equals(oldPrefix, prefix)) {
-            fireNamespaceChanged(this);
+            fireNamespaceChanged(this, oldPrefix, prefix);
         }
         if (!MiscUtilities.equals(oldLocalName, localName)) {
-            fireLocalNameChanged(this);
+            fireLocalNameChanged(this, oldLocalName, localName);
         }
         
     }//}}}
@@ -345,11 +342,12 @@ public class AdapterNode {
         
         if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
             //Verify that this really is a change
-            if (!m_domNode.getLocalName().equals(localName)) {
+            String oldLocalName = m_domNode.getLocalName();
+            if (!oldLocalName.equals(localName)) {
                 
                 renameElementNode(getNSPrefix(), localName);
                 
-                fireLocalNameChanged(this);
+                fireLocalNameChanged(this, oldLocalName, localName);
             }
         } else {
             if (m_domNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
@@ -398,8 +396,9 @@ public class AdapterNode {
     public void setNodeValue(String str) throws DOMException {
         // Make sure there is a change.
         if (str != null && !str.equals(m_domNode.getNodeValue())) {
+            String oldValue = getNodeValue();
             m_domNode.setNodeValue(str);
-            fireNodeValueChanged(this);
+            fireNodeValueChanged(this, oldValue, str);
         }
     }//}}}
     
@@ -965,7 +964,9 @@ public class AdapterNode {
     }//}}}
     
     //{{{ fireLocalNameChanged()
-    private void fireLocalNameChanged(AdapterNode source) {
+    private void fireLocalNameChanged(AdapterNode source, String oldValue, String newValue) {
+        getOwnerDocument().addUndoableEdit(new NodeNameChange(this, oldValue, newValue));
+        
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
@@ -975,7 +976,9 @@ public class AdapterNode {
     }//}}}
     
     //{{{ fireNamespaceChanged()
-    private void fireNamespaceChanged(AdapterNode source) {
+    private void fireNamespaceChanged(AdapterNode source, String oldValue, String newValue) {
+        getOwnerDocument().addUndoableEdit(new NodePrefixChange(this, oldValue, newValue));
+        
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
@@ -985,7 +988,10 @@ public class AdapterNode {
     }//}}}
     
     //{{{ fireNodeValueChanged()
-    private void fireNodeValueChanged(AdapterNode source) {
+    private void fireNodeValueChanged(AdapterNode source, String oldValue, String newValue) {
+        
+        getOwnerDocument().addUndoableEdit(new NodeValueChange(this, oldValue, newValue));
+        
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();

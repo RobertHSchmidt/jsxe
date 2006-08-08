@@ -198,19 +198,19 @@ public class XMLDocument {
     
     //{{{ addUndoableEdit()
     /**
-     * Allows views and editors to add additional undoable events. Generally
-     * the edits added by classes that are not this class, classes in this
-     * package, or a subclass will not be significant.
-     * 
+     * Allows subclasses to add additional undoable events.
      * @return true if the edit was added successfully
      */
-    public boolean addUndoableEdit(UndoableEdit edit) {
-        if (insideCompoundEdit()) {
-            m_addedToCompoundEdits = true;
-            return ((CompoundEdit)m_compoundEdits.peek()).addEdit(edit);
-        } else {
-            return m_undoManager.addEdit(edit);
+    protected boolean addUndoableEdit(UndoableEdit edit) {
+        if (!getFlag(UNDO_IN_PROGRESS)) {
+            if (insideCompoundEdit()) {
+                m_addedToCompoundEdits = true;
+                return ((CompoundEdit)m_compoundEdits.peek()).addEdit(edit);
+            } else {
+                return m_undoManager.addEdit(edit);
+            }
         }
+        return false;
     }//}}}
     
     //{{{ beginCompoundEdit()
@@ -235,10 +235,11 @@ public class XMLDocument {
 			return;
 		}
         Log.log(Log.DEBUG, this, "end compound edit");
+        CompoundEdit edit = (CompoundEdit)m_compoundEdits.pop();
+        edit.end();
         if (m_addedToCompoundEdits) {
-            CompoundEdit edit = (CompoundEdit)m_compoundEdits.pop();
-            edit.end();
             m_undoManager.addEdit(edit);
+            m_addedToCompoundEdits = false;
         }
     }//}}}
     
@@ -283,6 +284,14 @@ public class XMLDocument {
         } finally {
             setFlag(UNDO_IN_PROGRESS, false);
         }
+    }//}}}
+    
+    //{{{ clearUndo()
+    /**
+     * Clears all edits from the undo manager.
+     */
+    public void clearUndo() {
+        m_undoManager.discardAllEdits();
     }//}}}
     
     //}}}
