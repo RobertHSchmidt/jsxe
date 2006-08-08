@@ -50,9 +50,9 @@ import org.w3c.dom.DOMException;
  */
 public class NodeNameChange extends AbstractUndoableEdit {
     
-    AdapterNode m_node;
-    String m_oldValue;
-    String m_newValue;
+    private AdapterNode m_node;
+    private String m_oldValue;
+    private String m_newValue;
     
     //{{{ NodeNameChange constructor
     public NodeNameChange(AdapterNode node, String oldValue, String newValue) {

@@ -516,41 +516,54 @@ public class AdapterNode {
                     //node is already in the location specified
                     return node;
                 }
-                //add to this AdapterNode and the DOM.
-                if (node.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE) {
-                    //Add all children of the document fragment
-                    for(int i=0; i<node.childCount(); i++) {
-                        addAdapterNodeAt(node.child(i), location+i);
-                    }
-                } else {
-                    /*
-                    if the node is already contained in this node
-                    then we are effectively moving the node.
-                    */
-                    if (m_children.contains(node)) {
-                        if (location > m_children.indexOf(node)) {
-                            location -= 1;
-                        }
-                        m_children.remove(node);
-                    }
-                    if (location >= m_children.size()) {
-                        m_domNode.appendChild(node.getNode());
-                        ensureChildrenSize(location);
-                        m_children.add(node);
-                    } else {
-                        m_domNode.insertBefore(node.getNode(), child(location).getNode());
-                        m_children.add(location, node);
-                    }
+                
+                XMLDocument doc = getOwnerDocument();
+                try {
                     
-                    //Remove from previous parent
-                    AdapterNode previousParent = node.getParentNode();
-                    if (previousParent != this) {
-                        if (previousParent != null) {
-                            previousParent.removeChild(node);
+                    doc.beginCompoundEdit();
+                    //add to this AdapterNode and the DOM.
+                    if (node.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE) {
+                        //Add all children of the document fragment
+                        for (int i=0; i<node.childCount(); i++) {
+                            addAdapterNodeAt(node.child(i), location+i);
                         }
+                    } else {
+                        
+                        
+                        /*
+                        if the node is already contained in this node
+                        then we are effectively moving the node.
+                        */
+                        if (m_children.contains(node)) {
+                            if (location > m_children.indexOf(node)) {
+                                location -= 1;
+                            }
+                            int index = index(node);
+                            m_children.remove(node);
+                            getOwnerDocument().addUndoableEdit(new RemoveNodeChange(this, node, index));
+                        } else {
+                            //Remove from previous parent
+                            AdapterNode previousParent = node.getParentNode();
+                            if (previousParent != this) {
+                                if (previousParent != null) {
+                                    previousParent.removeChild(node);
+                                }
+                            }
+                        }
+                        if (location >= m_children.size()) {
+                            m_domNode.appendChild(node.getNode());
+                            ensureChildrenSize(location);
+                            m_children.add(node);
+                        } else {
+                            m_domNode.insertBefore(node.getNode(), child(location).getNode());
+                            m_children.add(location, node);
+                        }
+                        
+                        node.setParent(this);
+                        fireNodeAdded(this, node, location);
                     }
-                    node.setParent(this);
-                    fireNodeAdded(this, node);
+                } finally {
+                    doc.endCompoundEdit();
                 }
             } else {
                 throw new DOMException(DOMException.INDEX_SIZE_ERR, "The location to insert this node is invalid.");
@@ -574,10 +587,11 @@ public class AdapterNode {
                 throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "You cannot remove the root element node.");
             }
             if (child.getNodeType() != Node.DOCUMENT_TYPE_NODE) {
+                int index = index(child);
                 m_domNode.removeChild(child.getNode());
                 m_children.remove(child);
                 child.setParent(null);
-                fireNodeRemoved(this, child);
+                fireNodeRemoved(this, child, index);
             } else {
                 throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Cannot remove Document Type Nodes");
             }
@@ -911,7 +925,13 @@ public class AdapterNode {
     */
     void removeChild(AdapterNode node) {
         if (node != null) {
+            int index = index(node);
             m_children.remove(node);
+            if (index != -1) {
+                getOwnerDocument().addUndoableEdit(new RemoveNodeChange(this, node, index));
+            } else {
+                Log.log(Log.DEBUG, this, "node not found");
+            }
         }
     }//}}}
     
@@ -960,7 +980,9 @@ public class AdapterNode {
     //{{{ Private members
     
     //{{{ fireNodeAdded()
-    private void fireNodeAdded(AdapterNode source, AdapterNode child) {
+    private void fireNodeAdded(AdapterNode source, AdapterNode child, int index) {
+        getOwnerDocument().addUndoableEdit(new AddNodeChange(source, child, index));
+        
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
@@ -970,7 +992,9 @@ public class AdapterNode {
     }//}}}
     
     //{{{ fireNodeRemoved()
-    private void fireNodeRemoved(AdapterNode source, AdapterNode child) {
+    private void fireNodeRemoved(AdapterNode source, AdapterNode child, int index) {
+        getOwnerDocument().addUndoableEdit(new RemoveNodeChange(source, child, index));
+        
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
             AdapterNodeListener listener = (AdapterNodeListener)iterator.next();
