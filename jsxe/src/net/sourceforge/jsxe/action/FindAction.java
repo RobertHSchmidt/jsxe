@@ -53,20 +53,11 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  * @since jsXe 0.5 pre1
  */
-public class FindAction extends LocalizedAction {
+public class FindAction extends ViewSpecificAction {
     
     //{{{ FindAction constructor
     public FindAction() {
         super("find");
-    }//}}}
-    
-    //{{{ invoke()
-    public void invoke(TabbedView view, ActionEvent evt) {
-        /*
-        invoke the action registered for the current DocumentView named
-        viewname.find if there is one.
-        */
-        ActionManager.invokeAction(jsXe.getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".find", evt);
     }//}}}
 
 }

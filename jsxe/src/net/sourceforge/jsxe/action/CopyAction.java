@@ -53,25 +53,11 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  * @since jsXe 0.5 pre1
  */
-public class CopyAction extends LocalizedAction {
+public class CopyAction extends ViewSpecificAction {
     
     //{{{ CopyAction constructor
     public CopyAction() {
         super("copy");
     }//}}}
     
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.copy");
-    }//}}}
-    
-    //{{{ invoke()
-    public void invoke(TabbedView view, ActionEvent evt) {
-        /*
-        invoke the action registered for the current DocumentView named
-        viewname.copy if there is one.
-        */
-        ActionManager.invokeAction(jsXe.getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".copy", evt);
-    }//}}}
-
 }

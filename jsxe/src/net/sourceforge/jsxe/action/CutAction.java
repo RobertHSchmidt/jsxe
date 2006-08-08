@@ -52,25 +52,11 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  * @since jsXe 0.5 pre1
  */
-public class CutAction extends LocalizedAction {
+public class CutAction extends ViewSpecificAction {
     
     //{{{ CutAction constructor
     public CutAction() {
         super("cut");
     }//}}}
     
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.cut");
-    }//}}}
-    
-    //{{{ invoke()
-    public void invoke(TabbedView view, ActionEvent evt) {
-        /*
-        invoke the action registered for the current DocumentView named
-        viewname.cut if there is one.
-        */
-        ActionManager.invokeAction(jsXe.getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".cut", evt);
-    }//}}}
-
 }

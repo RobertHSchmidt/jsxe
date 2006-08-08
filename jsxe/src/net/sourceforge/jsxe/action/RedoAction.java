@@ -60,11 +60,6 @@ public class RedoAction extends LocalizedAction {
         super("redo");
     }//}}}
     
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.redo");
-    }//}}}
-    
     //{{{ invoke()
     public void invoke(TabbedView view, ActionEvent evt) {
         view.getDocumentBuffer().redo();

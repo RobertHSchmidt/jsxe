@@ -53,25 +53,11 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  * @since jsXe 0.5 pre1
  */
-public class PasteAction extends LocalizedAction {
+public class PasteAction extends ViewSpecificAction {
     
     //{{{ PasteAction constructor
     public PasteAction() {
         super("paste");
     }//}}}
     
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.paste");
-    }//}}}
-    
-    //{{{ invoke()
-    public void invoke(TabbedView view, ActionEvent evt) {
-        /*
-        invoke the action registered for the current DocumentView named
-        viewname.paste if there is one.
-        */
-        ActionManager.invokeAction(jsXe.getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".paste", evt);
-    }//}}}
-
 }
