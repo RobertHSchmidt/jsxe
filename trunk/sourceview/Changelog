@@ -1,3 +1,7 @@
+08/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Moved the edit menu to jsXe core and added a hack so that undo will work.
+
 07/26/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Addded support for the findnext action

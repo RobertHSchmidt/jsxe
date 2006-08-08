@@ -39,6 +39,8 @@ import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.XMLDocumentListener;
 import net.sourceforge.jsxe.msg.PropertyChanged;
+import net.sourceforge.jsxe.msg.UndoEvent;
+import net.sourceforge.jsxe.msg.RedoEvent;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
@@ -151,30 +153,6 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
         setLayout(new BorderLayout());
         add(m_textarea, BorderLayout.CENTER);
         
-        //{{{ Construct Edit Menu
-        m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
-        m_editMenu.setMnemonic('E');
-       // These don't do anything yet.
-       // JMenuItem menuItem = new JMenuItem("Undo");
-       // menuItem.addActionListener( new EditUndoAction() );
-       // menu.add( menuItem );
-       // menuItem = new JMenuItem("Redo");
-       // menuItem.addActionListener( new EditRedoAction() );
-       // menu.add(menuItem);
-       // menu.addSeparator();
-        menuItem = new JMenuItem(ActionManager.getAction("cut"));
-        m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("copy"));
-        m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("paste"));
-        m_editMenu.add(menuItem);
-        m_editMenu.addSeparator();
-        menuItem = new JMenuItem(ActionManager.getAction("find"));
-        m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("findnext"));
-        m_editMenu.add(menuItem);
-        //}}}
-        
         setDocumentBuffer(document);
         
         //focus on the text area the first time the view is shown
@@ -223,6 +201,18 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
                                         SourceViewOptionPane.parseStyle(jsXe.getProperty("source.invalid.color")),
                                       });
             }
+        } else {
+            if ((message instanceof UndoEvent) || (message instanceof RedoEvent)) {
+                //hack to get undo to work properly
+                try {
+                    int caret = m_textarea.getCaretPosition();
+                    m_textarea.setDocument(new SourceViewDocument(m_document));
+                    m_textarea.setTokenMarker(new XMLTokenMarker());
+                    m_textarea.setCaretPosition(caret);
+                } catch (IOException ioe) {
+                    Log.log(Log.ERROR, this, ioe);
+                }
+            }
         }
     }//}}}
     
@@ -260,7 +250,7 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
     //{{{ getMenus()
     
     public JMenu[] getMenus() {
-        return new JMenu[] { m_editMenu };
+        return null;
     }//}}}
     
     //{{{ getDocumentBuffer()
@@ -419,8 +409,6 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
     private String m_searchString;
     private String m_replaceString;
     private SourceViewPlugin m_plugin;
-    
-    private JMenu m_editMenu;
     
     //}}}
     

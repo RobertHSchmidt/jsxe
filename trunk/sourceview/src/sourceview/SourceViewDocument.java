@@ -55,6 +55,7 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.GapContent;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleContext;
+import javax.swing.undo.UndoableEdit;
 //}}}
 
 //{{{ DOM classes
@@ -73,6 +74,7 @@ import java.util.StringTokenizer;
 /**
  * The Document model used by the SourceView for displaying the text of
  * an XML document.
+ *
  * @author <a href="mailto:IanLewis at member dot fsf dot org">Ian Lewis</a>
  * @version $Id$
  * @see SourceView
@@ -138,7 +140,27 @@ public class SourceViewDocument extends SyntaxDocument {
 
     //}}}
     
+    //{{{ beginCompoundEdit()
+    
+	public void beginCompoundEdit() {
+        m_document.beginCompoundEdit();
+    }//}}}
+    
+    //{{{ endCompoundEdit()
+    
+	public void endCompoundEdit() {
+        m_document.endCompoundEdit();
+    }//}}}
+    
+    //{{{ addUndoableEdit()
+    
+    public void addUndoableEdit(UndoableEdit edit) {
+       // Log.log(Log.DEBUG, this, "adding edit");
+       // m_document.addUndoableEdit(edit);
+    }//}}}
+    
     //{{{ Private members
+    
     private XMLDocument m_document;
     //}}}
 
