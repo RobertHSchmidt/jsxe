@@ -788,6 +788,7 @@ public class TabbedView extends JFrame {
             
             DocumentBuffer buffer = getDocumentBuffer();
             try {
+                buffer.clearUndo(); // clear undo since it's view specific
                 DocumentView view = m_view.newDocumentView(buffer);
                 setDocumentView(view);
             } catch (IOException ioe) {
