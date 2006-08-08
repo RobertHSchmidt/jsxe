@@ -37,6 +37,7 @@ import net.sourceforge.jsxe.dom.completion.*;
 
 //{{{ Java Base Classes
 import java.util.*;
+import javax.swing.undo.UndoableEdit;
 //}}}
 
 //{{{ DOM classes
@@ -540,7 +541,7 @@ public class AdapterNode {
                             }
                             int index = index(node);
                             m_children.remove(node);
-                           // getOwnerDocument().addUndoableEdit(new RemoveNodeChange(this, node, index));
+                           // addUndoableEdit(new RemoveNodeChange(this, node, index));
                         } else {
                             //Remove from previous parent
                             AdapterNode previousParent = node.getParentNode();
@@ -942,7 +943,7 @@ public class AdapterNode {
             int index = index(node);
             m_children.remove(node);
            // if (index != -1) {
-           //     getOwnerDocument().addUndoableEdit(new RemoveNodeChange(this, node, index));
+           //     addUndoableEdit(new RemoveNodeChange(this, node, index));
            // }
         }
     }//}}}
@@ -993,7 +994,7 @@ public class AdapterNode {
     
     //{{{ fireNodeAdded()
     private void fireNodeAdded(AdapterNode source, AdapterNode child, int index) {
-       // getOwnerDocument().addUndoableEdit(new AddNodeChange(source, child, index));
+       // addUndoableEdit(new AddNodeChange(source, child, index));
         
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
@@ -1005,7 +1006,7 @@ public class AdapterNode {
     
     //{{{ fireNodeRemoved()
     private void fireNodeRemoved(AdapterNode source, AdapterNode child, int index) {
-       // getOwnerDocument().addUndoableEdit(new RemoveNodeChange(source, child, index));
+       // addUndoableEdit(new RemoveNodeChange(source, child, index));
         
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
@@ -1017,7 +1018,7 @@ public class AdapterNode {
     
     //{{{ fireLocalNameChanged()
     private void fireLocalNameChanged(AdapterNode source, String oldValue, String newValue) {
-        getOwnerDocument().addUndoableEdit(new NodeNameChange(this, oldValue, newValue));
+        addUndoableEdit(new NodeNameChange(this, oldValue, newValue));
         
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
@@ -1029,7 +1030,7 @@ public class AdapterNode {
     
     //{{{ fireNamespaceChanged()
     private void fireNamespaceChanged(AdapterNode source, String oldValue, String newValue) {
-        getOwnerDocument().addUndoableEdit(new NodePrefixChange(this, oldValue, newValue));
+        addUndoableEdit(new NodePrefixChange(this, oldValue, newValue));
         
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
@@ -1041,8 +1042,7 @@ public class AdapterNode {
     
     //{{{ fireNodeValueChanged()
     private void fireNodeValueChanged(AdapterNode source, String oldValue, String newValue) {
-        
-        getOwnerDocument().addUndoableEdit(new NodeValueChange(this, oldValue, newValue));
+        addUndoableEdit(new NodeValueChange(this, oldValue, newValue));
         
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
@@ -1054,7 +1054,7 @@ public class AdapterNode {
     
     //{{{ fireAttributeChanged()
     private void fireAttributeChanged(AdapterNode source, String attr, String oldValue, String newValue) {
-        getOwnerDocument().addUndoableEdit(new AttributeChange(this, attr, oldValue, newValue));
+        addUndoableEdit(new AttributeChange(this, attr, oldValue, newValue));
         
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
@@ -1141,6 +1141,17 @@ public class AdapterNode {
             return "http://www.w3.org/2000/xmlns/";
         } else {
             return ((org.apache.xerces.dom.NodeImpl)m_domNode).lookupNamespaceURI(prefix);
+        }
+    }//}}}
+    
+    //{{{ addUndoableEdit()
+    private void addUndoableEdit(UndoableEdit edit) {
+        XMLDocument doc = getOwnerDocument();
+        
+        //edits are not added if the document is null. The
+        //edits are just not undoable.
+        if (doc != null) {
+            doc.addUndoableEdit(edit);
         }
     }//}}}
     
