@@ -25,17 +25,16 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.dom;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.EditBus;
+import net.sourceforge.jsxe.msg.RedoEvent;
+import net.sourceforge.jsxe.msg.UndoEvent;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.dom.completion.*;
+import net.sourceforge.jsxe.dom.undo.*;
 //}}}
 
 //{{{ DOM classes
@@ -68,6 +67,8 @@ import java.util.*;
 import javax.swing.text.Segment;
 import java.net.URI;
 //}}}
+
+import javax.swing.undo.*;
 
 //}}}
 
@@ -164,6 +165,7 @@ public class XMLDocument {
         setURI(uri);
         setModel(reader);
         reader.close();
+        m_undoManager.setLimit(jsXe.getIntegerProperty("undo.limit", 100));
     }//}}}
     
     //{{{ XMLDocument constructor
@@ -189,27 +191,133 @@ public class XMLDocument {
         
         setModel(reader);
         reader.close();
+        m_undoManager.setLimit(jsXe.getIntegerProperty("undo.limit", 100));
     }//}}}
     
-    //{{{ checkWellFormedness()
+    //{{{ undo methods
+    
+    //{{{ addUndoableEdit()
     /**
-     * Checks the wellformedness of the document and throws appropriate
-     * exceptions based on the errors encountered during parsing.
-     * @return true if the document is well formed.
-     * @throws SAXParseException if there was a SAX error when parsing.
-     * @throws SAXException if there was a problem with the SAX parser.
-     * @throws ParserConfigurationException if the parser is not configured properly
-     * @throws IOException if there was a problem reading the document
+     * Allows views and editors to add additional undoable events. Generally
+     * the edits added by classes that are not this class, classes in this
+     * package, or a subclass will not be significant.
+     * 
+     * @return true if the edit was added successfully
      */
-    public boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
-        if (!m_parsedMode) {
-            parseDocument();
-            m_adapterNode = new AdapterNode(this, m_document);
-           // m_adapterNode.addAdapterNodeListener(docAdapterListener);
-           // m_syncedWithContent = true;
-            m_parsedMode=true;
+    public boolean addUndoableEdit(UndoableEdit edit) {
+        if (insideCompoundEdit()) {
+            m_addedToCompoundEdits = true;
+            return ((CompoundEdit)m_compoundEdits.peek()).addEdit(edit);
+        } else {
+            return m_undoManager.addEdit(edit);
         }
-        return m_parsedMode;
+    }//}}}
+    
+    //{{{ beginCompoundEdit()
+    /**
+     * Begins a compound edit. A compound edit is an edit that will be
+     * undone/redone all at once.
+     */
+    public void beginCompoundEdit() {
+        Log.log(Log.DEBUG, this, "begin compound edit");
+        m_addedToCompoundEdits = false;
+        m_compoundEdits.push(new CompoundEdit());
+    }//}}}
+    
+    //{{{ endCompoundEdit()
+    /**
+     * Ends a compound edit. A compound edit is an edit that will be
+     * undone/redone all at once.
+     */
+    public void endCompoundEdit() {
+        if (!insideCompoundEdit()) {
+			Log.log(Log.WARNING, this, new Exception("Unbalanced begin/endCompoundEdit()"));
+			return;
+		}
+        Log.log(Log.DEBUG, this, "end compound edit");
+        if (m_addedToCompoundEdits) {
+            CompoundEdit edit = (CompoundEdit)m_compoundEdits.pop();
+            edit.end();
+            m_undoManager.addEdit(edit);
+        }
+    }//}}}
+    
+    //{{{ insideCompoundEdit()
+    /**
+     * Gets whether the document is in a compound edit. A compound edit is an
+     * edit that will be undone/redone all at once.
+     */
+    public boolean insideCompoundEdit() {
+        return m_compoundEdits.size() != 0;
+    }//}}}
+    
+    //{{{ undo()
+    
+    public void undo() {
+        if (insideCompoundEdit()) {
+			throw new InternalError("Unbalanced begin/endCompoundEdit()");
+        }
+        try {
+            setFlag(UNDO_IN_PROGRESS, true);
+            m_undoManager.undo();
+            EditBus.send(new UndoEvent(this));
+        } catch (CannotUndoException e) {
+            Log.log(Log.WARNING, this, e);
+        } finally {
+            setFlag(UNDO_IN_PROGRESS, false);
+        }
+    }//}}}
+    
+    //{{{ redo()
+    
+    public void redo() {
+        if (insideCompoundEdit()) {
+			throw new InternalError("Unbalanced begin/endCompoundEdit()");
+        }
+        try {
+            setFlag(UNDO_IN_PROGRESS, true);
+            m_undoManager.redo();
+            EditBus.send(new RedoEvent(this));
+        } catch (CannotRedoException e) {
+            Log.log(Log.WARNING, this, e);
+        } finally {
+            setFlag(UNDO_IN_PROGRESS, false);
+        }
+    }//}}}
+    
+    //}}}
+    
+    //{{{ Property methods
+    
+    //{{{ getProperties()
+    /**
+     * Gets all properties associated with this document.
+     * @return the document's properties
+     */
+    public Properties getProperties() {
+        return props;
+    }//}}}
+    
+    //{{{ getProperty()
+    /**
+     * Gets a property for the key given.
+     * @param key the key to the properties list
+     * @return the value of the property for the given key.
+     */
+    public String getProperty(String key) {
+        return props.getProperty(key);
+    }//}}}
+    
+    //{{{ getProperty()
+    /**
+     * Gets a property for the key given or returns the default value
+     * if there is no property for the given key.
+     * @param key the key to the properties list
+     * @param defaultValue the default value for the property requested
+     * @return the value of the property for the given key.
+     */
+    public String getProperty(String key, String defaultValue) {
+        return props.getProperty(key, defaultValue);
     }//}}}
     
     //{{{ setProperty()
@@ -270,6 +378,84 @@ public class XMLDocument {
         return oldValue;
     }//}}}
     
+    //{{{ getBooleanProperty() method
+    /**
+     * Returns the value of a boolean property. This method is thread-safe.
+     * @param name The property name
+     */
+    public boolean getBooleanProperty(String name) {
+        String obj = getProperty(name);
+        if (obj == null) {
+            return false;
+        }
+        
+        return Boolean.valueOf(obj).booleanValue();
+    } //}}}
+
+    //{{{ setBooleanProperty() method
+    /**
+     * Sets a boolean property.
+     * @param name The property name
+     * @param value The value
+     */
+    public void setBooleanProperty(String name, boolean value) {
+        setProperty(name, Boolean.toString(value));
+    } //}}}
+
+    //{{{ getIntegerProperty() method
+    /**
+     * Returns the value of an integer property. This method is thread-safe.
+     * @param name The property name
+     */
+    public int getIntegerProperty(String name, int defaultValue) {
+        
+        boolean defaultValueFlag;
+        String obj = getProperty(name);
+
+        if (obj == null) {
+            return defaultValue;
+        } else {
+            try {
+                return Integer.parseInt(obj);
+            } catch (NumberFormatException e) {
+                return defaultValue;
+            }
+        }
+    } //}}}
+
+    //{{{ setIntegerProperty() method
+    /**
+     * Sets an integer property.
+     * @param name The property name
+     * @param value The value
+     */
+    public void setIntegerProperty(String name, int value) {
+        setProperty(name, Integer.toString(value));
+    } //}}}
+    
+    //}}}
+    
+    //{{{ checkWellFormedness()
+    /**
+     * Checks the wellformedness of the document and throws appropriate
+     * exceptions based on the errors encountered during parsing.
+     * @return true if the document is well formed.
+     * @throws SAXParseException if there was a SAX error when parsing.
+     * @throws SAXException if there was a problem with the SAX parser.
+     * @throws ParserConfigurationException if the parser is not configured properly
+     * @throws IOException if there was a problem reading the document
+     */
+    public boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
+        if (!m_parsedMode) {
+            parseDocument();
+            m_adapterNode = new AdapterNode(this, m_document);
+           // m_adapterNode.addAdapterNodeListener(docAdapterListener);
+           // m_syncedWithContent = true;
+            m_parsedMode=true;
+        }
+        return m_parsedMode;
+    }//}}}
+    
     //{{{ getDocumentCopy()
     /**
      * Gets a copy of the underlying Document object.
@@ -310,37 +496,6 @@ public class XMLDocument {
             }
         }
         return docType;
-    }//}}}
-    
-    //{{{ getProperties()
-    /**
-     * Gets all properties associated with this document.
-     * @return the document's properties
-     */
-    public Properties getProperties() {
-        return props;
-    }//}}}
-    
-    //{{{ getProperty()
-    /**
-     * Gets a property for the key given.
-     * @param key the key to the properties list
-     * @return the value of the property for the given key.
-     */
-    public String getProperty(String key) {
-        return props.getProperty(key);
-    }//}}}
-    
-    //{{{ getProperty()
-    /**
-     * Gets a property for the key given or returns the default value
-     * if there is no property for the given key.
-     * @param key the key to the properties list
-     * @param defaultValue the default value for the property requested
-     * @return the value of the property for the given key.
-     */
-    public String getProperty(String key, String defaultValue) {
-        return props.getProperty(key, defaultValue);
     }//}}}
     
     //{{{ getRootElementNode()
@@ -765,12 +920,14 @@ public class XMLDocument {
      */
     public void insertText(int offset, String text) throws IOException {
         if (text.length() > 0) {
+            Log.log(Log.DEBUG, this, "insertText: "+offset+": "+text);
             syncContentWithDOM();
             m_content.insert(offset, text);
             m_parsedMode = false;
             m_adapterNode = null;
-            //may have some algorithm to determine the modified node(s) in the
-            //future
+            if (!getFlag(UNDO_IN_PROGRESS)) {
+                addUndoableEdit(new InsertEdit(this, offset, text));
+            }
             fireStructureChanged(null);
         }
     }//}}}
@@ -784,12 +941,14 @@ public class XMLDocument {
      */
     public void removeText(int offset, int length) throws IOException {
         if (length > 0) {
-            syncContentWithDOM();
+            String text = getText(offset,length);
+            Log.log(Log.DEBUG, this, "removeText: "+offset+": "+text);
             m_content.remove(offset, length);
             m_parsedMode = false;
             m_adapterNode = null;
-            //may have some algorithm to determine the modified node(s) in the
-            //future
+            if (!getFlag(UNDO_IN_PROGRESS)) {
+                addUndoableEdit(new RemoveEdit(this, offset, text));
+            }
             fireStructureChanged(null);
         }
     }//}}}
@@ -1020,6 +1179,31 @@ public class XMLDocument {
     //}}}
     
     //{{{ Private members
+    
+    //{{{ Flags
+
+    //{{{ setFlag() method
+    private void setFlag(int flag, boolean value) {
+        if(value) {
+            flags |= (1 << flag);
+        } else {
+            flags &= ~(1 << flag);
+        }
+    } //}}}
+
+    //{{{ getFlag() method
+    private boolean getFlag(int flag) {
+        int mask = (1 << flag);
+        return (flags & mask) == mask;
+    } //}}}
+
+    //{{{ Flag values
+    private static final int UNDO_IN_PROGRESS = 9;
+    //}}}
+
+    private int flags;
+
+    //}}}
     
     //{{{ setDefaultProperties()
     
@@ -2072,6 +2256,10 @@ public class XMLDocument {
      * for active namespaces
      */
     private HashMap m_mappings;
+    
+    private UndoManager m_undoManager = new UndoManager();
+    private Stack m_compoundEdits = new Stack();
+    private boolean m_addedToCompoundEdits = false;
     
    // private XMLDocAdapterListener docAdapterListener = new XMLDocAdapterListener();
     

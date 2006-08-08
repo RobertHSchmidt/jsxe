@@ -67,11 +67,7 @@ public class RedoAction extends LocalizedAction {
     
     //{{{ invoke()
     public void invoke(TabbedView view, ActionEvent evt) {
-        /*
-        invoke the action registered for the current DocumentView named
-        viewname.redo if there is one.
-        */
-        ActionManager.invokeAction(jsXe.getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME)+ActionManager.REDO_SUFFIX, evt);
+        view.getDocumentBuffer().redo();
     }//}}}
 
 }
