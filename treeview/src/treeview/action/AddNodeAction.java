@@ -52,6 +52,7 @@ import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.dom.completion.ElementDecl;
 import net.sourceforge.jsxe.dom.completion.EntityDecl;
@@ -117,26 +118,41 @@ public class AddNodeAction extends LocalizedAction {
             if (selectedNode != null) {
                 try {
                     if (m_element != null) {
-                        if (m_element.getAttributes().size() > 0) {
-                            EditTagDialog dialog = new EditTagDialog(jsXe.getActiveView(),
-                                                                     m_element,
-                                                                     new HashMap(),
-                                                                     m_element.empty,
-                                                                     m_element.completionInfo.getEntityHash(),
-                                                                     new ArrayList(), //don't support IDs for now.
-                                                                     selectedNode.getOwnerDocument());
-                            dialog.show();
-                            addedNode = selectedNode.addAdapterNode(dialog.getNewNode());
-                        } else {
-                            addedNode = selectedNode.addAdapterNode(m_element.name, null, AdapterNode.ELEMENT_NODE, selectedNode.childCount());
+                        XMLDocument document = selectedNode.getOwnerDocument();
+                        boolean isOk = true;
+                        try {
+                            document.beginCompoundEdit();
+                            if (m_element.getAttributes().size() > 0) {
+                                EditTagDialog dialog = new EditTagDialog(jsXe.getActiveView(),
+                                                                         m_element,
+                                                                         new HashMap(),
+                                                                         m_element.empty,
+                                                                         m_element.completionInfo.getEntityHash(),
+                                                                         new ArrayList(), //don't support IDs for now.
+                                                                         document);
+                                dialog.show();
+                                isOk = (dialog.getNewNode() != null);
+                                if (isOk) {
+                                    addedNode = selectedNode.addAdapterNode(dialog.getNewNode());
+                                }
+                            } else {
+                                addedNode = selectedNode.addAdapterNode(m_element.name, null, AdapterNode.ELEMENT_NODE, selectedNode.childCount());
+                            }
+                        } finally {
+                            document.endCompoundEdit();
                         }
                     } else {
                         //add the node of the correct type to the end of the children of this node
                         addedNode = selectedNode.addAdapterNode(m_name, m_value, m_nodeType, selectedNode.childCount());
                     }
-                    tree.expandPath(tree.getLeadSelectionPath());
-                    //The TreeModel doesn't automatically call treeNodesInserted() yet
-                    tree.updateUI();
+                    
+                    //if we hit cancel in the dialog we don't want to do this.
+                    if (isOk) {
+                        tree.expandPath(tree.getLeadSelectionPath());
+                        //The TreeModel doesn't automatically call treeNodesInserted() yet
+                        tree.updateUI();
+                    }
+                    
                 
                 } catch (DOMException dome) {
                     JOptionPane.showMessageDialog(tree, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
