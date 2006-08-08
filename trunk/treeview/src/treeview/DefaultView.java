@@ -36,6 +36,8 @@ import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.msg.PropertyChanged;
+import net.sourceforge.jsxe.msg.UndoEvent;
+import net.sourceforge.jsxe.msg.RedoEvent;
 //}}}
 
 //{{{ Swing components
@@ -328,6 +330,11 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
             }
             if (CONTINUOUS_LAYOUT.equals(key) || SHOW_COMMENTS.equals(key) || SHOW_ATTRIBUTES.equals(key)) {
                 tree.updateUI();
+            }
+        } else {
+            if ((message instanceof UndoEvent) || (message instanceof RedoEvent)) {
+                //hack to get undo to work properly
+                m_valueTextArea.setDocument(new DefaultViewDocument(tree.getSelectedNode()));
             }
         }
     }//}}}
