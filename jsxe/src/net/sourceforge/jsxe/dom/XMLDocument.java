@@ -203,9 +203,10 @@ public class XMLDocument {
      */
     protected boolean addUndoableEdit(UndoableEdit edit) {
         if (!getFlag(UNDO_IN_PROGRESS)) {
+            Log.log(Log.DEBUG, this, edit);
             if (insideCompoundEdit()) {
                 m_addedToCompoundEdits = true;
-                return ((CompoundEdit)m_compoundEdits.peek()).addEdit(edit);
+                return m_compoundEdit.addEdit(edit);
             } else {
                 return m_undoManager.addEdit(edit);
             }
@@ -219,9 +220,11 @@ public class XMLDocument {
      * undone/redone all at once.
      */
     public void beginCompoundEdit() {
-        Log.log(Log.DEBUG, this, "begin compound edit");
-        m_addedToCompoundEdits = false;
-        m_compoundEdits.push(new CompoundEdit());
+        if (m_compoundEditCount == 0) {
+            m_compoundEdit = new CompoundEdit();
+            m_addedToCompoundEdits = false;
+        }
+        ++m_compoundEditCount;
     }//}}}
     
     //{{{ endCompoundEdit()
@@ -234,13 +237,13 @@ public class XMLDocument {
 			Log.log(Log.WARNING, this, new Exception("Unbalanced begin/endCompoundEdit()"));
 			return;
 		}
-        Log.log(Log.DEBUG, this, "end compound edit");
-        CompoundEdit edit = (CompoundEdit)m_compoundEdits.pop();
-        edit.end();
-        if (m_addedToCompoundEdits) {
-            m_undoManager.addEdit(edit);
-            m_addedToCompoundEdits = false;
+        m_compoundEdit.end();
+        if (m_compoundEditCount == 1) {
+            if (m_addedToCompoundEdits) {
+                m_undoManager.addEdit(m_compoundEdit);
+            }
         }
+        --m_compoundEditCount;
     }//}}}
     
     //{{{ insideCompoundEdit()
@@ -249,7 +252,7 @@ public class XMLDocument {
      * edit that will be undone/redone all at once.
      */
     public boolean insideCompoundEdit() {
-        return m_compoundEdits.size() != 0;
+        return (m_compoundEditCount != 0);
     }//}}}
     
     //{{{ undo()
@@ -263,7 +266,7 @@ public class XMLDocument {
             m_undoManager.undo();
             EditBus.send(new UndoEvent(this));
         } catch (CannotUndoException e) {
-            Log.log(Log.WARNING, this, e);
+            Log.log(Log.WARNING, this, "Could not undo");
         } finally {
             setFlag(UNDO_IN_PROGRESS, false);
         }
@@ -280,7 +283,7 @@ public class XMLDocument {
             m_undoManager.redo();
             EditBus.send(new RedoEvent(this));
         } catch (CannotRedoException e) {
-            Log.log(Log.WARNING, this, e);
+            Log.log(Log.WARNING, this, "Could not redo");
         } finally {
             setFlag(UNDO_IN_PROGRESS, false);
         }
@@ -2267,8 +2270,9 @@ public class XMLDocument {
     private HashMap m_mappings;
     
     private UndoManager m_undoManager = new UndoManager();
-    private Stack m_compoundEdits = new Stack();
+    private CompoundEdit m_compoundEdit = null;
     private boolean m_addedToCompoundEdits = false;
+    private int m_compoundEditCount = 0;
     
    // private XMLDocAdapterListener docAdapterListener = new XMLDocAdapterListener();
     

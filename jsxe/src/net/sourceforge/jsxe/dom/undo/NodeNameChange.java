@@ -66,8 +66,9 @@ public class NodeNameChange extends AbstractUndoableEdit {
     public void undo() throws CannotUndoException {
         super.undo();
         try {
-            m_node.setNodeName(m_oldValue);
-        } catch (DOMException ioe) {
+            m_node.setLocalName(m_oldValue);
+        } catch (DOMException e) {
+            Log.log(Log.ERROR, this, e);
             throw new CannotUndoException();
         }
     }//}}}
@@ -77,8 +78,9 @@ public class NodeNameChange extends AbstractUndoableEdit {
     public void redo() throws CannotRedoException {
         super.redo();
         try {
-            m_node.setNodeName(m_newValue);
-        } catch (DOMException ioe) {
+            m_node.setLocalName(m_newValue);
+        } catch (DOMException e) {
+            Log.log(Log.ERROR, this, e);
             throw new CannotRedoException();
         }
     }//}}}

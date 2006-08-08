@@ -67,7 +67,8 @@ public class NodePrefixChange extends AbstractUndoableEdit {
         super.undo();
         try {
             m_node.setNSPrefix(m_oldValue);
-        } catch (DOMException ioe) {
+        } catch (DOMException e) {
+            Log.log(Log.ERROR, this, e);
             throw new CannotUndoException();
         }
     }//}}}
@@ -78,7 +79,8 @@ public class NodePrefixChange extends AbstractUndoableEdit {
         super.redo();
         try {
             m_node.setNSPrefix(m_newValue);
-        } catch (DOMException ioe) {
+        } catch (DOMException e) {
+            Log.log(Log.ERROR, this, e);
             throw new CannotRedoException();
         }
     }//}}}
