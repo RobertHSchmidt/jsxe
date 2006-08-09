@@ -29,6 +29,7 @@ import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.CatalogManager;
 import net.sourceforge.jsxe.gui.Messages;
 import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import java.util.Vector;
 //}}}
 
@@ -92,6 +93,18 @@ public class GeneralOptionPane extends AbstractOptionPane {
                      Messages.getMessage("Global.Options.Menu.Spill.Over.ToolTip"));
         //}}}
         
+        //{{{ undos to remember
+        
+        int undo = jsXe.getIntegerProperty("undo.limit", 100);
+        
+        m_undosToRemember = new JTextField(Integer.toString(undo));
+        
+        addComponent(Messages.getMessage("Global.Options.Undos.To.Remember"),
+                     m_undosToRemember,
+                     Messages.getMessage("Global.Options.Undos.To.Remember.ToolTip"));
+        
+        //}}}
+        
         //{{{ network
         
         String[] networkValues = {
@@ -124,6 +137,11 @@ public class GeneralOptionPane extends AbstractOptionPane {
         } catch (NumberFormatException nfe) {
             //Bad input, don't save.
         }
+        try {
+            jsXe.setIntegerProperty("undo.limit", Integer.parseInt(m_undosToRemember.getText()));
+        } catch (NumberFormatException nfe) {
+            //Bad input, don't save.
+        }
         jsXe.setIntegerProperty("xml.cache",network.getSelectedIndex());
         CatalogManager.propertiesChanged();
     }//}}}
@@ -136,6 +154,7 @@ public class GeneralOptionPane extends AbstractOptionPane {
     //{{{ Private Members
     private JComboBox menuSpillOverComboBox;
     private JComboBox maxRecentFilesComboBox;
+    private JTextField m_undosToRemember;
     private JComboBox network;
     //}}}
     

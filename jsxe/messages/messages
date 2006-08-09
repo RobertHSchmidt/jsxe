@@ -67,7 +67,9 @@ Global.Options.network-off=Always cache without asking
 Global.Options.network-cache=Ask first, then cache remote files
 Global.Options.network-always=Always download without asking
 Global.Options.network=DTD and schema downloading:
-Global.Options.Menu.Spill.Over=Number of items before menus spill over
+Global.Options.Menu.Spill.Over=Number of items before menus spill over:
+Global.Options.Undos.To.Remember=Number of undos to remember:
+Global.Options.Undos.To.Remember.ToolTip=<HTML>jsXe will remember this number of undo operations in memory.<BR> However, it cannot remember undo operations after switching views</HTML>
 
 Shortcuts.Options.Title=Shortcuts
 Shortcuts.Options.Select.Label=Edit Shortcuts:

@@ -1,6 +1,11 @@
+08/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added a new option to the Global Options dialog for the number of undo
+      operations to remember.
+
 08/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
-    * Addded undo/redo support for attributes.
+    * Added undo/redo support for attributes.
 
 08/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
