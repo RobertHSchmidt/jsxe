@@ -117,9 +117,9 @@ public class AddNodeAction extends LocalizedAction {
             AdapterNode addedNode = null;
             if (selectedNode != null) {
                 try {
+                    boolean isOk = true;
                     if (m_element != null) {
                         XMLDocument document = selectedNode.getOwnerDocument();
-                        boolean isOk = true;
                         try {
                             document.beginCompoundEdit();
                             if (m_element.getAttributes().size() > 0) {
