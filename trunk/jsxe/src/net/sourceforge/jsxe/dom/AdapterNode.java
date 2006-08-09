@@ -541,7 +541,7 @@ public class AdapterNode {
                             }
                             int index = index(node);
                             m_children.remove(node);
-                           // addUndoableEdit(new RemoveNodeChange(this, node, index));
+                            addUndoableEdit(new RemoveNodeChange(this, node, index));
                         } else {
                             //Remove from previous parent
                             AdapterNode previousParent = node.getParentNode();
@@ -942,9 +942,9 @@ public class AdapterNode {
         if (node != null) {
             int index = index(node);
             m_children.remove(node);
-           // if (index != -1) {
-           //     addUndoableEdit(new RemoveNodeChange(this, node, index));
-           // }
+            if (index != -1) {
+                addUndoableEdit(new RemoveNodeChange(this, node, index));
+            }
         }
     }//}}}
     
@@ -994,7 +994,7 @@ public class AdapterNode {
     
     //{{{ fireNodeAdded()
     private void fireNodeAdded(AdapterNode source, AdapterNode child, int index) {
-       // addUndoableEdit(new AddNodeChange(source, child, index));
+        addUndoableEdit(new AddNodeChange(source, child, index));
         
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
@@ -1006,7 +1006,7 @@ public class AdapterNode {
     
     //{{{ fireNodeRemoved()
     private void fireNodeRemoved(AdapterNode source, AdapterNode child, int index) {
-       // addUndoableEdit(new RemoveNodeChange(source, child, index));
+        addUndoableEdit(new RemoveNodeChange(source, child, index));
         
         ListIterator iterator = m_listeners.listIterator();
         while (iterator.hasNext()) {
