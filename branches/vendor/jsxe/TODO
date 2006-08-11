@@ -1,4 +1,0 @@
-The attributes table needs to be editable.
-
-The serialization in jsXe needs to be fixed. It creates valid XML but it isn't
-formatted correctly.
