@@ -71,10 +71,10 @@
                 version.</p>
               </li>
               
-              <li><b>Unix</b>
+              <li><b>Unix/Linux</b>
                 
                 <p>To run jsXe you should just run the java interpreter on the
-                jsXe.jar file. There is a shell script or batch file included in the
+                jsXe.jar file. There is a shell script included in the
                 source tree for this purpose.</p>
                 
                 <p>./bin/jsXe.sh</p>
