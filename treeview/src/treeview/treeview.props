@@ -1,0 +1,23 @@
+#DefaultView default properties
+
+# whether to show comment nodes by default
+treeview.show.comment.nodes=true
+
+# whether to show empty text nodes by default
+treeview.show.empty.nodes=false
+
+# whether the split panes have continuous layout by default
+treeview.continuous.layout=false
+
+# a percentage of the vertical size of the parent container
+treeview.splitpane.vert.loc=40
+
+# a percentage of the horizontal size of the parent container
+treeview.splitpane.horiz.loc=40
+
+treeview.show.attributes=1
+
+#default size for edit doc type dialog
+treeview.editdoctypenode.width=200
+treeview.editdoctypenode.height=100
+
