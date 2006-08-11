@@ -48,7 +48,7 @@
       <p>If you are interested in working on jsXe's webpage, please
       <a href="http://lists.sourceforge.net/mailman/listinfo/jsxe-devel">subscribe</a>
       and send a mail to the jsxe-devel mailing list. The developers can help
-      get you started.</p>. Web developers should have some knowledge of CSS and
+      get you started. Web developers should have some knowledge of CSS and
       PHP.</p>
       
       <h3>Mailing Lists</h3>
