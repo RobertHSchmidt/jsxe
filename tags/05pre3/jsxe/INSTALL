@@ -1,0 +1,71 @@
+REQUIREMENTS
+
+Java 1.4.2
+Xerces 2.8.0
+
+GETTING jsXe
+
+You can download jsXe's releases from http://sourceforge.net/projects/jsxe
+This will give you the source for jsXe and it's default plugins.
+
+If you want to build from CVS you will need to check out the default plugins as
+well as jsXe core. These are located in the modules 'treeview' and 'sourceview'.
+Once you have the source trees for both of these you should put them in a
+directory called 'jars' in your jsXe root folder. Once they are in that folder,
+the ant targets (compile, bin, src, etc.) will recognise those plugins and build
+them if necessary. So something like this should do it:
+
+cvs checkout jsxe
+cd jsxe
+mkdir jars
+cd jars
+cvs checkout treeview
+cvs checkout sourceview
+
+BUILDING jsXe FROM SOURCE
+
+This is pretty simple. You will need jakarta ANT and a Sun's javac compiler
+(others might work, I just haven't tested them). You will need the optional
+ant tasks installed as well. On some Linux distributions this may be a separate
+package. Also, in order for jsXe to compile properly you will need Apache 
+Xerces installed.
+
+You will need version 1.4.2 or better of java and you will need version 2.8.0 of
+Xerces (A Xerces 2.8.0 binary distribution is not included in the CVS source
+tree. You can aquire it at at http://xml.apache.org/) The jar files
+xercesImpl.jar, xml-apis.jar, and resolver.jar from the 2.8.0 distribution are
+required. These should be placed in a directory called lib in jsXe's root folder
+(where you installed jsXe's source) or in the jre/lib/ext or lib/ext in your
+JVM. These jar files will be included with jsXe distributions for convenience.
+
+Simply typing 'ant' in jsXe's root directory will give you the
+available targets to use with ant. To just simply compile jsXe and the default
+views to a jar file you can type 'ant compile'. To build a binary distribution
+you will need to run the 'bin' target in the build.xml file. I do this by simply
+typing 'ant bin'. Source distributions can be built using the 'src' target by
+typing 'ant src'.
+
+INSTALLING jsXe
+
+Unpack the distribution file wherever you like. Normally you would install it
+in  C:\Program Files\  or  /usr/local/share/  or something like that.
+
+RUNNING jsXe
+
+You should have 1.4.2 or better of java and you need 2.6.2 of Xerces.
+
+*Windows*
+
+Just run jsXe using the jsXe.exe in the install directory. The exe will
+detect your version of Java and run jsXe using that version.
+
+*Unix*
+
+To run jsXe you should just run the java interpreter on the jsXe.jar file. There
+is a shell script or batch file included in the source tree for this purpose.
+
+./bin/jsXe.sh
+
+The shell script should be run in with the jsXe root directory of as the
+working directory. You can also edit the JSXEDIR variable in the shell script
+to be the directory where you installed jsXe.

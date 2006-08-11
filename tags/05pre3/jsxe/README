@@ -1,0 +1,28 @@
+                      jsXe: Java Simple XML Editor
+
+jsXe is the Java Simple XML Editor. Although you may pronounce it any way you
+wish I encourage you to pronounce it "jay sexy". It is written in java using the
+Swing toolkit, JAXP, and DOM and is released under the terms of the GNU General
+Public License. It aims to provide end users and developers with an intuitive
+way of creating XML documents. It is geared towards simpler XML documents but
+will (eventually) be able to handle any XML document. Visit
+http://jsxe.sourceforge.net/ to learn more about this project.
+
+jsXe bundles the following libraries:
+
+- Xerces Java 2.8.0 is a XML parsing library released by the Apache foundation.
+  This library is released under the Apache license, which can be found at
+  http://www.apache.org/licenses/LICENSE-2.0
+
+The jsXe installer bundles the following libraries:
+
+- org.apache.excalibur.bzip2 compression library. This library is
+  released under the Apache license, which can be found at
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  The org.apache.excalibur.bzip2 web site is
+  <http://jakarta.apache.org/avalon/excalibur/bzip2/>.
+
+- com.ice.tar, by Tim Endres. This code is in the public domain.
+
+  The com.ice.tar web site is <http://www.trustice.com/java/tar/>.

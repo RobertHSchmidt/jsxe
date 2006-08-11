@@ -1,0 +1,296 @@
+# JSXE English properties file
+# $Id$
+# Maintained by Ian Lewis
+#:mode=properties:
+#:tabSize=4:indentSize=4:noTabs=true:
+#:folding=explicit:collapseFolds=1:
+
+#{{{ common properties
+
+common.ok=OK
+common.cancel=Cancel
+common.open=Open
+common.save=Save
+common.save.as=Save As
+common.close=Close
+common.apply=Apply
+common.more=More
+common.insert=Insert
+common.add=Add
+common.remove=Remove
+common.moveUp=Move Up
+common.moveDown=Move Down
+
+common.ctrl=Ctrl
+common.alt=Alt
+common.shift=Shift
+common.meta=Meta
+
+#}}}
+
+#{{{ XML Terminology
+
+#{{{ XML Node Types
+xml.element=Element
+xml.processing.instruction=Processing Instruction
+xml.cdata=CDATA Section
+xml.text=Text
+xml.entity.reference=Entity Reference
+xml.declaration=Element Declaration
+xml.notation=Notation
+xml.entity=Entity Declaration
+xml.comment=Comment
+xml.attribute=Attribute
+xml.doctype=Document Type
+#}}}
+
+xml.attribute.value.short=Value
+xml.attribute.value=Attribute Value
+xml.document=XML Document
+xml.namespace=Namespace
+xml.namespace.prefix=Namespace Prefix
+xml.namespace.prefix.short=Prefix
+xml.namespace.decl=Namespace Declaration
+xml.doctypedef=Document Type Definition
+xml.doctype.name=Name
+xml.doctype.public=Public Id
+xml.doctype.system=System Id
+xml.schema=XML Schema
+#}}}
+
+#{{{ Global Options
+Global.Options.Dialog.Title=Global Options
+Global.Options.Title=General
+Global.Options.Max.Recent.Files=Recent files to remember:
+Global.Options.Max.Recent.Files.ToolTip=The maximum number of files that jsXe remembers in the recent files menu.
+Global.Options.network-off=Always cache without asking
+Global.Options.network-cache=Ask first, then cache remote files
+Global.Options.network-always=Always download without asking
+Global.Options.network=DTD and schema downloading:
+Global.Options.Menu.Spill.Over=Number of items before menus spill over:
+Global.Options.Undos.To.Remember=Number of undos to remember:
+Global.Options.Undos.To.Remember.ToolTip=<HTML>jsXe will remember this number of undo operations in memory.<BR> However, it cannot remember undo operations after switching views</HTML>
+
+Shortcuts.Options.Title=Shortcuts
+Shortcuts.Options.Select.Label=Edit Shortcuts:
+Shortcuts.Options.Shortcut=Shortcut
+Shortcuts.Options.Command=Command
+
+Grab.Key.title=Specify Shortcut
+Grab.Key.caption=Press the desired shortcut for "{0}", then click OK.
+Grab.Key.keyboard-test=Input the key strokes that are causing problems.
+Grab.Key.assigned-to=Currently assigned to: {0}
+Grab.Key.assigned-to.none=<none>
+Grab.Key.clear=Clear
+Grab.Key.remove=Remove Current
+
+Grab.Key.remove-ask.title=Remove Shortcut?
+Grab.Key.remove-ask.message=\
+	You didn't specify a new shortcut.\n\
+	Do you want to remove the current shortcut?
+
+Grab.Key.duplicate-alt-shortcut.title=Duplicate Shortcut
+Grab.Key.duplicate-alt-shortcut.message=\
+	The shortcut you selected duplicates the other\n\
+	shortcut for this item. Please choose another.
+
+Grab.Key.duplicate-shortcut.title=Duplicate Shortcut
+Grab.Key.duplicate-shortcut.message=\
+	This shortcut is already assigned to\n\
+	"{0}".\n\
+	\n\
+	Do you want to override this assignment?
+#}}}
+
+#{{{ Document Options
+Document.Options.Title=XML Document Options
+Document.Options.Message=This dialog changes settings for the current\n document only. To change settings on an\n editor-wide basis, see the\n Tools->Global Options dialog box.
+Document.Options.Line.Separator=Line Separator:
+Document.Options.Line.Separator.ToolTip=The line separator. Usually you'll pick the line separator used by your operating system.
+Document.Options.Encoding=Encoding:
+Document.Options.Encoding.ToolTip=The encoding that jsXe uses to write the file.
+Document.Options.Indent.Width=Indent width:
+Document.Options.Indent.Width.ToolTip=The width used when formatting and displaying tab characters.
+Document.Options.Format.XML=Format XML output
+Document.Options.Format.XML.ToolTip=If this box is checked then XML will be formatted automatically.
+Document.Options.Validate=Validate if DTD or Schema Available
+Document.Options.Validate.ToolTip=If this box is checked jsXe will validate the XML document.
+Document.Options.Soft.Tabs=Soft tabs (emulated with spaces)
+Document.Options.Soft.Tabs.ToolTip=If this box is checked then tab characters are replaced by spaces.
+#}}}
+
+#{{{ Plugin Manager
+Plugin.Manager.Title=Plugin Manager
+Plugin.Manager.Name.Column.Header=Name
+Plugin.Manager.Version.Column.Header=Version
+Plugin.Manager.Status.Column.Header=Status
+Plugin.Manager.Loaded.Status=Loaded
+Plugin.Manager.Not.Loaded.Status=Not Loaded
+Plugin.Manager.Broken.Status=Error
+#}}}
+
+#{{{ Menu Items
+
+File.Menu=File
+Edit.Menu=Edit
+View.Menu=View
+Tools.Menu=Tools
+Help.Menu=Help
+
+
+#}}}
+
+#{{{ Action Labels
+new-file.label=New
+open-file.label=Open...
+File.Recent=Recent Files
+File.Recent.None=No Recent Files
+save-file.label=Save
+save-as.label=Save As...
+reload-file.label=Reload
+File.Recent=Recent Files
+close-file.label=Close
+close-all.label=Close All
+exit.label=Exit
+
+undo.label=Undo
+redo.label=Redo
+cut.label=Cut
+copy.label=Copy
+paste.label=Paste
+find.label=Find...
+findnext.label=Find Next
+
+general-options.label=Global Options...
+document-options.label=Document Options...
+plugin-manager.label=Plugin Manager...
+validation-errors.label=Validation Errors...
+about-jsxe.label=About jsXe...
+
+#}}}
+
+#{{{ Messages
+
+DocumentView.Open.Message="Could not open buffer in any installed document views"
+
+#{0} file name
+DocumentBuffer.Reload.Message={0} unsaved!\n You will lose all unsaved changes if you reload!\n\nContinue?
+DocumentBuffer.Reload.Message.Title=Document Modified
+DocumentBuffer.SaveAs.Message=The file {0} already exists. Are you sure you want to overwrite it?
+DocumentBuffer.SaveAs.Message.Title=File Exists
+DocumentBuffer.Close.Message={0} unsaved! Save it now?
+DocumentBuffer.Close.Message.Title=Unsaved Changes
+
+#{0} file name
+DocumentBuffer.Saved.Message={0} Saved
+DocumentBuffer.Closed.Message={0} Closed
+DocumentBuffer.Loaded.Message={0} Loaded
+DocumentBuffer.Reloaded.Message={0} Reloaded
+
+#{0} plugin name
+DocumentView.Not.Found=No plugin a with name of {0} exists.
+
+#{{{ Plugin Load Messages
+
+# {0} plugin name
+Plugin.Error.title=Plugin Error
+Plugin.Error.List.message=The following plugins could not be loaded:
+Plugin.Load.Already.Loaded=Plugin {0} already loaded.
+Plugin.Load.Wrong.Main.Class=Main class is not a plugin class.
+Plugin.Load.No.Plugin.Class=No plugin class defined.
+Plugin.Load.No.Plugin.Name=No plugin name defined.
+Plugin.Load.No.Plugin.HR.Name=No plugin human-readable name defined.
+Plugin.Load.No.Plugin.Version=No plugin version defined.
+
+# {0} plugin name
+# {1} requirement name
+# {2} required version
+# {3} found version
+Plugin.Dependency.Message={0} requires {1} version {2} but only version {3} was found.
+# {0} plugin name
+# {1} requirement name
+# {2} required version
+Plugin.Dependency.Not.Found={0} requires {1} version {2} but {1} was not found.
+# {0} plugin name
+# {1} requirement name
+Plugin.Dependency.Not.Found2={0} requires {1} but {1} was not found.
+# {0} plugin name
+# {1} invalid dependency
+Plugin.Dependency.Invalid={0} has an invalid dependency: {1}
+# {0} invalid version
+Plugin.Dependency.Invalid.jsXe.Version=Invalid jsXe version number: {0}
+# {0} plugin name
+# {1} requirement name
+Plugin.Dependency.No.Version=Cannot load plugin {0}, {1} has no version.
+# {0} plugin name
+# {1} requirement name
+Plugin.Dependency.Failed.Load={0} requires plugin {1} but {1} did not load properly.
+
+#}}}
+
+#{{{ Error Messages
+No.Xerces.Error.message={0} not found. jsXe requires Apache {0}.
+No.Xerces.Error.title={0} not found.
+IO.Error.title=I/O Error
+IO.Error.message=An I/O error has occurred
+#}}}
+
+#}}}
+
+#{{{ Dialogs
+
+#{{{ Download resource dialog
+xml.download-resource.title=Getting resource from remote server
+
+#{0} URL
+xml.download-resource.message=This XML file depends on a resource which is stored at the following\n\
+	Internet address:\n\
+	\n\
+	{0}\n\
+	\n\
+	Do you want the XML plugin to download the resource and cache it\n\
+	for future use?\n\
+	\n\
+	If you want resources to be downloaded every time without prompting,\n\
+	disable the resource cache in jsXe's global options.
+#}}}
+
+#{{{ Dirty Files Dialog
+DirtyFilesDialog.Dialog.Title=Unsaved Changes
+DirtyFilesDialog.Dialog.Message=The following files have unsaved changes:
+DirtyFilesDialog.Button.SelectAll.Title=Select All
+#DirtyFilesDialog.Button.SelectAll.ToolTip=Select All
+DirtyFilesDialog.Button.SaveSelected.Title=Save Selected
+#DirtyFilesDialog.Button.SaveSelected.ToolTip=Save Selected
+DirtyFilesDialog.Button.DiscardSelected.Title=Discard Selected
+#DirtyFilesDialog.Button.DiscardSelected.ToolTip=Discard Selected
+#}}}
+
+#{{{ Activity Log Dialog
+activity-log.label = Activity Log
+ActivityLogDialog.Dialog.Title = Activity Log
+ActivityLogDialog.Dialog.Message = Activity Log contents:
+#}}}
+
+#{{{ About dialag
+about.title=About jsXe
+about.message=Released under the terms of the GNU General Public License\n\n\
+    Active Contributors:\n\
+    \ \ \ \ Ian Lewis <IanLewis@member.fsf.org>\n\
+    \ \ \ \ Trish Hartnett <trishah136@users.sourceforge.net>\n\n\
+    Translators:\n\
+    \ \ \ \ German (de) - Bianca Shöen\n\
+    \ \ \ \ Swedish (sv) - Patrik Johansson <patjoh@itstud.chalmers.se>\n\
+    \ \ \ \ Russian (ru) - Alexandr Gridnev <alexandr-gridnev@yandex.ru>\n\n\
+    Past Contributers:\n\
+    \ \ \ \ Aaron Flatten  <aflatten@users.sourceforge.net>\n\
+    \ \ \ \ Bilel Remmache <rbilel@users.sourceforge.net>\n\n\
+    Homepage: http://jsxe.sourceforge.net/
+#}}}
+
+#{{{ Validation Errors Dialog
+ValidationErrors.title=Validation Errors
+ValidationErrors.message=Validation Errors
+#}}}
+
+#}}}
