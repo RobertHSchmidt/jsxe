@@ -153,7 +153,10 @@ public abstract class OperatingSystem
                 mkdirs(directory);
 
                 String name = installer.getProperty("app.name");
-                String vmArgs = installer.getProperty("extra.vm.args");
+                
+                //jsxe specific: this is needed for java to load our xerces rather
+                // than the one included with java.
+                String vmArgs = "-Djava.endorsed.dirs=\""+installDir + File.separator+"lib\"";
 
                 // create app start script
                 String script = directory + File.separatorChar
@@ -193,7 +196,50 @@ public abstract class OperatingSystem
                 exec(chmodArgs);
             }
         }
+        
+        public class DesktopOSTask extends OSTask {
+            
+            public DesktopOSTask(Install installer) {
+                super(installer,"unix-desktop");
+            }
 
+            public String getDefaultDirectory(Install installer) {
+                String dir = "/usr/local/";
+                if (!new File(dir).canWrite()) {
+                    dir = System.getProperty("user.home");
+                }
+
+                return new File(dir,"share").getPath();
+            }
+
+            public void perform(String installDir,
+                Vector filesets) throws IOException
+            {
+                if (!enabled) {
+                    return;
+                }
+
+                mkdirs(directory);
+                mkdirs(directory+"/applications");
+                mkdirs(directory+"/pixmaps");
+
+                String name = installer.getProperty("app.name");
+
+                // install shortcut
+                String shortcut = installer.getProperty("ostask.unix-desktop.shortcut");
+                String pixmap   = installer.getProperty("ostask.unix-desktop.pixmap");
+
+                if (shortcut != null) {
+                    InputStream in = getClass().getResourceAsStream("/" + shortcut);
+                    installer.copy(in, new File(directory+"/applications",shortcut).getPath(), null);
+                }
+                if (pixmap != null) {
+                    InputStream in = getClass().getResourceAsStream("/" + pixmap);
+                    installer.copy(in, new File(directory+"/pixmaps", pixmap).getPath(), null);
+                }
+            }
+        }
+        
         public class ManPageOSTask extends OSTask
         {
             public ManPageOSTask(Install installer)
@@ -233,7 +279,7 @@ public abstract class OperatingSystem
         public OSTask[] getOSTasks(Install installer)
         {
             return new OSTask[] { new ScriptOSTask(installer),
-                new ManPageOSTask(installer) };
+                new ManPageOSTask(installer), new DesktopOSTask(installer) };
         }
 
         public void mkdirs(String directory) throws IOException
