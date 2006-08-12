@@ -1,0 +1,20 @@
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>0</headerType>
+  <jar>..\build\jsXe-05_pre3-install.jar</jar>
+  <outfile>..\build\jsxe-installer.exe</outfile>
+  <errTitle>jsXe Installer</errTitle>
+  <jarArgs></jarArgs>
+  <chdir></chdir>
+  <customProcName>true</customProcName>
+  <stayAlive>false</stayAlive>
+  <icon>jsxe-installer.ico</icon>
+  <jre>
+    <path></path>
+    <minVersion>1.4.2</minVersion>
+    <maxVersion></maxVersion>
+    <initialHeapSize>16</initialHeapSize>
+    <maxHeapSize>64</maxHeapSize>
+    <args></args>
+  </jre>
+</launch4jConfig>

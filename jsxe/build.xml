@@ -15,10 +15,10 @@
     sourceview module (optional)      => jsxe/jars/sourceview
     jsxe installer (optional)         => jsxe/installer
     jsxe web module (optional)        => web/
-    jsmooth ant task (optional)       => buildlib/
+    launch4j (needed for win builds)  => buildlib/launch4j
     
 -->
-<project basedir="." default="usage" name="jsXe">
+<project basedir="." default="compile" name="jsXe">
   
   <description>jsXe - Java Simple XML Editor</description>
   
@@ -48,6 +48,12 @@
     <property name="build.messages" value="${build.dir}/messages"/>
     <property name="docs.dir" value="${src.dir}/doc"/>
     <property name="plugin.dir" value="${root.dir}/jars"/>
+    <property name="jsxe.jar" value="${build.dir}/${app.name}.jar"/>
+    <!-- jar file needs to be relative to the exe -->
+    <property name="launch4j.jsxe.jar" value="${app.name}.jar"/>
+    <property name="jsxe.exe" value="${build.dir}/${app.name}.exe"/>
+    <!-- launch4j doesn't like the ./ in the front of the path -->
+    <property name="launch4j.jsxe.exe" value="build/${app.name}.exe"/>
     <property name="build.plugin" value="${build.dir}/jars"/>
     <property name="build.src" value="${build.dir}/src"/>
     <property name="build.dest" value="${build.dir}/classes"/>
@@ -61,8 +67,9 @@
     <!--<property name="app_version" value="${major.version}_${minor.version}beta"/>-->
     <property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
     <property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>
-    <property name="jsmooth.project" value="${root.dir}/jsXe.jsmooth"/>
-    <property name="jsmooth.jar" value="${buildlib.dir}/jsmoothgen-ant.jar"/>
+    <property name="launch4j.dir" value="${buildlib.dir}/launch4j"/>
+    <property name="launch4j.config" value="${root.dir}/launch4j.xml"/>
+    <property name="launch4j.classpath" value="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"/>
     <!-- }}} -->
     <!-- {{{ installer directories -->
     <property name="installer.build.dir" value="${build.dir}/installer"/>
@@ -74,6 +81,10 @@
     <property name="installer.build.dest" value="${installer.build.dir}/build"/>
     <property name="install.props" value="${installer.build.dest}/installer/install.props"/>
     <property name="installer.dir" value="${root.dir}/installer"/>
+    <property name="installer.launch4j.config" value="${installer.dir}/launch4j.xml"/>
+    <!-- launch4j doesn't like the ./ in the front of the path -->
+    <property name="installer.jar" value="build/${app.name}-${app_version}-install.jar"/>
+    <property name="installer.exe" value="build/${app.name}-${app_version}-install.exe"/>
     <!-- }}} -->
     <!-- {{{ installer props -->
     <property name="installer.main.class" value="installer.Install"/>
@@ -144,7 +155,7 @@
     </path>
     
     <path id="run-classpath">
-      <pathelement location="${build.dir}/${app.name}.jar"/>
+      <pathelement location="${jsxe.jar}"/>
       <fileset dir="${lib.dir}">
         <include name="**/*.jar"/>
       </fileset>
@@ -152,13 +163,6 @@
     <!-- }}} -->
     
     <!-- {{{ conditionals -->
-    <available file="${jsmooth.jar}" property="jsmooth.avail"/>
-    <condition property="windows.build">
-      <and>
-        <os family="windows"/>
-        <istrue value="${jsmooth.avail}"/>
-      </and>
-    </condition>
     
     <!-- set whether we have the source for the default views -->
     
@@ -166,6 +170,7 @@
     <available file="${plugin.dir}" property="plugin.avail"/>
     <available file="${plugin.dir}/treeview/build.xml" property="treeview.avail"/>
     <available file="${plugin.dir}/sourceview/build.xml" property="sourceview.avail"/>
+    <available file="${launch4j.dir}" property="launch4j.avail"/>
     <available classname="org.apache.bsf.BSFException" property="bsf.avail"/>
     <available classname="org.mozilla.javascript.JavaScriptException" property="js.avail"/>
     
@@ -175,21 +180,6 @@
     
     <echo message="${app.name} ${app.version}"/>
     <echo message="----------------------------------------------------------"/>
-  </target>
-  <!-- }}} -->
-  <!-- {{{ ============ Prints the available targets ===================== -->
-  <target depends="init" name="usage" description="Prints available targets">
-    <echo message=" available targets are:"/>
-    <echo message=""/>
-    <echo message=" compile   --&gt; generates the ${app.name}.jar file."/>
-    <echo message="               also generates the jars for the tree view"/>
-    <echo message="               and source view plugins if available."/>
-    <echo message=" bin       --&gt; generates a binary distribution"/>
-    <echo message=" src       --&gt; generates a source distribution"/>
-    <echo message=" doc       --&gt; generates all documentation"/>
-    <echo message="               also updates the web api if the web module"/>
-    <echo message="               is available."/>
-    <echo message=" clean     --&gt; cleans everything up"/>
   </target>
   <!-- }}} -->
   <!-- {{{ ============ Prepares for any type of build =================== -->
@@ -247,6 +237,7 @@
       <classpath refid="classpath"/>
       <include name="**/*.java"/>
     </javac>
+    
     <copy todir="${build.dest}">
       <fileset dir="${build.src}">
         <include name="**/*.props"/>
@@ -280,7 +271,7 @@
       </section>
     </manifest>
     
-    <jar jarfile="${build.dir}/${app.name}.jar" manifest="${build.dir}/${app.name}.manifest">
+    <jar jarfile="${jsxe.jar}" manifest="${build.dir}/${app.name}.manifest">
       <fileset dir="${build.dest}">
         <include name="**/*.class"/>
         <include name="**/properties"/>
@@ -361,8 +352,9 @@
   <!-- {{{ ============ Builds the installer ============================= -->
   <target depends="compile, prepare-build, doc" name="build-installer" description="Builds the installer">
     
-    <fail unless="js.avail" message="You must have the ${buildlib.dir}/js.jar in your classpath to build the installer. See http://ant.apache.org/manual/install.html#librarydependencies"/>
-    <fail unless="bsf.avail" message="You must have the ${buildlib.dir}/bsf.jar in your classpath to build the installer. See http://ant.apache.org/manual/install.html#librarydependencies"/>
+    <fail unless="js.avail" message="You must have the ${buildlib.dir}/js.jar in your classpath to build the installer. It is located in the ${buildlib.dir} directory. See http://ant.apache.org/manual/install.html#librarydependencies"/>
+    <fail unless="bsf.avail" message="You must have the ${buildlib.dir}/bsf.jar in your classpath to build the installer. It is located in the ${buildlib.dir} directory. See http://ant.apache.org/manual/install.html#librarydependencies"/>
+    <fail unless="launch4j.avail" message="You must install launch4j in ${launch4j.dir} or change the launch4j.dir property in build.xml"/>
     <fail unless="treeview.avail" message="You must have the treeview source available to build the installer."/>
     <fail unless="sourceview.avail" message="You must have the sourceview source available to build the installer."/>
     
@@ -448,7 +440,7 @@
       </fileset>
     </copy>
     
-    <copy file="${build.dir}/${app.name}.jar" tofile="${installer.program.dir}/${app.name}.jar"/>
+    <copy file="${jsxe.jar}" todir="${installer.program.dir}"/>
     <!-- lib -->
     <mkdir dir="${installer.program.dir}/lib"/>
     <copy todir="${installer.program.dir}/lib">
@@ -457,8 +449,26 @@
       </fileset>
     </copy>
     
+    <!-- copy the lib directory so that the jsXe.exe can be run
+         from the build dir -->
+    <mkdir dir="${build.dir}/lib"/>
+    <copy todir="${build.dir}/lib">
+      <fileset dir="${build.lib}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    
     <!-- create the windows exe -->
-    <antcall target="build-exe"/>
+    <taskdef name="launch4j"
+      classname="net.sf.launch4j.ant.Launch4jTask"
+      classpath="${launch4j.classpath}"/>
+    
+    <launch4j configFile="${launch4j.config}"
+              outfile="${launch4j.jsxe.exe}"
+              jarPath="${launch4j.jsxe.jar}"
+              />
+    
+    <copy file="${jsxe.exe}" todir="${installer.program.dir}" />
     
     <!-- create the tar.bz2 for the installer -->
     <tar basedir="${installer.program.dir}" includes="**/*" tarfile="${installer.build.dir}/${app.name}-${app_version}-program.tar"/>
@@ -595,7 +605,7 @@
     <!-- }}} -->
     
     <!-- {{{ create the install jar -->
-    <jar jarfile="${build.dir}/${app.name}-${app_version}-install.jar" manifest="${installer.build.dir}/installer.manifest">
+    <jar jarfile="${installer.jar}" manifest="${installer.build.dir}/installer.manifest">
       <fileset dir="${installer.build.dest}">
         <include name="**/*"/>
       </fileset>
@@ -603,18 +613,16 @@
     <!-- }}} -->
     
   </target>
-  <target name="build-exe" if="windows.build">
-    <taskdef name="jsmoothgen"
-      classname="net.charabia.jsmoothgen.ant.JSmoothGen"
-      classpath="${jsmooth.jar}"/>
-      
-    <jsmoothgen project="${jsmooth.project}" skeletonroot="${buildlib.dir}/skeletons"/>
-    <copy todir="${installer.program.dir}" file="${build.dir}/jsXe.exe"/>
-  </target>
   <!-- }}} -->
   <!-- {{{ ============ Generates a windows distribution ================= -->
-  <target depends="build-installer" name="win" if="windows.build" description="Build a windows distribution">
+  <target depends="build-installer" name="win" description="Build a windows distribution">
+    <taskdef name="launch4j"
+      classname="net.sf.launch4j.ant.Launch4jTask"
+      classpath="${launch4j.classpath}"/>
     
+    <launch4j configFile="${installer.launch4j.config}" 
+              jar="${installer.jar}"
+              outfile="${installer.exe}"/>
   </target>
   <!-- }}} -->
   <!-- {{{ ============ Generates the binary distribution ================ -->
@@ -661,7 +669,7 @@
       </fileset>
     </copy>
     
-    <copy file="${build.dir}/${app.name}.jar" tofile="${distbin.dir}/${app.name}.jar"/>
+    <copy file="${jsxe.jar}" todir="${distbin.dir}"/>
     <!-- lib -->
     <mkdir dir="${distbin.dir}/lib"/>
     <copy todir="${distbin.dir}/lib">
@@ -695,7 +703,7 @@
       </fileset>
     </copy>
     
-        <!-- api -->
+    <!-- api -->
     <mkdir dir="${distsrc.dir}/doc/api"/>
     <copy todir="${distsrc.dir}/doc/api">
       <fileset dir="${build.javadocs}">
@@ -747,7 +755,7 @@
         <include name="**/*"/>
       </fileset>
     </copy>
-    <copy todir="${distsrc.dir}" file="${jsmooth.project}"/>
+    <copy todir="${distsrc.dir}" file="${launch4j.config}"/>
     
     <!-- messages -->
     <mkdir dir="${distsrc.dir}/messages"/>
