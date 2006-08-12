@@ -14,14 +14,27 @@ well as jsXe core. These are located in the modules 'treeview' and 'sourceview'.
 Once you have the source trees for both of these you should put them in a
 directory called 'jars' in your jsXe root folder. Once they are in that folder,
 the ant targets (compile, bin, src, etc.) will recognise those plugins and build
-them if necessary. So something like this should do it:
+them if necessary. 
 
-cvs checkout jsxe
+You should check out jsxe to make a structure like this. This ensures that
+when compiling jsXe the other views and will be compiled as well. It also
+ensures that you can build jsxe's installer in binary release distributions.
+
+jsxe module                       => jsxe/
+treeview module (optional)        => jsxe/jars/treeview
+sourceview module (optional)      => jsxe/jars/sourceview
+jsxe installer (optional)         => jsxe/installer
+jsxe web module (optional)        => web/
+launch4j (needed for win builds)  => buildlib/launch4j
+
+So something like this should do it:
+
+svn checkout https://svn.sourceforge.net/svnroot/jsxe/trunk/jsxe
 cd jsxe
 mkdir jars
 cd jars
-cvs checkout treeview
-cvs checkout sourceview
+svn checkout https://svn.sourceforge.net/svnroot/jsxe/trunk/treeview
+svn checkout https://svn.sourceforge.net/svnroot/jsxe/trunk/sourceview
 
 BUILDING jsXe FROM SOURCE
 
@@ -44,7 +57,9 @@ JVM. These jar files will be included with jsXe distributions for convenience.
 In order to build jsXe's installer or a windows distribution of jsXe you will
 need to install launch4j (http://launch4j.sourceforge.net/). You can install it
 in the buildlib directory or change the launch4j.dir property in the build.xml
-file.
+file. You will also need to put the js.jar and bsf.jar in your classpath. These
+files are found in the 'buildlib' directory. They are used in scripts for
+calculating file sizes.
 
 ** Building **
 
