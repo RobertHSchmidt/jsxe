@@ -58,7 +58,7 @@
                 
                 <p>You can also edit the JSXEDIR variable in the batch program
                    to be the directory where you installed jsXe and then the 
-                   &apos;Start in&apos; directory can be anywhere.</p></li>
+                   &apos;Start in&apos; directory can be anywhere.</p>
           
           </li>
           </ul>
