@@ -569,6 +569,9 @@
       <entry key="app.license.title" value="${app.license.title}"/>
       <entry key="app.license" value="${app.license}"/>
       <entry key="ostask.unix-script.label" value="${ostask.unix-script.label}"/>
+      
+      <entry key="extra.vm.args" value="-Djava.endorsed.dirs=lib"/>
+      
       <!--<entry key="ostask.unix-man.label" value="${ostask.unix-man.label}"/>-->
       <entry key="comp.count" value="${comp.count}"/>
       <entry key="comp.0.name" value="${comp.0.name}"/>

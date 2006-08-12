@@ -1,3 +1,9 @@
+08/12/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added support for running jsXe in a wrapped exe using launch4j.
+    * Added an installer for jsXe. The installer can be packaged in an exe for
+      easy use by windows users.
+
 08/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added a new option to the Global Options dialog for the number of undo
