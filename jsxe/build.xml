@@ -78,6 +78,7 @@
     <property name="installer.treeview.dir" value="${installer.build.dir}/treeview"/>
     <property name="installer.sourceview.dir" value="${installer.build.dir}/sourceview"/>
     <property name="installer.win.dir" value="${installer.build.dir}/win"/>
+    <property name="installer.gnome.dir" value="${installer.build.dir}/gnome"/>
     <property name="installer.build.src" value="${installer.build.dir}/src"/>
     <property name="installer.build.dest" value="${installer.build.dir}/build"/>
     <property name="install.props" value="${installer.build.dest}/installer/install.props"/>
@@ -97,6 +98,10 @@
     <property name="app.license" value="gpl.html"/>
     <property name="ostask.unix-script.label" value="Install shortcut in:"/>
     <property name="ostask.unix-man.label" value="Install manual page in:"/>
+    <property name="ostask.unix-desktop.label" value="Install desktop launchers in:"/>
+    <property name="ostask.unix-desktop.shortcut" value="jsxe.desktop"/>
+    <property name="ostask.unix-desktop.pixmap" value="jsxe.png"/>
+    
     <!--<property name="ostask.unix-man.manpage" value="jsxe.1"/>-->
     <property name="comp.count" value="5"/>
     
@@ -140,7 +145,6 @@
     <property name="comp.4.fileset" value="jsxe-win"/>
     <property name="comp.4.os" value="Windows"/>
     <property name="installer.build.win.tar" value="${installer.build.dest}/installer/${comp.4.fileset}.tar.bz2"/>
-    
     <!-- }}} -->
     <!-- {{{ java build properties -->
     <property name="javac.debug" value="on"/>
@@ -402,7 +406,13 @@
             
             size += file.length();
           }
-          project.setNewProperty(attributes.get("property"), Math.round(size/1024));
+          
+          roundedSize = Math.round(size/1024);
+          
+          echo = project.createTask("echo");
+          echo.setMessage("Size: "+roundedSize+"Kb");
+          echo.perform();
+          project.setNewProperty(attributes.get("property"), roundedSize);
         }
       ]]>
     </scriptdef>
@@ -425,7 +435,15 @@
     <!-- copy html files -->
     <copy todir="${installer.build.dest}/installer">
       <fileset dir="${installer.dir}">
-        <include name="**/*.html"/>
+        <include name="*.html"/>
+      </fileset>
+    </copy>
+    
+    <!-- copy other files -->
+    <copy todir="${installer.build.dest}">
+      <fileset dir="${installer.dir}">
+        <exclude name="*.html"/>
+        <include name="*"/>
       </fileset>
     </copy>
     
@@ -600,8 +618,9 @@
       <entry key="app.license.title" value="${app.license.title}"/>
       <entry key="app.license" value="${app.license}"/>
       <entry key="ostask.unix-script.label" value="${ostask.unix-script.label}"/>
-      
-      <entry key="extra.vm.args" value="-Djava.endorsed.dirs=lib"/>
+      <entry key="ostask.unix-desktop.label" value="${ostask.unix-desktop.label}"/>
+      <entry key="ostask.unix-desktop.pixmap" value="${ostask.unix-desktop.pixmap}"/>
+      <entry key="ostask.unix-desktop.shortcut" value="${ostask.unix-desktop.shortcut}"/>
       
       <!--<entry key="ostask.unix-man.label" value="${ostask.unix-man.label}"/>-->
       <entry key="comp.count" value="${comp.count}"/>
@@ -630,6 +649,7 @@
       <entry key="comp.4.real-size" value="${comp.4.real-size}"/>
       <entry key="comp.4.fileset" value="${comp.4.fileset}"/>
       <entry key="comp.4.os" value="${comp.4.os}"/>
+      
     </propertyfile>
     <!-- }}} -->
     
