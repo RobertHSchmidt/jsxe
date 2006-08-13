@@ -2,6 +2,7 @@ REQUIREMENTS
 
 Java 1.4.2
 Xerces 2.8.0
+launch4j (for building the installer from source)
 
 GETTING jsXe
 
@@ -13,16 +14,31 @@ well as jsXe core. These are located in the modules 'treeview' and 'sourceview'.
 Once you have the source trees for both of these you should put them in a
 directory called 'jars' in your jsXe root folder. Once they are in that folder,
 the ant targets (compile, bin, src, etc.) will recognise those plugins and build
-them if necessary. So something like this should do it:
+them if necessary. 
 
-cvs checkout jsxe
+You should check out jsxe to make a structure like this. This ensures that
+when compiling jsXe the other views and will be compiled as well. It also
+ensures that you can build jsxe's installer in binary release distributions.
+
+jsxe module                       => jsxe/
+treeview module (optional)        => jsxe/jars/treeview
+sourceview module (optional)      => jsxe/jars/sourceview
+jsxe installer (optional)         => jsxe/installer
+jsxe web module (optional)        => web/
+launch4j (needed for win builds)  => buildlib/launch4j
+
+So something like this should do it:
+
+svn checkout https://svn.sourceforge.net/svnroot/jsxe/trunk/jsxe
 cd jsxe
 mkdir jars
 cd jars
-cvs checkout treeview
-cvs checkout sourceview
+svn checkout https://svn.sourceforge.net/svnroot/jsxe/trunk/treeview
+svn checkout https://svn.sourceforge.net/svnroot/jsxe/trunk/sourceview
 
 BUILDING jsXe FROM SOURCE
+
+** Requirements **
 
 This is pretty simple. You will need jakarta ANT and a Sun's javac compiler
 (others might work, I just haven't tested them). You will need the optional
@@ -38,12 +54,29 @@ required. These should be placed in a directory called lib in jsXe's root folder
 (where you installed jsXe's source) or in the jre/lib/ext or lib/ext in your
 JVM. These jar files will be included with jsXe distributions for convenience.
 
-Simply typing 'ant' in jsXe's root directory will give you the
+In order to build jsXe's installer or a windows distribution of jsXe you will
+need to install launch4j (http://launch4j.sourceforge.net/). You can install it
+in the buildlib directory or change the launch4j.dir property in the build.xml
+file. You will also need to put the js.jar and bsf.jar in your classpath. These
+files are found in the 'buildlib' directory. They are used in scripts for
+calculating file sizes.
+
+** Building **
+
+Simply typing 'ant -p' in jsXe's root directory will give you the
 available targets to use with ant. To just simply compile jsXe and the default
 views to a jar file you can type 'ant compile'. To build a binary distribution
 you will need to run the 'bin' target in the build.xml file. I do this by simply
 typing 'ant bin'. Source distributions can be built using the 'src' target by
 typing 'ant src'.
+
+You can build jsXe's installer by running 'ant build-installer' which will
+build jsXe's installer. The installer will be packaged in a jar file to be run
+by java.
+
+You can build a windows distribution of jsXe by running the 'ant win'. This will
+compile jsXe's installer and wrap it in an exe wrapper. The wrapper will search
+for the appropriate java runtime with which to run jsXe.
 
 INSTALLING jsXe
 
@@ -52,14 +85,14 @@ in  C:\Program Files\  or  /usr/local/share/  or something like that.
 
 RUNNING jsXe
 
-You should have 1.4.2 or better of java and you need 2.6.2 of Xerces.
+You should have 1.4.2 or better of java and you need 2.8.0 of Xerces.
 
 *Windows*
 
 Just run jsXe using the jsXe.exe in the install directory. The exe will
 detect your version of Java and run jsXe using that version.
 
-*Unix*
+*Unix/Linux*
 
 To run jsXe you should just run the java interpreter on the jsXe.jar file. There
 is a shell script or batch file included in the source tree for this purpose.
