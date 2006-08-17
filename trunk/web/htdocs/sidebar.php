@@ -1,6 +1,5 @@
 <ul>
-  <li><a href="index.php">Home</a></li>
-  <li><a href="news.php">News</a></li>
+  <li><a href="index.php">News</a></li>
   <li><a href="features.php" >Features</a></li>
   <li><a href="screenshots.php">Screenshots</a></li>
   <li><a href="downloads.php">Downloads</a></li>

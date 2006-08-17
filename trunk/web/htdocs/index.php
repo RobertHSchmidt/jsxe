@@ -29,6 +29,12 @@
          if you are a developer and would like to contribute time and code check
          out <a href="get-involved.php">how to get involved</a></p>
          
+      <h2>News</h2>
+      
+      <?php include("news.cache") ?>
+      <?php 
+        //include("http://sourceforge.net/export/projnews.php?group_id=58584&limit=5&flat=FLATSETTING&show_summaries=1") 
+      ?>
       
       <?php include("footer.php") ?>
     </div>
