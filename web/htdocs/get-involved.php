@@ -61,6 +61,14 @@
       get you started. Web developers should have some knowledge of CSS and
       PHP.</p>
       
+      <h3>Users</h3>
+      
+      <p>Let us know what you think! 
+      <a href="http://lists.sourceforge.net/mailman/listinfo/jsxe-users">Subscribe</a>
+      to the jsxe-users mailing list and let us know what you think and what
+      features you would like to have implemented. Or you could submit a 
+      <a href="http://sourceforge.net/tracker/?atid=488271&amp;group_id=58584&amp;func=browse">feature request</a>.</p>
+      
       <h3>Mailing Lists</h3>
       
       <p>These three mailing lists will be low traffic.</p>
