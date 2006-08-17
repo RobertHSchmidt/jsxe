@@ -14,8 +14,8 @@
       <h2>Getting Involved</h2>
       
       <p>jsXe needs developers to implement new features and fix bugs,
-         translators for translating messages and the website, and 
-         web designers who are interested in updating the project's
+         testers for testing jsXe, translators for translating messages and the
+         website, and web designers who are interested in updating the project's
          website.</p>
       
       <p>Getting involved is fairly easy. There are a multitude of ways that
@@ -32,6 +32,16 @@
       and send a mail to the jsxe-devel mailing list. The developers can help
       get you started. Developers should know how to use SVN and have some
       experience with Java swing or XML.</p>
+      
+      <h3>Testers</h3>
+      
+      <p>If you are interested in testing jsXe, please
+      <a href="http://lists.sourceforge.net/mailman/listinfo/jsxe-devel">subscribe</a>
+      and send a mail to the jsxe-devel mailing list. Testing will normally be
+      done on SVN and beta releases. Familiarity with 
+      <a href="http://subversion.tigris.org/">SVN</a> and 
+      <a href="http://ant.apache.org/">ant</a> is a plus since it will be needed
+      for testing code from the SVN repository.</p>
       
       <h3>Translators</h3>
       
