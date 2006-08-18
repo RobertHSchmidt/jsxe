@@ -1,6 +1,7 @@
 # JSXE German properties file
 # $Id$
-# Maintained by Bianca Shöen
+# Maintained by Dieter Steiner
+# Past translators: Bianca Shöen
 #:mode=properties:
 #:tabSize=4:indentSize=4:noTabs=true:
 #:folding=explicit:collapseFolds=1:
@@ -11,19 +12,22 @@
 
 common.ok=OK
 common.cancel=Abbrechen
-common.close=Schließen
-common.apply=Anwenden
+common.open=Öffnen
+common.save=Speichern
+common.save.as=Speichern als
+common.close=Schliesen
+common.apply=Übernehmen
 common.more=Mehr
 common.insert=Einfügen
 common.add=Hinzufügen
 common.remove=Entfernen
-common.moveUp=Move Up
-common.moveDown=Move Down
-common.cut=Ausschneiden
-common.copy=Kopieren
-common.paste=Einfügen
-common.find=Suchen...
-common.findnext=Nächsten suchen
+common.moveUp=Nach oben
+common.moveDown=Nach unten
+
+common.ctrl=Strg
+common.alt=Alt
+common.shift=Shift
+common.meta=Meta
 
 #}}}
 
@@ -31,13 +35,13 @@ common.findnext=Nächsten suchen
 
 #{{{ XML Node Types
 xml.element=Element
-xml.processing.instruction=Processing Instruction
+xml.processing.instruction=Verarbeitungsinstruktionen
 xml.cdata=CDATA Abschnitt
 xml.text=Text
-xml.entity.reference=Entity Referenz
+xml.entity.reference=Entitäts Referenz
 xml.declaration=Element Deklaration
 xml.notation=Bezeichnung
-xml.entity=Entity Deklaration
+xml.entity=Entitäts Deklaration
 xml.comment=Kommentar
 xml.attribute=Attribut
 xml.doctype=Dokumenten Typ
@@ -55,69 +59,239 @@ xml.schema=XML Schema
 #}}}
 
 #{{{ Global Options
-Global.Options.Dialog.Title=Globale Optionen
-Global.Options.Title=jsXe Globale Optionen
-Global.Options.Max.Recent.Files=Letzte Dateien zu merken:
-Global.Options.Max.Recent.Files.ToolTip=Dies ist die Anzahl zuletzt bearbeiteter Dateien, auf die von Datei >> Zuletzt bearbeitete Dateien
+Global.Options.Dialog.Title=Global Optionen
+Global.Options.Title=Allgemein
+Global.Options.Max.Recent.Files=Zuletzt geöffnete Dateien
+Global.Options.Max.Recent.Files.ToolTip=Die Anzahl der zuletzt geöffneten Dateien die jsXe anzeigen soll.
+Global.Options.network-off=Immer cachen ohne Nachfrage
+Global.Options.network-cache=Nachfragen, dann remote Dateien cachen
+Global.Options.network-always=Downloaden ohne Nachfrage
+Global.Options.network=DTD und Schema Downloads:
+Global.Options.Menu.Spill.Over=Anzahl der Einträge bevor Menüs überlaufen:
+Global.Options.Undos.To.Remember=Gespeicherte Rückgangig-Schritte:
+Global.Options.Undos.To.Remember.ToolTip=<HTML>jsXe speichert diese Anzahl an Rückgangig Schritten.<BR> Nach dem Wechsel der Ansicht gehen diese allerdings verloren</HTML>
+
+Shortcuts.Options.Title=Verknüpfungen
+Shortcuts.Options.Select.Label=Verknüpfungen bearbeiten:
+Shortcuts.Options.Shortcut=Verknüpfung
+Shortcuts.Options.Command=Befehl
+
+Grab.Key.title=Verknüpfungen spezifizieren
+Grab.Key.caption=Drücken Sie die Taste welche Sie mit "{0}", verbinden wollen und klicken Sie OK.
+Grab.Key.keyboard-test=Geben sie die Tasten an, welche Probleme verursachen.
+Grab.Key.assigned-to=Momentan zugewiesen: {0}
+Grab.Key.assigned-to.none=<none>
+Grab.Key.clear=Löschen
+Grab.Key.remove=Entfernen
+
+Grab.Key.remove-ask.title=Verknüpfung entfernen?
+Grab.Key.remove-ask.message=\
+	Sie haben keine neue Verknüpfung angegeben.\n\
+	Wollen Sie die aktuelle Verknüpfung löschen?
+
+Grab.Key.duplicate-alt-shortcut.title=Verknüpfung kopieren
+Grab.Key.duplicate-alt-shortcut.message=\
+	Die gewählte Verknüpfung dupliziert eine andere Verknüpfung \n\
+	für diesen Eintrag. Bitte wählen Sie eine andere.
+
+Grab.Key.duplicate-shortcut.title=Verknüpfung kopieren
+Grab.Key.duplicate-shortcut.message=\
+	Diese Verknüpfung ist bereits\n\
+	"{0}" zugewiesen.\n\
+	\n\
+	Wollen Sie diese Einstellung überschreiben?
+#}}}
+
+
+#{{{ Document Options
 Document.Options.Title=XML Dokument Optionen
+
+Document.Options.Message=Dieser Dialog ändert die Einstellungen\n nur fir das aktuelle Dokument. Um die Einstellungen \n global zu ändern, öffnen Sie bitte\n Extras->Globale Optionen.
+Document.Options.Line.Separator=Zeilen Separator:
+Document.Options.Line.Separator.ToolTip=Zeilenseparator. Normalerweise wird der auf dem Verwendeten Betriebssystem benutze Separator gewählt.
 Document.Options.Encoding=Codierung:
-#this one is wrong. You can select many more encoding types
-#Document.Options.Encoding.ToolTip=<HTML>Sie können 3 verschiedene Codierungstypen wählen:<BR><ul> <li><strong>US-ASCII:<strong>  </li><li><strong>ISO-8859_1:<strong></li>  <li><strong>UTF-8:<strong></li>   </ul>  <HTML>
+Document.Options.Encoding.ToolTip=Die Codierung in der Die Datei gespeichert wird.
 Document.Options.Indent.Width=Zeileneinzug Breite:
 Document.Options.Indent.Width.ToolTip=<HTML>Dieses Feature kann für Dateien im SourceView gesehen werden. <BR>Die Breite des Zeileneinzugs bestimmt wieviel Platz zwischen dem Text<BR> und der linken Seite des Screens gelassen wird.<\HTML>
-Document.Options.Format.XML=Format XML Ausgabe
-Document.Options.Format.XML.ToolTip=
+Document.Options.Format.XML=Formatiere XML Ausgabe
+Document.Options.Format.XML.ToolTip=Wenn aktiv wird die XML Ausgabe formatiert.
 Document.Options.Validate=Bestätigen ob DTD oder Schema verfügbar ist
-Document.Options.Soft.Tabs=Soft Tabs (mit Freizeichen nachgebildet)
+Document.Options.Validate.ToolTip=Wenn aktiv wird das Dokument von jsXe validiert.
+Document.Options.Soft.Tabs=Tabs als Leerzeichen
+Document.Options.Soft.Tabs.ToolTip=Wenn aktiv werden Tabulatoren durch Leerzeichen ersetzt.
+#}}}
+
+#{{{ Plugin Manager
+Plugin.Manager.Title=Plugin Verwaltung
+Plugin.Manager.Name.Column.Header=Name
+Plugin.Manager.Version.Column.Header=Version
+Plugin.Manager.Status.Column.Header=Status
+Plugin.Manager.Loaded.Status=Geladen
+Plugin.Manager.Not.Loaded.Status=Nicht Geladen
+Plugin.Manager.Broken.Status=Fehler
 #}}}
 
 #{{{ Menu Items
-
 File.Menu=Datei
+Edit.Menu=Edit
 View.Menu=Ansicht
 Tools.Menu=Extras
 Help.Menu=Hilfe
 
-#{{{ File Menu Items
-File.New=Neu
-File.Open=Öffnen...
-File.Recent=Zuletzt bearbeitete Dateien
-File.Save=Speichern
-File.SaveAs=Speichern unter...
-File.Reload=Neu Laden
-File.Recent=Zuletzt bearbeitete Dateien
-File.Close=Schließen
-File.CloseAll=Alle schließen
-File.Exit=Exit
+
 #}}}
 
-Tools.Options=Optionen...
-Tools.Plugin=Plugin Manager...
-Plugin.Manager.Title=Plugin Manager
-Help.About=Über jsXe...
+#{{{ Action Labels
+new-file.label=Neu
+open-file.label=Öffnen...
+File.Recent=Zuletzt geöffnet
+File.Recent.None=Keine zuletzt geöffneten Dateien
+save-file.label=Speichern
+save-as.label=Speichern als...
+reload-file.label=Neu Laden
+close-file.label=Schließen
+close-all.label=Alle Schließen
+exit.label=Beenden
+
+undo.label=Rückgängig
+redo.label=Wiederholen
+cut.label=Ausschneiden
+copy.label=Kopieren
+paste.label=Einfügen
+find.label=Suchen...
+findnext.label=Weitersuchen
+
+general-options.label=Globale Optionen...
+document-options.label=Dokument Options...
+plugin-manager.label=Plugin Verwaltung...
+validation-errors.label=Validierungs Fehler...
+about-jsxe.label=Über jsXe...
+
 #}}}
 
 #{{{ Messages
-DocumentBuffer.Reload.Message={0} Nicht gespeichert!\n Sie verlieren alle ungesicherten Veränderungen wenn sie neu laden!\n\nWeiter?
-DocumentBuffer.Reload.Message.Title=Dokument Verändert
-DocumentBuffer.SaveAs.Message=Die Datei {0} existiert bereits. Sind sie sicher, dass sie die Datei Überschreiben wollen?
-DocumentBuffer.SaveAs.Message.Title=Datei Vorhanden
-DocumentBuffer.Close.Message={0} Nicht gespeichert! Jetzt speichern?
-DocumentBuffer.Close.Message.Title=Ungesicherte Änderungen
+
+DocumentView.Open.Message="Buffer konnte für keine verfügbare Dokumentansicht geöffnet werden"
+
+#{0} file name
+DocumentBuffer.Reload.Message={0} nicht gespeichert!\n Beim neu laden gehen alle ungespeicherten Änderungen verloren.\n\nTrotzdem neu Laden?
+DocumentBuffer.Reload.Message.Title=Dokumend verändert.
+DocumentBuffer.SaveAs.Message=Die Datei {0} existiert bereits. Soll sie überschrieben werden?
+DocumentBuffer.SaveAs.Message.Title=Datei existiert bereits
+DocumentBuffer.Close.Message={0} nicht gespeichert! Jetzt Speichern?
+DocumentBuffer.Close.Message.Title=Nicht gespeicherte Änderungen
+
+#{0} file name
+DocumentBuffer.Saved.Message={0} Gespeichert
+DocumentBuffer.Closed.Message={0} Geschlossen
+DocumentBuffer.Loaded.Message={0} Geladen
+DocumentBuffer.Reloaded.Message={0} Neu Geladen
+
+#{0} plugin name
+DocumentView.Not.Found=Es gibt kein Plugin mit dem Namen {0}.
+
+#{{{ Plugin Load Messages
+
+# {0} plugin name
+Plugin.Error.title=Plugin Fehler
+Plugin.Error.List.message=Die Folgenden Plugins konnten nicht geladen werden:
+Plugin.Load.Already.Loaded=Das Plugin {0} ist bereits geladen.
+Plugin.Load.Wrong.Main.Class=Main Klasse ist keine Pluginklasse.
+Plugin.Load.No.Plugin.Class=Keine Pluginklasse definiert.
+Plugin.Load.No.Plugin.Name=Kein Pluginname definiert.
+Plugin.Load.No.Plugin.HR.Name=Kein Menschlich lesbarer Name definiert.
+Plugin.Load.No.Plugin.Version=Keine Pluginversion definiert.
+
+# {0} plugin name
+# {1} requirement name
+# {2} required version
+# {3} found version
+Plugin.Dependency.Message={0} erfordert {1} Version {2} aber Version {3} Wurde gefunden.
+# {0} plugin name
+# {1} requirement name
+# {2} required version
+Plugin.Dependency.Not.Found={0} erfordert {1} Version {2} aber Version {1} wurde nicht gefunden.
+# {0} plugin name
+# {1} requirement name
+Plugin.Dependency.Not.Found2={0} erfordert {1}, aber {1} wurde nicht gefunden.
+# {0} plugin name
+# {1} invalid dependency
+Plugin.Dependency.Invalid={0} hat eine ungültige Abhängigkeit: {1}
+# {0} invalid version
+Plugin.Dependency.Invalid.jsXe.Version=Ungültige jsXe Version: {0}
+# {0} plugin name
+# {1} requirement name
+Plugin.Dependency.No.Version=Konnte Plugin{0} nicht laden, {1} hat keine Versionsangabe.
+# {0} plugin name
+# {1} requirement name
+Plugin.Dependency.Failed.Load={0} benötigt {1} aber {1} konnte nicht geladen werden.
+
 #}}}
 
 #{{{ Error Messages
-No.Xerces.Error={0} nicht gefunden. jsXe benötigt Apache {0}.
-No.Xerces.Error.Title={0} nicht gefunden.
+No.Xerces.Error.message={0} nicht gefunden. jsXe benötigt Apache {0}.
+No.Xerces.Error.title={0} nicht gefunden.
+IO.Error.title=E/A Fehler
+IO.Error.message=Ein E/A Fehler ist aufgetreten
+#}}}
+
+#}}}
+
+#{{{ Dialogs
+
+#{{{ Download resource dialog
+xml.download-resource.title=Die angeforderte Ressource wird vom Server geladen
+
+#{0} URL
+xml.download-resource.message=Diese XML Datei benötigt eine Ressource  welche\n\
+	bei der Internet-Adresse:\n\
+	\n\
+	{0}\n\
+	verfügbar ist\n\
+	Soll das XML Plugin die Ressource herunterladen und für zukünftige\n\
+	Verwendung cachen?\n\
+	\n\
+	Wenn die Ressource jedes mal ohne Nachfrage heruntergeladen werden soll,\n\
+	deaktivieren Sie den Ressourcen Cache in den Globalen Options.
 #}}}
 
 #{{{ Dirty Files Dialog
-DirtyFilesDialog.Dialog.Title=Ungesicherte Änderungen
-DirtyFilesDialog.Dialog.Message=Die folgenden Dateien haben ungesicherte Änderungen:
-DirtyFilesDialog.Button.SelectAll.Title=Alle Auswählen
-DirtyFilesDialog.Button.SelectAll.ToolTip=Alle Auswählen
-DirtyFilesDialog.Button.SaveSelected.Title=Auswahl Speichern
-DirtyFilesDialog.Button.SaveSelected.ToolTip=Auswahl Speichern
-DirtyFilesDialog.Button.DiscardSelected.Title=Auswahl Verwerfen
-DirtyFilesDialog.Button.DiscardSelected.ToolTip=Auswahl Verwerfen
+DirtyFilesDialog.Dialog.Title=Nicht gespeicherte Änderungen
+DirtyFilesDialog.Dialog.Message=Die folgenden Dateien haben ungespeicherte Änderungen:
+DirtyFilesDialog.Button.SelectAll.Title=Alle auswählen
+#DirtyFilesDialog.Button.SelectAll.ToolTip=Alle auswählen
+DirtyFilesDialog.Button.SaveSelected.Title=Gewählte Speichern
+#DirtyFilesDialog.Button.SaveSelected.ToolTip=Gewählte Speichern
+DirtyFilesDialog.Button.DiscardSelected.Title=Gewählte verwerfen
+#DirtyFilesDialog.Button.DiscardSelected.ToolTip=Gewählte verwerfen
+#}}}
+
+#{{{ Activity Log Dialog
+activity-log.label = Aktivitäts Log
+ActivityLogDialog.Dialog.Title = Aktivitäts Log
+ActivityLogDialog.Dialog.Message = Inhalt des Aktivitäts Log:
+#}}}
+
+#{{{ About dialag
+about.title=Über jsXe
+about.message=Herausgegeben unterder  GNU General Public License\n\n\
+    Aktiv Mitwirkende:\n\
+    \ \ \ \ Ian Lewis <IanLewis@member.fsf.org>\n\
+    \ \ \ \ Trish Hartnett <trishah136@users.sourceforge.net>\n\n\
+    Übersetzer:\n\
+    \ \ \ \ German (de) - Bianca Shöen\n\
+    \ \ \ \ German (de) - Dieter Steiner <spoilerhead@gmail.com>\n\
+    \ \ \ \ Swedish (sv) - Patrik Johansson <patjoh@itstud.chalmers.se>\n\
+    \ \ \ \ Russian (ru) - Alexandr Gridnev <alexandr-gridnev@yandex.ru>\n\n\
+    Frühere Mitwirkende:\n\
+    \ \ \ \ Aaron Flatten  <aflatten@users.sourceforge.net>\n\
+    \ \ \ \ Bilel Remmache <rbilel@users.sourceforge.net>\n\n\
+    Homepage: http://jsxe.sourceforge.net/
+#}}}
+
+#{{{ Validation Errors Dialog
+ValidationErrors.title=Validierungs Fehler
+ValidationErrors.message=Validierungs Fehler
+#}}}
+
 #}}}
