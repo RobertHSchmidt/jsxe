@@ -20,6 +20,7 @@ common.add=Add
 common.remove=Remove
 common.moveUp=Move Up
 common.moveDown=Move Down
+common.find=Find
 
 common.ctrl=Ctrl
 common.alt=Alt
