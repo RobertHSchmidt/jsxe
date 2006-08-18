@@ -1,3 +1,8 @@
+08/18/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added a hack to disable view specific actions that aren't implemented by
+      the view.
+
 08/17/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated the German translation thanks to Dieter Steiner
