@@ -271,6 +271,7 @@ about.message=Распространяется на условиях GNU General
     \ \ \ \ Trish Hartnett <trishah136@users.sourceforge.net>\n\n\
     Переводчики:\n\
     \ \ \ \ German (de) - Bianca Sh\u00f6en\n\
+    \ \ \ \ German (de) - Dieter Steiner <spoilerhead@gmail.com>\n\
     \ \ \ \ Swedish (sv) - Patrik Johansson <patjoh@itstud.chalmers.se>\n\n\
     В прошлом учавствовали в разработке:\n\
     \ \ \ \ Aaron Flatten  <aflatten@users.sourceforge.net>\n\
