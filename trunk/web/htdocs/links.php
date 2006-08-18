@@ -53,5 +53,5 @@ function redirect($to,$code=301)
 }
 
 // Do stuff here before sending headers
-redirect('./get-involved.php')
+redirect('get-involved.php')
 ?>

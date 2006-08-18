@@ -53,5 +53,5 @@ function redirect($to,$code=301)
 }
 
 // Do stuff here before sending headers
-redirect('./index.php')
+redirect('index.php')
 ?>
