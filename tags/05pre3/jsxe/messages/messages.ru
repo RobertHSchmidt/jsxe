@@ -1,5 +1,5 @@
 # JSXE English properties file
-# $Id:
+# $Id: messages 1158 2006-08-18 18:42:18Z ian_lewis $
 # Maintained by Alexandr Gridnev (alexandr-gridnev@yandex.ru)
 #:mode=properties:
 #:tabSize=4:indentSize=4:noTabs=true:
@@ -20,11 +20,7 @@ common.add=Добавить
 common.remove=Удалить
 common.moveUp=Поднять
 common.moveDown=Опустить
-common.cut=Вырезать
-common.copy=Копировать
-common.paste=Вставить
-common.find=Искать...
-common.findnext=Искать следующий
+common.find=Искать
 
 common.ctrl=Ctrl
 common.alt=Alt
@@ -73,6 +69,8 @@ Global.Options.network-cache=Кешировать удаленные файлы 
 Global.Options.network-always=Скачивать всегда, без спросу
 Global.Options.network=Скачивание DTD и схемы:
 Global.Options.Menu.Spill.Over=Меню выпадают после:
+Global.Options.Undos.To.Remember=Запомнить действий:
+Global.Options.Undos.To.Remember.ToolTip=<HTML>jsXe запомнит столько действий и потом их можно будет отменить.<BR> Однако он не может запомнить действия, выполненные после переключения видов</HTML>
 
 Shortcuts.Options.Title=Горячие клавиши
 Shortcuts.Options.Select.Label=Редактировать горячие клавиши:
@@ -140,7 +138,10 @@ View.Menu=Вид
 Tools.Menu=Инструменты
 Help.Menu=Справка
 
-#{{{ File Menu Items
+
+#}}}
+
+#{{{ Action Labels
 new-file.label=Новый
 open-file.label=Открыть...
 File.Recent=Ранее открытые файлы
@@ -148,16 +149,25 @@ File.Recent.None=Нэма нифигга
 save-file.label=Сохранить
 save-as.label=Сохранить как...
 reload-file.label=Открыть еще раз
+File.Recent=Ранее открытые файлы
 close-file.label=Закрыть
 close-all.label=Закрыть все
 exit.label=Выход
-#}}}
+
+undo.label=Отменить
+redo.label=Повторить
+cut.label=Вырезать
+copy.label=Копировать
+paste.label=Вставить
+find.label=Искать...
+findnext.label=Искать далее
 
 general-options.label=Глобальные опции...
 document-options.label=Опции документа...
 plugin-manager.label=Менеджер плагинов...
 validation-errors.label=Ошибки подтверждения...
 about-jsxe.label=О программе jsXe...
+
 #}}}
 
 #{{{ Messages
@@ -270,13 +280,12 @@ about.message=Распространяется на условиях GNU General
     \ \ \ \ Ian Lewis <IanLewis@member.fsf.org>\n\
     \ \ \ \ Trish Hartnett <trishah136@users.sourceforge.net>\n\n\
     Переводчики:\n\
-    \ \ \ \ German (de) - Bianca Sh\u00f6en\n\
-    \ \ \ \ German (de) - Dieter Steiner <spoilerhead@gmail.com>\n\
-    \ \ \ \ Swedish (sv) - Patrik Johansson <patjoh@itstud.chalmers.se>\n\n\
-    В прошлом учавствовали в разработке:\n\
+    \ \ \ \ German (de) - Bianca Shöen\n\
+    \ \ \ \ Swedish (sv) - Patrik Johansson <patjoh@itstud.chalmers.se>\n\
+    \ \ \ \ Russian (ru) - Александр Гриднев <alexandr-gridnev@yandex.ru>\n\n\
+    Past Contributers:\n\
     \ \ \ \ Aaron Flatten  <aflatten@users.sourceforge.net>\n\
-    \ \ \ \ Bilel Remmache <rbilel@users.sourceforge.net>\n\
-    \ \ \ \ SVM <svmcoranto@users.sourceforge.net>\n\n\
+    \ \ \ \ Bilel Remmache <rbilel@users.sourceforge.net>\n\n\
     Страница проекта: http://jsxe.sourceforge.net/
 #}}}
 
