@@ -9,5 +9,5 @@
 <link href="mailto:IanLewis@member.fsf.org" rev="made"/>
 <link rel="alternate" type="application/rss+xml" title="jsXe Project News" href="http://sourceforge.net/export/rss2_projnews.php?group_id=58584" />
 <link rel="alternate" type="application/rss+xml" title="jsXe Project Releases" href="http://sourceforge.net/export/rss2_projfiles.php?group_id=58584" />
-<link rel="alternate" type="application/rss+xml" title="jsXe Project Releases" href="http://sourceforge.net/export/rss2_projsummary.php?group_id=58584" />
+<link rel="alternate" type="application/rss+xml" title="jsXe Project Summary" href="http://sourceforge.net/export/rss2_projsummary.php?group_id=58584" />
 <link rel="alternate" type="application/rss+xml" title="jsXe CVS Commits" href="https://cia.navi.cx/stats/project/jsxe/.rss"/>
