@@ -30,5 +30,5 @@ SourceView.Replace.With=Заменить на:
 SourceView.Replace.And.Find=Найти и заменить
 SourceView.No.More.Matches.title=Дальше не найдено :(
 SourceView.No.More.Matches.message="Ничего не найдено. Искать с начала документа?"
-SourceView.Search.Error.title=Ошибка поиска 0_0
+SourceView.Search.Error.title=Ошибка поиска :(
 #}}}
