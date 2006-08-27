@@ -180,7 +180,7 @@ public class XMLDocumentIORequest extends WorkRequest {
 
     //{{{ Instance variables
     private int type;
-    private View view;
+    private TabbedView view;
     private XMLDocument buffer;
     private Object session;
     private VFS vfs;
