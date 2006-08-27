@@ -15,9 +15,6 @@
     <maxVersion></maxVersion>
     <initialHeapSize>16</initialHeapSize>
     <maxHeapSize>64</maxHeapSize>
-    <args>-Djava.endorsed.dirs=lib
-
-
-</args>
+    <opt>-Djava.endorsed.dirs=%EXEDIR%\\lib</opt>
   </jre>
 </launch4jConfig>
