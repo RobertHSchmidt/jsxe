@@ -14,6 +14,6 @@
     <dontUsePrivateJres>false</dontUsePrivateJres>
     <initialHeapSize>16</initialHeapSize>
     <maxHeapSize>64</maxHeapSize>
-    <opt>-Dlaunch4j.exedir=&quot;%EXEDIR%&quot;</opt>
+    <opt>-Djava.endorsed.dirs=&quot;%EXEDIR%\\lib&quot;</opt>
   </jre>
 </launch4jConfig>
