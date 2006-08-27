@@ -311,6 +311,15 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
                     Log.log(Log.WARNING, this, e.getMessage());
                 }
             }
+            if (key.equals(XMLDocument.ENCODING)) {
+                try {
+                    //reload the document
+                    m_textarea.setDocument(new SourceViewDocument(m_document));
+                    m_textarea.setTokenMarker(new XMLTokenMarker());
+                } catch (IOException e) {
+                    Log.log(Log.ERROR, this, e);
+                }
+            }
         }//}}}
         
         //{{{ structureChanged

@@ -87,8 +87,6 @@ public class SourceViewDocument extends SyntaxDocument {
         super();
         m_document = document;
         
-       // document.addXMLDocumentListener(new SourceViewDocumentXMLDocumentListener());
-        
         if (document != null) {
             
             try {
