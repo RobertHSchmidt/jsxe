@@ -1,3 +1,7 @@
+08/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated russian translation.
+
 08/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed undo when adding/editing a node that is specified in a DTD/Schema.
