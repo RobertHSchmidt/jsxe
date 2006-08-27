@@ -27,9 +27,19 @@ package net.sourceforge.jsxe.dom2.event;
 import net.sourceforge.jsxe.dom2.*;
 import java.util.EventListener;
 
+/**
+ * An XMLDocumentListener listens for changes to an XMLDocument. Components
+ * that need to recieve notification when the document changes should implement
+ * this interface.
+ *
+ * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
+ * @version $Id$
+ * @see XMLDocument
+ * @since jsXe XX.XX
+ */
 public interface XMLDocumentListener extends EventListener {
     
-    public void propertyChanged(PropertyChangedEvent event);
+    public void propertyChanged(PropertyChangeEvent event);
     
     public void insertUpdate(XMLDocumentEvent event);
     

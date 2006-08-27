@@ -141,8 +141,8 @@
         <include name="**/*.png"/>
         
         <!-- files in the source directory to ignore -->
-        <exclude name="net/sourceforge/jsxe/dom2/**/*"/>
-        <exclude name="net/sourceforge/jsxe/io/**/*"/>
+        <!--<exclude name="net/sourceforge/jsxe/dom2/**/*"/>
+        <exclude name="net/sourceforge/jsxe/io/**/*"/>-->
       </fileset>
     </copy>
     <mkdir dir="${build.plugin}"/>
