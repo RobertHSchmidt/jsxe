@@ -10,11 +10,8 @@
   <stayAlive>false</stayAlive>
   <icon>jsxe-installer.ico</icon>
   <jre>
-    <path></path>
     <minVersion>1.4.2</minVersion>
-    <maxVersion></maxVersion>
     <initialHeapSize>16</initialHeapSize>
     <maxHeapSize>64</maxHeapSize>
-    <args></args>
   </jre>
 </launch4jConfig>
