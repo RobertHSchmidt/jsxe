@@ -31,11 +31,14 @@ import java.awt.Color;
 import java.awt.Component;
 import java.io.*;
 import java.util.*;
-import net.sourceforge.jsxe.msg.PropertiesChanged;
+
+import net.sourceforge.jsxe.msg.PropertyChanged;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.dom2.XMLDocument;
 import net.sourceforge.jsxe.dom2.ls.XMLDocumentIORequest;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.TabbedView;
 //}}}
 
 /**
@@ -827,7 +830,7 @@ public abstract class VFS {
    // static {
    //     EditBus.addToBus(new EBListener() {
    //         public void handleMessage(EBMessage msg) {
-   //             if (msg instanceof PropertiesChanged) {
+   //             if (msg instanceof PropertyChanged) {
    //                 synchronized(lock) {
    //                     colors = null;
    //                 }
