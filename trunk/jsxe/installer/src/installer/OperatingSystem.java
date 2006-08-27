@@ -170,15 +170,18 @@ public abstract class OperatingSystem
                 out.write("#!/bin/sh\n");
                 out.write("# Java heap size, in megabytes\n");
                 out.write("JAVA_HEAP_SIZE=32\n");
-                out.write("DEFAULT_JAVA_HOME=\""
+                out.write("#DEFAULT_JAVA_HOME=\""
                     + System.getProperty("java.home")
                     + "\"\n");
-                out.write("if [ \"$JAVA_HOME\" = \"\" ]; then\n");
-                out.write("JAVA_HOME=\"$DEFAULT_JAVA_HOME\"\n");
-                out.write("fi\n");
+                out.write("#if [ \"$JAVA_HOME\" = \"\" ]; then\n");
+                out.write("#JAVA_HOME=\"$DEFAULT_JAVA_HOME\"\n");
+                out.write("#fi\n");
 
-                out.write("exec \"$JAVA_HOME"
-                    + "/bin/java\" -mx${JAVA_HEAP_SIZE}m "+vmArgs+" ${"
+               // out.write("exec \"$JAVA_HOME"
+               //     + "/bin/java\" -mx${JAVA_HEAP_SIZE}m "+vmArgs+" ${"
+               //     + name.toUpperCase() + "} ");
+                // use java in the path and run using the HotSpot server
+                out.write("exec java -server -mx${JAVA_HEAP_SIZE}m "+vmArgs+" ${"
                     + name.toUpperCase() + "} ");
 
             //  String jar = installDir + File.separator
