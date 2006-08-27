@@ -83,6 +83,10 @@ INSTALLING jsXe
 Unpack the distribution file wherever you like. Normally you would install it
 in  C:\Program Files\  or  /usr/local/share/  or something like that.
 
+Or
+
+Run the install program and follow the prompts to install jsXe.
+
 RUNNING jsXe
 
 You should have 1.4.2 or better of java and you need 2.8.0 of Xerces.
