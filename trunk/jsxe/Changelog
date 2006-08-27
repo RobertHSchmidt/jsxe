@@ -1,3 +1,10 @@
+08/27/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the launch4j script to set the absolute path of the lib directory
+      in the jre option to set the endorsed dirs. This will allow jsXe to be
+      launched from anywhere and still be able to find the right version of
+      Xerces.
+
 08/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated russian translation.

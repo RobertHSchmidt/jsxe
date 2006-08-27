@@ -1,8 +1,8 @@
 REQUIREMENTS
 
-Java 1.4.2
-Xerces 2.8.0
-launch4j (for building the installer from source)
+Java >= 1.4.2
+Xerces >= 2.8.0
+launch4j >= 3.0.0pre1 (for building the installer from source)
 
 GETTING jsXe
 
@@ -82,6 +82,10 @@ INSTALLING jsXe
 
 Unpack the distribution file wherever you like. Normally you would install it
 in  C:\Program Files\  or  /usr/local/share/  or something like that.
+
+Or
+
+Run the install program and follow the prompts to install jsXe.
 
 RUNNING jsXe
 
