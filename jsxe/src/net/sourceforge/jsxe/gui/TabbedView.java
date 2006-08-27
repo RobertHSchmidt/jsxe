@@ -428,6 +428,7 @@ public class TabbedView extends JFrame {
             
             menubar.add(m_fileMenu);
             
+            createEditMenu();
             menubar.add(m_editMenu);
             
             //Add View Specific Menus
@@ -572,6 +573,86 @@ public class TabbedView extends JFrame {
         
     }//}}}
     
+    //{{{ createEditMenu()
+    
+    private void createEditMenu() {
+        m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
+        m_editMenu.setMnemonic('E');
+            
+            DocumentView view = getDocumentView();
+            JMenuItem menuItem = new JMenuItem(ActionManager.getAction("undo"));
+            m_editMenu.add(menuItem);
+            menuItem = new JMenuItem(ActionManager.getAction("redo"));
+            m_editMenu.add(menuItem);
+            m_editMenu.addSeparator();
+            Action action = ActionManager.getAction("cut");
+            if (view != null) {
+                String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".cut";
+                if (ActionManager.getLocalizedAction(name) == null) {
+                    action.setEnabled(false);
+                } else {
+                    action.setEnabled(true);
+                }
+            } else {
+                action.setEnabled(false);
+            }
+            menuItem = new JMenuItem(action);
+            m_editMenu.add(menuItem);
+            action = ActionManager.getAction("copy");
+            if (view != null) {
+                String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".copy";
+                if (ActionManager.getLocalizedAction(name) == null) {
+                    action.setEnabled(false);
+                } else {
+                    action.setEnabled(true);
+                }
+            } else {
+                action.setEnabled(false);
+            }
+            menuItem = new JMenuItem(action);
+            m_editMenu.add(menuItem);
+            action = ActionManager.getAction("paste");
+            if (view != null) {
+                String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".paste";
+                if (ActionManager.getLocalizedAction(name) == null) {
+                    action.setEnabled(false);
+                } else {
+                    action.setEnabled(true);
+                }
+            } else {
+                action.setEnabled(false);
+            }
+            menuItem = new JMenuItem(action);
+            m_editMenu.add(menuItem);
+            m_editMenu.addSeparator();
+            action = ActionManager.getAction("find");
+            if (view != null) {
+                String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".find";
+                if (ActionManager.getLocalizedAction(name) == null) {
+                    action.setEnabled(false);
+                } else {
+                    action.setEnabled(true);
+                }
+            } else {
+                action.setEnabled(false);
+            }
+            menuItem = new JMenuItem(action);
+            m_editMenu.add(menuItem);
+            action = ActionManager.getAction("findnext");
+            if (view != null) {
+                String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".findnext";
+                if (ActionManager.getLocalizedAction(name) == null) {
+                    action.setEnabled(false);
+                } else {
+                    action.setEnabled(true);
+                }
+            } else {
+                action.setEnabled(false);
+            }
+            menuItem = new JMenuItem(action);
+            m_editMenu.add(menuItem);
+    }//}}}
+    
     //{{{ createDefaultMenuItems()
     
     private void createDefaultMenuItems() {
@@ -606,24 +687,7 @@ public class TabbedView extends JFrame {
         //}}}
         
         //{{{ Create Edit Menu
-        m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
-        m_editMenu.setMnemonic('E');
-            menuItem = new JMenuItem(ActionManager.getAction("undo"));
-            m_editMenu.add(menuItem);
-            menuItem = new JMenuItem(ActionManager.getAction("redo"));
-            m_editMenu.add(menuItem);
-            m_editMenu.addSeparator();
-            menuItem = new JMenuItem(ActionManager.getAction("cut"));
-            m_editMenu.add(menuItem);
-            menuItem = new JMenuItem(ActionManager.getAction("copy"));
-            m_editMenu.add(menuItem);
-            menuItem = new JMenuItem(ActionManager.getAction("paste"));
-            m_editMenu.add(menuItem);
-            m_editMenu.addSeparator();
-            menuItem = new JMenuItem(ActionManager.getAction("find"));
-            m_editMenu.add(menuItem);
-            menuItem = new JMenuItem(ActionManager.getAction("findnext"));
-            m_editMenu.add(menuItem);
+        createEditMenu();
         //}}}
         
         //{{{ Create View Menu

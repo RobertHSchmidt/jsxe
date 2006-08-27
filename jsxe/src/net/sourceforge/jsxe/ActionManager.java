@@ -33,6 +33,7 @@ import net.sourceforge.jsxe.gui.KeyEventTranslator;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.msg.PropertyChanged;
+import net.sourceforge.jsxe.action.ViewSpecificAction;
 //}}}
 
 //{{{ Java classes
