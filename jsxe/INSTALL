@@ -1,8 +1,8 @@
 REQUIREMENTS
 
-Java 1.4.2
-Xerces 2.8.0
-launch4j (for building the installer from source)
+Java >= 1.4.2
+Xerces >= 2.8.0
+launch4j >= 3.0.0pre1 (for building the installer from source)
 
 GETTING jsXe
 
