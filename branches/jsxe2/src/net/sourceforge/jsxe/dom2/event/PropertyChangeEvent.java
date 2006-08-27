@@ -1,5 +1,5 @@
 /*
-XMLDocumentEvent.java
+PropertyChangedEvent.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
@@ -28,33 +28,29 @@ import net.sourceforge.jsxe.dom2.*;
 import java.util.EventObject;
 
 /**
- * XMLDocumentEvents are modifications to the structure of the XMLDocument.
- * As the XMLDocument represents structured text the XMLDocumentEvent represents
- * a structured change to the XMLDocument.
+ * PropertyChangedEvents occur when a property in the XMLDocument is changed.
+ *
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  * @see XMLDocument
  * @since jsXe XX.XX
  */
-public class XMLDocumentEvent extends EventObject {
+public class PropertyChangeEvent extends EventObject {
     
-    private int m_offset;
-    private int m_length;
-    private short m_type;
+    private XMLDocument m_document;
+    private String m_oldValue;
+    private String m_newValue;
+    private String m_key;
     
-    public static short INSERT = 0;
-    public static short REMOVE = 1;
-    
-    //{{{ XMLDocumentEvent constructor
+    //{{{ PropertyChangeEvent constructor
     /**
-     * Creates a new document event signifying an edit to the document.
-     * 
+     * Creates a new PropertyChangeEvent.
      */
-    public XMLDocumentEvent(XMLDocument doc, int offset, String text, short type) {
+    public PropertyChangeEvent(XMLDocument doc, String name, String oldValue, String newValue) {
         super(doc);
-        m_type = type;
-        m_length = text.length();
-        m_offset = offset;
+        m_key = name;
+        m_oldValue = oldValue;
+        m_newValue = newValue;
     }//}}}
     
     //{{{ getDocument()
@@ -65,28 +61,28 @@ public class XMLDocumentEvent extends EventObject {
         return (XMLDocument)getSource();
     }//}}}
     
-    //{{{ getOffset()
+    //{{{ getOldValue()
     /**
-     * Gets the offset into the document where the update occurred.
+     * Gets the old value of the property.
      */
-    public int getOffset() {
-        return m_offset;
+    public String getOldValue() {
+        return m_oldValue;
     }//}}}
     
-    //{{{ getLength()
+    //{{{ getNewValue()
     /**
-     * Gets the length of the update.
+     * Gets the new value of the property.
      */
-    public int getLength() {
-        return m_length;
+    public String getNewValue() {
+        return m_newValue;
     }//}}}
     
-    //{{{ getType()
+    //{{{ getName()
     /**
-     * Gets the type of edit done to the document.
+     * Gets the name of the property that was changed.
      */
-    public short getType() {
-        return m_type;
+    public String getName() {
+        return m_key;
     }//}}}
     
 }
