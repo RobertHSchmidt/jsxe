@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE MODE SYSTEM "file:/home/okaasan/src/jsxe/test/xmode.dtd">
+<!DOCTYPE MODE SYSTEM "xmode.dtd">
 <MODE>
   <PROPS>
     <PROPERTY NAME="commentStart" VALUE="&lt;!--"/>
