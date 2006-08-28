@@ -556,6 +556,10 @@ public class TabbedView extends JFrame {
                         createDefaultMenuItems();
                         updateMenuBar();
                     }
+                    
+                    if (msg.getKey().equals("recent.files.show.full.path")) {
+                        updateRecentFilesMenu();
+                    }
                 }
                 
                 /*

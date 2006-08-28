@@ -68,11 +68,13 @@ public class OpenRecentFileAction extends AbstractAction {
     //{{{ OpenRecentFileAction constructor
     public OpenRecentFileAction(TabbedView parent, BufferHistory.BufferHistoryEntry entry) {
         String path = entry.getPath();
-        String fileName = path.substring(path.lastIndexOf(System.getProperty("file.separator"))+1);
+        String fileName = path;
+        if (!jsXe.getBooleanProperty("recent.files.show.full.path", false)) {
+            fileName = path.substring(path.lastIndexOf(System.getProperty("file.separator"))+1);
+        }
         if (fileName.equals("")) {
             fileName = path;
-        }
-        putValue(Action.NAME, fileName);
+        }putValue(Action.NAME, fileName);
         m_view = parent;
         m_entry = entry;
     }//}}}
