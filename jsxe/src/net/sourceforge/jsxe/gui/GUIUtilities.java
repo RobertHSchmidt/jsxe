@@ -90,7 +90,7 @@ public class GUIUtilities {
      * Loads an icon.
      * @param iconName The icon name
      */
-    public static Icon loadIcon(String iconName) {
+    public static ImageIcon loadIcon(String iconName) {
         if (icons == null) {
             icons = new Hashtable();
         }
