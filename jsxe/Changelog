@@ -1,6 +1,7 @@
 08/28/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Changed the messages files to be named the standard ResourceBundle way.
+    * Fixed default key binding for exit.
 
 08/27/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
