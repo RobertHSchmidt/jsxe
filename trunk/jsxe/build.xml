@@ -221,6 +221,9 @@
         <!--<include name="**/*.dtd"/>-->
         <include name="**/*.jpg"/>
         <include name="**/*.png"/>
+        
+        <!-- files in the source directory to ignore -->
+        <exclude name="net/sourceforge/jsxe/help/**/*"/>
       </fileset>
     </copy>
     <mkdir dir="${build.plugin}"/>

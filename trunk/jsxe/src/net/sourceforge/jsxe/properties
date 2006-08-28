@@ -69,3 +69,8 @@ findnext.shortcut=C+g
 undo.shortcut=C+z
 redo.shortcut=C+y
 #}}}
+
+#{{{ Help Viewer
+helpviewer.back.icon=ArrowL.png
+helpviewer.forward.icon=ArrowR.png
+#}}}
