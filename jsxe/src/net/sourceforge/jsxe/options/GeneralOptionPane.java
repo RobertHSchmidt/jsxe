@@ -29,6 +29,7 @@ import net.sourceforge.jsxe.jsXe;
 import net.sourceforge.jsxe.CatalogManager;
 import net.sourceforge.jsxe.gui.Messages;
 import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import java.util.Vector;
 //}}}
@@ -123,6 +124,15 @@ public class GeneralOptionPane extends AbstractOptionPane {
         
         //}}}
         
+        //{{{ Recent files full path
+        
+        boolean showFullPath = jsXe.getBooleanProperty("recent.files.show.full.path", false);
+        m_showFullPathCheckBox = new JCheckBox(Messages.getMessage("Global.Options.Recent.Files.Show.Full.Path"),showFullPath);
+        
+        addComponent(m_showFullPathCheckBox, Messages.getMessage("Global.Options.Recent.Files.Show.Full.Path")); 
+        
+        //}}}
+        
     }//}}}
     
     //{{{ _save()
@@ -143,6 +153,7 @@ public class GeneralOptionPane extends AbstractOptionPane {
             //Bad input, don't save.
         }
         jsXe.setIntegerProperty("xml.cache",network.getSelectedIndex());
+        jsXe.setBooleanProperty("recent.files.show.full.path", m_showFullPathCheckBox.isSelected());
         CatalogManager.propertiesChanged();
     }//}}}
     
@@ -155,6 +166,7 @@ public class GeneralOptionPane extends AbstractOptionPane {
     private JComboBox menuSpillOverComboBox;
     private JComboBox maxRecentFilesComboBox;
     private JTextField m_undosToRemember;
+    private JCheckBox m_showFullPathCheckBox;
     private JComboBox network;
     //}}}
     

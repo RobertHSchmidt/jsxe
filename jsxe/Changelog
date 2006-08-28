@@ -7,6 +7,8 @@
     * Updated the installer to create a script file in unix that uses the java
       in the environment path and use the HotSpot server so that jsXe runs
       faster at the cost of startup time and memory footprint.
+    * Added an option to display the full path to a file in the recent files
+      menu. Feature Request #1546371
 
 08/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
