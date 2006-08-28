@@ -23,26 +23,26 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package org.gjt.sp.jedit.help;
+package net.sourceforge.jsxe.help;
 
 //{{{ Imports
 import java.io.*;
 import java.net.*;
 import java.util.zip.*;
 import java.util.*;
-import org.gjt.sp.jedit.io.*;
-import org.gjt.sp.jedit.*;
-import org.gjt.sp.util.Log;
+//import org.gjt.sp.jedit.io.*;
+//import org.gjt.sp.jedit.*;
+import net.sourceforge.jsxe.util.Log;
 //}}}
 
-class HelpIndex
-{
+class HelpIndex {
+    
     //{{{ HelpIndex constructor
-    public HelpIndex()
-    {
+    public HelpIndex() {
+        
         words = new HashMap();
         files = new ArrayList();
-
+        
         ignoreWord("a");
         ignoreWord("an");
         ignoreWord("and");
@@ -75,8 +75,7 @@ class HelpIndex
     } //}}}
 
     /* //{{{ HelpIndex constructor
-    public HelpIndex(String fileListPath, String wordIndexPath)
-    {
+    public HelpIndex(String fileListPath, String wordIndexPath) {
         this();
     } //}}} */
 
@@ -85,35 +84,25 @@ class HelpIndex
      * Indexes all available help, including the jEdit user's guide, FAQ,]
      * and plugin documentation.
      */
-    public void indexEditorHelp()
-    {
-        try
-        {
-            String jEditHome = jEdit.getJEditHome();
-            if(jEditHome != null)
-            {
-                indexDirectory(MiscUtilities.constructPath(jEditHome,"doc","users-guide"));
-                indexDirectory(MiscUtilities.constructPath(jEditHome,"doc","FAQ"));
-                indexDirectory(MiscUtilities.constructPath(jEditHome,"doc","news42"));
+    public void indexEditorHelp() {
+        try {
+            String home = jsXe.getInstallDirectory();
+            if (home != null) {
+                indexDirectory(MiscUtilities.constructPath(home,"doc","users-guide"));
+                indexDirectory(MiscUtilities.constructPath(home,"doc","FAQ"));
+                indexDirectory(MiscUtilities.constructPath(home,"doc","news42"));
             }
-        }
-        catch(Throwable e)
-        {
+        } catch(Throwable e) {
             Log.log(Log.ERROR,this,"Error indexing editor help");
             Log.log(Log.ERROR,this,e);
         }
 
         PluginJAR[] jars = jEdit.getPluginJARs();
-        for(int i = 0; i < jars.length; i++)
-        {
-            try
-            {
+        for (int i = 0; i < jars.length; i++) {
+            try {
                 indexJAR(jars[i].getZipFile());
-            }
-            catch(Throwable e)
-            {
-                Log.log(Log.ERROR,this,"Error indexing JAR: "
-                    + jars[i].getPath());
+            } catch(Throwable e) {
+                Log.log(Log.ERROR,this,"Error indexing JAR: "+ jars[i].getPath());
                 Log.log(Log.ERROR,this,e);
             }
         }
@@ -126,13 +115,18 @@ class HelpIndex
      * Indexes all HTML and text files in the specified directory.
      * @param dir The directory
      */
-    public void indexDirectory(String dir) throws Exception
-    {
-        String[] files = VFSManager.getFileVFS()
-            ._listDirectory(null,dir,"*.{html,txt}",true,null);
-
-        for(int i = 0; i < files.length; i++)
-        {
+    public void indexDirectory(String dir) throws Exception {
+       // String[] files = VFSManager.getFileVFS()
+       //     ._listDirectory(null,dir,"*.{html,txt}",true,null);
+        File directory = new File(dir);
+        
+        ArrayList exts = new ArrayList();
+        exts.add("html");
+        exts.add("txt");
+        
+        File[] files = directory.listFiles(new CustomFileFilter(exts, "Help Files"));
+        
+        for(int i = 0; i < files.length; i++) {
             indexURL(files[i]);
         }
     } //}}}
