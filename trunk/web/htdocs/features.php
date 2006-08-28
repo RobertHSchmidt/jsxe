@@ -73,7 +73,7 @@
         <li>Support for Unlimited Undo (version 0.5 beta)</li>
         <li>Tag completion using DTD/Schema introspection (version 0.5 beta)</li>
         <li>Automatic insertion of closing tags (version 0.5 beta)</li>
-        <li>A help system using <a href="http://aurigadoc.sourceforge.net/">AurigaDoc</a> or <a href="http://docbook.sourceforge.net/">Docbook</a></li>
+        <li>A help system using <a href="http://aurigadoc.sourceforge.net/">AurigaDoc</a> or <a href="http://docbook.sourceforge.net/">Docbook</a> (version 0.6 beta)</li>
       </ul>
       
       <?php include("footer.php") ?>
