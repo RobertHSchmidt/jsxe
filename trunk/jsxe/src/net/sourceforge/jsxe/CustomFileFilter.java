@@ -25,20 +25,11 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
 
 //{{{ Java Base classes
 import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
-//}}}
-
-//{{{ Swing Classes
-import javax.swing.filechooser.FileFilter;
 //}}}
 
 //}}}
@@ -49,7 +40,7 @@ import javax.swing.filechooser.FileFilter;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class CustomFileFilter extends FileFilter {
+public class CustomFileFilter extends javax.swing.filechooser.FileFilter implements java.io.FileFilter {
     
     //{{{ CustomFileFilter constructor
     /**
