@@ -76,12 +76,14 @@ public class CustomFileFilter extends FileFilter {
                 return true;
             }
             String ext = getExtension(f);
-            Iterator iterator = extensions.iterator();
-            while (iterator.hasNext()) {
-                if(iterator.next().toString().equals(ext)) {
-                    return true;
-                }
-            }
+            return extensions.contains(ext);
+            
+           // Iterator iterator = extensions.iterator();
+           // while (iterator.hasNext()) {
+           //     if(iterator.next().toString().equals(ext)) {
+           //         return true;
+           //     }
+           // }
         }
         return false;
     }//}}}
