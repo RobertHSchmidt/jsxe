@@ -55,7 +55,7 @@ metal.secondary.fontstyle=0
 
 #{{{ Default key bindings
 open-file.shortcut=C+o
-exit.shortcut=C+x
+exit.shortcut=C+q
 close-file.shortcut=C+w
 new-file.shortcut=C+n
 save-file.shortcut=C+s
