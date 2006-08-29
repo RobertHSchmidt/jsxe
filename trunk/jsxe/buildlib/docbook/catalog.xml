@@ -8,23 +8,27 @@
 
   <rewriteURI
     uriStartString="http://docbook.sourceforge.net/release/xsl/1.68.1/"
-    rewritePrefix="file://./docbook/"/>
+    rewritePrefix="file:///home/ian/src/jsxe/jsxe/buildlib/docbook/"/>
 
   <rewriteURI
     uriStartString="http://docbook.sourceforge.net/release/xsl/current/"
-    rewritePrefix="file://./docbook/"/>
+    rewritePrefix="file:///home/ian/src/jsxe/jsxe/buildlib/docbook/"/>
 
   <rewriteSystem
     systemIdStartString="http://docbook.sourceforge.net/release/xsl/1.68.1/"
-    rewritePrefix="file://./docbook/"/>
+    rewritePrefix="file:///home/ian/src/jsxe/jsxe/buildlib/docbook/"/>
 
   <rewriteSystem 
     systemIdStartString="http://docbook.sourceforge.net/release/xsl/current/"
-    rewritePrefix="file://./docbook/"/>
-
+    rewritePrefix="file:///home/ian/src/jsxe/jsxe/buildlib/docbook/"/>
+  
+  <rewriteSystem 
+    systemIdStartString="http://www.oasis-open.org/docbook/xml/4.4/"
+    rewritePrefix="file:///home/ian/src/jsxe/jsxe/buildlib/docbook/dtd/"/>
+  
   <group id="DocbookDTD" prefer="public">
     <system  
        systemId="http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"
-       uri="file://./docbook/dtd/docbookx.dtd"/>
+       uri="file:///home/ian/src/jsxe/jsxe/buildlib/docbook/dtd/docbookx.dtd"/>
   </group>
 </catalog>

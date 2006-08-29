@@ -197,10 +197,12 @@
     <!-- {{{ catalog used for building docs -->
     <xmlcatalog id="docbook-catalog">
       <catalogpath>
-        <pathelement location="${docbook.dir}/catalog.xml"/>
+        <fileset dir="${docbook.dir}" includes="**/catalog.xml"/>
       </catalogpath>
     </xmlcatalog>
     <!-- }}} -->
+    
+    <echo message="${docbook.dir}"/>
     
     <echo message="${app.name} ${app.version}"/>
     <echo message="----------------------------------------------------------"/>
@@ -396,7 +398,7 @@
         style="${docbook.dir}/fo/docbook.xsl">
           <outputproperty name="encoding" value="UTF-8"/>
           <mapper type="glob" from="*.xml" to="*.fo"/>
-          <xmlcatalog refid="catalog"/>
+          <xmlcatalog refid="docbook-catalog"/>
     </xslt>
     
     <fop format="application/pdf"
@@ -407,10 +409,11 @@
         </fileset>
     </fop>
     
+    
     <javadoc author="true" destdir="${build.javadocs}" doctitle="${app.name} ${app.version} API" locale="en_US" packagenames="*" sourcepath="${build.src}" version="true" windowtitle="${app.name} ${app.version} API">
       <link href="${java.javadoc.link}"/>
       <link href="${xerces.javadoc.link}"/>
-    </javadoc>
+    </javadoc> 
     
     <zip basedir="${build.javadocs}" includes="**/*" zipfile="${build.dir}/${app.name}-${app_version}-api.zip"/>
     
