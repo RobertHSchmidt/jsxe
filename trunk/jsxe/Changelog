@@ -2,6 +2,7 @@
 
     * Changed the messages files to be named the standard ResourceBundle way.
     * Fixed default key binding for exit.
+    * Added some new processing for generating jsXe's manual.
 
 08/27/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
