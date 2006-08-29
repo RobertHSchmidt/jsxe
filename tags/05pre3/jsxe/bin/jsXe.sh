@@ -1,6 +1,5 @@
 #!/bin/sh
+# Java heap size, in megabytes
 JSXEDIR=.
-CLASSPATH=$JSXEDIR/jsXe.jar:$JSXEDIR/lib/xml-apis.jar:$JSXEDIR/lib/xercesImpl.jar:$JSXEDIR/lib/resolver.jar
-JSXE=net.sourceforge.jsxe.jsXe
 JAVA_HEAP_SIZE=32
-exec java -mx${JAVA_HEAP_SIZE}m -cp $CLASSPATH $JSXE $@
+exec java -server -mx${JAVA_HEAP_SIZE}m -Djava.endorsed.dirs=${JSXEDIR}/lib ${JSXE} -jar ${JSXEDIR}/jsXe.jar $@
