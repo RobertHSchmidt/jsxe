@@ -2,6 +2,7 @@ REQUIREMENTS
 
 Java >= 1.4.2
 Xerces >= 2.8.0
+Xalan >= 2.7.0 (for building jsXe's documentation)
 launch4j >= 3.0.0pre1 (for building the installer from source)
 
 GETTING jsXe
@@ -50,9 +51,12 @@ You will need version 1.4.2 or better of java and you will need version 2.8.0 of
 Xerces (A Xerces 2.8.0 binary distribution is not included in the CVS source
 tree. You can aquire it at at http://xml.apache.org/) The jar files
 xercesImpl.jar, xml-apis.jar, and resolver.jar from the 2.8.0 distribution are
-required. These should be placed in a directory called lib in jsXe's root folder
-(where you installed jsXe's source) or in the jre/lib/ext or lib/ext in your
-JVM. These jar files will be included with jsXe distributions for convenience.
+required. These should already be in a directory called lib in jsXe's root folder
+(where you installed jsXe's source) but you will need to copy them in
+the jre/lib/endorsed directory in your JVM. You will also need to put the
+xalan.jar in the jre/lib/endorsed directory in order to build jsXe's
+documentation. xalan.jar is not currently included with jsXe so you need to
+download it from http://xml.apache.org/
 
 In order to build jsXe's installer or a windows distribution of jsXe you will
 need to install launch4j (http://launch4j.sourceforge.net/). You can install it

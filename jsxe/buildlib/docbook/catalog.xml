@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog PUBLIC "-//OASIS//DTD XML Catalogs V1.0//EN"
+      "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
+
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+
+<!-- ==== Local Catalog for docbook-xsl ==== -->
+
+  <rewriteURI
+    uriStartString="http://docbook.sourceforge.net/release/xsl/1.68.1/"
+    rewritePrefix="file://./docbook/"/>
+
+  <rewriteURI
+    uriStartString="http://docbook.sourceforge.net/release/xsl/current/"
+    rewritePrefix="file://./docbook/"/>
+
+  <rewriteSystem
+    systemIdStartString="http://docbook.sourceforge.net/release/xsl/1.68.1/"
+    rewritePrefix="file://./docbook/"/>
+
+  <rewriteSystem 
+    systemIdStartString="http://docbook.sourceforge.net/release/xsl/current/"
+    rewritePrefix="file://./docbook/"/>
+
+  <group id="DocbookDTD" prefer="public">
+    <system  
+       systemId="http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"
+       uri="file://./docbook/dtd/docbookx.dtd"/>
+  </group>
+</catalog>

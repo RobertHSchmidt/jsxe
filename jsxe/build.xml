@@ -46,7 +46,7 @@
     <property name="bin.dir" value="${root.dir}/bin"/>
     <property name="messages.dir" value="${root.dir}/messages"/>
     <property name="build.messages" value="${build.dir}/messages"/>
-    <property name="docs.dir" value="${src.dir}/doc"/>
+    <property name="docs.dir" value="${root.dir}/doc"/>
     <property name="plugin.dir" value="${root.dir}/jars"/>
     <property name="jsxe.jar" value="${build.dir}/${app.name}.jar"/>
     <!-- jar file needs to be relative to the exe -->
@@ -63,6 +63,7 @@
     <property name="build.javadocs" value="${build.dir}/api"/>
     <property name="build.help" value="${build.docs}/help"/>
     <property name="buildlib.dir" value="${root.dir}/buildlib"/>
+    <property name="docbook.dir" value="${buildlib.dir}/docbook"/>
     <!--<property name="app.version" value="${major.version}.${minor.version} beta"/>-->
     <!--<property name="app_version" value="${major.version}_${minor.version}beta"/>-->
     <property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
@@ -191,6 +192,14 @@
     
     <available file="${installer.dir}" property="installer.avail"/>
     
+    <!-- }}} -->
+    
+    <!-- {{{ catalog used for building docs -->
+    <xmlcatalog id="docbook-catalog">
+      <catalogpath>
+        <pathelement location="${docbook.dir}/catalog.xml"/>
+      </catalogpath>
+    </xmlcatalog>
     <!-- }}} -->
     
     <echo message="${app.name} ${app.version}"/>
@@ -349,6 +358,14 @@
   <!-- }}} -->
   <!-- {{{ ============ Generates the documentation ====================== -->
   <target depends="prepare-doc, prepare-src" name="doc" description="Build documentation">
+    <taskdef name="fop" classname="org.apache.fop.tools.anttasks.Fop">
+      <classpath>
+        <pathelement location="${buildlib.dir}\fop.jar"/>
+        <pathelement location="${buildlib.dir}\avalon.jar"/>
+        <pathelement location="${buildlib.dir}\batik.jar"/>
+      </classpath>
+    </taskdef>
+    
     <copy file="${root.dir}/COPYING" tofile="${build.docs}/COPYING"/>
     <copy file="${root.dir}/README" tofile="${build.docs}/README"/>
     <copy file="${root.dir}/AUTHORS" tofile="${build.docs}/AUTHORS"/>
@@ -357,6 +374,36 @@
     <copy file="${root.dir}/INSTALL" tofile="${build.docs}/INSTALL"/>
     <copy file="${root.dir}/THANKS" tofile="${build.docs}/THANKS"/>
     <copy file="${root.dir}/NEWS" tofile="${build.docs}/NEWS"/>
+    
+    <!-- generate the html manual -->
+    <mkdir dir="${build.docs}/manual"/>
+    <xslt basedir="${docs.dir}/manual"
+        destdir="${build.docs}/manual"
+        includes="**/manual.xml"
+        style="${docbook.dir}/html/docbook.xsl">
+          <outputproperty name="encoding" value="UTF-8"/>
+          <mapper type="glob" from="*.xml" to="*.html"/>
+          <xmlcatalog refid="docbook-catalog"/>
+    </xslt>
+    
+    <!-- generate the pdf manual -->
+    <mkdir dir="${build.dir}/manual"/>
+    <xslt basedir="${docs.dir}/manual"
+        destdir="${build.dir}/manual"
+        includes="**/manual.xml"
+        style="${docbook.dir}/fo/docbook.xsl">
+          <outputproperty name="encoding" value="UTF-8"/>
+          <mapper type="glob" from="*.xml" to="*.fo"/>
+          <xmlcatalog refid="catalog"/>
+    </xslt>
+    
+    <fop format="application/pdf"
+      outdir="${build.dir}"
+      messagelevel="warn">
+        <fileset dir="${build.dir}/manual">
+          <include name="*.fo"/>
+        </fileset>
+    </fop>
     
     <javadoc author="true" destdir="${build.javadocs}" doctitle="${app.name} ${app.version} API" locale="en_US" packagenames="*" sourcepath="${build.src}" version="true" windowtitle="${app.name} ${app.version} API">
       <link href="${java.javadoc.link}"/>
