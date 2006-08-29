@@ -28,7 +28,6 @@ package net.sourceforge.jsxe.gui.menu;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.gui.Messages;
-import net.sourceforge.jsxe.EBListener;
 //}}}
 
 //{{{ Java classes
@@ -47,15 +46,14 @@ import java.util.*;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class WrappingMenu extends JMenu {
+public class WrappingMenu {
     
     //{{{ WrappingMenu constructor
     /**
      * Constructs a WrappingMenu without an "invoker" and the default wrap count of 20.
      */
     public WrappingMenu() {
-        super();
-        m_addToMenus.push(this);
+        m_addToMenus.push(new JMenu());
     }//}}}
     
     //{{{ WrappingMenu constructor
@@ -66,9 +64,8 @@ public class WrappingMenu extends JMenu {
      *                  it wraps.
      */
     public WrappingMenu(int wrapCount) {
-        super();
         m_wrapCount = wrapCount;
-        m_addToMenus.push(this);
+        m_addToMenus.push(new JMenu());
     }//}}}
     
     //{{{ WrappingMenu constructor
@@ -80,9 +77,8 @@ public class WrappingMenu extends JMenu {
      *                  it wraps.
      */
     public WrappingMenu(String label, int wrapCount) {
-        super(label);
         m_wrapCount = wrapCount;
-        m_addToMenus.push(this);
+        m_addToMenus.push(new JMenu(label));
     }//}}}  
     
     //{{{ add()
@@ -91,11 +87,7 @@ public class WrappingMenu extends JMenu {
         maybeAddMenu();
         JMenuItem r;
         JMenu menu = getCurrentMenu();
-        if (menu == this) {
-            r = super.add(a);
-        } else {
-            r = menu.add(a);
-        }
+        r = menu.add(a);
         m_menuHash.put(r, getCurrentMenu());
         return r;
     }//}}}
@@ -106,11 +98,7 @@ public class WrappingMenu extends JMenu {
         maybeAddMenu();
         Component r;
         JMenu menu = getCurrentMenu();
-        if (menu == this) {
-            r = super.add(c);
-        } else {
-            r = menu.add(c);
-        }
+        r = menu.add(c);
         m_menuHash.put(r, getCurrentMenu());
         return r;
     }//}}}
@@ -126,11 +114,7 @@ public class WrappingMenu extends JMenu {
             int addIndex = (int)(index / m_wrapCount);
             int addSubIndex = (index % m_wrapCount);
             JMenu menu = (JMenu)m_addToMenus.get(addIndex);
-            if (menu == this) {
-                r = super.add(c, addSubIndex);
-            } else {
-                r = menu.add(c, addSubIndex);
-            }
+            r = menu.add(c, addSubIndex);
             updateSubMenus();
         }
         return r;
@@ -145,11 +129,7 @@ public class WrappingMenu extends JMenu {
         }
         JMenuItem r;
         JMenu menu = getCurrentMenu();
-        if (menu == this) {
-            r = super.add(menuItem);
-        } else {
-            r = menu.add(menuItem);
-        }
+        r = menu.add(menuItem);
         return r;
     }//}}}
     
@@ -159,11 +139,7 @@ public class WrappingMenu extends JMenu {
         maybeAddMenu();
         JMenuItem r;
         JMenu menu = getCurrentMenu();
-        if (menu == this) {
-            r = super.add(s);
-        } else {
-            r = menu.add(s);
-        }
+        r = menu.add(s);
         m_menuHash.put(r, getCurrentMenu());
         return r;
     }//}}}
@@ -179,11 +155,7 @@ public class WrappingMenu extends JMenu {
             int addIndex = (int)(pos / m_wrapCount);
             int addSubIndex = (pos % m_wrapCount);
             JMenu menu = (JMenu)m_addToMenus.get(addIndex);
-            if (menu == this) {
-                r = super.insert(a, addSubIndex);
-            } else {
-                r = menu.insert(a, addSubIndex);
-            }
+            r = menu.insert(a, addSubIndex);
             updateSubMenus();
         }
         return r;
@@ -200,17 +172,13 @@ public class WrappingMenu extends JMenu {
             int addIndex = (int)(pos / m_wrapCount);
             int addSubIndex = (pos % m_wrapCount);
             JMenu menu = (JMenu)m_addToMenus.get(addIndex);
-            if (menu == this) {
-                r = super.insert(mi, addSubIndex);
-            } else {
-                r = menu.insert(mi, addSubIndex);
-            }
+            r = menu.insert(mi, addSubIndex);
             updateSubMenus();
         }
         return r;
     }//}}}
     
-    //{{{ insert
+    //{{{ insert()
     
     public void insert(String s, int pos) {
         if (pos == -1) {
@@ -220,11 +188,7 @@ public class WrappingMenu extends JMenu {
             int addIndex = (int)(pos / m_wrapCount);
             int addSubIndex = (pos % m_wrapCount);
             JMenu menu = (JMenu)m_addToMenus.get(addIndex);
-            if (menu == this) {
-                super.insert(s, addSubIndex);
-            } else {
-                menu.insert(s, addSubIndex);
-            }
+            menu.insert(s, addSubIndex);
             updateSubMenus();
         }
     }//}}}
@@ -233,12 +197,7 @@ public class WrappingMenu extends JMenu {
     
     public void remove(Component c) {
         JMenu menu = (JMenu)m_menuHash.get(c);
-        if (menu == this) {
-            super.remove(c);
-        } else {
-            menu.remove(c);
-        }
-        
+        menu.remove(c);
         m_menuHash.remove(c);
         updateSubMenus();
     }//}}}
@@ -253,11 +212,7 @@ public class WrappingMenu extends JMenu {
     
     public void remove(JMenuItem item) {
         JMenu menu = (JMenu)m_menuHash.get(item);
-        if (menu == this) {
-            super.remove(item);
-        } else {
-            menu.remove(item);
-        }
+        menu.remove(item);
         m_menuHash.remove(item);
         updateSubMenus();
     }//}}}
@@ -265,10 +220,11 @@ public class WrappingMenu extends JMenu {
     //{{{ removeAll()
     
     public void removeAll() {
+        JMenu menu = getJMenu();
+        menu.removeAll();
         m_menuHash = new HashMap();
         m_addToMenus = new Stack();
-        m_addToMenus.push(this);
-        super.removeAll();
+        m_addToMenus.push(menu);
     }//}}}
     
     //{{{ getMenuComponent()
@@ -280,14 +236,10 @@ public class WrappingMenu extends JMenu {
         int addIndex = (int)(n / m_wrapCount);
         int addSubIndex = (n % m_wrapCount);
         JMenu menu = (JMenu)m_addToMenus.get(addIndex);
-        if (menu == this) {
-            return super.getMenuComponent(addSubIndex);
-        } else {
-            return menu.getMenuComponent(addSubIndex);
-        }
+        return menu.getMenuComponent(addSubIndex);
     }//}}}
     
-    //{{{ getMenuComponentCount
+    //{{{ getMenuComponentCount()
     /**
      * Gets the total number of components in this menu
      * and submenus.
@@ -295,6 +247,14 @@ public class WrappingMenu extends JMenu {
      */
     public int getMenuComponentCount() {
         return m_menuHash.keySet().size();
+    }//}}}
+    
+    //{{{ getJMenu()
+    /**
+     * Gets the JMenu that is used by Swing for this WrappingMenu.
+     */
+    public JMenu getJMenu() {
+        return (JMenu)m_addToMenus.get(0);
     }//}}}
     
     //{{{ MoreMenu class
@@ -328,18 +288,6 @@ public class WrappingMenu extends JMenu {
     
     //{{{ Private members
     
-    //{{{ getTrueMenuItemCount()
-    /**
-     * Gets the true item count for a sub-menu
-     */
-    private int getTrueMenuItemCount(JMenu menu) {
-        if (menu == this) {
-            return super.getMenuComponentCount();
-        } else {
-            return menu.getMenuComponentCount();
-        }
-    }//}}}
-    
     //{{{ getCurrentMenu()
     /**
      * Gets the current menu that we are adding to.
@@ -358,7 +306,7 @@ public class WrappingMenu extends JMenu {
             JMenu menu = (JMenu)m_addToMenus.get(i);
             
             //greater than wrap count + 1 because of the "More" menu item.
-            while (getTrueMenuItemCount(menu) > m_wrapCount + 1) {
+            while (menu.getMenuComponentCount() > m_wrapCount + 1) {
                 
                 //If we need another menu then make one.
                 JMenu nextMenu;
@@ -371,25 +319,21 @@ public class WrappingMenu extends JMenu {
                     nextMenu = moreMenu;
                 }
                 
-                int index = getTrueMenuItemCount(menu)-2;
+                int index = menu.getMenuComponentCount()-2;
                 Component menuComponent = menu.getComponent(index);
                 menu.remove(index);
                 nextMenu.add(menuComponent, 0);
             }
             
             //while there are less than we want in the menu and it's not the last menu
-            while (getTrueMenuItemCount(menu) < m_wrapCount + 1 && i+1 < m_addToMenus.size()) {
+            while (menu.getMenuComponentCount() < m_wrapCount + 1 && i+1 < m_addToMenus.size()) {
                 JMenu nextMenu = (JMenu)m_addToMenus.get(i+1);
                 
                 Component menuComponent = nextMenu.getMenuComponent(0);
                 nextMenu.remove(0);
-                if (menu == this) {
-                    super.add(menuComponent, getTrueMenuItemCount(this)-1);
-                } else {
-                    menu.add(menuComponent, getTrueMenuItemCount(menu)-1);
-                }
+                menu.add(menuComponent, menu.getMenuComponentCount()-1);
                 
-                if (getTrueMenuItemCount(nextMenu) == 0) {
+                if (nextMenu.getMenuComponentCount() == 0) {
                     menu.remove(nextMenu);
                     m_addToMenus.pop(); //if it's empty it must be the last menu.
                 }
@@ -402,7 +346,7 @@ public class WrappingMenu extends JMenu {
      * Updates the menu that we are truly adding to.
      */
     private void maybeAddMenu() {
-        int componentCount = getTrueMenuItemCount(getCurrentMenu());
+        int componentCount = getCurrentMenu().getMenuComponentCount();
         if (componentCount >= m_wrapCount) {
             MoreMenu menu = createMoreMenu();
             ((JMenu)m_addToMenus.peek()).add(menu);

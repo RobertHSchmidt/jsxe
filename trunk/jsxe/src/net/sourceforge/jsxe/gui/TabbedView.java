@@ -462,17 +462,16 @@ public class TabbedView extends JFrame {
         m_recentFilesMenu.removeAll();
         ArrayList historyEntries = jsXe.getBufferHistory().getEntries();
         int index = 0;
-        JMenu addMenu = m_recentFilesMenu;
         Iterator historyItr = historyEntries.iterator();
         while (historyItr.hasNext()) {
             BufferHistory.BufferHistoryEntry entry = (BufferHistory.BufferHistoryEntry)historyItr.next();
-            addMenu.add(new JMenuItem(new OpenRecentFileAction(this, entry)));
+            m_recentFilesMenu.add(new JMenuItem(new OpenRecentFileAction(this, entry)));
             index++;
         }
-        if (addMenu.getItemCount() == 0) {
+        if (m_recentFilesMenu.getMenuComponentCount() == 0) {
             JMenuItem nullItem = new JMenuItem(Messages.getMessage("File.Recent.None"));
             nullItem.setEnabled(false);
-            addMenu.add(nullItem);
+            m_recentFilesMenu.add(nullItem);
         }
     }//}}}
     
@@ -671,7 +670,7 @@ public class TabbedView extends JFrame {
             
             //Add recent files menu
             m_recentFilesMenu = new WrappingMenu(Messages.getMessage("File.Recent"), jsXe.getIntegerProperty("menu.spill.over", 20));
-            m_fileMenu.add(m_recentFilesMenu);
+            m_fileMenu.add(m_recentFilesMenu.getJMenu());
             
             m_fileMenu.addSeparator();
             menuItem = new JMenuItem(ActionManager.getAction("save-file"));

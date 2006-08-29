@@ -1,3 +1,9 @@
+08/29/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed a memory leak with JMenuItems. ActionManager kept a cache of
+      Wrapper Action objects. JMenu items register listeners with those Actions
+      so the JMenuItems would never be Garbage collected.
+
 08/28/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Changed the messages files to be named the standard ResourceBundle way.
