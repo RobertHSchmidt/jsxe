@@ -266,6 +266,15 @@
       </fileset>
     </copy>
     
+    <!-- copy the lib directory so that the jsXe.exe can be run
+         from the build dir -->
+    <mkdir dir="${build.lib}"/>
+    <copy todir="${build.lib}">
+      <fileset dir="${lib.dir}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    
     <!-- set the build properties -->
     <propertyfile comment="${app.name}&apos;s build properties" file="${build.dest}/net/sourceforge/jsxe/build.properties">
       <entry key="application.name" value="${app.name}"/>
@@ -328,13 +337,6 @@
   <!-- }}} -->
   <!-- {{{ ============ Prepares for a build ============================= -->
   <target depends="init" name="prepare-build">
-    <!-- lib -->
-    <mkdir dir="${build.dir}/lib"/>
-    <copy todir="${build.dir}/lib">
-      <fileset dir="${lib.dir}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
     <!-- bin -->
     <mkdir dir="${build.dir}/bin"/>
     <copy todir="${build.dir}/bin">
@@ -570,15 +572,6 @@
     <!-- }}} -->
     
     <!-- {{{ create the win tar.bz2 file -->
-    
-    <!-- copy the lib directory so that the jsXe.exe can be run
-         from the build dir -->
-    <mkdir dir="${build.dir}/lib"/>
-    <copy todir="${build.dir}/lib">
-      <fileset dir="${build.lib}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
     
     <!-- create the windows exe -->
     <taskdef name="launch4j"
