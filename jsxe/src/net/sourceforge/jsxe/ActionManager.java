@@ -118,8 +118,11 @@ public class ActionManager {
      * @param name the name of the action.
      */
     public static Action getAction(String name) {
-        Action action = (Action)m_actionMap.get(name);
-        if (action == null) {
+        // We can't keep a cache of Wrappers because JMenuItems register
+        //listeners with them and would never be GCed.
+        Action action = null;
+       // Action action = (Action)m_actionMap.get(name);
+       // if (action == null) {
             LocalizedAction editAction = getLocalizedAction(name);
             if (editAction != null) {
                 action = new Wrapper(name);
@@ -135,11 +138,11 @@ public class ActionManager {
                     action.putValue(Action.ACCELERATOR_KEY, KeyEventTranslator.getKeyStroke(keyBinding));
                 }
                 
-                m_actionMap.put(name, action);
+               // m_actionMap.put(name, action);
             } else {
                 Log.log(Log.WARNING,ActionManager.class,"Unknown action: "+ name);
             }
-        }
+       // }
         return action;
     }//}}}
     
@@ -326,7 +329,7 @@ public class ActionManager {
     /**
      * This is an name to Wrapper mapping.
      */
-    private static HashMap m_actionMap = new HashMap();
+   // private static HashMap m_actionMap = new HashMap();
     private static ArrayList m_actionSets = new ArrayList();
     
     private static boolean initialized = false;
