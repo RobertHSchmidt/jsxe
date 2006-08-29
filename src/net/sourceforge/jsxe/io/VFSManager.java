@@ -26,10 +26,27 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.io;
 
 //{{{ Imports
+
+//{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.EditBus;
+import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.ErrorListDialog;
+import net.sourceforge.jsxe.msg.VFSUpdate;
+import net.sourceforge.jsxe.util.*;
+//}}}
+
+//{{{ Swing classes
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+//}}}
+
+//{{{ AWT classes
 import java.awt.Component;
 import java.awt.Frame;
+//}}}
+
+//{{{ Java classes
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -37,10 +54,8 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
-import net.sourceforge.jsxe.gui.ErrorListDialog;
-import net.sourceforge.jsxe.msg.VFSUpdate;
-import net.sourceforge.jsxe.util.Log;
-import net.sourceforge.jsxe.WorkThreadPool;
+//}}}
+
 //}}}
 
 /**
@@ -315,28 +330,20 @@ public class VFSManager {
      * @param parent True if an update should be sent for the path's
      * parent too
      */
-    public static void sendVFSUpdate(VFS vfs, String path, boolean parent)
-    {
-        if(parent)
-        {
+    public static void sendVFSUpdate(VFS vfs, String path, boolean parent) {
+        if (parent) {
             sendVFSUpdate(vfs,vfs.getParentOfPath(path),false);
             sendVFSUpdate(vfs,path,false);
-        }
-        else
-        {
+        } else {
             // have to do this hack until VFSPath class is written
-            if(path.length() != 1 && (path.endsWith("/")
-                || path.endsWith(java.io.File.separator)))
+            if (path.length() != 1 && (path.endsWith("/") || path.endsWith(java.io.File.separator))) {
                 path = path.substring(0,path.length() - 1);
+            }
 
-            synchronized(vfsUpdateLock)
-            {
-                for(int i = 0; i < vfsUpdates.size(); i++)
-                {
-                    VFSUpdate msg = (VFSUpdate)vfsUpdates
-                        .get(i);
-                    if(msg.getPath().equals(path))
-                    {
+            synchronized(vfsUpdateLock) {
+                for (int i = 0; i < vfsUpdates.size(); i++) {
+                    VFSUpdate msg = (VFSUpdate)vfsUpdates.get(i);
+                    if (msg.getPath().equals(path)) {
                         // don't send two updates
                         // for the same path
                         return;
@@ -345,8 +352,7 @@ public class VFSManager {
 
                 vfsUpdates.add(new VFSUpdate(path));
 
-                if(vfsUpdates.size() == 1)
-                {
+                if (vfsUpdates.size() == 1) {
                     // we were the first to add an update;
                     // add update sending runnable to AWT
                     // thread
@@ -357,22 +363,17 @@ public class VFSManager {
     } //}}}
 
     //{{{ SendVFSUpdatesSafely class
-    static class SendVFSUpdatesSafely implements Runnable
-    {
-        public void run()
-        {
-            synchronized(vfsUpdateLock)
-            {
+    static class SendVFSUpdatesSafely implements Runnable {
+        
+        public void run() {
+            synchronized(vfsUpdateLock) {
                 // the vfs browser has what you might call
                 // a design flaw, it doesn't update properly
                 // unless the vfs update for a parent arrives
                 // before any updates for the children. sorting
                 // the list alphanumerically guarantees this.
-                Collections.sort(vfsUpdates,
-                    new MiscUtilities.StringCompare()
-                );
-                for(int i = 0; i < vfsUpdates.size(); i++)
-                {
+                Collections.sort(vfsUpdates, new MiscUtilities.StringCompare());
+                for (int i = 0; i < vfsUpdates.size(); i++) {
                     EditBus.send((VFSUpdate)vfsUpdates.get(i));
                 }
 
