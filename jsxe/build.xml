@@ -380,6 +380,7 @@
     <copy file="${root.dir}/NEWS" tofile="${build.docs}/NEWS"/>
     
     <!-- generate the html manual -->
+    <!--
     <mkdir dir="${build.docs}/manual"/>
     <xslt basedir="${docs.dir}/manual"
         destdir="${build.docs}/manual"
@@ -388,9 +389,11 @@
           <outputproperty name="encoding" value="UTF-8"/>
           <mapper type="glob" from="*.xml" to="*.html"/>
           <xmlcatalog refid="docbook-catalog"/>
-    </xslt>
+    </xslt> 
+    -->
     
     <!-- generate the pdf manual -->
+    <!--
     <mkdir dir="${build.dir}/manual"/>
     <xslt basedir="${docs.dir}/manual"
         destdir="${build.dir}/manual"
@@ -408,7 +411,7 @@
           <include name="*.fo"/>
         </fileset>
     </fop>
-    
+    -->
     
     <javadoc author="true" destdir="${build.javadocs}" doctitle="${app.name} ${app.version} API" locale="en_US" packagenames="*" sourcepath="${build.src}" version="true" windowtitle="${app.name} ${app.version} API">
       <link href="${java.javadoc.link}"/>
