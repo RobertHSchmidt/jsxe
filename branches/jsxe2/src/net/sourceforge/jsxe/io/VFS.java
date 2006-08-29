@@ -787,10 +787,9 @@ public abstract class VFS {
 
     //{{{ DirectoryEntryCompare class
     /**
-     * Implementation of {@link org.gjt.sp.jedit.MiscUtilities.Compare}
-     * interface that compares {@link VFS.DirectoryEntry} instances.
+     * Interface that compares {@link VFS.DirectoryEntry} instances.
      */
-    public static class DirectoryEntryCompare implements MiscUtilities.Compare {
+    public static class DirectoryEntryCompare implements Comparator {
         
         private boolean sortIgnoreCase, sortMixFilesAndDirs;
 

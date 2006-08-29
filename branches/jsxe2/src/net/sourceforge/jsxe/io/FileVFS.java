@@ -4,7 +4,7 @@ FileVFS.java
 :folding=explicit:collapseFolds=1:
 
 Copyright (C) 1998, 1999, 2000, 2001, 2002 Slava Pestov
-Portions Copyright (C) 2004 Ian Lewis (IanLewis@member.fsf.org)
+Portions Copyright (C) 2006 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -26,12 +26,21 @@ from http://www.fsf.org/copyleft/gpl.txt
 package net.sourceforge.jsxe.io;
 
 //{{{ Imports
+
+//{{{ jsXe classes
+import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.dom2.XMLDocument;
+import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.OperatingSystem;
+import net.sourceforge.jsxe.util.Log;
+import net.sourceforge.jsxe.util.MiscUtilities;
+//}}}
+
 import java.awt.Component;
 import java.io.*;
 import java.text.*;
 import java.util.Date;
-import net.sourceforge.jsxe.OperatingSystem;
-import net.sourceforge.jsxe.util.Log;
+
 //}}}
 
 /**

@@ -134,70 +134,72 @@ public class MiscUtilities {
         return false;
     } //}}}
 
-   // //{{{ constructPath() method
-   // /**
-   //  * Constructs an absolute path name from a directory and another
-   //  * path name. This method is VFS-aware.
-   //  * @param parent The directory
-   //  * @param path The path name
-   //  */
-   // public static String constructPath(String parent, String path)
-   // {
-   //     if(MiscUtilities.isURL(path))
-   //         return path;
-   //     else if(path.startsWith("~"))
-   //         return path;
-   //     else
-   //     {
-   //         // have to handle these cases specially on windows.
-   //         if(OperatingSystem.isDOSDerived())
-   //         {
-   //             if(path.length() == 2 && path.charAt(1) == ':')
-   //                 return path;
-   //             else if(path.length() > 2 && path.charAt(1) == ':')
-   //             {
-   //                 if(path.charAt(2) != '\\')
-   //                 {
-   //                     path = path.substring(0,2) + '\\'
-   //                         + path.substring(2);
-   //                 }
-   //                 
-   //                 return resolveSymlinks(path);
-   //             }
-   //             else if(path.startsWith("\\\\"))
-   //                 return resolveSymlinks(path);
-   //         }
-   //         else if(OperatingSystem.isUnix())
-   //         {
-   //             // nice and simple
-   //             if(path.length() > 0 && path.charAt(0) == '/')
-   //                 return resolveSymlinks(path);
-   //         }
-   //     }
-   //     
-   //     if(parent == null)
-   //         parent = System.getProperty("user.dir");
-   //     
-   //     if(OperatingSystem.isDOSDerived() && path.startsWith("\\"))
-   //         parent = parent.substring(0,2);
-   //     
-   //     VFS vfs = VFSManager.getVFSForPath(parent);
-   //     return vfs.constructPath(parent,path);
-   // } //}}}
+    //{{{ constructPath() method
+    /**
+     * Constructs an absolute path name from a directory and another
+     * path name. This method is VFS-aware.
+     * @param parent The directory
+     * @param path The path name
+     */
+    public static String constructPath(String parent, String path) {
+        
+        if (MiscUtilities.isURL(path)) {
+            return path;
+        } else {
+            if (path.startsWith("~")) {
+                return path;
+            } else {
+                // have to handle these cases specially on windows.
+                if (OperatingSystem.isDOSDerived()) {
+                    if (path.length() == 2 && path.charAt(1) == ':') {
+                        return path;
+                    } else {
+                        if (path.length() > 2 && path.charAt(1) == ':') {
+                            if (path.charAt(2) != '\\') {
+                                path = path.substring(0,2) + '\\' + path.substring(2);
+                            }
+                            
+                            return resolveSymlinks(path);
+                        } else {
+                            if (path.startsWith("\\\\")) {
+                                return resolveSymlinks(path);
+                            }
+                        }
+                    }
+                } else {
+                    if (OperatingSystem.isUnix()) {
+                        // nice and simple
+                        if (path.length() > 0 && path.charAt(0) == '/') {
+                            return resolveSymlinks(path);
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (parent == null) {
+            parent = jsXe.getHomeDirectory();
+        }
+        
+        if (OperatingSystem.isDOSDerived() && path.startsWith("\\")) {
+            parent = parent.substring(0,2);
+        }
+        
+        VFS vfs = VFSManager.getVFSForPath(parent);
+        return vfs.constructPath(parent,path);
+    } //}}}
 
-   // //{{{ constructPath() method
-   // /**
-   //  * Constructs an absolute path name from three path components.
-   //  * This method is VFS-aware.
-   //  * @param parent The parent directory
-   //  * @param path1 The first path
-   //  * @param path2 The second path
-   //  */
-   // public static String constructPath(String parent,
-   //     String path1, String path2)
-   // {
-   //     return constructPath(constructPath(parent,path1),path2);
-   // } //}}}
+    //{{{ constructPath() method
+    /**
+     * Constructs an absolute path name from three path components.
+     * This method is VFS-aware.
+     * @param parent The parent directory
+     * @param path1 The first path
+     * @param path2 The second path
+     */
+    public static String constructPath(String parent, String path1, String path2) {
+        return constructPath(constructPath(parent,path1),path2);
+    } //}}}
 
     //{{{ concatPath() method
     /**
