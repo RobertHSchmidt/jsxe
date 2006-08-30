@@ -196,8 +196,8 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
         Clipboard clipBoard = getToolkit().getSystemClipboard();
         if (selectedNode != null) {
             try {
-                clipBoard.setContents(new TransferableNode(selectedNode), this);
                 selectedNode.getParentNode().remove(selectedNode);
+                clipBoard.setContents(new TransferableNode(selectedNode), this);
                 updateUI();
                 return true;
             } catch (IllegalStateException e) {
@@ -205,7 +205,6 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
             } catch (HeadlessException e) {
                 Log.log(Log.ERROR, this, e);
             } catch (DOMException e) {
-                clipBoard.setContents(null, this);
                 throw e;
             }
         }
