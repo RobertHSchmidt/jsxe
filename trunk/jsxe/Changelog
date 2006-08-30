@@ -3,6 +3,8 @@
     * Fixed a memory leak with JMenuItems. ActionManager kept a cache of
       Wrapper Action objects. JMenu items register listeners with those Actions
       so the JMenuItems would never be Garbage collected.
+    * Fixed that the Find action had Ctrl-v as the default shortcut. Changed it
+      to Ctrl-f
 
 08/28/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
