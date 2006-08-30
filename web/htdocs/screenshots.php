@@ -24,15 +24,15 @@
         <table border="0" cellpadding="0" cellspacing="15" width="100%">
           <tr>
             <td>
-              <a href="screenshots.php?id=81126">
-                <img alt="screenshot" border="0" src="http://sourceforge.net/dbimage.php?id=81125"/>
+              <a href="screenshots.php?id=86758">
+                <img alt="screenshot" border="0" src="http://sourceforge.net/dbimage.php?id=86757"/>
               </a>
             </td>
             <td>
               jsXe with Japanese locale.
               <br/>
               
-              (jsXe 0.5 pre1 running on Windows XP)
+              (jsXe 0.5 pre3 running on Ubuntu Linux)
             </td>
           </tr>
           <tr>
