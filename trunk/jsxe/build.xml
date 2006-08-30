@@ -30,13 +30,13 @@
     <property name="main.class" value="net.sourceforge.jsxe.jsXe"/>
     <property name="major.version" value="0"/>
     <property name="minor.version" value="5"/>
-    <property name="beta.version" value="3"/>
+    <property name="beta.version" value="4"/>
     <property name="bugfix.version" value="0"/>
     <property name="date.format" value="MM.dd.yyyy HH:mm:ss z"/>
     <!-- Human Readable -->
-    <property name="app.version" value="0.5 pre3"/>
+    <property name="app.version" value="0.5 pre4"/>
     <!-- Used in filenames -->
-    <property name="app_version" value="05_pre3"/>
+    <property name="app_version" value="05_pre4"/>
     <!-- }}} -->
     <!-- {{{ build directories -->
     <property name="root.dir" value="."/>
