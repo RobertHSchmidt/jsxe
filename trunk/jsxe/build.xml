@@ -202,8 +202,6 @@
     </xmlcatalog>
     <!-- }}} -->
     
-    <echo message="${docbook.dir}"/>
-    
     <echo message="${app.name} ${app.version}"/>
     <echo message="----------------------------------------------------------"/>
   </target>
