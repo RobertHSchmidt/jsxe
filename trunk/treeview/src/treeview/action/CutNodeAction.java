@@ -29,10 +29,7 @@ package treeview.action;
 import treeview.*;
 
 //{{{ AWT classes
-import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
-import java.awt.Toolkit;
-import java.awt.HeadlessException;
 //}}}
 
 //{{{ Swing classes
@@ -52,6 +49,7 @@ import net.sourceforge.jsxe.LocalizedAction;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.gui.GUIUtilities;
 import net.sourceforge.jsxe.dom.AdapterNode;
 import net.sourceforge.jsxe.util.Log;
 //}}}
@@ -91,7 +89,7 @@ public class CutNodeAction extends LocalizedAction {
             try {
                 tree.cut();
             } catch (DOMException dome) {
-                JOptionPane.showMessageDialog(tree, dome, "XML Error", JOptionPane.WARNING_MESSAGE);
+                GUIUtilities.error(tree, "XML.Error", new Object[] { dome });
             }
         }
     }//}}}
