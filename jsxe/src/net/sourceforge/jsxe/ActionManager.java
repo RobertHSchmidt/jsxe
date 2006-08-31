@@ -27,13 +27,13 @@ package net.sourceforge.jsxe;
 //{{{ imports
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.action.ContextSpecificAction;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.GUIUtilities;
 import net.sourceforge.jsxe.gui.KeyEventTranslator;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.msg.PropertyChanged;
-import net.sourceforge.jsxe.action.ViewSpecificAction;
 //}}}
 
 //{{{ Java classes
@@ -49,6 +49,7 @@ import javax.swing.KeyStroke;
 //}}}
 
 //{{{ AWT classes
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 //}}}
@@ -73,16 +74,6 @@ import java.awt.event.KeyEvent;
  */
 public class ActionManager {
     
-    //{{{ Public static identifiers
-    
-    public static final String CUT_SUFFIX = ".cut";
-    public static final String COPY_SUFFIX = ".copy";
-    public static final String PASTE_SUFFIX = ".paste";
-    public static final String FIND_SUFFIX = ".find";
-    public static final String FIND_NEXT_SUFFIX = ".findnext";
-    
-    //}}}
-    
     //{{{ addActionSet()
     /**
      * Adds a set of actions to the jsXe's pool of action sets.
@@ -94,11 +85,51 @@ public class ActionManager {
         m_actionSets.add(set);
     }//}}}
     
+    //{{{ addActionImplementation()
+    /**
+     * Register an ActionImplementation with a registered ContextSpecificAction.
+     * If the ContextSpecificAction isn't registered this method does nothing.
+     * @param actionName the name of the ContextSpecificAction
+     * @param comp the component context the recieves the action
+     * @param imp the action implementation
+     */
+    public static void addActionImplementation(String actionName, Component comp, ContextSpecificAction.ActionImplementation imp) {
+        ContextSpecificAction action = getContextSpecificAction(actionName);
+        if (action != null) {
+            action.registerComponent(comp, imp);
+        }
+    }//}}}
+    
+    //{{{ removeActionImplementation()
+    /**
+     * Removes the ActionImplementation from the registered
+     * ContextSpecificAction.
+     */
+    public static void removeActionImplementation(String actionName, Component comp) {
+        ContextSpecificAction action = getContextSpecificAction(actionName);
+        if (action != null) {
+            action.removeComponent(comp);
+        }
+    }//}}}
+    
+    //{{{ getContextSpecificAction()
+    /**
+     * Gets a context specific action or null if no context specific action
+     * exists with that name.
+     */
+    public static ContextSpecificAction getContextSpecificAction(String name) {
+        LocalizedAction action = getLocalizedAction(name);
+        if (action instanceof ContextSpecificAction) {
+            return (ContextSpecificAction)action;
+        }
+        return null;
+    }//}}}
+    
     //{{{ getLocalizedAction()
     /**
      * Gets the LocalizedAction set with the given name
-     * @param the name of the action set.
-     * @return the action set that matches the name, or null if none match.
+     * @param the name of the action.
+     * @return the action that matches the name, or null if none match.
      */
     public static LocalizedAction getLocalizedAction(String name) {
         for (int i = 0; i < m_actionSets.size(); i++) {
@@ -113,8 +144,8 @@ public class ActionManager {
     
     //{{{ getAction()
     /**
-     * Gets a true action for the LocalizedAction with the given name. This can be
-     * used in menus and toobars etc.
+     * Creates a true action for the LocalizedAction with the given name. This 
+     * can be used in menus and toobars etc.
      * @param name the name of the action.
      */
     public static Action getAction(String name) {
@@ -265,18 +296,6 @@ public class ActionManager {
             action.actionPerformed(translateKeyEvent(event));
             event.consume();
         }
-    }//}}}
-    
-    //{{{ isDocviewSpecific()
-    /**
-     * Returns whether the action with the given name is document view specific.
-     */
-    public static boolean isDocViewSpecific(String actionName) {
-        return (actionName.endsWith(CUT_SUFFIX) ||
-                actionName.endsWith(COPY_SUFFIX) ||
-                actionName.endsWith(PASTE_SUFFIX) ||
-                actionName.endsWith(FIND_SUFFIX) ||
-                actionName.endsWith(FIND_NEXT_SUFFIX));
     }//}}}
     
     //{{{ Wrapper class

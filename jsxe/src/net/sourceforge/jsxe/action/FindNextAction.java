@@ -53,7 +53,7 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  * @since jsXe 0.5 pre1
  */
-public class FindNextAction extends ViewSpecificAction {
+public class FindNextAction extends ContextSpecificAction {
     
     //{{{ FindNextAction constructor
     public FindNextAction() {
