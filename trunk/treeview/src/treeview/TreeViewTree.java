@@ -684,48 +684,48 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
         
     }//}}}
     
-    //{{{ ElementTreeCellRenderer class
+   // //{{{ ElementTreeCellRenderer class
     
-    private class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
+   // private class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
         
-        //{{{ ElementTreeCellRenderer constructor
+   //     //{{{ ElementTreeCellRenderer constructor
         
-        public ElementTreeCellRenderer() {
-            m_defaultLeafIcon = getLeafIcon();
-        }//}}}
+   //     public ElementTreeCellRenderer() {
+   //         m_defaultLeafIcon = getLeafIcon();
+   //     }//}}}
         
-        //{{{ getTreeCellRendererComponent
+   //     //{{{ getTreeCellRendererComponent
         
-        public Component getTreeCellRendererComponent(JTree tree, 
-            Object value, boolean selected, boolean expanded,
-            boolean leaf, int row, boolean hasFocus)
-        {
-            AdapterNode node = (AdapterNode)value;
+   //     public Component getTreeCellRendererComponent(JTree tree, 
+   //         Object value, boolean selected, boolean expanded,
+   //         boolean leaf, int row, boolean hasFocus)
+   //     {
+   //         AdapterNode node = (AdapterNode)value;
             
-            // We can rename processing instruction nodes here too.
-            if (node.getNodeType() == AdapterNode.PROCESSING_INSTRUCTION_NODE) {
-                setIcon(m_defaultLeafIcon);
-                setLeafIcon(m_defaultLeafIcon);
-                setOpenIcon(m_defaultLeafIcon);
-                setClosedIcon(m_defaultLeafIcon);
-                setToolTipText(Messages.getMessage("xml.processing.instruction"));
-            } else {
-                setIcon(m_elementIcon);
-                setLeafIcon(m_elementIcon);
-                setOpenIcon(m_elementIcon);
-                setClosedIcon(m_elementIcon);
-                setToolTipText(Messages.getMessage("xml.element"));
-            }
+   //         // We can rename processing instruction nodes here too.
+   //         if (node.getNodeType() == AdapterNode.PROCESSING_INSTRUCTION_NODE) {
+   //             setIcon(m_defaultLeafIcon);
+   //             setLeafIcon(m_defaultLeafIcon);
+   //             setOpenIcon(m_defaultLeafIcon);
+   //             setClosedIcon(m_defaultLeafIcon);
+   //             setToolTipText(Messages.getMessage("xml.processing.instruction"));
+   //         } else {
+   //             setIcon(m_elementIcon);
+   //             setLeafIcon(m_elementIcon);
+   //             setOpenIcon(m_elementIcon);
+   //             setClosedIcon(m_elementIcon);
+   //             setToolTipText(Messages.getMessage("xml.element"));
+   //         }
 
-            //just use the node name, we don't want attributes and such.
-            setText(((AdapterNode)value).getNodeName());
-            return this;
+   //         //just use the node name, we don't want attributes and such.
+   //         setText(((AdapterNode)value).getNodeName());
+   //         return this;
             
-        }//}}}
+   //     }//}}}
         
-        private Icon m_defaultLeafIcon;
+   //     private Icon m_defaultLeafIcon;
         
-    }//}}}
+   // }//}}}
 
     //{{{ ElementCellEditor class
     

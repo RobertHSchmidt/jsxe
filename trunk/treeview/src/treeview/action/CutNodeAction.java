@@ -30,6 +30,7 @@ import treeview.*;
 
 //{{{ AWT classes
 import java.awt.event.ActionEvent;
+import java.awt.Component;
 //}}}
 
 //{{{ Swing classes
@@ -45,7 +46,7 @@ import org.w3c.dom.DOMException;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.LocalizedAction;
+import net.sourceforge.jsxe.action.ContextSpecificAction;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
@@ -63,25 +64,10 @@ import net.sourceforge.jsxe.util.Log;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class CutNodeAction extends LocalizedAction {
-    
-    //{{{ CutNodeAction constructor
-    /**
-     * Creates a action that cuts the current node out of the tree and into
-     * the clipboard.
-     */
-    public CutNodeAction() {
-        super(TreeViewPlugin.PLUGIN_NAME+".cut");
-       // putValue(Action.ACCELERATOR_KEY,KeyStroke.getKeyStroke("ctrl X"));
-    }//}}}
-    
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.cut");
-    }//}}}
+public class CutNodeAction implements ContextSpecificAction.ActionImplementation {
     
     //{{{ invoke()
-    public void invoke(TabbedView view, ActionEvent evt) {
+    public void invoke(TabbedView view, Component comp, ActionEvent evt) {
         DocumentView docView = view.getDocumentView();
         if (docView instanceof DefaultView) {
             DefaultView defView = (DefaultView)docView;

@@ -32,8 +32,10 @@ import treeview.action.*;
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.dom.completion.ElementDecl;
 import net.sourceforge.jsxe.*;
+import net.sourceforge.jsxe.action.ContextSpecificAction;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.msg.PropertyChanged;
 import net.sourceforge.jsxe.msg.UndoEvent;
@@ -120,6 +122,7 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
         m_valueTextArea.setFont(new Font("Monospaced", 0, 12));
         m_valueTextArea.setLineWrap(false);
         JScrollPane htmlView = new JScrollPane(m_valueTextArea);
+        
         //}}}
         
         //{{{ init attributes table
@@ -137,6 +140,11 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
         tree.setName("TreeViewTree");
         JScrollPane treeView = new JScrollPane(tree);
         tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
+        
+        //add context specific actions for the tree.
+        ActionManager.addActionImplementation("cut", tree, new CutNodeAction());
+        ActionManager.addActionImplementation("copy", tree, new CopyNodeAction());
+        ActionManager.addActionImplementation("paste", tree, new PasteNodeAction());
         
         //starts editing if the user start typing on one of the nodes
         //seems to catch user shortcuts too. Not sure how to resolve that.
@@ -232,6 +240,10 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
                 m_document.removeXMLDocumentListener(m_documentListener);
             }
         }
+        
+        ActionManager.removeActionImplementation("cut", tree);
+        ActionManager.removeActionImplementation("copy", tree);
+        ActionManager.removeActionImplementation("paste", tree);
         
         EditBus.removeFromBus(this);
         
