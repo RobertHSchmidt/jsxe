@@ -1,3 +1,12 @@
+08/30/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed null pointer exception when trying to cut a node that can't be
+      cut.
+
+08/29/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated japanese translation
+
 08/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated russian translation.
