@@ -1,3 +1,9 @@
+08/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added new ContextSpecificActions to replace ViewSpecificActions. Now
+      actions such as cut and paste can be registered for specific components
+      not just a specific view.
+
 08/29/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed a memory leak with JMenuItems. ActionManager kept a cache of
