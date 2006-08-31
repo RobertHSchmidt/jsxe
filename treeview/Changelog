@@ -1,3 +1,8 @@
+08/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the sourceview actions to use the new ContextSpecificActions in
+      jsXe.
+
 08/30/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Fixed null pointer exception when trying to cut a node that can't be
