@@ -60,11 +60,6 @@ public class SourceViewPlugin extends ViewPlugin {
     //{{{ SourceViewPlugin
     
     public SourceViewPlugin() {
-        addAction(new EditCutAction());
-        addAction(new EditCopyAction());
-        addAction(new EditPasteAction());
-        addAction(new EditFindAction());
-        addAction(new EditFindNextAction());
     }//}}}
     
     //{{{ newDocumentView()

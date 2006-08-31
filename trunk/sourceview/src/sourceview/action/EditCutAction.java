@@ -30,14 +30,14 @@ import sourceview.*;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.LocalizedAction;
+import net.sourceforge.jsxe.action.ContextSpecificAction;
 import net.sourceforge.jsxe.gui.TabbedView;
-import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 
 //{{{ AWT classes
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 //}}}
 
@@ -49,20 +49,10 @@ import java.awt.event.ActionEvent;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class EditCutAction extends LocalizedAction {
+public class EditCutAction implements ContextSpecificAction.ActionImplementation {
     
-    //{{{ EditCutAction constructor
-    public EditCutAction() {
-        super(SourceViewPlugin.PLUGIN_NAME+".cut");
-    }//}}}
-    
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.cut");
-    }//}}}
-     
     //{{{ invoke()
-    public void invoke(TabbedView view, ActionEvent evt) {
+    public void invoke(TabbedView view, Component comp, ActionEvent evt) {
         DocumentView docView = view.getDocumentView();
         if (docView instanceof SourceView) {
             SourceView sourceView = (SourceView)docView;
