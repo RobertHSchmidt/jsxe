@@ -1,3 +1,8 @@
+08/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the sourceview actions to use the new ContextSpecificActions in
+      jsXe.
+
 08/22/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Changing the encoding now updates the SourceViewDocument so that it

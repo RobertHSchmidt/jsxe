@@ -25,11 +25,8 @@ from http://www.fsf.org/copyleft/gpl.txt
 package sourceview;
 
 //{{{ imports
-/*
-All classes are listed explicitly so
-it is easy to see which package it
-belongs to.
-*/
+
+import sourceview.action.*;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.*;
@@ -131,6 +128,12 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
         m_textarea.setName("SourceTextArea");
         
         m_textarea.putClientProperty(InputHandler.SMART_HOME_END_PROPERTY, Boolean.TRUE);
+        
+        ActionManager.addActionImplementation("cut", m_textarea, new EditCutAction());
+        ActionManager.addActionImplementation("copy", m_textarea, new EditCopyAction());
+        ActionManager.addActionImplementation("paste", m_textarea, new EditPasteAction());
+        ActionManager.addActionImplementation("find", m_textarea, new EditFindAction());
+        ActionManager.addActionImplementation("findnext", m_textarea, new EditFindNextAction());
         
         //{{{ create popup menu
         
@@ -238,6 +241,13 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
             dialog.dispose();
         }
         m_document.removeXMLDocumentListener(docListener);
+        
+        ActionManager.removeActionImplementation("cut", m_textarea);
+        ActionManager.removeActionImplementation("copy", m_textarea);
+        ActionManager.removeActionImplementation("paste", m_textarea);
+        ActionManager.removeActionImplementation("find", m_textarea);
+        ActionManager.removeActionImplementation("findNext", m_textarea);
+        
         return true;
     }//}}}
     
