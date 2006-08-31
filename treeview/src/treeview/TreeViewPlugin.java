@@ -63,9 +63,6 @@ public class TreeViewPlugin extends ViewPlugin {
         addAction(new RemoveAttributeAction());
         addAction(new EditNodeAction());
         addAction(new AddDocTypeAction());
-        addAction(new CutNodeAction());
-        addAction(new CopyNodeAction());
-        addAction(new PasteNodeAction());
     }//}}}
     
     //{{{ newDocumentView()
