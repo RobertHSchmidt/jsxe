@@ -40,8 +40,12 @@ import java.io.IOException;
 //}}}
 
 //{{{ AWT components
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 //}}}
+
+import javax.swing.text.JTextComponent;
 
 //}}}
 
@@ -53,11 +57,23 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  * @since jsXe 0.5 pre1
  */
-public class CopyAction extends ViewSpecificAction {
+public class CopyAction extends ContextSpecificAction {
     
     //{{{ CopyAction constructor
     public CopyAction() {
         super("copy");
     }//}}}
     
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        /*
+        Invoke the action registered for the current component named
+        */
+        Component comp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getPermanentFocusOwner();
+        if (comp instanceof JTextComponent) {
+            ((JTextComponent)comp).copy();
+        } else {
+            super.invoke(view, evt);
+        }
+    }//}}}
 }

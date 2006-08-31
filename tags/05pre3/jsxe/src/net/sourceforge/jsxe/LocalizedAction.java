@@ -45,7 +45,7 @@ import net.sourceforge.jsxe.util.MiscUtilities;
  * @version $Id$
  * @see jsXe
  * @see ActionSet
- * @see InputManager
+ * @see ActionManager
  * @since jsXe 0.5 pre1
  */
 public abstract class LocalizedAction {

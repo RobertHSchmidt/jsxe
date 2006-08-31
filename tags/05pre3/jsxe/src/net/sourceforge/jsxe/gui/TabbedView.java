@@ -585,69 +585,68 @@ public class TabbedView extends JFrame {
             m_editMenu.add(menuItem);
             m_editMenu.addSeparator();
             Action action = ActionManager.getAction("cut");
-            if (view != null) {
-                String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".cut";
-                if (ActionManager.getLocalizedAction(name) == null) {
-                    action.setEnabled(false);
-                } else {
-                    action.setEnabled(true);
-                }
-            } else {
-                action.setEnabled(false);
-            }
+           // if (view != null) {
+           //     if (ActionManager.getLocalizedAction(name) == null) {
+           //         action.setEnabled(false);
+           //     } else {
+           //         action.setEnabled(true);
+           //     }
+           // } else {
+           //     action.setEnabled(false);
+           // }
             menuItem = new JMenuItem(action);
             m_editMenu.add(menuItem);
             action = ActionManager.getAction("copy");
-            if (view != null) {
-                String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".copy";
-                if (ActionManager.getLocalizedAction(name) == null) {
-                    action.setEnabled(false);
-                } else {
-                    action.setEnabled(true);
-                }
-            } else {
-                action.setEnabled(false);
-            }
+           // if (view != null) {
+           //     String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".copy";
+           //     if (ActionManager.getLocalizedAction(name) == null) {
+           //         action.setEnabled(false);
+           //     } else {
+           //         action.setEnabled(true);
+           //     }
+           // } else {
+           //     action.setEnabled(false);
+           // }
             menuItem = new JMenuItem(action);
             m_editMenu.add(menuItem);
             action = ActionManager.getAction("paste");
-            if (view != null) {
-                String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".paste";
-                if (ActionManager.getLocalizedAction(name) == null) {
-                    action.setEnabled(false);
-                } else {
-                    action.setEnabled(true);
-                }
-            } else {
-                action.setEnabled(false);
-            }
+           // if (view != null) {
+           //     String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".paste";
+           //     if (ActionManager.getLocalizedAction(name) == null) {
+           //         action.setEnabled(false);
+           //     } else {
+           //         action.setEnabled(true);
+           //     }
+           // } else {
+           //     action.setEnabled(false);
+           // }
             menuItem = new JMenuItem(action);
             m_editMenu.add(menuItem);
             m_editMenu.addSeparator();
             action = ActionManager.getAction("find");
-            if (view != null) {
-                String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".find";
-                if (ActionManager.getLocalizedAction(name) == null) {
-                    action.setEnabled(false);
-                } else {
-                    action.setEnabled(true);
-                }
-            } else {
-                action.setEnabled(false);
-            }
+           // if (view != null) {
+           //     String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".find";
+           //     if (ActionManager.getLocalizedAction(name) == null) {
+           //         action.setEnabled(false);
+           //     } else {
+           //         action.setEnabled(true);
+           //     }
+           // } else {
+           //     action.setEnabled(false);
+           // }
             menuItem = new JMenuItem(action);
             m_editMenu.add(menuItem);
             action = ActionManager.getAction("findnext");
-            if (view != null) {
-                String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".findnext";
-                if (ActionManager.getLocalizedAction(name) == null) {
-                    action.setEnabled(false);
-                } else {
-                    action.setEnabled(true);
-                }
-            } else {
-                action.setEnabled(false);
-            }
+           // if (view != null) {
+           //     String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".findnext";
+           //     if (ActionManager.getLocalizedAction(name) == null) {
+           //         action.setEnabled(false);
+           //     } else {
+           //         action.setEnabled(true);
+           //     }
+           // } else {
+           //     action.setEnabled(false);
+           // }
             menuItem = new JMenuItem(action);
             m_editMenu.add(menuItem);
     }//}}}
