@@ -146,10 +146,8 @@ public class ShortcutsOptionPane extends AbstractOptionPane {
                 if (label == null) {
                     Log.log(Log.WARNING, this, names[i]+" has a null label");
                 } else {                                
-                    if (!ActionManager.isDocViewSpecific(names[i])) {
-                        String binding = jsXe.getProperty(names[i]+".shortcut");
-                        m_set.add(new GrabKeyDialog.KeyBinding(names[i], label, binding));
-                    }
+                    String binding = jsXe.getProperty(names[i]+".shortcut");
+                    m_set.add(new GrabKeyDialog.KeyBinding(names[i], label, binding));
                 }
             }
             MiscUtilities.quicksort(m_set, new KeyCompare());

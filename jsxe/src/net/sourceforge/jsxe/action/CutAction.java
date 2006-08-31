@@ -40,8 +40,12 @@ import java.io.IOException;
 //}}}
 
 //{{{ AWT components
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 //}}}
+
+import javax.swing.text.JTextComponent;
 
 //}}}
 
@@ -52,11 +56,24 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  * @since jsXe 0.5 pre1
  */
-public class CutAction extends ViewSpecificAction {
+public class CutAction extends ContextSpecificAction {
     
     //{{{ CutAction constructor
     public CutAction() {
         super("cut");
+    }//}}}
+    
+    //{{{ invoke()
+    public void invoke(TabbedView view, ActionEvent evt) {
+        /*
+        Invoke the action registered for the current component named
+        */
+        Component comp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getPermanentFocusOwner();
+        if (comp instanceof JTextComponent) {
+            ((JTextComponent)comp).cut();
+        } else {
+            super.invoke(view, evt);
+        }
     }//}}}
     
 }
