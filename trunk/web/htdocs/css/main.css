@@ -71,6 +71,13 @@ a.hover {
   padding: 5px;
 }
 
+#languages img {
+  display: inline;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 0px;
+}
+
 #mainBody {
   position: absolute;
   /*float: right;*/
