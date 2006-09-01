@@ -15,6 +15,7 @@ include("functions.php");
     <div id="sidebar">
       <?php include("sidebar.php") ?>
     </div>
+    
     <div id="mainBody">
       
       <?php get_content('overview'); ?>

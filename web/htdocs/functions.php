@@ -1,24 +1,123 @@
 <?php
+/*
+:tabSize=4:indentSize=4:noTabs=true:
+:folding=explicit:collapseFolds=1:
+*/
+
 if( !defined('ROOT') ) die( 'Please, do not access this page directly.' );
 
-function get_locale() {
-    $req_locale="en";
-    if (isset($_GET['lang'])) {
-        //IML: Support the lang attribute
-        $req_locale = $_GET['lang'];
-    }
-    return $req_locale;
-}
+global $default_locale, $locales;
+$default_locale = "en-us";
 
-function create_link( $href, $contents ) {
-    $link = '<a href="'.$href;
-    if (isset($_GET['lang'])) {
-        $locale = $_GET['lang'];
-        $link = $link.'?lang='.$locale;
+$dir = dirname(__FILE__).'/content/';
+$locales = directory_list($dir);
+
+//{{{ get_locale()
+
+function get_locale() {
+    if (!defined('LOCALE')) {
+        if (isset($_GET['lang'])) {
+            //IML: Support the lang attribute
+            $locale = match_locale($_GET['lang']);
+            if (!empty($locale)) {
+                define('LANG', $locale);
+                return $locale;
+            }
+        }
+        $locale = locale_from_httpaccept();
+        define( 'LOCALE', $locale );
+        return LOCALE;
     }
+    return LOCALE;
+}//}}}
+
+//{{{ match_locale()
+
+function match_locale($locale) {
+    
+    global $locales;
+    
+   // echo 'match_locale('.$locale.')';
+   // echo '<br/>';
+        
+    
+    // look for exact match. (lang and country)
+    foreach ($locales as $key => $value) {
+       // echo 'searching '.$key;
+       // echo '<br/>';
+        if ($key == $locale) {
+           // echo 'found '.$key;
+           // echo '<br/>';
+            return $locale;
+        }
+    }
+    
+    // look for just lang
+    foreach ($locales as $key => $value) {
+        $pos = strpos( $locale, '-');
+        if ($pos !== false) {
+            $locale = substr($locale, 0, $pos);
+        }
+       // echo 'searching '.$key;
+       // echo '<br/>';
+        if ($key == $locale) {
+           // echo 'found '.$key;
+           // echo '<br/>';
+            return $locale;
+        }
+    }
+   // echo '<br/>';
+    //no matches at all.
+    return '';
+}//}}}
+
+//{{{ get_image()
+
+function get_image($image, $alt='') {
+    $location = 'http://jsxe.sourceforge.net/images/'.$image;
+   // $location = 'http://www.ianlewis.org/jsxetest/images/'.$image;
+    return '<img src="'.$location.'" alt="'.$alt.'"/>';
+}//}}}
+
+//{{{ create_link()
+
+function create_link( $href, $contents, $params = array() ) {
+    global $default_locale;
+    
+    $link = '<a href="'.$href;
+    
+    if (isset($_GET['lang']) and empty($params['lang'])) {
+        $params['lang'] = $_GET['lang'];
+    }
+   // if (isset($_GET['id'])) {
+   //     $params['id'] = $_GET['id'];
+   // }
+    
+    if (count($params) > 0) {
+        $link = $link.'?';
+        foreach ($params as $key => $value) {
+            if (!empty($key) and !empty($value)) {
+                $link = $link.$key.'='.$value.'&';
+            }
+        }
+        //remove the last '&'
+        $link = substr($link, 0, -1);
+    }
+    
     $link = $link.'">'.T_($contents).'</a>';
     return $link;
-}
+}//}}}
+
+//{{{ create_language_link()
+
+function create_language_link($lang, $text) {
+    $current_file = $_SERVER['PHP_SELF'];
+    $params = array();
+    $params['lang'] = $lang;
+    return create_link($current_file, $text, $params);
+}//}}}
+
+//{{{ get_content()
 
 function get_content( $name ) {
     $file = 'content/'.get_locale().'/'.$name.'.html';
@@ -29,7 +128,9 @@ function get_content( $name ) {
     $data = fread($fh, filesize($file));
     fclose($fh);
     echo $data;
-}
+}//}}}
+
+//{{{ get_news()
 
 function get_news() {
     
@@ -51,7 +152,9 @@ function get_news() {
     
     echo $header;
     echo $data;
-}
+}//}}}
+
+//{{{ T_()
 
 function T_( $string, $lang = '' ) {
     
@@ -87,7 +190,117 @@ function T_( $string, $lang = '' ) {
 
     // Return the English string:
     return $string;
-}
+}//}}}
+
+//{{{ locale_from_httpaccept()
+/**
+ * Detect language from HTTP_ACCEPT_LANGUAGE
+ *
+ * First matched full locale code in HTTP_ACCEPT_LANGUAGE will win
+ * Otherwise, first locale in table matching a lang code will win
+ *
+ * {@internal locale_from_httpaccept(-)}}
+ *
+ * @return locale made out of HTTP_ACCEPT_LANGUAGE or $default_locale, if no match
+ */
+function locale_from_httpaccept() {
+    
+    global $locales, $default_locale;
+    if ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ) {
+        
+        $accept = strtolower( $_SERVER['HTTP_ACCEPT_LANGUAGE'] );
+       // pre_dump($accept, 'http_accept_language');
+       // echo $accept;
+       // $accept = 'en;q=0.3,ru,ja;q=0.8,ar-sa;q=0.5';
+        
+        $accept_locales = array();
+        
+        $tok = strtok($accept, ",");
+        
+        while ($tok !== false) {
+          // echo "Word=$tok<br/>";
+           
+           $priority = 1;
+           $locale = $tok;
+           
+           $pos = strpos( $tok, ';');
+           if ($pos !== false) {
+               $locale = substr($locale, 0, $pos);
+               
+               //check priority
+               $priority_string = substr($tok, $pos+1);
+              // echo $priority_string;
+              // echo '<br/>';
+               if (substr($priority_string, 0,2) == 'q=') {
+                   $priority = substr($priority_string, 2);
+               }
+           }
+           
+          // echo 'locale='.$locale;
+          // echo '<br/>';
+          // echo 'priority='.$priority;
+          // echo '<br/>';
+           $accept_locales[$locale] = $priority;
+           
+           $tok = strtok(",");
+        }
+       // echo '<br/>';
+        $accept_locales = array_sort($accept_locales, 'desc');
+        foreach ( $accept_locales as $locale => $priority ) {
+           // echo $priority.' => '.$locale.'<br/>';
+            $selected_locale = match_locale($locale);
+            if (!empty($selected_locale)) {
+                return $selected_locale;
+            }
+        }
+    }
+    return $default_locale;
+}//}}}
+
+//{{{ array_sort()
+
+function array_sort($array, $type='asc'){
+   $result=array();
+   foreach($array as $var => $val){
+       $set=false;
+       foreach($result as $var2 => $val2){
+           if($set==false){
+               if($val>$val2 && $type=='desc' || $val<$val2 && $type=='asc'){
+                   $temp=array();
+                   foreach($result as $var3 => $val3){
+                       if($var3==$var2) $set=true;
+                       if($set){
+                           $temp[$var3]=$val3;
+                           unset($result[$var3]);
+                       }
+                   }
+                   $result[$var]=$val;   
+                   foreach($temp as $var3 => $val3){
+                       $result[$var3]=$val3;
+                   }
+               }
+           }
+       }
+       if(!$set){
+           $result[$var]=$val;
+       }
+   }
+   return $result;
+}//}}}
+
+//{{{ directory_list()
+
+function directory_list($dir) {
+   $d = dir($dir);
+   while (false !== ($entry = $d->read())) {
+       if($entry != '.' && $entry != '..' && is_dir($dir.$entry))
+           $arDir[$entry] = $dir.$entry.'/';
+   }
+   $d->close();
+   return $arDir;
+}//}}}
+
+//{{{ redirect()
 
 // func: redirect($to,$code=307)
 // spec: http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
@@ -140,5 +353,6 @@ function redirect($to,$code=301)
     echo "</div>\n</div>\n";
   }
   exit(0);
-}
+}//}}}
+
 ?>

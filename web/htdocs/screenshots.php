@@ -4,7 +4,7 @@ include("functions.php");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo get_locale() ?>" lang="<?php echo get_locale() ?>">
   <head>
     <title>jsXe: Screenshots</title>
     <?php include("meta.php") ?>
@@ -15,6 +15,7 @@ include("functions.php");
     <div id="sidebar">
       <?php include("sidebar.php") ?>
     </div>
+    
     <div id="mainBody">
       
       <?php if (isset($_GET['id'])) {
@@ -29,9 +30,11 @@ include("functions.php");
         <table border="0" cellpadding="0" cellspacing="15" width="100%">
           <tr>
             <td>
-              <a href="screenshots.php?id=86758">
-                <img alt="screenshot" border="0" src="http://sourceforge.net/dbimage.php?id=86757"/>
-              </a>
+              <?php
+              $params = array();
+              $params['id'] = '86758';
+              echo create_link('screenshots.php', '<img alt="screenshot" border="0" src="http://sourceforge.net/dbimage.php?id=86757"/>', $params);
+              ?>
             </td>
             <td>
               jsXe with Japanese locale.
@@ -42,9 +45,11 @@ include("functions.php");
           </tr>
           <tr>
             <td>
-              <a href="screenshots.php?id=59765">
-                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=59764"/>
-              </a>
+              <?php
+              $params = array();
+              $params['id'] = '59765';
+              echo create_link('screenshots.php', '<img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=59764"/>', $params);
+              ?>
             </td>
             <td>
               A screenshot showing the context dialog including cut/paste
@@ -56,9 +61,11 @@ include("functions.php");
           
           <tr>
             <td>
-              <a href="screenshots.php?id=34496">
-                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34495"/>
-              </a>
+              <?php
+              $params = array();
+              $params['id'] = '34496';
+              echo create_link('screenshots.php', '<img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34495"/>', $params);
+              ?>
             </td>
             <td>
               A screenshot showing validation features. jsXe allows you to add nodes defined by DTD/Schema
@@ -69,9 +76,11 @@ include("functions.php");
           </tr>
           <tr>
             <td>
-              <a href="screenshots.php?id=34498">
-                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34497"/>
-              </a>
+              <?php
+              $params = array();
+              $params['id'] = '34498';
+              echo create_link('screenshots.php', '<img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34497"/>', $params);
+              ?>
             </td>
             <td>
               A screenshot showing the syntax highlighted source view.
@@ -82,9 +91,11 @@ include("functions.php");
           </tr>
           <tr>
             <td>
-              <a href="screenshots.php?id=34500">
-                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34499"/>
-              </a>
+              <?php
+              $params = array();
+              $params['id'] = '34500';
+              echo create_link('screenshots.php', '<img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34499"/>', $params);
+              ?>
             </td>
             <td>
               A screenshot of jsXe&apos;s options panel.
@@ -95,9 +106,11 @@ include("functions.php");
           </tr>
           <tr>
             <td>
-              <a href="screenshots.php?id=34502">
-                <img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34501"/>
-              </a>
+              <?php
+              $params = array();
+              $params['id'] = '34502';
+              echo create_link('screenshots.php', '<img alt="screenshot" border="0" src="https://sourceforge.net/dbimage.php?id=34501"/>', $params);
+              ?>
             </td>
             <td>
               A screenshot of the edit node dialog. This dialog can be used to edit nodes defined in DTD/Schema
