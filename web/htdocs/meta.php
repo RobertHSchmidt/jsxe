@@ -1,3 +1,5 @@
+<?php if( !defined('ROOT') ) die( 'Please, do not access this page directly.' ); ?>
+
 <meta content="General" name="rating"/>
 <meta content="Index, follow" name="robots"/>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-type"/>
