@@ -54,7 +54,7 @@ include("functions.php");
               ?>
             </td>
             <td>
-              A screenshot showing the context dialog including cut/paste
+              <?php echo T_("A screenshot showing the context dialog including cut/paste."); ?>
               <br/>
               
               (jsXe 0.4 pre3, Windows XP)
@@ -70,10 +70,10 @@ include("functions.php");
               ?>
             </td>
             <td>
-              A screenshot showing validation features. jsXe allows you to add nodes defined by DTD/Schema
+              <?php echo T_("A screenshot showing validation features. jsXe allows you to add nodes defined by DTD/Schema."); ?>
               <br/>
               
-              (jsXe 0.4 pre1 running on Windows XP)
+              (jsXe 0.4, Windows XP)
             </td>
           </tr>
           <tr>
@@ -85,10 +85,10 @@ include("functions.php");
               ?>
             </td>
             <td>
-              A screenshot showing the syntax highlighted source view.
+              <?php echo T_("A screenshot showing the syntax highlighted source view."); ?>
               <br/>
               
-              (jsXe 0.4 pre2 running on Windows XP)
+              (jsXe 0.4 pre2, Windows XP)
             </td>
           </tr>
           <tr>
@@ -100,10 +100,10 @@ include("functions.php");
               ?>
             </td>
             <td>
-              A screenshot of jsXe&apos;s options panel.
+              <?php echo T_("A screenshot of jsXe&apos;s options panel."); ?>
               <br/>
               
-              (jsXe 0.4 pre1 running on Windows XP)
+              (jsXe 0.4 pre1, Windows XP)
             </td>
           </tr>
           <tr>
@@ -115,10 +115,10 @@ include("functions.php");
               ?>
             </td>
             <td>
-              A screenshot of the edit node dialog. This dialog can be used to edit nodes defined in DTD/Schema
+              <?php echo T_("A screenshot of the edit node dialog. This dialog can be used to edit nodes defined in DTD/Schema."); ?>
               <br/>
               
-              (jsXe 0.4 pre1 running on Windows XP)
+              (jsXe 0.4 pre1, Windows XP)
             </td>
           </tr>
         </table>
