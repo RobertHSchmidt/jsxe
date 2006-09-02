@@ -222,7 +222,7 @@ public class XMLDocumentIORequest extends WorkRequest {
                 }
 
                 read(autodetect(in),length,false);
-                buffer.setNewFile(false);
+               // buffer.setNewFile(false);
                 
             } catch(CharConversionException ch) {
                 Log.log(Log.ERROR,this,ch);
@@ -622,7 +622,7 @@ public class XMLDocumentIORequest extends WorkRequest {
             String savePath;
 
             boolean twoStageSave = (vfs.getCapabilities() & VFS.RENAME_CAP) != 0
-                && jsXe.getBooleanProperty("twoStageSave");
+                && jsXe.getBooleanProperty("twoStageSave", false);
             if(twoStageSave)
                 savePath = vfs.getTwoStageSaveName(path);
             else
@@ -727,8 +727,7 @@ public class XMLDocumentIORequest extends WorkRequest {
             {
                 //buffer.readLock();
 
-                if(!buffer.isDirty())
-                {
+                if(!buffer.getBooleanProperty("xmldocument.dirty", false)) {
                     // buffer has been saved while we
                     // were waiting.
                     return;
@@ -820,9 +819,9 @@ public class XMLDocumentIORequest extends WorkRequest {
     //{{{ write()
     private void write(XMLDocument buffer, OutputStream out) throws IOException {
         
-        String newLine = getProperty(XMLDocument.LINE_SEPARATOR);
+        String newLine = buffer.getProperty(XMLDocument.LINE_SEPARATOR);
         
-        String encoding = getProperty(XMLDocument.ENCODING);
+        String encoding = buffer.getProperty(XMLDocument.ENCODING);
         if (encoding.equals(MiscUtilities.UTF_8_Y)) {
             // not supported by Java...
             out.write(UTF8_MAGIC_1);

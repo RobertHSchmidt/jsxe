@@ -99,43 +99,46 @@ public class JARClassLoader extends ClassLoader {
      */
     protected Class findClass(String name) throws ClassNotFoundException {
         
-        String classFileName = name.replace('.','/').concat(".class");
-        Iterator jarItr = m_jarFiles.values().iterator();
+        synchronized(this) {
         
-        while (jarItr.hasNext()) {
-            try {
-                
-                JarFile zipFile = (JarFile)jarItr.next();
-                ZipEntry entry = zipFile.getEntry(classFileName);
-                
-                if (entry != null) {
+            String classFileName = name.replace('.','/').concat(".class");
+            Iterator jarItr = m_jarFiles.values().iterator();
+            
+            while (jarItr.hasNext()) {
+                try {
                     
-                    InputStream in = zipFile.getInputStream(entry);
+                    JarFile zipFile = (JarFile)jarItr.next();
+                    ZipEntry entry = zipFile.getEntry(classFileName);
                     
-                    boolean fail = false;
-                    int len = (int)entry.getSize();
-                    byte[] data = new byte[len];
-                    int success = 0;
-                    int offset = 0;
-                    
-                    while(success < len && !fail) {
-                        len -= success;
-                        offset += success;
+                    if (entry != null) {
                         
-                        success = in.read(data,offset,len);
-                        if(success == -1) {
-                            fail = true;
+                        InputStream in = zipFile.getInputStream(entry);
+                        
+                        boolean fail = false;
+                        int len = (int)entry.getSize();
+                        byte[] data = new byte[len];
+                        int success = 0;
+                        int offset = 0;
+                        
+                        while(success < len && !fail) {
+                            len -= success;
+                            offset += success;
+                            
+                            success = in.read(data,offset,len);
+                            if(success == -1) {
+                                fail = true;
+                            }
                         }
+                        Class c = defineClass(name,data,0,data.length);
+                        return c;
                     }
-                    Class c = defineClass(name,data,0,data.length);
-                    return c;
+                    
+                } catch(IOException io) {
+                    //failed, try the next jar
                 }
-                
-            } catch(IOException io) {
-                //failed, try the next jar
             }
+            throw new ClassNotFoundException(name);
         }
-        throw new ClassNotFoundException(name);
         
     }//}}}
 
