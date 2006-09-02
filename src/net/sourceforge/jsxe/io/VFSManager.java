@@ -60,12 +60,12 @@ import java.util.Vector;
 //}}}
 
 /**
- * jEdit's virtual filesystem allows it to transparently edit files
+ * jsXe's virtual filesystem allows it to transparently edit files
  * stored elsewhere than the local filesystem, for example on an FTP
  * site. See the {@link VFS} class for implementation details.<p>
  *
- * Note that most of the jEdit API is not thread-safe, so special care
- * must be taken when making jEdit API calls. Also, it is not safe to
+ * Note that most of the jsXe API is not thread-safe, so special care
+ * must be taken when making jsXe API calls. Also, it is not safe to
  * call <code>SwingUtilities.invokeAndWait()</code> from a work request;
  * it can cause a deadlock if the given runnable then later calls
  * {@link #waitForRequests()}.
@@ -76,10 +76,6 @@ import java.util.Vector;
  * @since jsXe 0.5 pre3
  */
 public class VFSManager {
-    /**
-     * The service type. See {@link org.gjt.sp.jedit.ServiceManager}.
-     */
-   // public static final String SERVICE = "net.sourceforge.jsxe.io.VFS";
 
     //{{{ init() method
     /**
