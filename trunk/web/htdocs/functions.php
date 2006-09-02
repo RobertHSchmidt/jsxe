@@ -128,9 +128,9 @@ function get_content( $name ) {
    // $data = fread($fh, filesize($file));
    // fclose($fh);
    // echo $data;
-    $file = 'content/'.get_locale().'/'.$name.'.html';
+    $file = 'content/'.get_locale().'/'.$name.'.php';
     if (!file_exists($file)) {
-        $file = 'content/en/'.$name.'.html';
+        $file = 'content/en/'.$name.'.php';
     }
     include($file);
 }//}}}
