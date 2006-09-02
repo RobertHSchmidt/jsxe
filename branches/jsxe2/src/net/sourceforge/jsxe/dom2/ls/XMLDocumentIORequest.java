@@ -33,6 +33,7 @@ import java.util.Vector;
 import net.sourceforge.jsxe.io.*;
 import net.sourceforge.jsxe.*;
 import net.sourceforge.jsxe.gui.TabbedView;
+import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.dom2.XMLDocument;
 import net.sourceforge.jsxe.util.*;
 //}}}
@@ -199,10 +200,10 @@ public class XMLDocumentIORequest extends WorkRequest {
                 String[] args = { vfs.getFileName(path) };
                 setAbortable(true);
                 
-                if (!buffer.isTemporary()) {
-                    setStatus(Messages.getMessage("DocumentBuffer.Loading.Message",args));
-                    setProgressValue(0);
-                }
+               // if (!buffer.isTemporary()) {
+               //     setStatus(Messages.getMessage("DocumentBuffer.Loading.Message",args));
+               //     setProgressValue(0);
+               // }
 
                 path = vfs._canonPath(session,path,view);
 
@@ -285,11 +286,11 @@ public class XMLDocumentIORequest extends WorkRequest {
     private Reader autodetect(InputStream in) throws IOException {
         in = new BufferedInputStream(in);
 
-        String encoding = buffer.getStringProperty(XMLDocument.ENCODING);
+        String encoding = buffer.getProperty(XMLDocument.ENCODING);
         if (!in.markSupported()) {
             Log.log(Log.WARNING,this,"Mark not supported: " + in);
         } else {
-            if(buffer.getBooleanProperty(XMLDocument.ENCODING_AUTODETECT)) {
+            if (buffer.getBooleanProperty(XMLDocument.ENCODING_AUTODETECT, true)) {
                 in.mark(XML_PI_LENGTH);
                 int b1 = in.read();
                 int b2 = in.read();
@@ -531,7 +532,7 @@ public class XMLDocumentIORequest extends WorkRequest {
             // 0-byte files should open using
             // the default line seperator"
             lineSeparator = jsXe.getProperty(
-                "xml.document."+XMLDocumen.LINE_SEPARATOR,
+                "xml.document."+XMLDocument.LINE_SEPARATOR,
                 System.getProperty("line.separator"));
         } else {
             if (CRLF) {

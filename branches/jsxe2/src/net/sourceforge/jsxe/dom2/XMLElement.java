@@ -31,10 +31,6 @@ import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.util.MiscUtilities;
 //}}}
 
-//{{{ Swing classes
-import javax.swing.text.*;
-//}}}
-
 //{{{ DOM classes
 import org.w3c.dom.*;
 import org.w3c.dom.events.*;
@@ -42,6 +38,7 @@ import org.w3c.dom.events.*;
 
 //{{{ Java classes
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 //}}}
@@ -84,7 +81,7 @@ public class XMLElement extends XMLNode {
         for (int i=0; i<len; i++) {
             Node attr = attributes.item(i);
             XMLAttribute xmlAttr = (XMLAttribute)attr.getUserData(USER_DATA_KEY);
-            attrSet.put(xmlAttr.getName(), xmlAttr.getValue());
+            attrSet.put(xmlAttr.getQualifiedName(), xmlAttr.getValue());
         }
         return attrSet;
     }//}}}

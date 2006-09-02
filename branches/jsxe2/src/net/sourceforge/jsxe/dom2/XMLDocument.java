@@ -154,7 +154,7 @@ public class XMLDocument {
      * @param properties the properties to assign this XMLDocument on creation.
      * @throws IOException if there was a problem reading the document
      */
-    public XMLDocument(String uri, InputStream reader, EntityResolver resolver, Map properties) throws IOException {
+    public XMLDocument(String uri, InputStream reader, EntityResolver resolver, Properties properties) throws IOException {
         m_entityResolver = resolver;
         setURI(uri);
         
@@ -162,8 +162,8 @@ public class XMLDocument {
         if (properties != null) {
             Iterator propertyNames = properties.keySet().iterator();
             while (propertyNames.hasNext()) {
-                Object key = propertyNames.next();
-                putProperty(key, properties.get(key));
+                String key = propertyNames.next().toString();
+                setProperty(key, properties.getProperty(key));
             }
         }
         
@@ -358,7 +358,7 @@ public class XMLDocument {
             String o = m_properties.getProperty(key);
             if (o == null) {
                 // Now try xml.document.<property>
-                o = jsXe.getProperty("xml.document." + name);
+                o = jsXe.getProperty("xml.document." + key);
             }
             return o;
         }
@@ -380,10 +380,10 @@ public class XMLDocument {
      * Returns the value of a boolean property. This method is thread-safe.
      * @param name The property name
      */
-    public boolean getBooleanProperty(String name) {
+    public boolean getBooleanProperty(String name, boolean defValue) {
         String obj = getProperty(name);
         if (obj == null) {
-            return null;
+            return defValue;
         }
         
         return Boolean.valueOf(obj).booleanValue();
@@ -407,7 +407,7 @@ public class XMLDocument {
     public int getIntegerProperty(String name, int defaultValue) {
         
         boolean defaultValueFlag;
-        String obj = getProperty();
+        String obj = getProperty(name);
 
         if (obj == null) {
             return defaultValue;
@@ -567,7 +567,7 @@ public class XMLDocument {
      * @param data the text contents of the comment
      */
     public XMLComment newCommentNode(String data) {
-        return new XMLComment(m_document.createCommentNode(data));
+        return new XMLComment(m_document.createComment(data));
     }//}}}
     
     //{{{ newProcessingInstruction()

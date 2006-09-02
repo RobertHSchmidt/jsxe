@@ -38,11 +38,10 @@ import org.w3c.dom.*;
 import org.w3c.dom.events.*;
 //}}}
 
-//{{{ Swing classes
-import javax.swing.text.*;
-//}}}
-
+//{{{ Java classes
 import java.util.ArrayList;
+import java.util.Map;
+//}}}
 
 //}}}
 
@@ -139,8 +138,6 @@ public abstract class XMLNode {
         }
     }//}}}
     
-    //{{{ javax.swing.text.Element methods
-    
     //{{{ getAttributes()
     /**
      * Attributes in an XMLNode are implemented as the attributes in a
@@ -149,57 +146,83 @@ public abstract class XMLNode {
      * DocumentView.
      * @return the attributes of the XMLElement node or null.
      */
-    public AttributeSet getAttributes() {
+    public Map getAttributes() {
         //no attributes by default. Subclasses may override this behavior
         return null;
     }//}}}
     
     //{{{ getDocument()
-    public javax.swing.text.Document getDocument() {
-        return (javax.swing.text.Document)m_domNode.getOwnerDocument().getUserData(USER_DATA_KEY);
+    public XMLDocument getDocument() {
+        Document doc = m_domNode.getOwnerDocument();
+        if (doc != null) {
+            return (XMLDocument)doc.getUserData(USER_DATA_KEY);
+        } else {
+            return null;
+        }
     }//}}}
     
-    //{{{ getElement()
+    //{{{ getChild()
     
-    public javax.swing.text.Element getElement(int index) {
-        return (javax.swing.text.Element)m_children.get(index);
+    public XMLNode getChild(int index) {
+        return (XMLNode)m_children.get(index);
     }//}}}
     
-    //{{{ getElementCount()
+    //{{{ getChildCount()
     
-    public int getElementCount() {
+    public int getChildCount() {
         return m_children.size();
     }//}}}
     
-    //{{{ getElementIndex()
-    
-    public int getElementIndex(int offset) {
+    //{{{ getChildIndex()
+    /**
+     * Gets the child index closest to the given offset. The offset is 
+     * specified relative to the beginning of the document. 
+     * Returns -1 if the child is a leaf, otherwise returns the index of the 
+     * child that best represents the given location. Returns 0 if the location
+     * is less than the start offset. Returns getChildCount() - 1 
+     * if the location is greater than or equal to the end offset.
+     * @param offset the specified offset >= 0
+     */
+    public int getChildIndex(int offset) {
         //TODO: implement offsets
         return 0;
     }//}}}
     
     //{{{ getEndOffset()
-    
+    /**
+     * Fetches the offset from the beginning of the document that this node
+     * ends at. If this node has children, this will be the end offset of the
+     * last child. As a document position, there is an implied backward bias.
+     * 
+     * @return the ending offset > getStartOffset() and <= getDocument().getLength() + 1
+     */
     public int getEndOffset() {
         //TODO: implement offsets
         //TODO: should this be abstract?
         return 0;
     }//}}}
     
-    //{{{ getName()
+    //{{{ getQualifiedName()
     /**
      * Gets the qualified name of the node. This will be the namespace
      * prefix + ":" + the locale name.
      * @return the qualified name
      */
-    public String getName() {
+    public String getQualifiedName() {
         return m_domNode.getNodeName();
     }//}}}
     
-    //{{{ getParentElement()
-    
-    public javax.swing.text.Element getParentElement() {
-        return (javax.swing.text.Element)m_domNode.getParentNode().getUserData(USER_DATA_KEY);
+    //{{{ getParentNode()
+    /**
+     * Gets the parent node of this node.
+     */
+    public XMLNode getParentNode() {
+        Node parent = m_domNode.getParentNode();
+        if (parent != null) {
+             return (XMLNode)parent.getUserData(USER_DATA_KEY);
+        } else {
+            return null;
+        }
     }//}}} 
     
     //{{{ getStartOffset() 
@@ -216,27 +239,30 @@ public abstract class XMLNode {
         return m_domNode.hasChildNodes();
     }//}}}
     
-    //}}}
-    
     //{{{ addEventListener()
+    
+    //TODO: redo change listeners to be XMLNode friendly
     public void addEventListener(java.lang.String type, EventListener listener, boolean useCapture) {
         ((EventTarget)m_domNode).addEventListener(type, listener, useCapture);
     }//}}}
     
     //{{{ removeEventListener()
+    
+    //TODO: redo change listeners to be XMLNode friendly
     public void removeEventListener(java.lang.String type, EventListener listener, boolean useCapture) {
         ((EventTarget)m_domNode).removeEventListener(type, listener, useCapture);
     }//}}}
     
     //{{{ appendNode()
     public XMLNode appendNode(XMLNode newChild) throws DOMException {
-        if (((XMLDocument)getDocument()).isReadOnly()) {
+        XMLDocument doc = getDocument();
+        if (doc != null && doc.isReadOnly()) {
             throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
         }
         
         if (newChild != null) {
             if (!(newChild instanceof XMLError)) {
-                XMLNode parent = (XMLNode)newChild.getParentElement();
+                XMLNode parent = newChild.getParentNode();
                 if (parent != null) {
                     parent.removeNode(newChild);
                 }
@@ -285,13 +311,14 @@ public abstract class XMLNode {
     //{{{ insertNode()
     
     public XMLNode insertNode(XMLNode node, int index) throws DOMException {
-        if (((XMLDocument)getDocument()).isReadOnly()) {
+        XMLDocument doc = getDocument();
+        if (doc != null && doc.isReadOnly()) {
             throw new DOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, Messages.getMessage("XML.Read.Only.Node"));
         }
         
         if (node != null) {
             if (!(node instanceof XMLError)) {
-                XMLNode parent = (XMLNode)node.getParentElement();
+                XMLNode parent = node.getParentNode();
                 if (parent != null) {
                     parent.removeNode(node);
                 }

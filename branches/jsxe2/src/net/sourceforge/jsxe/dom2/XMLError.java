@@ -53,23 +53,22 @@ public class XMLError extends XMLNode {
     }//}}}
     
     //{{{ getDocument()
-    public javax.swing.text.Document getDocument() {
+    public XMLDocument getDocument() {
         return m_document;
     }//}}}
     
-    //{{{ getElement()
-    public javax.swing.text.Element getElement(int index) {
+    //{{{ getChild()
+    public XMLNode getChild(int index) {
         return null;
     }//}}}
     
-    //{{{ getElementCount()
-    public int getElementCount() {
+    //{{{ getChildCount()
+    public int getChildCount() {
         return 0;
     }//}}}
     
-    //{{{ getName()
-    public String getName() {
-        //TODO
+    //{{{ getQualifiedName()
+    public String getQualifiedName() {
         if (m_warning) {
             return Messages.getMessage("common.warning");
         } else {
@@ -77,8 +76,8 @@ public class XMLError extends XMLNode {
         }
     }//}}}
     
-    //{{{ getParentElement()
-    public javax.swing.text.Element getParentElement() {
+    //{{{ getParentNode()
+    public XMLNode getParentNode() {
         return m_parent;
     }//}}} 
     

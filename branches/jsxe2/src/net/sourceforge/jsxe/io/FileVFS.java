@@ -101,9 +101,12 @@ public class FileVFS extends VFS {
     //{{{ save() method
     public boolean save(TabbedView view, XMLDocument buffer, String path) {
         if (OperatingSystem.isUnix()) {
-            int permissions = getPermissions(buffer.getPath());
-            Log.log(Log.DEBUG,this,buffer.getPath() + " has permissions 0"
+            int permissions = getPermissions(path);
+            Log.log(Log.DEBUG,this, path + " has permissions 0"
                 + Integer.toString(permissions,8));
+           // int permissions = getPermissions(buffer.getPath());
+           // Log.log(Log.DEBUG,this,buffer.getPath() + " has permissions 0"
+           //     + Integer.toString(permissions,8));
             buffer.setIntegerProperty(PERMISSIONS_PROPERTY,permissions);
         }
 
@@ -407,8 +410,8 @@ public class FileVFS extends VFS {
 
     //{{{ Permission preservation code
 
-    /** Code borrowed from j text editor (http://www.armedbear.org) */
-    /** I made some changes to make it support suid, sgid and sticky files */
+    /** Code jEdit borrowed from j text editor (http://www.armedbear.org) */
+    /** Slava made some changes to make it support suid, sgid and sticky files */
 
     //{{{ getPermissions() method
     /**
@@ -418,7 +421,7 @@ public class FileVFS extends VFS {
     public static int getPermissions(String path) {
         int permissions = 0;
 
-        if (jsXe.getBooleanProperty("chmodDisabled")) {
+        if (jsXe.getBooleanProperty("chmodDisabled", true)) {
             return permissions;
         }
 
@@ -456,7 +459,7 @@ public class FileVFS extends VFS {
      * does nothing.
      */
     public static void setPermissions(String path, int permissions) {
-        if (jsXe.getBooleanProperty("chmodDisabled"))
+        if (jsXe.getBooleanProperty("chmodDisabled", true))
             return;
 
         if (permissions != 0) {
