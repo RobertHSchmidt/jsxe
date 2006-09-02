@@ -29,6 +29,9 @@ package net.sourceforge.jsxe.util;
 
 //{{{ Imports
 import net.sourceforge.jsxe.OperatingSystem;
+import net.sourceforge.jsxe.io.*;
+import net.sourceforge.jsxe.jsXe;
+
 import javax.swing.text.Segment;
 import java.io.*;
 import java.util.*;
