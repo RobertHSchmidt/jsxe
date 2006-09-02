@@ -474,6 +474,7 @@ public class BufferHistory {
     static {
         m_excludeKeys = new ArrayList();
         m_excludeKeys.add(DocumentBuffer.LINE_SEPARATOR);
+        m_excludeKeys.add("xmldocument.dirty");
     }
     //}}}
     

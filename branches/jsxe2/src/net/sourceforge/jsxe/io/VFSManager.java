@@ -29,6 +29,7 @@ package net.sourceforge.jsxe.io;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
+import net.sourceforge.jsxe.JARClassLoader;
 import net.sourceforge.jsxe.EditBus;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.ErrorListDialog;
@@ -78,7 +79,7 @@ public class VFSManager {
     /**
      * The service type. See {@link org.gjt.sp.jedit.ServiceManager}.
      */
-    public static final String SERVICE = "net.sourceforge.jsxe.io.VFS";
+   // public static final String SERVICE = "net.sourceforge.jsxe.io.VFS";
 
     //{{{ init() method
     /**
@@ -86,12 +87,13 @@ public class VFSManager {
      */
     public static void init() {
         int count = jsXe.getIntegerProperty("ioThreadCount", 4);
-        ioThreadPool = new WorkThreadPool("jsXe I/O",count);
-        JARClassLoader classLoader = new JARClassLoader();
+        ioThreadPool = new WorkThreadPool("jsXe I/O", count);
+       // JARClassLoader classLoader = new JARClassLoader();
+        JARClassLoader classLoader = jsXe.getPluginLoader();
         for (int i = 0; i < ioThreadPool.getThreadCount(); i++) {
-            ioThreadPool.getThread(i).setContextClassLoader(
-                classLoader);
+            ioThreadPool.getThread(i).setContextClassLoader(classLoader);
         }
+        
     } //}}}
 
     //{{{ start() method
@@ -120,39 +122,26 @@ public class VFSManager {
         return urlVFS;
     } //}}}
 
-    //{{{ getVFSByName() method
-    /**
-     * @deprecated Use <code>getVFSForProtocol()</code> instead.
-     */
-    public static VFS getVFSByName(String name)
-    {
-        // in new api, protocol always equals name
-        VFS vfs = (VFS)ServiceManager.getService(SERVICE,name);
-        if(vfs == null)
-            return (VFS)vfsHash.get(name);
-        else
-            return vfs;
-    } //}}}
-
     //{{{ getVFSForProtocol() method
     /**
      * Returns the VFS for the specified protocol.
      * @param protocol The protocol
      */
-    public static VFS getVFSForProtocol(String protocol)
-    {
-        if(protocol.equals("file"))
+    public static VFS getVFSForProtocol(String protocol) {
+        if (protocol.equals("file"))
             return fileVFS;
-        else
-        {
-            VFS vfs = (VFS)ServiceManager.getService(SERVICE,protocol);
-            if(vfs == null)
-                vfs = (VFS)protocolHash.get(protocol);
+        else {
+           // VFS vfs = (VFS)ServiceManager.getService(SERVICE,protocol);
+           // if (vfs == null) {
+           //     vfs = (VFS)protocolHash.get(protocol);
+           // }
+            VFS vfs = (VFS)protocolHash.get(protocol);
 
-            if(vfs != null)
+            if (vfs != null) {
                 return vfs;
-            else
+            } else {
                 return urlVFS;
+            }
         }
     } //}}}
 
@@ -170,12 +159,7 @@ public class VFSManager {
     } //}}}
 
     //{{{ registerVFS() method
-    /**
-     * @deprecated Write a <code>services.xml</code> file instead;
-     * see {@link org.gjt.sp.jedit.ServiceManager}.
-     */
-    public static void registerVFS(String protocol, VFS vfs)
-    {
+    public static void registerVFS(String protocol, VFS vfs) {
         Log.log(Log.DEBUG,VFSManager.class,"Registered "
             + vfs.getName() + " filesystem for "
             + protocol + " protocol");
@@ -183,37 +167,24 @@ public class VFSManager {
         protocolHash.put(protocol,vfs);
     } //}}}
 
-    //{{{ getFilesystems() method
-    /**
-     * @deprecated Use <code>getVFSs()</code> instead.
-     */
-    public static Enumeration getFilesystems()
-    {
-        return vfsHash.elements();
-    } //}}}
-
     //{{{ getVFSs() method
     /**
      * Returns a list of all registered filesystems.
      */
-    public static String[] getVFSs()
-    {
-        // the sooner ppl move to the new api, the less we'll need
-        // crap like this
+    public static String[] getVFSs() {
         List returnValue = new LinkedList();
-        String[] newAPI = ServiceManager.getServiceNames(SERVICE);
-        if(newAPI != null)
-        {
-            for(int i = 0; i < newAPI.length; i++)
-            {
-                returnValue.add(newAPI[i]);
-            }
-        }
+       // String[] newAPI = ServiceManager.getServiceNames(SERVICE);
+       // if(newAPI != null)
+       // {
+       //     for(int i = 0; i < newAPI.length; i++)
+       //     {
+       //         returnValue.add(newAPI[i]);
+       //     }
+       // }
         Enumeration oldAPI = vfsHash.keys();
         while(oldAPI.hasMoreElements())
             returnValue.add(oldAPI.nextElement());
-        return (String[])returnValue.toArray(new String[
-            returnValue.size()]);
+        return (String[])returnValue.toArray(new String[returnValue.size()]);
     } //}}}
 
     //}}}
