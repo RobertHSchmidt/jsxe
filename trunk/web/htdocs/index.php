@@ -18,9 +18,13 @@ include("functions.php");
     
     <div id="mainBody">
       
+      <h2><?php echo T_("Overview"); ?></h2>
+      
       <?php get_content('overview'); ?>
       
-      <?php get_news() ?>
+      <h2><?php echo T_("News"); ?></h2>
+      
+      <?php get_content('news') ?>
       
       <?php include("footer.php") ?>
     </div>

@@ -1,6 +1,7 @@
 <?php
 $trans['ja'] = array(
-	'News' => 'ニュース',
+    'Overview' => 'jsXeとは',
+    'News' => 'ニュース',
     'Features' => '機能概要',
     'Screenshot' => 'スクリーンショット',
     'Screenshots' => 'スクリーンショット',

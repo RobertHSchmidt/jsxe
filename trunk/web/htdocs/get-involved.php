@@ -6,7 +6,7 @@ include("functions.php");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo get_locale() ?>" lang="<?php echo get_locale() ?>">
   <head>
-    <title>jsXe: Getting Involved</title>
+    <title>jsXe: <?php echo T_("Get Involved"); ?></title>
     <?php include("meta.php") ?>
   </head>
   <body>
@@ -17,6 +17,8 @@ include("functions.php");
     </div>
 
     <div id="mainBody">
+      
+      <h2><?php echo T_("Get Involved"); ?></h2>
       
       <?php get_content('get-involved') ?>
       
