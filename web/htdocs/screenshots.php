@@ -6,7 +6,7 @@ include("functions.php");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo get_locale() ?>" lang="<?php echo get_locale() ?>">
   <head>
-    <title>jsXe: Screenshots</title>
+    <title>jsXe: <?php echo T_("Screenshots"); ?></title>
     <?php include("meta.php") ?>
   </head>
   <body>
@@ -25,11 +25,13 @@ include("functions.php");
         } else {
       ?>
       
-        <h2>Screenshots</h2>
+        <h2><?php echo T_("Screenshots"); ?></h2>
         
         <table border="0" cellpadding="0" cellspacing="15" width="100%">
           <tr>
+            
             <td>
+              
               <?php
               $params = array();
               $params['id'] = '86758';
@@ -37,10 +39,10 @@ include("functions.php");
               ?>
             </td>
             <td>
-              jsXe with Japanese locale.
+              <?php echo T_("jsXe with Japanese locale."); ?>
               <br/>
               
-              (jsXe 0.5 pre3 running on Ubuntu Linux)
+              (jsXe 0.5 pre3, Ubuntu Linux)
             </td>
           </tr>
           <tr>
@@ -55,7 +57,7 @@ include("functions.php");
               A screenshot showing the context dialog including cut/paste
               <br/>
               
-              (jsXe 0.4 pre3 running on Windows XP)
+              (jsXe 0.4 pre3, Windows XP)
             </td>
           </tr>
           

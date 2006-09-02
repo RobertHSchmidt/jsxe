@@ -73,10 +73,10 @@ function match_locale($locale) {
 
 //{{{ get_image()
 
-function get_image($image, $alt='') {
+function get_image($image, $alt='', $title='') {
     $location = 'http://jsxe.sourceforge.net/images/'.$image;
    // $location = 'http://www.ianlewis.org/jsxetest/images/'.$image;
-    return '<img src="'.$location.'" alt="'.$alt.'"/>';
+    return '<img src="'.$location.'" alt="'.T_($alt).'" title="'.T_($title).'"/>';
 }//}}}
 
 //{{{ create_link()
@@ -120,38 +120,19 @@ function create_language_link($lang, $text) {
 //{{{ get_content()
 
 function get_content( $name ) {
+   // $file = 'content/'.get_locale().'/'.$name.'.html';
+   // if (!file_exists($file)) {
+   //     $file = 'content/en/'.$name.'.html';
+   // }
+   // $fh = fopen($file, 'r');
+   // $data = fread($fh, filesize($file));
+   // fclose($fh);
+   // echo $data;
     $file = 'content/'.get_locale().'/'.$name.'.html';
     if (!file_exists($file)) {
         $file = 'content/en/'.$name.'.html';
     }
-    $fh = fopen($file, 'r');
-    $data = fread($fh, filesize($file));
-    fclose($fh);
-    echo $data;
-}//}}}
-
-//{{{ get_news()
-
-function get_news() {
-    
-    $file = 'content/'.get_locale().'/news-header.html';
-    if (!file_exists($file)) {
-        $file = 'content/en/news-header.html';
-    }
-    $fh = fopen($file, 'r');
-    $header = fread($fh, filesize($file));
-    fclose($fh);
-    
-    $file = 'content/'.get_locale().'/news.html';
-    if (!file_exists($file)) {
-        $file = 'content/en/news.html';
-    }
-    $fh = fopen($file, 'r');
-    $data = fread($fh, filesize($file));
-    fclose($fh);
-    
-    echo $header;
-    echo $data;
+    include($file);
 }//}}}
 
 //{{{ T_()
@@ -353,6 +334,30 @@ function redirect($to,$code=301)
     echo "</div>\n</div>\n";
   }
   exit(0);
+}//}}}
+
+//{{{ get_devel_download_link()
+
+function get_devel_download_link() {
+    return '<a href="https://sourceforge.net/project/showfiles.php?group_id=58584&amp;package_id=54488">'.get_devel_version().'</a>';
+}//}}}
+
+//{{{ get_stable_download_link()
+
+function get_stable_download_link() {
+    return '<a href="https://sourceforge.net/project/showfiles.php?group_id=58584&amp;package_id=120827">'.get_stable_version().'</a>';
+}//}}}
+
+//{{{ get_devel_version()
+
+function get_devel_version() {
+    return "0.4 beta";
+}//}}}
+
+//{{{ get_stable_version()
+
+function get_stable_version() {
+    return "0.4 beta";
 }//}}}
 
 ?>
