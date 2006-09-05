@@ -479,7 +479,6 @@ public class BufferHistory {
         m_includeKeys.add(DocumentBuffer.INDENT);
         m_includeKeys.add(DocumentBuffer.IS_USING_SOFT_TABS);
         m_includeKeys.add(DocumentBuffer.IS_VALIDATING);
-        m_excludeKeys.add("xmldocument.dirty");
     }
     //}}}
     
