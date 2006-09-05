@@ -54,6 +54,7 @@ import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.dom.AdapterNode;
+import net.sourceforge.jsxe.dom.XMLDocument;
 import net.sourceforge.jsxe.dom.completion.ElementDecl;
 //}}}
 
@@ -86,18 +87,24 @@ public class EditNodeAction extends LocalizedAction {
             AdapterNode addedNode = null;
             if (selectedNode != null && selectedNode.getNodeType() == AdapterNode.ELEMENT_NODE) {
                 try {
-                    ElementDecl element = selectedNode.getOwnerDocument().getElementDecl(selectedNode.getNodeName());
+                    XMLDocument document = selectedNode.getOwnerDocument();
+                    ElementDecl element = document.getElementDecl(selectedNode.getNodeName());
                     if (element != null) {
-                        //Edit tag dialog needs to be reworked
-                        EditTagDialog dialog = new EditTagDialog(jsXe.getActiveView(),
-                                                                 element,
-                                                                 new HashMap(),
-                                                                 element.empty,
-                                                                 element.completionInfo.getEntityHash(),
-                                                                 new ArrayList(), //don't support IDs for now.
-                                                                 selectedNode.getOwnerDocument(),
-                                                                 selectedNode);
-                        dialog.show();
+                        
+                        try {
+                            document.beginCompoundEdit();
+                            EditTagDialog dialog = new EditTagDialog(jsXe.getActiveView(),
+                                                                     element,
+                                                                     new HashMap(),
+                                                                     element.empty,
+                                                                     element.completionInfo.getEntityHash(),
+                                                                     new ArrayList(), //don't support IDs for now.
+                                                                     selectedNode.getOwnerDocument(),
+                                                                     selectedNode);
+                            dialog.show();
+                        } finally {
+                            document.endCompoundEdit();
+                        }
                         //The TreeModel doesn't automatically call treeNodesInserted() yet
                         tree.updateUI();
                     }
