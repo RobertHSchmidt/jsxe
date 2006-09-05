@@ -29,10 +29,8 @@ package treeview.action;
 import treeview.*;
 
 //{{{ AWT classes
-import java.awt.datatransfer.Clipboard;
 import java.awt.event.ActionEvent;
-import java.awt.Toolkit;
-import java.awt.HeadlessException;
+import java.awt.Component;
 //}}}
 
 //{{{ Swing classes
@@ -48,7 +46,7 @@ import org.w3c.dom.DOMException;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.LocalizedAction;
+import net.sourceforge.jsxe.action.ContextSpecificAction;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.TabbedView;
@@ -65,24 +63,10 @@ import net.sourceforge.jsxe.util.Log;
  * @author Ian Lewis (<a href="mailto:IanLewis@member.fsf.org">IanLewis@member.fsf.org</a>)
  * @version $Id$
  */
-public class PasteNodeAction extends LocalizedAction {
-    
-    //{{{ PasteNodeAction constructor
-    /**
-     * Creates an action that pastes the node in the clipboard to the currently
-     * selected node in the tree.
-     */
-    public PasteNodeAction() {
-        super(TreeViewPlugin.PLUGIN_NAME+".paste");
-    }//}}}
-    
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.paste");
-    }//}}}
+public class PasteNodeAction implements ContextSpecificAction.ActionImplementation {
     
     //{{{ invoke()
-    public void invoke(TabbedView view, ActionEvent evt) {
+    public void invoke(TabbedView view, Component comp, ActionEvent evt) {
         DocumentView docView = view.getDocumentView();
         if (docView instanceof DefaultView) {
             DefaultView defView = (DefaultView)docView;

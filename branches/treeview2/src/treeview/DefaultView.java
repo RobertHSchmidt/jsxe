@@ -32,10 +32,14 @@ import treeview.action.*;
 import net.sourceforge.jsxe.dom.*;
 import net.sourceforge.jsxe.dom.completion.ElementDecl;
 import net.sourceforge.jsxe.*;
+import net.sourceforge.jsxe.action.ContextSpecificAction;
 import net.sourceforge.jsxe.gui.DocumentView;
 import net.sourceforge.jsxe.gui.Messages;
+import net.sourceforge.jsxe.gui.TabbedView;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.msg.PropertyChanged;
+import net.sourceforge.jsxe.msg.UndoEvent;
+import net.sourceforge.jsxe.msg.RedoEvent;
 //}}}
 
 //{{{ Swing components
@@ -118,6 +122,7 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
         m_valueTextArea.setFont(new Font("Monospaced", 0, 12));
         m_valueTextArea.setLineWrap(false);
         JScrollPane htmlView = new JScrollPane(m_valueTextArea);
+        
         //}}}
         
         //{{{ init attributes table
@@ -135,6 +140,11 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
         tree.setName("TreeViewTree");
         JScrollPane treeView = new JScrollPane(tree);
         tree.addTreeSelectionListener(new DefaultTreeSelectionListener(this));
+        
+        //add context specific actions for the tree.
+        ActionManager.addActionImplementation("cut", tree, new CutNodeAction());
+        ActionManager.addActionImplementation("copy", tree, new CopyNodeAction());
+        ActionManager.addActionImplementation("paste", tree, new PasteNodeAction());
         
         //starts editing if the user start typing on one of the nodes
         //seems to catch user shortcuts too. Not sure how to resolve that.
@@ -161,19 +171,6 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
        //     }
        //     
        // });//}}}
-        //}}}
-        
-        //{{{ Construct Edit Menu
-        //TODO: get the keyboard shortcuts to work,
-        //TODO: get cut/copy/paste to work in the right hand text window
-        m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
-        m_editMenu.setMnemonic('E');
-        JMenuItem menuItem = new JMenuItem(ActionManager.getAction("cut"));
-        m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("copy"));
-        m_editMenu.add(menuItem);
-        menuItem = new JMenuItem(ActionManager.getAction("paste"));
-        m_editMenu.add(menuItem);
         //}}}
         
         //{{{ Create and set up the splitpanes
@@ -244,6 +241,10 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
             }
         }
         
+        ActionManager.removeActionImplementation("cut", tree);
+        ActionManager.removeActionImplementation("copy", tree);
+        ActionManager.removeActionImplementation("paste", tree);
+        
         EditBus.removeFromBus(this);
         
         return true;
@@ -264,7 +265,7 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
     //{{{ getMenus()
     
     public JMenu[] getMenus() {
-        return new JMenu[] { m_editMenu };
+        return null;
     }//}}}
     
     //{{{ getDocumentBuffer()
@@ -341,6 +342,11 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
             }
             if (CONTINUOUS_LAYOUT.equals(key) || SHOW_COMMENTS.equals(key) || SHOW_ATTRIBUTES.equals(key)) {
                 tree.updateUI();
+            }
+        } else {
+            if ((message instanceof UndoEvent) || (message instanceof RedoEvent)) {
+                //hack to get undo to work properly
+                m_valueTextArea.setDocument(new DefaultViewDocument(tree.getSelectedNode()));
             }
         }
     }//}}}
@@ -531,7 +537,6 @@ public class DefaultView extends JPanel implements DocumentView, EBListener {
     private DocumentBuffer m_document;
     private boolean m_viewShown = false;
     private TreeViewPlugin m_plugin;
-    private JMenu m_editMenu;
     
     private EditTagDialog.ComboValueRenderer m_comboRenderer = new EditTagDialog.ComboValueRenderer();
     

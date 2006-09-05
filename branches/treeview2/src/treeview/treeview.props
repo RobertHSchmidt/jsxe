@@ -15,7 +15,7 @@ treeview.splitpane.vert.loc=40
 # a percentage of the horizontal size of the parent container
 treeview.splitpane.horiz.loc=40
 
-treeview.show.attributes=ID only
+treeview.show.attributes=1
 
 #default size for edit doc type dialog
 treeview.editdoctypenode.width=200

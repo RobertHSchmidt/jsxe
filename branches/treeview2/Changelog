@@ -1,3 +1,34 @@
+08/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the sourceview actions to use the new ContextSpecificActions in
+      jsXe.
+
+08/30/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed null pointer exception when trying to cut a node that can't be
+      cut.
+
+08/29/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated japanese translation
+
+08/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated russian translation.
+
+08/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed undo when adding/editing a node that is specified in a DTD/Schema.
+
+08/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * The Edit menu has been moved to jsXe core.
+
+08/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added some English tooltip messages to the Global Options Pane for the
+      tree view.
+
 07/20/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated actions and messages for options.

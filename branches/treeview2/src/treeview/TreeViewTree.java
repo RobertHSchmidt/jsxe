@@ -196,8 +196,8 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
         Clipboard clipBoard = getToolkit().getSystemClipboard();
         if (selectedNode != null) {
             try {
-                clipBoard.setContents(new TransferableNode(selectedNode), this);
                 selectedNode.getParentNode().remove(selectedNode);
+                clipBoard.setContents(new TransferableNode(selectedNode), this);
                 updateUI();
                 return true;
             } catch (IllegalStateException e) {
@@ -205,7 +205,6 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
             } catch (HeadlessException e) {
                 Log.log(Log.ERROR, this, e);
             } catch (DOMException e) {
-                clipBoard.setContents(null, this);
                 throw e;
             }
         }
@@ -376,7 +375,7 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
     private static String toString(AdapterNode node) {
         StringBuffer s = new StringBuffer();
         if (node.getNodeType() == Node.DOCUMENT_NODE)
-            return "Document Root";
+            return Messages.getMessage("treeview.document.root");
         String nodeName = node.getNodeName();
         if (! nodeName.startsWith("#")) {   
             s.append(nodeName);
@@ -451,8 +450,8 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                 
                 if (selectedNode.getNodeType() == Node.ELEMENT_NODE) {
                     
-                    JMenu addElement = new WrappingMenu(Messages.getMessage("xml.element"), 20);
-                    addNodeItem.add(addElement);
+                    WrappingMenu addElement = new WrappingMenu(Messages.getMessage("xml.element"), 20);
+                    addNodeItem.add(addElement.getJMenu());
                     
                     addElement.add(ActionManager.getAction("treeview.add.element.node"));
                     Iterator allowedElements = selectedNode.getAllowedElements().iterator();
@@ -463,8 +462,8 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
                     
                     //Add the allowed entities even if no matter what
                     
-                    JMenu addEntity = new WrappingMenu(Messages.getMessage("xml.entity.reference"), 20);
-                    addNodeItem.add(addEntity);
+                    WrappingMenu addEntity = new WrappingMenu(Messages.getMessage("xml.entity.reference"), 20);
+                    addNodeItem.add(addEntity.getJMenu());
                     
                     Iterator allowedEntities = ownerDocument.getAllowedEntities().iterator();
                     while (allowedEntities.hasNext()) {
@@ -685,48 +684,48 @@ public class TreeViewTree extends JTree implements Autoscroll, ClipboardOwner {
         
     }//}}}
     
-    //{{{ ElementTreeCellRenderer class
+   // //{{{ ElementTreeCellRenderer class
     
-    private class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
+   // private class ElementTreeCellRenderer extends DefaultTreeCellRenderer {
         
-        //{{{ ElementTreeCellRenderer constructor
+   //     //{{{ ElementTreeCellRenderer constructor
         
-        public ElementTreeCellRenderer() {
-            m_defaultLeafIcon = getLeafIcon();
-        }//}}}
+   //     public ElementTreeCellRenderer() {
+   //         m_defaultLeafIcon = getLeafIcon();
+   //     }//}}}
         
-        //{{{ getTreeCellRendererComponent
+   //     //{{{ getTreeCellRendererComponent
         
-        public Component getTreeCellRendererComponent(JTree tree, 
-            Object value, boolean selected, boolean expanded,
-            boolean leaf, int row, boolean hasFocus)
-        {
-            AdapterNode node = (AdapterNode)value;
+   //     public Component getTreeCellRendererComponent(JTree tree, 
+   //         Object value, boolean selected, boolean expanded,
+   //         boolean leaf, int row, boolean hasFocus)
+   //     {
+   //         AdapterNode node = (AdapterNode)value;
             
-            // We can rename processing instruction nodes here too.
-            if (node.getNodeType() == AdapterNode.PROCESSING_INSTRUCTION_NODE) {
-                setIcon(m_defaultLeafIcon);
-                setLeafIcon(m_defaultLeafIcon);
-                setOpenIcon(m_defaultLeafIcon);
-                setClosedIcon(m_defaultLeafIcon);
-                setToolTipText(Messages.getMessage("xml.processing.instruction"));
-            } else {
-                setIcon(m_elementIcon);
-                setLeafIcon(m_elementIcon);
-                setOpenIcon(m_elementIcon);
-                setClosedIcon(m_elementIcon);
-                setToolTipText(Messages.getMessage("xml.element"));
-            }
+   //         // We can rename processing instruction nodes here too.
+   //         if (node.getNodeType() == AdapterNode.PROCESSING_INSTRUCTION_NODE) {
+   //             setIcon(m_defaultLeafIcon);
+   //             setLeafIcon(m_defaultLeafIcon);
+   //             setOpenIcon(m_defaultLeafIcon);
+   //             setClosedIcon(m_defaultLeafIcon);
+   //             setToolTipText(Messages.getMessage("xml.processing.instruction"));
+   //         } else {
+   //             setIcon(m_elementIcon);
+   //             setLeafIcon(m_elementIcon);
+   //             setOpenIcon(m_elementIcon);
+   //             setClosedIcon(m_elementIcon);
+   //             setToolTipText(Messages.getMessage("xml.element"));
+   //         }
 
-            //just use the node name, we don't want attributes and such.
-            setText(((AdapterNode)value).getNodeName());
-            return this;
+   //         //just use the node name, we don't want attributes and such.
+   //         setText(((AdapterNode)value).getNodeName());
+   //         return this;
             
-        }//}}}
+   //     }//}}}
         
-        private Icon m_defaultLeafIcon;
+   //     private Icon m_defaultLeafIcon;
         
-    }//}}}
+   // }//}}}
 
     //{{{ ElementCellEditor class
     
