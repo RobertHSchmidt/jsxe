@@ -782,5 +782,6 @@ public class DocumentBuffer extends XMLDocument {
     private ArrayList m_listeners = new ArrayList();
     private boolean m_dirty=false;
     private OptionPane m_optionPane;
+    
     //}}}
 }

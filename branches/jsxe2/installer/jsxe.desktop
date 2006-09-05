@@ -1,0 +1,14 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=jsXe XML Editor
+Name[ja]=jsXe XML エディタ
+GenericName=XML Editor
+GenericName[ja]=
+Comment=Edit XML Documents
+Comment[ja]=
+Exec=jsxe
+Icon=jsxe.png
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=GNOME;Application;Utility;

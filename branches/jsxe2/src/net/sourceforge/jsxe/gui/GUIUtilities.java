@@ -90,7 +90,7 @@ public class GUIUtilities {
      * Loads an icon.
      * @param iconName The icon name
      */
-    public static Icon loadIcon(String iconName) {
+    public static ImageIcon loadIcon(String iconName) {
         if (icons == null) {
             icons = new Hashtable();
         }
@@ -1270,6 +1270,40 @@ public class GUIUtilities {
 
         return (p instanceof JDialog) ? (JDialog) p : null;
     } //}}}
+    
+    //{{{ isComponentParentOf() method
+    /**
+     * Returns true if the parent is a parent component of child.
+     * @param parent the parent component
+     * @param child the child component
+     * @since jsXe 0.5 pre3
+     */
+    public static boolean isComponentParentOf(Component parent, Component child) {
+        Component comp = child;
+        for(;;) {
+            if (comp == null) {
+                break;
+            }
+
+            if (comp instanceof JComponent) {
+                Component real = (Component)((JComponent)comp).getClientProperty("KORTE_REAL_FRAME");
+                if (real != null) {
+                    comp = real;
+                }
+            }
+
+            if (comp.equals(parent)) {
+                return true;
+            } else {
+                if (comp instanceof JPopupMenu) {
+                    comp = ((JPopupMenu)comp).getInvoker();
+                } else {
+                    comp = comp.getParent();
+                }
+            }
+        }
+        return false;
+    }//}}}
     
     //{{{ getComponentParent() method
     /**

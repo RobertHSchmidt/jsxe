@@ -1,0 +1,19 @@
+<launch4jConfig>
+  <dontWrapJar>true</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>jsXe.jar</jar>
+  <outfile>build\jsXe.exe</outfile>
+  <errTitle>jsXe</errTitle>
+  <cmdLine></cmdLine>
+  <chdir></chdir>
+  <customProcName>true</customProcName>
+  <stayAlive>false</stayAlive>
+  <icon>jsxe.ico</icon>
+  <jre>
+    <minVersion>1.4.2</minVersion>
+    <dontUsePrivateJres>false</dontUsePrivateJres>
+    <initialHeapSize>16</initialHeapSize>
+    <maxHeapSize>64</maxHeapSize>
+    <opt>-Djava.endorsed.dirs=&quot;%EXEDIR%\\lib&quot;</opt>
+  </jre>
+</launch4jConfig>

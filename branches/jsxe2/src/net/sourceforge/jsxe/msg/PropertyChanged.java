@@ -39,7 +39,6 @@ public class PropertyChanged extends EBMessage {
     //{{{ PropertyChanged constructor
     /**
      * Creates a new PropertyChanged message.
-     * @param source the object that changed the properties
      * @param 
      */
     public PropertyChanged(String key, String oldValue) {

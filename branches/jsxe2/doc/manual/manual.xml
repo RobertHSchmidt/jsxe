@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--jsXe's User's Guide-->
+<!--(C) 2006 Ian Lewis-->
+<!--:tabSize=2:indentSize=2:noTabs=true:-->
+<!--:indentSize=1:noTabs=true:-->
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN" 
+  "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"
+  >
+<book>
+  <bookinfo>
+    <title>jsXe User&apos;s Manual</title>
+    <author>
+      <firstname>Ian</firstname>
+      <surname>Lewis</surname>
+    </author>
+    <copyright>
+      <year>2006</year>
+      <holder>Ian Lewis</holder>
+    </copyright>
+  </bookinfo>
+  <preface>
+    <title>jsXe User&apos;s Manual</title>
+    <para>jsXe is the Java Simple XML Editor. Out of the box it provides a tree view, DTD/Schema introspection and validation. It&apos;s aim is to provide a framework for XML editing through any number of views that can be loaded at runtime as plugins.</para>
+  </preface>
+  <part id="using-jsxe-part">
+    <title>Using jsXe</title>
+    <partintro>
+      <para>This part of the manual outlines how to use jsXe, key concepts,
+            and commands.</para>
+    </partintro>
+    <chapter>
+      <title>Conventions</title>
+      <para>Several concepts are used throughout the jsXe user interface and this manual.</para>
+      <informaltable>
+        <tgroup cols="2">
+          <tbody>
+            <row>
+              <entry><emphasis>Document View</emphasis></entry>
+              <entry>A document view is a view in jsXe that is used to edit XML
+              documents. Examples are the Tree View and Source View.</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </chapter>
+  </part>
+</book>

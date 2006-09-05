@@ -40,8 +40,12 @@ import java.io.IOException;
 //}}}
 
 //{{{ AWT components
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 //}}}
+
+import javax.swing.text.JTextComponent;
 
 //}}}
 
@@ -53,25 +57,24 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  * @since jsXe 0.5 pre1
  */
-public class PasteAction extends LocalizedAction {
+public class PasteAction extends ContextSpecificAction {
     
     //{{{ PasteAction constructor
     public PasteAction() {
         super("paste");
     }//}}}
     
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.paste");
-    }//}}}
-    
     //{{{ invoke()
     public void invoke(TabbedView view, ActionEvent evt) {
         /*
-        invoke the action registered for the current DocumentView named
-        viewname.paste if there is one.
+        Invoke the action registered for the current component named
         */
-        ActionManager.invokeAction(jsXe.getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".paste", evt);
+        Component comp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getPermanentFocusOwner();
+        if (comp instanceof JTextComponent) {
+            ((JTextComponent)comp).paste();
+        } else {
+            super.invoke(view, evt);
+        }
     }//}}}
-
+    
 }

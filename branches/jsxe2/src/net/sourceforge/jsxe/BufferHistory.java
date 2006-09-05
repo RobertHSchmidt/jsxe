@@ -239,7 +239,7 @@ public class BufferHistory {
    //         Enumeration propertyItr = props.keys();
    //         while (propertyItr.hasMoreElements()) {
    //             String key = propertyItr.nextElement().toString();
-   //             if (!m_excludeKeys.contains(key)) {
+   //             if (m_includeKeys.contains(key)) {
    //                 String value = props.getProperty(key);
    //                 out.write("<property name=\"");
    //                 out.write(key);
@@ -304,7 +304,7 @@ public class BufferHistory {
                 Enumeration propertyItr = props.keys();
                 while (propertyItr.hasMoreElements()) {
                     String key = propertyItr.nextElement().toString();
-                    if (!m_excludeKeys.contains(key)) {
+                    if (m_includeKeys.contains(key)) {
                         try {
                             String value = props.getProperty(key);
                             Element property = (Element)entryNode.appendChild(document.createElement("property"));
@@ -453,7 +453,7 @@ public class BufferHistory {
                         propValue = attributes.getValue(i);
                     }
                 }
-                if (!m_excludeKeys.contains(propName) && propName != null && propValue != null) {
+                if (m_includeKeys.contains(propName) && propName != null && propValue != null) {
                     m_m_properties.setProperty(propName, propValue);
                 }
             }
@@ -469,11 +469,16 @@ public class BufferHistory {
     }//}}}
     
     private ArrayList m_history = new ArrayList();
-    private static ArrayList m_excludeKeys;
+    private static ArrayList m_includeKeys;
     
     static {
-        m_excludeKeys = new ArrayList();
-        m_excludeKeys.add(DocumentBuffer.LINE_SEPARATOR);
+        m_includeKeys = new ArrayList();
+        m_includeKeys.add(DocumentBuffer.ENCODING);
+        m_includeKeys.add(DocumentBuffer.FORMAT_XML);
+        m_includeKeys.add(DocumentBuffer.WS_IN_ELEMENT_CONTENT);
+        m_includeKeys.add(DocumentBuffer.INDENT);
+        m_includeKeys.add(DocumentBuffer.IS_USING_SOFT_TABS);
+        m_includeKeys.add(DocumentBuffer.IS_VALIDATING);
         m_excludeKeys.add("xmldocument.dirty");
     }
     //}}}

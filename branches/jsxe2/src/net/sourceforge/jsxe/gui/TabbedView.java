@@ -427,7 +427,10 @@ public class TabbedView extends JFrame {
             updateRecentFilesMenu();
             
             menubar.add(m_fileMenu);
-
+            
+            createEditMenu();
+            menubar.add(m_editMenu);
+            
             //Add View Specific Menus
             JMenu[] menus = currentDocView.getMenus();
             if (menus != null) {
@@ -459,17 +462,16 @@ public class TabbedView extends JFrame {
         m_recentFilesMenu.removeAll();
         ArrayList historyEntries = jsXe.getBufferHistory().getEntries();
         int index = 0;
-        JMenu addMenu = m_recentFilesMenu;
         Iterator historyItr = historyEntries.iterator();
         while (historyItr.hasNext()) {
             BufferHistory.BufferHistoryEntry entry = (BufferHistory.BufferHistoryEntry)historyItr.next();
-            addMenu.add(new JMenuItem(new OpenRecentFileAction(this, entry)));
+            m_recentFilesMenu.add(new JMenuItem(new OpenRecentFileAction(this, entry)));
             index++;
         }
-        if (addMenu.getItemCount() == 0) {
+        if (m_recentFilesMenu.getMenuComponentCount() == 0) {
             JMenuItem nullItem = new JMenuItem(Messages.getMessage("File.Recent.None"));
             nullItem.setEnabled(false);
-            addMenu.add(nullItem);
+            m_recentFilesMenu.add(nullItem);
         }
     }//}}}
     
@@ -512,6 +514,8 @@ public class TabbedView extends JFrame {
         set.addAction(new PasteAction());
         set.addAction(new FindAction());
         set.addAction(new FindNextAction());
+        set.addAction(new UndoAction());
+        set.addAction(new RedoAction());
         ActionManager.addActionSet(set);
         //}}}
         
@@ -551,6 +555,10 @@ public class TabbedView extends JFrame {
                         createDefaultMenuItems();
                         updateMenuBar();
                     }
+                    
+                    if (msg.getKey().equals("recent.files.show.full.path")) {
+                        updateRecentFilesMenu();
+                    }
                 }
                 
                 /*
@@ -568,6 +576,85 @@ public class TabbedView extends JFrame {
         
     }//}}}
     
+    //{{{ createEditMenu()
+    
+    private void createEditMenu() {
+        m_editMenu = new JMenu(Messages.getMessage("Edit.Menu"));
+        m_editMenu.setMnemonic('E');
+            
+            DocumentView view = getDocumentView();
+            JMenuItem menuItem = new JMenuItem(ActionManager.getAction("undo"));
+            m_editMenu.add(menuItem);
+            menuItem = new JMenuItem(ActionManager.getAction("redo"));
+            m_editMenu.add(menuItem);
+            m_editMenu.addSeparator();
+            Action action = ActionManager.getAction("cut");
+           // if (view != null) {
+           //     if (ActionManager.getLocalizedAction(name) == null) {
+           //         action.setEnabled(false);
+           //     } else {
+           //         action.setEnabled(true);
+           //     }
+           // } else {
+           //     action.setEnabled(false);
+           // }
+            menuItem = new JMenuItem(action);
+            m_editMenu.add(menuItem);
+            action = ActionManager.getAction("copy");
+           // if (view != null) {
+           //     String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".copy";
+           //     if (ActionManager.getLocalizedAction(name) == null) {
+           //         action.setEnabled(false);
+           //     } else {
+           //         action.setEnabled(true);
+           //     }
+           // } else {
+           //     action.setEnabled(false);
+           // }
+            menuItem = new JMenuItem(action);
+            m_editMenu.add(menuItem);
+            action = ActionManager.getAction("paste");
+           // if (view != null) {
+           //     String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".paste";
+           //     if (ActionManager.getLocalizedAction(name) == null) {
+           //         action.setEnabled(false);
+           //     } else {
+           //         action.setEnabled(true);
+           //     }
+           // } else {
+           //     action.setEnabled(false);
+           // }
+            menuItem = new JMenuItem(action);
+            m_editMenu.add(menuItem);
+            m_editMenu.addSeparator();
+            action = ActionManager.getAction("find");
+           // if (view != null) {
+           //     String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".find";
+           //     if (ActionManager.getLocalizedAction(name) == null) {
+           //         action.setEnabled(false);
+           //     } else {
+           //         action.setEnabled(true);
+           //     }
+           // } else {
+           //     action.setEnabled(false);
+           // }
+            menuItem = new JMenuItem(action);
+            m_editMenu.add(menuItem);
+            action = ActionManager.getAction("findnext");
+           // if (view != null) {
+           //     String name = jsXe.getPluginLoader().getPluginProperty(view.getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".findnext";
+           //     if (ActionManager.getLocalizedAction(name) == null) {
+           //         action.setEnabled(false);
+           //     } else {
+           //         action.setEnabled(true);
+           //     }
+           // } else {
+           //     action.setEnabled(false);
+           // }
+            menuItem = new JMenuItem(action);
+            m_editMenu.add(menuItem);
+    }//}}}
+    
     //{{{ createDefaultMenuItems()
     
     private void createDefaultMenuItems() {
@@ -582,7 +669,7 @@ public class TabbedView extends JFrame {
             
             //Add recent files menu
             m_recentFilesMenu = new WrappingMenu(Messages.getMessage("File.Recent"), jsXe.getIntegerProperty("menu.spill.over", 20));
-            m_fileMenu.add(m_recentFilesMenu);
+            m_fileMenu.add(m_recentFilesMenu.getJMenu());
             
             m_fileMenu.addSeparator();
             menuItem = new JMenuItem(ActionManager.getAction("save-file"));
@@ -599,6 +686,10 @@ public class TabbedView extends JFrame {
             m_fileMenu.add( menuItem );
             menuItem = new JMenuItem(ActionManager.getAction("exit"));
             m_fileMenu.add( menuItem );
+        //}}}
+        
+        //{{{ Create Edit Menu
+        createEditMenu();
         //}}}
         
         //{{{ Create View Menu
@@ -763,6 +854,7 @@ public class TabbedView extends JFrame {
             
             DocumentBuffer buffer = getDocumentBuffer();
             try {
+                buffer.clearUndo(); // clear undo since it's view specific
                 DocumentView view = m_view.newDocumentView(buffer);
                 setDocumentView(view);
             } catch (IOException ioe) {
@@ -795,6 +887,7 @@ public class TabbedView extends JFrame {
     }//}}}
     
     private JMenu m_fileMenu;
+    private JMenu m_editMenu;
     private JMenu m_viewMenu;
     private JMenu m_toolsMenu;
     private JMenu m_helpMenu;
