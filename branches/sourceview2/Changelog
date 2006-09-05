@@ -1,3 +1,22 @@
+08/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the sourceview actions to use the new ContextSpecificActions in
+      jsXe.
+
+08/22/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Changing the encoding now updates the SourceViewDocument so that it
+      doesn't cause the SourceViewDocument to get out of sync with the 
+      XMLDocument.
+
+08/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated russian translation.
+
+08/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Moved the edit menu to jsXe core and added a hack so that undo will work.
+
 07/26/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Addded support for the findnext action
