@@ -30,13 +30,13 @@ import sourceview.*;
 
 //{{{ jsXe classes
 import net.sourceforge.jsxe.jsXe;
-import net.sourceforge.jsxe.LocalizedAction;
+import net.sourceforge.jsxe.action.ContextSpecificAction;
 import net.sourceforge.jsxe.gui.TabbedView;
-import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.DocumentView;
 //}}}
 
 //{{{ AWT classes
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 //}}}
 
@@ -49,20 +49,10 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  */
 
-public class EditFindNextAction extends LocalizedAction {
-    
-    //{{{ EditFindNextAction constructor
-    public EditFindNextAction() {
-        super(SourceViewPlugin.PLUGIN_NAME+".findnext");
-    }//}}}
-    
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.findnext");
-    }//}}}
+public class EditFindNextAction implements ContextSpecificAction.ActionImplementation {
     
     //{{{ invoke()
-    public void invoke(TabbedView view, ActionEvent evt) {
+    public void invoke(TabbedView view, Component comp, ActionEvent evt) {
         DocumentView docView = view.getDocumentView();
         if (docView instanceof SourceView) {
             SourceView sourceView = (SourceView)docView;
