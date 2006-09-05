@@ -7,23 +7,38 @@
     Version: $Id$
     
     You should check out jsxe to make a structure like this. This ensures that
-    when compiling jsXe the other views will be compiled as well.
+    when compiling jsXe the other views and will be compiled as well. It also
+    ensures that you can build jsxe's installer in binary release distributions.
     
     jsxe module                       => jsxe/
     treeview module (optional)        => jsxe/jars/treeview
     sourceview module (optional)      => jsxe/jars/sourceview
+    jsxe installer (optional)         => jsxe/installer
     jsxe web module (optional)        => web/
-    jsmooth ant task (optional)       => buildlib/
+    launch4j (needed for win builds)  => buildlib/launch4j
     
 -->
-<project basedir="." default="usage" name="jsXe">
+<project basedir="." default="compile" name="jsXe">
   
   <description>jsXe - Java Simple XML Editor</description>
   
   <!-- {{{ ============ Initializes properties and variables ============= -->
   <target name="init">
     <tstamp/>
+    <!-- {{{ app/build properties -->
     <property name="app.name" value="jsXe"/>
+    <property name="main.class" value="net.sourceforge.jsxe.jsXe"/>
+    <property name="major.version" value="0"/>
+    <property name="minor.version" value="5"/>
+    <property name="beta.version" value="4"/>
+    <property name="bugfix.version" value="0"/>
+    <property name="date.format" value="MM.dd.yyyy HH:mm:ss z"/>
+    <!-- Human Readable -->
+    <property name="app.version" value="0.5 pre4"/>
+    <!-- Used in filenames -->
+    <property name="app_version" value="05_pre4"/>
+    <!-- }}} -->
+    <!-- {{{ build directories -->
     <property name="root.dir" value="."/>
     <property name="build.dir" value="${root.dir}/build"/>
     <property name="src.dir" value="${root.dir}/src"/>
@@ -31,47 +46,120 @@
     <property name="bin.dir" value="${root.dir}/bin"/>
     <property name="messages.dir" value="${root.dir}/messages"/>
     <property name="build.messages" value="${build.dir}/messages"/>
-    <property name="docs.dir" value="${src.dir}/doc"/>
+    <property name="docs.dir" value="${root.dir}/doc"/>
     <property name="plugin.dir" value="${root.dir}/jars"/>
+    <property name="jsxe.jar" value="${build.dir}/${app.name}.jar"/>
+    <!-- jar file needs to be relative to the exe -->
+    <property name="launch4j.jsxe.jar" value="${app.name}.jar"/>
+    <property name="jsxe.exe" value="${build.dir}/${app.name}.exe"/>
+    <!-- launch4j doesn't like the ./ in the front of the path -->
+    <property name="launch4j.jsxe.exe" value="build/${app.name}.exe"/>
     <property name="build.plugin" value="${build.dir}/jars"/>
     <property name="build.src" value="${build.dir}/src"/>
     <property name="build.dest" value="${build.dir}/classes"/>
     <property name="build.docs" value="${build.dir}/doc"/>
     <property name="build.lib" value="${build.dir}/lib"/>
     <property name="build.bin" value="${build.dir}/bin"/>
-    <property name="date.format" value="MM.dd.yyyy HH:mm:ss z"/>
-    <property name="build.javadocs" value="${build.docs}/api"/>
+    <property name="build.javadocs" value="${build.dir}/api"/>
     <property name="build.help" value="${build.docs}/help"/>
+    <property name="buildlib.dir" value="${root.dir}/buildlib"/>
+    <property name="docbook.dir" value="${buildlib.dir}/docbook"/>
+    <!--<property name="app.version" value="${major.version}.${minor.version} beta"/>-->
+    <!--<property name="app_version" value="${major.version}_${minor.version}beta"/>-->
+    <property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
+    <property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>
+    <property name="launch4j.dir" value="${buildlib.dir}/launch4j"/>
+    <property name="launch4j.config" value="${root.dir}/launch4j.xml"/>
+    <property name="launch4j.classpath" value="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar"/>
+    <!-- }}} -->
+    <!-- {{{ installer directories -->
+    <property name="installer.build.dir" value="${build.dir}/installer"/>
+    <property name="installer.program.dir" value="${installer.build.dir}/program"/>
+    <property name="installer.api.dir" value="${installer.build.dir}/api"/>
+    <property name="installer.treeview.dir" value="${installer.build.dir}/treeview"/>
+    <property name="installer.sourceview.dir" value="${installer.build.dir}/sourceview"/>
+    <property name="installer.win.dir" value="${installer.build.dir}/win"/>
+    <property name="installer.gnome.dir" value="${installer.build.dir}/gnome"/>
+    <property name="installer.build.src" value="${installer.build.dir}/src"/>
+    <property name="installer.build.dest" value="${installer.build.dir}/build"/>
+    <property name="install.props" value="${installer.build.dest}/installer/install.props"/>
+    <property name="installer.dir" value="${root.dir}/installer"/>
+    <property name="installer.launch4j.config" value="${installer.dir}/launch4j.xml"/>
+    <!-- launch4j doesn't like the ./ in the front of the path -->
+    <property name="installer.jar" value="build/${app.name}-${app_version}-install.jar"/>
+    <property name="installer.exe" value="build/${app.name}-${app_version}-install.exe"/>
+    <!-- }}} -->
+    <!-- {{{ installer props -->
+    <property name="installer.main.class" value="installer.Install"/>
+    
+    <!-- files listed here are in the ${installer.dir} directory -->
+    <!-- TODO: labels should be put into a locale specific messages file -->
+    <property name="app.readme" value="readme.html"/>
+    <property name="app.license.title" value="GNU General Public License"/>
+    <property name="app.license" value="gpl.html"/>
+    <property name="ostask.unix-script.label" value="Install shortcut in:"/>
+    <property name="ostask.unix-man.label" value="Install manual page in:"/>
+    <property name="ostask.unix-desktop.label" value="Install desktop launchers in:"/>
+    <property name="ostask.unix-desktop.shortcut" value="jsxe.desktop"/>
+    <property name="ostask.unix-desktop.pixmap" value="jsxe.png"/>
+    
+    <!--<property name="ostask.unix-man.manpage" value="jsxe.1"/>-->
+    <property name="comp.count" value="5"/>
+    
+    <property name="comp.0.name" value="jsXe XML Editor"/>
+    <!-- size values are set by the filesize task in the
+         build-installer task -->
+    <!--<property name="comp.0.disk-size" value="7084"/>
+    <property name="comp.0.real-size" value="6073"/>-->
+    <property name="comp.0.fileset" value="jsxe-program"/>
+    <property name="installer.build.program.tar" value="${installer.build.dest}/installer/${comp.0.fileset}.tar.bz2"/>
+    
+    <property name="comp.1.name" value="Tree view (highly recommended)"/>
+    <!-- size values are set by the filesize task in the
+         build-installer task -->
+    <!--<property name="comp.1.disk-size" value="7084"/>
+    <property name="comp.1.real-size" value="6073"/>-->
+    <property name="comp.1.fileset" value="jsxe-treeview"/>
+    <property name="installer.build.treeview.tar" value="${installer.build.dest}/installer/${comp.1.fileset}.tar.bz2"/>
+    
+    <property name="comp.2.name" value="Source view (highly recommended)"/>
+    <!-- size values are set by the filesize task in the
+         build-installer task -->
+    <!--<property name="comp.2.disk-size" value="7084"/>
+    <property name="comp.2.real-size" value="6073"/>-->
+    <property name="comp.2.fileset" value="jsxe-sourceview"/>
+    <property name="installer.build.sourceview.tar" value="${installer.build.dest}/installer/${comp.2.fileset}.tar.bz2"/>
+    
+    <property name="comp.3.name" value="API documentation (for plugin development)"/>
+    <!-- size values are set by the filesize task in the
+         build-installer task -->
+    <!--<property name="comp.3.disk-size" value="7084"/>
+    <property name="comp.3.real-size" value="6073"/>-->
+    <property name="comp.3.fileset" value="jsxe-api"/>
+    <property name="installer.build.api.tar" value="${installer.build.dest}/installer/${comp.3.fileset}.tar.bz2"/>
+    
+    <property name="comp.4.name" value="Windows Integration (highly recommended)"/>
+    <!-- size values are set by the filesize task in the
+         build-installer task -->
+    <!--<property name="comp.4.disk-size" value="7084"/>
+    <property name="comp.4.real-size" value="6073"/>-->
+    <property name="comp.4.fileset" value="jsxe-win"/>
+    <property name="comp.4.os" value="Windows"/>
+    <property name="installer.build.win.tar" value="${installer.build.dest}/installer/${comp.4.fileset}.tar.bz2"/>
+    <!-- }}} -->
+    <!-- {{{ java build properties -->
     <property name="javac.debug" value="on"/>
     <property name="javac.optimize" value="off"/>
     <property name="javac.deprecation" value="on"/>
     <property name="javac.include.runtime" value="no"/>
     <property name="javac.source" value="1.3"/>
+    <!-- }}} -->
+    <!-- {{{ doc properties -->
     <property name="java.javadoc.link" value="http://java.sun.com/j2se/1.3/docs/api/"/>
     <property name="xerces.javadoc.link" value="http://xerces.apache.org/xerces2-j/javadocs/api/"/>
-    <property name="main.class" value="net.sourceforge.jsxe.jsXe"/>
-    <property name="major.version" value="0"/>
-    <property name="minor.version" value="5"/>
-    <property name="beta.version" value="3"/>
-    <property name="bugfix.version" value="0"/>
-    <!-- Human Readable -->
-    <property name="app.version" value="0.5 pre3"/>
-    <!-- Used in filenames -->
-    <property name="app_version" value="05_pre3"/>
+    <!-- }}} -->
     
-    <property name="buildlib.dir" value="${root.dir}/buildlib"/>
-    <property name="jsmooth.project" value="${root.dir}/jsXe.jsmooth"/>
-    <property name="jsmooth.jar" value="${buildlib.dir}/jsmoothgen-ant.jar"/>
-    
-    <condition property="windows.build">
-      <and>
-        <os family="windows"/>
-        <available file="${jsmooth.jar}" property="jsmooth.avail"/>
-      </and>
-    </condition>
-    
-    <property name="distbin.dir" value="${build.dir}/${app.name}-${app_version}-bin"/>
-    <property name="distsrc.dir" value="${build.dir}/${app.name}-${app_version}-src"/>
+    <!-- {{{ classpaths -->
     <path id="classpath">
       <pathelement location="."/>
       <pathelement location="${build.dest}"/>
@@ -83,36 +171,39 @@
     </path>
     
     <path id="run-classpath">
-      <pathelement location="${build.dir}/${app.name}.jar"/>
+      <pathelement location="${jsxe.jar}"/>
       <fileset dir="${lib.dir}">
         <include name="**/*.jar"/>
       </fileset>
     </path>
+    <!-- }}} -->
+    
+    <!-- {{{ conditionals -->
     
     <!-- set whether we have the source for the default views -->
-    <available file="${plugin.dir}/treeview/build.xml" property="treeview.avail"/>
-    <available file="${plugin.dir}/sourceview/build.xml" property="sourceview.avail"/>
+    
     <available file="${root.dir}/../web" property="web.avail"/>
     <available file="${plugin.dir}" property="plugin.avail"/>
+    <available file="${plugin.dir}/treeview/build.xml" property="treeview.avail"/>
+    <available file="${plugin.dir}/sourceview/build.xml" property="sourceview.avail"/>
+    <available file="${launch4j.dir}" property="launch4j.avail"/>
+    <available classname="org.apache.bsf.BSFException" property="bsf.avail"/>
+    <available classname="org.mozilla.javascript.JavaScriptException" property="js.avail"/>
     
+    <available file="${installer.dir}" property="installer.avail"/>
+    
+    <!-- }}} -->
+    
+    <!-- {{{ catalog used for building docs -->
+    <xmlcatalog id="docbook-catalog">
+      <catalogpath>
+        <fileset dir="${docbook.dir}" includes="**/catalog.xml"/>
+      </catalogpath>
+    </xmlcatalog>
+    <!-- }}} -->
     
     <echo message="${app.name} ${app.version}"/>
     <echo message="----------------------------------------------------------"/>
-  </target>
-  <!-- }}} -->
-  <!-- {{{ ============ Prints the available targets ===================== -->
-  <target depends="init" name="usage" description="Prints available targets">
-    <echo message=" available targets are:"/>
-    <echo message=""/>
-    <echo message=" compile   --&gt; generates the ${app.name}.jar file."/>
-    <echo message="               also generates the jars for the tree view"/>
-    <echo message="               and source view plugins if available."/>
-    <echo message=" bin       --&gt; generates a binary distribution"/>
-    <echo message=" src       --&gt; generates a source distribution"/>
-    <echo message=" doc       --&gt; generates all documentation"/>
-    <echo message="               also updates the web api if the web module"/>
-    <echo message="               is available."/>
-    <echo message=" clean     --&gt; cleans everything up"/>
   </target>
   <!-- }}} -->
   <!-- {{{ ============ Prepares for any type of build =================== -->
@@ -141,8 +232,7 @@
         <include name="**/*.png"/>
         
         <!-- files in the source directory to ignore -->
-        <!--<exclude name="net/sourceforge/jsxe/dom2/**/*"/>
-        <exclude name="net/sourceforge/jsxe/io/**/*"/>-->
+        <exclude name="net/sourceforge/jsxe/help/**/*"/>
       </fileset>
     </copy>
     <mkdir dir="${build.plugin}"/>
@@ -174,6 +264,7 @@
       <classpath refid="classpath"/>
       <include name="**/*.java"/>
     </javac>
+    
     <copy todir="${build.dest}">
       <fileset dir="${build.src}">
         <include name="**/*.props"/>
@@ -184,6 +275,15 @@
         <!--<include name="**/*.dtd"/>-->
         <include name="**/*.jpg"/>
         <include name="**/*.png"/>
+      </fileset>
+    </copy>
+    
+    <!-- copy the lib directory so that the jsXe.exe can be run
+         from the build dir -->
+    <mkdir dir="${build.lib}"/>
+    <copy todir="${build.lib}">
+      <fileset dir="${lib.dir}">
+        <include name="**/*"/>
       </fileset>
     </copy>
     
@@ -207,7 +307,7 @@
       </section>
     </manifest>
     
-    <jar jarfile="${build.dir}/${app.name}.jar" manifest="${build.dir}/${app.name}.manifest">
+    <jar jarfile="${jsxe.jar}" manifest="${build.dir}/${app.name}.manifest">
       <fileset dir="${build.dest}">
         <include name="**/*.class"/>
         <include name="**/properties"/>
@@ -249,13 +349,6 @@
   <!-- }}} -->
   <!-- {{{ ============ Prepares for a build ============================= -->
   <target depends="init" name="prepare-build">
-    <!-- lib -->
-    <mkdir dir="${build.dir}/lib"/>
-    <copy todir="${build.dir}/lib">
-      <fileset dir="${lib.dir}">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
     <!-- bin -->
     <mkdir dir="${build.dir}/bin"/>
     <copy todir="${build.dir}/bin">
@@ -267,6 +360,14 @@
   <!-- }}} -->
   <!-- {{{ ============ Generates the documentation ====================== -->
   <target depends="prepare-doc, prepare-src" name="doc" description="Build documentation">
+    <taskdef name="fop" classname="org.apache.fop.tools.anttasks.Fop">
+      <classpath>
+        <pathelement location="${buildlib.dir}\fop.jar"/>
+        <pathelement location="${buildlib.dir}\avalon.jar"/>
+        <pathelement location="${buildlib.dir}\batik.jar"/>
+      </classpath>
+    </taskdef>
+    
     <copy file="${root.dir}/COPYING" tofile="${build.docs}/COPYING"/>
     <copy file="${root.dir}/README" tofile="${build.docs}/README"/>
     <copy file="${root.dir}/AUTHORS" tofile="${build.docs}/AUTHORS"/>
@@ -276,17 +377,363 @@
     <copy file="${root.dir}/THANKS" tofile="${build.docs}/THANKS"/>
     <copy file="${root.dir}/NEWS" tofile="${build.docs}/NEWS"/>
     
+    <!-- generate the html manual -->
+    <!--
+    <mkdir dir="${build.docs}/manual"/>
+    <xslt basedir="${docs.dir}/manual"
+        destdir="${build.docs}/manual"
+        includes="**/manual.xml"
+        style="${docbook.dir}/html/docbook.xsl">
+          <outputproperty name="encoding" value="UTF-8"/>
+          <mapper type="glob" from="*.xml" to="*.html"/>
+          <xmlcatalog refid="docbook-catalog"/>
+    </xslt> 
+    -->
+    
+    <!-- generate the pdf manual -->
+    <!--
+    <mkdir dir="${build.dir}/manual"/>
+    <xslt basedir="${docs.dir}/manual"
+        destdir="${build.dir}/manual"
+        includes="**/manual.xml"
+        style="${docbook.dir}/fo/docbook.xsl">
+          <outputproperty name="encoding" value="UTF-8"/>
+          <mapper type="glob" from="*.xml" to="*.fo"/>
+          <xmlcatalog refid="docbook-catalog"/>
+    </xslt>
+    
+    <fop format="application/pdf"
+      outdir="${build.dir}"
+      messagelevel="warn">
+        <fileset dir="${build.dir}/manual">
+          <include name="*.fo"/>
+        </fileset>
+    </fop>
+    -->
+    
     <javadoc author="true" destdir="${build.javadocs}" doctitle="${app.name} ${app.version} API" locale="en_US" packagenames="*" sourcepath="${build.src}" version="true" windowtitle="${app.name} ${app.version} API">
       <link href="${java.javadoc.link}"/>
       <link href="${xerces.javadoc.link}"/>
-    </javadoc>
+    </javadoc> 
     
-    <zip basedir="${build.docs}" includes="api/**" zipfile="${build.dir}/${app.name}-${app_version}-api.zip"/>
+    <zip basedir="${build.javadocs}" includes="**/*" zipfile="${build.dir}/${app.name}-${app_version}-api.zip"/>
     
   </target>
   <!-- }}} -->
+  <!-- {{{ ============ Builds the installer ============================= -->
+  <target depends="compile, prepare-build, doc" name="build-installer" description="Builds the installer">
+    
+    <fail unless="js.avail" message="You must have the ${buildlib.dir}/js.jar in your classpath to build the installer. It is located in the ${buildlib.dir} directory. See http://ant.apache.org/manual/install.html#librarydependencies"/>
+    <fail unless="bsf.avail" message="You must have the ${buildlib.dir}/bsf.jar in your classpath to build the installer. It is located in the ${buildlib.dir} directory. See http://ant.apache.org/manual/install.html#librarydependencies"/>
+    <fail unless="launch4j.avail" message="You must install launch4j in ${launch4j.dir} or change the launch4j.dir property in build.xml"/>
+    <fail unless="treeview.avail" message="You must have the treeview source available to build the installer."/>
+    <fail unless="sourceview.avail" message="You must have the sourceview source available to build the installer."/>
+    
+    <!-- {{{ filesize script definition -->
+    <!-- taken from the ant manual 
+         modified to get the total size of a directory structure
+         and set it to a property in Kb -->
+    <scriptdef name="filesize" language="javascript">
+      <element name="fileset" type="fileset"/>
+      <attribute name="property"/>
+      <![CDATA[
+        // import statements
+        // importPackage(java.io);
+        importClass(java.io.File);
+        
+        // Create a <fileset dir="" includes=""/>
+        filesets = elements.get("fileset");
+        
+        for (i = 0; i < filesets.size(); i++) {
+          fs = filesets.get(i);
+          
+          // Get the files (array) of that fileset
+          ds = fs.getDirectoryScanner(project);
+          srcFiles = ds.getIncludedFiles();
+          
+          size = 0;
+          // iterate over that array
+          for (i=0; i<srcFiles.length; i++) {
+            
+            // get the values via Java API
+            var basedir  = fs.getDir(project);
+            var filename = srcFiles[i];
+            var file = new File(basedir, filename);
+            
+            size += file.length();
+          }
+          
+          roundedSize = Math.round(size/1024);
+          
+          echo = project.createTask("echo");
+          echo.setMessage("Size: "+roundedSize+"Kb");
+          echo.perform();
+          project.setNewProperty(attributes.get("property"), roundedSize);
+        }
+      ]]>
+    </scriptdef>
+    <!-- }}} -->
+    
+    <!-- copy the installer source -->
+    <mkdir dir="${installer.build.dir}"/>
+    <copy todir="${installer.build.dir}">
+      <fileset dir="${installer.dir}">
+        <include name="**/*.java"/>
+      </fileset>
+    </copy>
+    
+    <!-- build the installer -->
+    <mkdir dir="${installer.build.dest}"/>
+    <javac debug="${javac.debug}" deprecation="${javac.deprecation}" includeJavaRuntime="${javac.include.runtime}" optimize="${javac.optimize}" source="${javac.source}" destdir="${installer.build.dest}" srcdir="${installer.build.src}">
+      <include name="**/*.java"/>
+    </javac>
+    
+    <!-- copy html files -->
+    <copy todir="${installer.build.dest}/installer">
+      <fileset dir="${installer.dir}">
+        <include name="*.html"/>
+      </fileset>
+    </copy>
+    
+    <!-- copy other files -->
+    <copy todir="${installer.build.dest}">
+      <fileset dir="${installer.dir}">
+        <exclude name="*.html"/>
+        <include name="*"/>
+      </fileset>
+    </copy>
+    
+    <!-- {{{ create the program tar.bz2 file -->
+    
+    <mkdir dir="${installer.program.dir}"/>
+    
+    <mkdir dir="${installer.program.dir}/jars"/>
+    
+    <!-- doc -->
+    <mkdir dir="${installer.program.dir}/doc"/>
+    <copy todir="${installer.program.dir}/doc">
+      <fileset dir="${build.docs}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    
+    <!-- messages -->
+    <mkdir dir="${installer.program.dir}/messages"/>
+    <copy todir="${installer.program.dir}/messages">
+      <fileset dir="${build.messages}">
+        <include name="**/messages*"/>
+      </fileset>
+    </copy>
+    
+    <copy file="${jsxe.jar}" todir="${installer.program.dir}"/>
+    <!-- lib -->
+    <mkdir dir="${installer.program.dir}/lib"/>
+    <copy todir="${installer.program.dir}/lib">
+      <fileset dir="${build.lib}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    
+    <!-- create the tar.bz2 for the installer -->
+    <tar basedir="${installer.program.dir}" includes="**/*" tarfile="${installer.build.dir}/${app.name}-${app_version}-program.tar"/>
+    <bzip2 src="${installer.build.dir}/${app.name}-${app_version}-program.tar" destfile="${installer.build.program.tar}"/>
+    <delete file="${installer.build.dir}/${app.name}-${app_version}-program.tar"/>
+    
+    <!-- find the file size of the files on disk and compressed files -->
+    <filesize property="comp.0.disk-size">
+      <fileset dir="${installer.program.dir}">
+        <include name="**/*"/>
+      </fileset>
+    </filesize>
+    
+    <filesize property="comp.0.real-size">
+      <fileset file="${installer.build.program.tar}"/>
+    </filesize>
+    
+    <!-- }}} -->
+    
+    <!-- {{{ create the treeview tar.bz2 file -->
+    
+    <mkdir dir="${installer.treeview.dir}"/>
+    <mkdir dir="${installer.treeview.dir}/jars"/>
+    <copy todir="${installer.treeview.dir}/jars" file="${build.plugin}/treeview.jar"/>
+    
+    <tar basedir="${installer.treeview.dir}" includes="**/*" tarfile="${installer.build.dir}/${app.name}-${app_version}-treeview.tar"/>
+    <bzip2 src="${installer.build.dir}/${app.name}-${app_version}-treeview.tar" destfile="${installer.build.treeview.tar}"/>
+    <delete file="${installer.build.dir}/${app.name}-${app_version}-treeview.tar"/>
+    
+    <!-- find the file size of the files on disk and compressed files -->
+    <filesize property="comp.1.disk-size">
+      <fileset dir="${installer.treeview.dir}">
+        <include name="**/*"/>
+      </fileset>
+    </filesize>
+    
+    <filesize property="comp.1.real-size">
+      <fileset file="${installer.build.treeview.tar}"/>
+    </filesize>
+    
+    <!-- }}} -->
+    
+    <!-- {{{ create the sourceview tar.bz2 file -->
+    
+    <mkdir dir="${installer.sourceview.dir}"/>
+    <mkdir dir="${installer.sourceview.dir}/jars"/>
+    <copy todir="${installer.sourceview.dir}/jars" file="${build.plugin}/sourceview.jar"/>
+    
+    <tar basedir="${installer.sourceview.dir}" includes="**/*" tarfile="${installer.build.dir}/${app.name}-${app_version}-sourceview.tar"/>
+    <bzip2 src="${installer.build.dir}/${app.name}-${app_version}-sourceview.tar" destfile="${installer.build.sourceview.tar}"/>
+    <delete file="${installer.build.dir}/${app.name}-${app_version}-sourceview.tar"/>
+    
+    <!-- find the file size of the files on disk and compressed files -->
+    <filesize property="comp.2.disk-size">
+      <fileset dir="${installer.sourceview.dir}">
+        <include name="**/*"/>
+      </fileset>
+    </filesize>
+    
+    <filesize property="comp.2.real-size">
+      <fileset file="${installer.build.sourceview.tar}"/>
+    </filesize>
+    
+    <!-- }}} -->
+    
+    <!-- {{{ create the api tar.bz2 file -->
+    
+    <mkdir dir="${installer.api.dir}"/>
+    <mkdir dir="${installer.api.dir}/api"/>
+    <copy todir="${installer.api.dir}/api">
+      <fileset dir="${build.javadocs}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    
+    <tar basedir="${installer.api.dir}" excludes="*.class" includes="api/**" tarfile="${installer.build.dir}/${app.name}-${app_version}-api.tar"/>
+    <bzip2 src="${installer.build.dir}/${app.name}-${app_version}-api.tar" destfile="${installer.build.api.tar}"/>
+    <delete file="${installer.build.dir}/${app.name}-${app_version}-api.tar"/>
+    
+    <!-- find the file size of the files on disk and compressed files -->
+    <filesize property="comp.3.disk-size">
+      <fileset dir="${installer.api.dir}">
+        <include name="**/*"/>
+      </fileset>
+    </filesize>
+    
+    <filesize property="comp.3.real-size">
+      <fileset file="${installer.build.api.tar}"/>
+    </filesize>
+    
+    <!-- }}} -->
+    
+    <!-- {{{ create the win tar.bz2 file -->
+    
+    <!-- create the windows exe -->
+    <taskdef name="launch4j"
+      classname="net.sf.launch4j.ant.Launch4jTask"
+      classpath="${launch4j.classpath}"/>
+    
+    <launch4j configFile="${launch4j.config}"
+              outfile="${launch4j.jsxe.exe}"
+              jarPath="${launch4j.jsxe.jar}"
+              />
+    
+    <mkdir dir="${installer.win.dir}"/>
+    <copy file="${jsxe.exe}" todir="${installer.win.dir}" />
+    
+    <tar basedir="${installer.win.dir}" includes="**/*" tarfile="${installer.build.dir}/${app.name}-${app_version}-win.tar"/>
+    <bzip2 src="${installer.build.dir}/${app.name}-${app_version}-win.tar" destfile="${installer.build.win.tar}"/>
+    <delete file="${installer.build.dir}/${app.name}-${app_version}-win.tar"/>
+    
+    <!-- find the file size of the files on disk and compressed files -->
+    <filesize property="comp.4.disk-size">
+      <fileset dir="${installer.win.dir}">
+        <include name="**/*"/>
+      </fileset>
+    </filesize>
+    
+    <filesize property="comp.4.real-size">
+      <fileset file="${installer.build.win.tar}"/>
+    </filesize>
+    
+    <!-- }}} -->
+    
+    <!-- {{{ create the install.props file -->
+    <propertyfile comment="${app.name}&apos;s installer properties" file="${install.props}">
+      <entry key="app.name" value="${app.name}"/>
+      <entry key="app.version" value="${app.version}"/>
+      <entry key="app.readme" value="${app.readme}"/>
+      <entry key="app.license.title" value="${app.license.title}"/>
+      <entry key="app.license" value="${app.license}"/>
+      <entry key="ostask.unix-script.label" value="${ostask.unix-script.label}"/>
+      <entry key="ostask.unix-desktop.label" value="${ostask.unix-desktop.label}"/>
+      <entry key="ostask.unix-desktop.pixmap" value="${ostask.unix-desktop.pixmap}"/>
+      <entry key="ostask.unix-desktop.shortcut" value="${ostask.unix-desktop.shortcut}"/>
+      
+      <!--<entry key="ostask.unix-man.label" value="${ostask.unix-man.label}"/>-->
+      <entry key="comp.count" value="${comp.count}"/>
+      <entry key="comp.0.name" value="${comp.0.name}"/>
+      <entry key="comp.0.disk-size" value="${comp.0.disk-size}"/>
+      <entry key="comp.0.real-size" value="${comp.0.real-size}"/>
+      <entry key="comp.0.fileset" value="${comp.0.fileset}"/>
+      
+      <entry key="comp.1.name" value="${comp.1.name}"/>
+      <entry key="comp.1.disk-size" value="${comp.1.disk-size}"/>
+      <entry key="comp.1.real-size" value="${comp.1.real-size}"/>
+      <entry key="comp.1.fileset" value="${comp.1.fileset}"/>
+      
+      <entry key="comp.2.name" value="${comp.2.name}"/>
+      <entry key="comp.2.disk-size" value="${comp.2.disk-size}"/>
+      <entry key="comp.2.real-size" value="${comp.2.real-size}"/>
+      <entry key="comp.2.fileset" value="${comp.2.fileset}"/>
+      
+      <entry key="comp.3.name" value="${comp.3.name}"/>
+      <entry key="comp.3.disk-size" value="${comp.3.disk-size}"/>
+      <entry key="comp.3.real-size" value="${comp.3.real-size}"/>
+      <entry key="comp.3.fileset" value="${comp.3.fileset}"/>
+      
+      <entry key="comp.4.name" value="${comp.4.name}"/>
+      <entry key="comp.4.disk-size" value="${comp.4.disk-size}"/>
+      <entry key="comp.4.real-size" value="${comp.4.real-size}"/>
+      <entry key="comp.4.fileset" value="${comp.4.fileset}"/>
+      <entry key="comp.4.os" value="${comp.4.os}"/>
+      
+    </propertyfile>
+    <!-- }}} -->
+    
+    <!-- {{{ create the manifest -->
+    <manifest file="${installer.build.dir}/installer.manifest">
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Main-Class" value="${installer.main.class}"/>
+      <section name="common">
+        <attribute name="Implementation-Title" value="${app.name}"/>
+        <attribute name="Implementation-Version" value="${app.version} ${TODAY}"/>
+      </section>
+    </manifest>
+    <!-- }}} -->
+    
+    <!-- {{{ create the install jar -->
+    <jar jarfile="${installer.jar}" manifest="${installer.build.dir}/installer.manifest">
+      <fileset dir="${installer.build.dest}">
+        <include name="**/*"/>
+      </fileset>
+    </jar>
+    <!-- }}} -->
+    
+  </target>
+  <!-- }}} -->
+  <!-- {{{ ============ Generates a windows distribution ================= -->
+  <target depends="build-installer" name="win" description="Build a windows distribution">
+    <taskdef name="launch4j"
+      classname="net.sf.launch4j.ant.Launch4jTask"
+      classpath="${launch4j.classpath}"/>
+    
+    <launch4j configFile="${installer.launch4j.config}" 
+              jar="${installer.jar}"
+              outfile="${installer.exe}"/>
+  </target>
+  <!-- }}} -->
   <!-- {{{ ============ Generates the binary distribution ================ -->
-  <target depends="compile, prepare-build, doc" name="bin" description="Build binary distribution">
+  <target depends="compile, prepare-build, doc" name="bin" description="Build binary distributions">
     
     <!-- plugins -->
     <mkdir dir="${distbin.dir}/jars"/>
@@ -303,6 +750,16 @@
         <include name="**/*"/>
       </fileset>
     </copy>
+    
+    
+    <!-- api -->
+    <mkdir dir="${distbin.dir}/doc/api"/>
+    <copy todir="${distbin.dir}/doc/api">
+      <fileset dir="${build.javadocs}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    
     <!-- bin -->
     <mkdir dir="${distbin.dir}/bin"/>
     <copy todir="${distbin.dir}/bin">
@@ -319,7 +776,7 @@
       </fileset>
     </copy>
     
-    <copy file="${build.dir}/${app.name}.jar" tofile="${distbin.dir}/${app.name}.jar"/>
+    <copy file="${jsxe.jar}" todir="${distbin.dir}"/>
     <!-- lib -->
     <mkdir dir="${distbin.dir}/lib"/>
     <copy todir="${distbin.dir}/lib">
@@ -328,18 +785,14 @@
       </fileset>
     </copy>
     
-    <!-- build the windows executable -->
-    <antcall target="build-exe"/>
-    
+    <!-- create the zip distr -->
     <zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-bin/**" zipfile="${build.dir}/${app.name}-${app_version}-bin.zip"/>
-  </target>
-  <target name="build-exe" if="windows.build">
-    <taskdef name="jsmoothgen"
-      classname="net.charabia.jsmoothgen.ant.JSmoothGen"
-      classpath="${jsmooth.jar}"/>
     
-    <jsmoothgen project="${jsmooth.project}" skeletonroot="${buildlib.dir}/skeletons"/>
-    <copy todir="${distbin.dir}" file="${build.dir}/jsXe.exe"/>
+    <!-- create the tar.bz2 distr -->
+    <tar basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-bin/**" tarfile="${build.dir}/${app.name}-${app_version}-bin.tar"/>
+    <bzip2 src="${build.dir}/${app.name}-${app_version}-bin.tar" destfile="${build.dir}/${app.name}-${app_version}-bin.tar.bz2"/>
+    <delete file="${build.dir}/${app.name}-${app_version}-bin.tar"/>
+    
   </target>
   <!-- }}} -->
   <!-- {{{ ============ Generates the source distribution ================ -->
@@ -347,11 +800,20 @@
     
     <antcall target="copy-treeview-source"/>
     <antcall target="copy-sourceview-source"/>
+    <antcall target="copy-installer-source"/>
     
     <!-- doc -->
     <mkdir dir="${distsrc.dir}/doc"/>
     <copy todir="${distsrc.dir}/doc">
       <fileset dir="${build.docs}">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    
+    <!-- api -->
+    <mkdir dir="${distsrc.dir}/doc/api"/>
+    <copy todir="${distsrc.dir}/doc/api">
+      <fileset dir="${build.javadocs}">
         <include name="**/*"/>
       </fileset>
     </copy>
@@ -400,7 +862,7 @@
         <include name="**/*"/>
       </fileset>
     </copy>
-    <copy todir="${distsrc.dir}" file="${jsmooth.project}"/>
+    <copy todir="${distsrc.dir}" file="${launch4j.config}"/>
     
     <!-- messages -->
     <mkdir dir="${distsrc.dir}/messages"/>
@@ -410,7 +872,14 @@
       </fileset>
     </copy>
     
+    <!-- create the zip -->
     <zip basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-src/**" zipfile="${build.dir}/${app.name}-${app_version}-src.zip"/>
+    
+    <!-- create the tar.bz2 distr -->
+    <tar basedir="${build.dir}" excludes="*.class" includes="${app.name}-${app_version}-src/**" tarfile="${build.dir}/${app.name}-${app_version}-src.tar"/>
+    <bzip2 src="${build.dir}/${app.name}-${app_version}-src.tar" destfile="${build.dir}/${app.name}-${app_version}-src.tar.bz2"/>
+    <delete file="${build.dir}/${app.name}-${app_version}-src.tar"/>
+    
   </target>
   <target name="copy-treeview-source" if="treeview.avail">
     <copy todir="${distsrc.dir}/jars">
@@ -429,6 +898,13 @@
         <exclude name="sourceview/build"/>
         <exclude name="sourceview/build/**/*"/>
         <exclude name="sourceview/sourceview.manifest"/>
+      </fileset>
+    </copy>
+  </target>
+  <target name="copy-installer-source" if="installer.avail">
+    <copy todir="${distsrc.dir}/installer">
+      <fileset dir="${installer.dir}">
+        <include name="**/*"/>
       </fileset>
     </copy>
   </target>

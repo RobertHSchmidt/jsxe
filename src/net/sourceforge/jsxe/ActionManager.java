@@ -3,10 +3,6 @@ ActionManager.java
 :tabSize=4:indentSize=4:noTabs=true:
 :folding=explicit:collapseFolds=1:
 
-jsXe is the Java Simple XML Editor
-jsXe is a gui application that creates a tree view of an XML document.
-The user can then edit this tree and the content in the tree.
-
 Copyright (C) 2006 Ian Lewis (IanLewis@member.fsf.org)
 
 This program is free software; you can redistribute it and/or
@@ -31,6 +27,7 @@ package net.sourceforge.jsxe;
 //{{{ imports
 
 //{{{ jsXe classes
+import net.sourceforge.jsxe.action.ContextSpecificAction;
 import net.sourceforge.jsxe.gui.Messages;
 import net.sourceforge.jsxe.gui.GUIUtilities;
 import net.sourceforge.jsxe.gui.KeyEventTranslator;
@@ -52,6 +49,7 @@ import javax.swing.KeyStroke;
 //}}}
 
 //{{{ AWT classes
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 //}}}
@@ -76,16 +74,6 @@ import java.awt.event.KeyEvent;
  */
 public class ActionManager {
     
-    //{{{ Public static identifiers
-    
-    public static final String CUT_SUFFIX = ".cut";
-    public static final String COPY_SUFFIX = ".copy";
-    public static final String PASTE_SUFFIX = ".paste";
-    public static final String FIND_SUFFIX = ".find";
-    public static final String FIND_NEXT_SUFFIX = ".findnext";
-    
-    //}}}
-    
     //{{{ addActionSet()
     /**
      * Adds a set of actions to the jsXe's pool of action sets.
@@ -97,11 +85,51 @@ public class ActionManager {
         m_actionSets.add(set);
     }//}}}
     
+    //{{{ addActionImplementation()
+    /**
+     * Register an ActionImplementation with a registered ContextSpecificAction.
+     * If the ContextSpecificAction isn't registered this method does nothing.
+     * @param actionName the name of the ContextSpecificAction
+     * @param comp the component context the recieves the action
+     * @param imp the action implementation
+     */
+    public static void addActionImplementation(String actionName, Component comp, ContextSpecificAction.ActionImplementation imp) {
+        ContextSpecificAction action = getContextSpecificAction(actionName);
+        if (action != null) {
+            action.registerComponent(comp, imp);
+        }
+    }//}}}
+    
+    //{{{ removeActionImplementation()
+    /**
+     * Removes the ActionImplementation from the registered
+     * ContextSpecificAction.
+     */
+    public static void removeActionImplementation(String actionName, Component comp) {
+        ContextSpecificAction action = getContextSpecificAction(actionName);
+        if (action != null) {
+            action.removeComponent(comp);
+        }
+    }//}}}
+    
+    //{{{ getContextSpecificAction()
+    /**
+     * Gets a context specific action or null if no context specific action
+     * exists with that name.
+     */
+    public static ContextSpecificAction getContextSpecificAction(String name) {
+        LocalizedAction action = getLocalizedAction(name);
+        if (action instanceof ContextSpecificAction) {
+            return (ContextSpecificAction)action;
+        }
+        return null;
+    }//}}}
+    
     //{{{ getLocalizedAction()
     /**
      * Gets the LocalizedAction set with the given name
-     * @param the name of the action set.
-     * @return the action set that matches the name, or null if none match.
+     * @param the name of the action.
+     * @return the action that matches the name, or null if none match.
      */
     public static LocalizedAction getLocalizedAction(String name) {
         for (int i = 0; i < m_actionSets.size(); i++) {
@@ -116,13 +144,16 @@ public class ActionManager {
     
     //{{{ getAction()
     /**
-     * Gets a true action for the LocalizedAction with the given name. This can be
-     * used in menus and toobars etc.
+     * Creates a true action for the LocalizedAction with the given name. This 
+     * can be used in menus and toobars etc.
      * @param name the name of the action.
      */
     public static Action getAction(String name) {
-        Action action = (Action)m_actionMap.get(name);
-        if (action == null) {
+        // We can't keep a cache of Wrappers because JMenuItems register
+        //listeners with them and would never be GCed.
+        Action action = null;
+       // Action action = (Action)m_actionMap.get(name);
+       // if (action == null) {
             LocalizedAction editAction = getLocalizedAction(name);
             if (editAction != null) {
                 action = new Wrapper(name);
@@ -138,11 +169,11 @@ public class ActionManager {
                     action.putValue(Action.ACCELERATOR_KEY, KeyEventTranslator.getKeyStroke(keyBinding));
                 }
                 
-                m_actionMap.put(name, action);
+               // m_actionMap.put(name, action);
             } else {
                 Log.log(Log.WARNING,ActionManager.class,"Unknown action: "+ name);
             }
-        }
+       // }
         return action;
     }//}}}
     
@@ -218,9 +249,9 @@ public class ActionManager {
             KeyEventTranslator.Key key = KeyEventTranslator.parseKey(keyBinding);
             m_keyBindingMap.put(key, wrapper);
             
-            Log.log(Log.DEBUG, ActionManager.class, "Adding binding: "+key.toString());
-            Log.log(Log.DEBUG, ActionManager.class, "key.key: "+key.key);
-            Log.log(Log.DEBUG, ActionManager.class, "key.input: "+key.input);
+           // Log.log(Log.DEBUG, ActionManager.class, "Adding binding: "+key.toString());
+           // Log.log(Log.DEBUG, ActionManager.class, "key.key: "+key.key);
+           // Log.log(Log.DEBUG, ActionManager.class, "key.input: "+key.input);
             
             //need to do this so that the accelerator key is rendered on menu items
             wrapper.putValue(Action.ACCELERATOR_KEY, KeyEventTranslator.getKeyStroke(keyBinding));
@@ -261,22 +292,10 @@ public class ActionManager {
         //Gets the action for the Key.
         Action action = (Action)m_keyBindingMap.get(key);
         if (action != null) {
-            Log.log(Log.DEBUG, ActionManager.class, "Key mapping match for "+((Wrapper)action).getName());
+           // Log.log(Log.DEBUG, ActionManager.class, "Key mapping match for "+((Wrapper)action).getName());
             action.actionPerformed(translateKeyEvent(event));
             event.consume();
         }
-    }//}}}
-    
-    //{{{ isDocviewSpecific()
-    /**
-     * Returns whether the action with the given name is document view specific.
-     */
-    public static boolean isDocViewSpecific(String actionName) {
-        return (actionName.endsWith(CUT_SUFFIX) ||
-                actionName.endsWith(COPY_SUFFIX) ||
-                actionName.endsWith(PASTE_SUFFIX) ||
-                actionName.endsWith(FIND_SUFFIX) ||
-                actionName.endsWith(FIND_NEXT_SUFFIX));
     }//}}}
     
     //{{{ Wrapper class
@@ -329,7 +348,7 @@ public class ActionManager {
     /**
      * This is an name to Wrapper mapping.
      */
-    private static HashMap m_actionMap = new HashMap();
+   // private static HashMap m_actionMap = new HashMap();
     private static ArrayList m_actionSets = new ArrayList();
     
     private static boolean initialized = false;
@@ -353,7 +372,7 @@ public class ActionManager {
     private static void removeKeyBinding(KeyEventTranslator.Key key) {
         Action action = (Action)m_keyBindingMap.get(key);
         if (action != null) {
-            Log.log(Log.DEBUG, ActionManager.class, "removing key binding: "+key.toString());
+           // Log.log(Log.DEBUG, ActionManager.class, "removing key binding: "+key.toString());
             action.putValue(Action.ACCELERATOR_KEY, null);
             m_keyBindingMap.remove(key);
         }

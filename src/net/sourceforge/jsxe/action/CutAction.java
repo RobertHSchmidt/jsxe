@@ -40,8 +40,12 @@ import java.io.IOException;
 //}}}
 
 //{{{ AWT components
+import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 //}}}
+
+import javax.swing.text.JTextComponent;
 
 //}}}
 
@@ -52,25 +56,24 @@ import java.awt.event.ActionEvent;
  * @version $Id$
  * @since jsXe 0.5 pre1
  */
-public class CutAction extends LocalizedAction {
+public class CutAction extends ContextSpecificAction {
     
     //{{{ CutAction constructor
     public CutAction() {
         super("cut");
     }//}}}
     
-    //{{{ getLabel()
-    public String getLabel() {
-        return Messages.getMessage("common.cut");
-    }//}}}
-    
     //{{{ invoke()
     public void invoke(TabbedView view, ActionEvent evt) {
         /*
-        invoke the action registered for the current DocumentView named
-        viewname.cut if there is one.
+        Invoke the action registered for the current component named
         */
-        ActionManager.invokeAction(jsXe.getPluginLoader().getPluginProperty(view.getDocumentView().getViewPlugin(), JARClassLoader.PLUGIN_NAME)+".cut", evt);
+        Component comp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getPermanentFocusOwner();
+        if (comp instanceof JTextComponent) {
+            ((JTextComponent)comp).cut();
+        } else {
+            super.invoke(view, evt);
+        }
     }//}}}
-
+    
 }

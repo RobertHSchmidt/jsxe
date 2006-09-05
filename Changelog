@@ -1,10 +1,82 @@
+08/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added new ContextSpecificActions to replace ViewSpecificActions. Now
+      actions such as cut and paste can be registered for specific components
+      not just a specific view.
+
+08/29/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed a memory leak with JMenuItems. ActionManager kept a cache of
+      Wrapper Action objects. JMenu items register listeners with those Actions
+      so the JMenuItems would never be Garbage collected.
+    * Fixed that the Find action had Ctrl-v as the default shortcut. Changed it
+      to Ctrl-f
+
+08/28/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Changed the messages files to be named the standard ResourceBundle way.
+    * Fixed default key binding for exit.
+    * Added some new processing for generating jsXe's manual.
+
+08/27/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the launch4j script to set the absolute path of the lib directory
+      in the jre option to set the endorsed dirs. This will allow jsXe to be
+      launched from anywhere and still be able to find the right version of
+      Xerces.
+    * Updated the installer to create a script file in unix that uses the java
+      in the environment path and use the HotSpot server so that jsXe runs
+      faster at the cost of startup time and memory footprint.
+    * Added an option to display the full path to a file in the recent files
+      menu. Feature Request #1546371
+
+08/21/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated russian translation.
+
+08/18/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added a hack to disable view specific actions that aren't implemented by
+      the view.
+
+08/17/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated the German translation thanks to Dieter Steiner
+
+08/12/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added support for running jsXe in a wrapped exe using launch4j.
+    * Added an installer for jsXe. The installer can be packaged in an exe for
+      easy use by windows users.
+    * Moved the windows integration into it's own component in the installer so
+      that it won't be installed on systems other than Windows.
+
+08/09/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added a new option to the Global Options dialog for the number of undo
+      operations to remember.
+
+08/08/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added undo/redo support for attributes.
+
 08/07/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
+    * Added temporary support for undo to jsXe.
+    * Added support for undo of text insert and delete.
+    * Added support for undo of changes to a node's name, value, and prefix.
     * Removed get/setStringProperty methods from XMLDocument since they aren't
       needed
 
+08/05/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added core support for Undo/Redo. Undo/Redo will temporarily be view
+      specific. Eventually it will be entirely part of core after the
+      new data model is complete.
+
 08/03/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
+    * Added Russian translation thanks to Alexandr Gridnev.
     * More porting of jEdit's VFS classes to jsXe
 
 07/29/2006  Ian Lewis   <IanLewis@member.fsf.org>

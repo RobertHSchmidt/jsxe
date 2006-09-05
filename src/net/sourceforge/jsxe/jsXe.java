@@ -485,7 +485,7 @@ public class jsXe {
         return jsXeIcon;
     }//}}}
     
-    //{{{ getHomeDirectory() method
+    //{{{ getInstallDirectory() method
     /**
      * Returns the path to where jsXe is installed
      */
@@ -1367,7 +1367,7 @@ public class jsXe {
     
     private static ArrayList m_buffers = new ArrayList();
     private static final String DefaultDocument = "<?xml version='1.0' encoding='UTF-8'?>\n<default_element>default_node</default_element>";
-    private static final ImageIcon jsXeIcon = new ImageIcon(jsXe.class.getResource("/net/sourceforge/jsxe/icons/jsxe.jpg"), "jsXe");
+    private static final ImageIcon jsXeIcon = GUIUtilities.loadIcon("jsxe.jpg");
     
     private static final Properties buildProps = new Properties();
     private static boolean m_exiting=false;

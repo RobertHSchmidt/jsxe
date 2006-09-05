@@ -66,10 +66,10 @@ import net.sourceforge.jsxe.util.MiscUtilities;
  * <code>Properties</code> class.
  *
  * <ul>
- * <li>messages.<code>language</code>_<code>country</code>_<code>variant</code></li>
- * <li>messages.<code>language</code>_<code>country</code></li>
- * <li>messages.<code>language</code></li>
- * <li>messages</li>
+ * <li>messages_<code>language</code>_<code>country</code>_<code>variant</code>.properties</li>
+ * <li>messages_<code>language</code>_<code>country</code>.properties</li>
+ * <li>messages_<code>language</code>.properties</li>
+ * <li>messages.properties</li>
  * </ul>
  *
  * @author Trish Hartnett (<a href="mailto:trishah136@member.fsf.org">trishah136@member.fsf.org</a>)
@@ -93,7 +93,8 @@ public class Messages {
    // static {
    //    // Locale.setDefault(new Locale("sv"));
    //    // Locale.setDefault(Locale.GERMANY);
-   //     Locale.setDefault(Locale.JAPAN);
+   //    // Locale.setDefault(Locale.JAPAN);
+   //    // Locale.setDefault(new Locale("ru", "RU"));
    // }
     private static Locale m_locale = Locale.getDefault();
     
@@ -106,22 +107,11 @@ public class Messages {
         StringBuffer messagesFile = new StringBuffer("messages");
                 
         if (locale != null) {
-            messagesFile.append(".").append(locale.toString());
-           // String language = locale.getLanguage();
-           // if (language != null && !language.equals("")) {
-           //     messagesFile.append(".").append(language);
-                
-           //     String country = locale.getCountry();
-           //     if (country != null && !country.equals("")) {
-           //         messagesFile.append(".").append(country);
-                    
-           //         String variant = locale.getVariant();
-           //         if (variant != null && !variant.equals("")) {
-           //             messagesFile.append(".").append(variant);
-           //         }
-           //     }
-           // }
+            //locale is language[_country[_variant]]
+            messagesFile.append("_").append(locale.toString());
         }
+        
+        messagesFile.append(".properties");
         
         return messagesFile.toString();
     }//}}}
