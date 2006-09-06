@@ -33,6 +33,7 @@ import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
 import net.sourceforge.jsxe.dom.undo.*;
 import net.sourceforge.jsxe.dom.completion.*;
+import net.sourceforge.jsxe.dom.ls.DOMSerializer;
 //}}}
 
 //{{{ Java Base Classes
