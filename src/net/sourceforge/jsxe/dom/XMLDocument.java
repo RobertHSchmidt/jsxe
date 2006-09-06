@@ -447,6 +447,112 @@ public class XMLDocument {
     
     //}}}
     
+    //{{{ Text Methods
+    
+    //{{{ getText()
+    /**
+     * Gets the text at a specified location in the document. This method
+     * method should be used sparingly as changes to the properties of this
+     * document or the tree structure could change the location of text
+     * within the document.
+     * @param start the starting index of the text to retrieve
+     * @param length the length of the text needed
+     * @return the text requested
+     */
+    public String getText(int start, int length) throws IOException {
+        
+        if (start < 0 || length < 0 || start + length > m_content.getLength()) {
+            throw new ArrayIndexOutOfBoundsException(start + ":" + length);
+        }
+        
+        //if the document is well formed we go by the DOM
+        //if it's not we go by the source text.
+        syncContentWithDOM();
+        return m_content.getText(start,length);
+    }//}}}
+    
+    //{{{ getSegment()
+    /**
+     * Gets the text at a specified location in the document. This method
+     * method should be used sparingly as changes to the properties of this
+     * document or the tree structure could change the location of text
+     * within the document.
+     * @param start the starting index of the text to retrieve
+     * @param length the length of the text needed
+     * @return the segment representing the text requested
+     */
+    public Segment getSegment(int start, int length) throws IOException {
+        
+        if (start < 0 || length < 0 || start + length > m_content.getLength()) {
+            throw new ArrayIndexOutOfBoundsException(start + ":" + length);
+        }
+        
+        //if the document is well formed we go by the DOM
+        //if it's not we go by the source text.
+        if (m_parsedMode) {
+            syncContentWithDOM();
+        }
+        Segment seg = new Segment();
+        m_content.getText(start, length, seg);
+        return seg;
+    }//}}}
+    
+    //{{{ getLength()
+    /**
+     * Gets the total number of characters in the document.
+     * @return the length of the document
+     */
+    public int getLength() {
+        
+        syncContentWithDOM();
+        
+        return m_content.getLength();
+    }//}}}
+    
+    //{{{ insertText()
+    /**
+     * Inserts text into the document at the specified location
+     * @param offset the character offset where the text should be inserted
+     * @param text the text to insert
+     * @throws IOException if the text could not be inserted
+     */
+    public void insertText(int offset, String text) throws IOException {
+        if (text.length() > 0) {
+            Log.log(Log.DEBUG, this, "insertText: "+offset+": "+text);
+            syncContentWithDOM();
+            m_content.insert(offset, text);
+            m_parsedMode = false;
+            m_adapterNode = null;
+            if (!getFlag(UNDO_IN_PROGRESS)) {
+                addUndoableEdit(new InsertEdit(this, offset, text));
+            }
+            fireStructureChanged(null);
+        }
+    }//}}}
+    
+    //{{{ removeText()
+    /**
+     * Removes text at the specifed character offset.
+     * @param offset the character offset where the text is removed form
+     * @param length the length of the text segment to remove
+     * @throws IOException if the text could not be removed
+     */
+    public void removeText(int offset, int length) throws IOException {
+        if (length > 0) {
+            String text = getText(offset,length);
+            Log.log(Log.DEBUG, this, "removeText: "+offset+": "+text);
+            m_content.remove(offset, length);
+            m_parsedMode = false;
+            m_adapterNode = null;
+            if (!getFlag(UNDO_IN_PROGRESS)) {
+                addUndoableEdit(new RemoveEdit(this, offset, text));
+            }
+            fireStructureChanged(null);
+        }
+    }//}}}
+    
+    //}}}
+    
     //{{{ checkWellFormedness()
     /**
      * Checks the wellformedness of the document and throws appropriate
@@ -466,29 +572,6 @@ public class XMLDocument {
             m_parsedMode=true;
         }
         return m_parsedMode;
-    }//}}}
-    
-    //{{{ getDocumentCopy()
-    /**
-     * Gets a copy of the underlying Document object.
-     * @return a deep copy of the underlying document object
-     */
-    public Document getDocumentCopy() {
-        //makes a deep copy of the document node
-        try {
-            checkWellFormedness();
-        } catch (SAXParseException e) {
-        } catch (SAXException e) {
-        } catch (ParserConfigurationException e) {
-        } catch (IOException e) {
-            //If an error occurs then we're in trouble
-            jsXe.exiterror(this, e, 1);
-        }
-        if (m_document != null) {
-            return (Document)m_document.cloneNode(true);
-        } else {
-            return null;
-        }
     }//}}}
     
     //{{{ getDocType()
@@ -606,66 +689,6 @@ public class XMLDocument {
         }
         
         return newAdapterNode(parent, newNode);
-    }//}}}
-    
-    //{{{ getText()
-    /**
-     * Gets the text at a specified location in the document. This method
-     * method should be used sparingly as changes to the properties of this
-     * document or the tree structure could change the location of text
-     * within the document.
-     * @param start the starting index of the text to retrieve
-     * @param length the length of the text needed
-     * @return the text requested
-     */
-    public String getText(int start, int length) throws IOException {
-        
-        if (start < 0 || length < 0 || start + length > m_content.getLength()) {
-            throw new ArrayIndexOutOfBoundsException(start + ":" + length);
-        }
-        
-        //if the document is well formed we go by the DOM
-        //if it's not we go by the source text.
-        syncContentWithDOM();
-        return m_content.getText(start,length);
-    }//}}}
-    
-    //{{{ getSegment()
-    /**
-     * Gets the text at a specified location in the document. This method
-     * method should be used sparingly as changes to the properties of this
-     * document or the tree structure could change the location of text
-     * within the document.
-     * @param start the starting index of the text to retrieve
-     * @param length the length of the text needed
-     * @return the segment representing the text requested
-     */
-    public Segment getSegment(int start, int length) throws IOException {
-        
-        if (start < 0 || length < 0 || start + length > m_content.getLength()) {
-            throw new ArrayIndexOutOfBoundsException(start + ":" + length);
-        }
-        
-        //if the document is well formed we go by the DOM
-        //if it's not we go by the source text.
-        if (m_parsedMode) {
-            syncContentWithDOM();
-        }
-        Segment seg = new Segment();
-        m_content.getText(start, length, seg);
-        return seg;
-    }//}}}
-    
-    //{{{ getLength()
-    /**
-     * Gets the total number of characters in the document.
-     * @return the length of the document
-     */
-    public int getLength() {
-        
-        syncContentWithDOM();
-        
-        return m_content.getLength();
     }//}}}
     
     //{{{ getErrors()
@@ -921,48 +944,6 @@ public class XMLDocument {
      */
     public URI getURI() {
         return m_uri;
-    }//}}}
-    
-    //{{{ insertText()
-    /**
-     * Inserts text into the document at the specified location
-     * @param offset the character offset where the text should be inserted
-     * @param text the text to insert
-     * @throws IOException if the text could not be inserted
-     */
-    public void insertText(int offset, String text) throws IOException {
-        if (text.length() > 0) {
-            Log.log(Log.DEBUG, this, "insertText: "+offset+": "+text);
-            syncContentWithDOM();
-            m_content.insert(offset, text);
-            m_parsedMode = false;
-            m_adapterNode = null;
-            if (!getFlag(UNDO_IN_PROGRESS)) {
-                addUndoableEdit(new InsertEdit(this, offset, text));
-            }
-            fireStructureChanged(null);
-        }
-    }//}}}
-    
-    //{{{ removeText()
-    /**
-     * Removes text at the specifed character offset.
-     * @param offset the character offset where the text is removed form
-     * @param length the length of the text segment to remove
-     * @throws IOException if the text could not be removed
-     */
-    public void removeText(int offset, int length) throws IOException {
-        if (length > 0) {
-            String text = getText(offset,length);
-            Log.log(Log.DEBUG, this, "removeText: "+offset+": "+text);
-            m_content.remove(offset, length);
-            m_parsedMode = false;
-            m_adapterNode = null;
-            if (!getFlag(UNDO_IN_PROGRESS)) {
-                addUndoableEdit(new RemoveEdit(this, offset, text));
-            }
-            fireStructureChanged(null);
-        }
     }//}}}
     
     //{{{ setModel()
