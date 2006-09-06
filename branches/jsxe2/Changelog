@@ -1,3 +1,9 @@
+09/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Added threading support to XMLDocument. Multi-threaded support is not
+      complete yet however. Currently jsXe only runs in the AWT thread.
+    * AdapterNode now uses the DOM3 renameNode() method to rename element nodes.
+
 08/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added new ContextSpecificActions to replace ViewSpecificActions. Now

@@ -56,28 +56,22 @@ import java.util.Vector;
  * write unlock
  * write unlock
  */
-public class ReadWriteLock
-{
+public class ReadWriteLock {
+    
 	//{{{ readLock() method
-	public synchronized void readLock()
-	{
+	public synchronized void readLock() {
 		// this seems to make nested readLock() calls work okay.
 		// but I have no idea if it actually fixes things or not.
-		if (activeReaders != 0 || allowRead())
-		{
-			++activeReaders;
-			//readers.addElement(Thread.currentThread());
-			return;
+		if (activeReaders != 0 || allowRead()) {
+		//	++activeReaders;
+		//	//readers.addElement(Thread.currentThread());
+		//	return;
 		}
 		++waitingReaders;
-		while (!allowRead())
-		{
-			try
-			{
+		while (!allowRead()) {
+			try {
 				wait();
-			}
-			catch (InterruptedException e)
-			{
+			} catch (InterruptedException e) {
 				--waitingReaders; // Roll back state.
 				Log.log(Log.ERROR,this,e);
 				return;
@@ -89,10 +83,11 @@ public class ReadWriteLock
 	} //}}}
 
 	//{{{ readUnlock() method
-	public synchronized void readUnlock()
-	{
-		if(activeReaders == 0)
+	public synchronized void readUnlock() {
+		
+        if (activeReaders == 0) {
 			throw new InternalError("Unbalanced readLock()/readUnlock() calls");
+        }
 
 		--activeReaders;
 		//readers.removeElement(Thread.currentThread());
@@ -100,33 +95,27 @@ public class ReadWriteLock
 	} //}}}
 
 	//{{{ writeLock() method
-	public synchronized void writeLock()
-	{
-		if (writerThread != null)
-		{
+	public synchronized void writeLock() {
+		
+        if (writerThread != null) {
 			// Write in progress.
-			if (Thread.currentThread() == writerThread)
-			{
-				// Same thread.
-				++lockCount;
-				return;
-			}
+		//	if (Thread.currentThread() == writerThread)
+		//	{
+		//		// Same thread.
+		//		++lockCount;
+		//		return;
+		//	}
 		}
-		if (allowWrite())
-		{
+		if (allowWrite()) {
 			claimWriteLock();
 			return;
 		}
 
 		++waitingWriters;
-		while (!allowWrite())
-		{
-			try
-			{
+		while (!allowWrite()) {
+			try {
 				wait();
-			}
-			catch (InterruptedException e)
-			{
+			} catch (InterruptedException e) {
 				--waitingWriters;
 				Log.log(Log.ERROR,this,e);
 				return;
@@ -137,16 +126,17 @@ public class ReadWriteLock
 	} //}}}
 
 	//{{{ writeUnlock() method
-	public synchronized void writeUnlock()
-	{
-		if(activeWriters != 1 || lockCount <= 0)
+	public synchronized void writeUnlock() {
+        
+        if (activeWriters != 1 || lockCount <= 0) {
 			throw new InternalError("Unbalanced writeLock()/writeUnlock() calls");
+        }
 
-		if(Thread.currentThread() != writerThread)
+		if (Thread.currentThread() != writerThread) {
 			throw new InternalError("writeUnlock() from wrong thread");
+        }
 
-		if (--lockCount == 0)
-		{
+		if (--lockCount == 0) {
 			--activeWriters;
 			writerThread = null;
 			notifyAll();
