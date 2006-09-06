@@ -33,6 +33,7 @@ import net.sourceforge.jsxe.msg.RedoEvent;
 import net.sourceforge.jsxe.msg.UndoEvent;
 import net.sourceforge.jsxe.util.Log;
 import net.sourceforge.jsxe.util.MiscUtilities;
+import net.sourceforge.jsxe.util.ReadWriteLock;
 import net.sourceforge.jsxe.dom.completion.*;
 import net.sourceforge.jsxe.dom.undo.*;
 import net.sourceforge.jsxe.dom.ls.*;
@@ -340,54 +341,63 @@ public class XMLDocument {
      * @return the old value of the property
      */
     public String setProperty(String key, String value) {
-        String oldValue = getProperty(key);
         
-        if (oldValue == null || !oldValue.equals(value)) {
-            // do this first so NullPointerExceptions are thrown
-            oldValue = (String)props.setProperty(key, value);
+        synchronized(propertyLock) {
+            String oldValue = getProperty(key);
             
-            if (key.equals(ENCODING)) {
-                m_syncedWithContent = false;
-            }
-            if (key.equals(FORMAT_XML)) {
-                m_syncedWithContent = false;
-                if (Boolean.valueOf(value).booleanValue()) {
-                    setProperty(WS_IN_ELEMENT_CONTENT, "false");
-                }
-            }
-            if (key.equals(WS_IN_ELEMENT_CONTENT)) {
-                m_syncedWithContent = false;
-                if (Boolean.valueOf(value).booleanValue()) {
-                    setProperty(FORMAT_XML, "false");
-                }
-            }
-            if (key.equals(IS_USING_SOFT_TABS)) {
-                m_syncedWithContent = false;
-            }
-            if (key.equals(IS_VALIDATING)) {
-                //This is ugly. Need to rethink how this should happen.
-                if (Boolean.valueOf(value).booleanValue()) {
-                    //syncContentWithDOM could change m_parsedMode
-                    syncContentWithDOM();
-                } else {
-                    /*
-                    If we are turning off validation then just clear the errors list.
-                    No need to reparse or serialize.
-                    */
-                    m_parseErrors = new ArrayList();
-                    m_parseFatalErrors = new ArrayList();
-                }
-            }
-            if (key.equals(INDENT)) {
-                if (MiscUtilities.isTrue(getProperty(FORMAT_XML))
-                    && MiscUtilities.isTrue(getProperty(IS_USING_SOFT_TABS)))
-                {
+            if (oldValue == null || !oldValue.equals(value)) {
+                // do this first so NullPointerExceptions are thrown
+                oldValue = (String)props.setProperty(key, value);
+                
+                if (key.equals(ENCODING)) {
                     m_syncedWithContent = false;
                 }
+                if (key.equals(FORMAT_XML)) {
+                    m_syncedWithContent = false;
+                    if (Boolean.valueOf(value).booleanValue()) {
+                        setProperty(WS_IN_ELEMENT_CONTENT, "false");
+                    }
+                }
+                if (key.equals(WS_IN_ELEMENT_CONTENT)) {
+                    m_syncedWithContent = false;
+                    if (Boolean.valueOf(value).booleanValue()) {
+                        setProperty(FORMAT_XML, "false");
+                    }
+                }
+                if (key.equals(IS_USING_SOFT_TABS)) {
+                    m_syncedWithContent = false;
+                }
+                if (key.equals(IS_VALIDATING)) {
+                    //This is ugly. Need to rethink how this should happen.
+                    if (Boolean.valueOf(value).booleanValue()) {
+                        //syncContentWithDOM could change m_parsedMode
+                        try {
+                            writeLock();
+                            
+                            syncContentWithDOM();
+                        } finally {
+                            writeUnlock();
+                        }
+                    } else {
+                        /*
+                        If we are turning off validation then just clear the errors list.
+                        No need to reparse or serialize.
+                        */
+                        m_parseErrors = new ArrayList();
+                        m_parseFatalErrors = new ArrayList();
+                    }
+                }
+                if (key.equals(INDENT)) {
+                    if (MiscUtilities.isTrue(getProperty(FORMAT_XML))
+                        && MiscUtilities.isTrue(getProperty(IS_USING_SOFT_TABS)))
+                    {
+                        m_syncedWithContent = false;
+                    }
+                }
+                firePropertyChanged(key, oldValue);
             }
-            firePropertyChanged(key, oldValue);
+            return oldValue;
         }
-        return oldValue;
     }//}}}
     
     //{{{ getBooleanProperty() method
@@ -461,14 +471,21 @@ public class XMLDocument {
      */
     public String getText(int start, int length) throws IOException {
         
-        if (start < 0 || length < 0 || start + length > m_content.getLength()) {
-            throw new ArrayIndexOutOfBoundsException(start + ":" + length);
+        try {
+            
+            writeLock();
+            
+            if (start < 0 || length < 0 || start + length > m_content.getLength()) {
+                throw new ArrayIndexOutOfBoundsException(start + ":" + length);
+            }
+            
+            //if the document is well formed we go by the DOM
+            //if it's not we go by the source text.
+            syncContentWithDOM();
+            return m_content.getText(start,length);
+        } finally {
+            writeUnlock();
         }
-        
-        //if the document is well formed we go by the DOM
-        //if it's not we go by the source text.
-        syncContentWithDOM();
-        return m_content.getText(start,length);
     }//}}}
     
     //{{{ getSegment()
@@ -482,19 +499,25 @@ public class XMLDocument {
      * @return the segment representing the text requested
      */
     public Segment getSegment(int start, int length) throws IOException {
-        
-        if (start < 0 || length < 0 || start + length > m_content.getLength()) {
-            throw new ArrayIndexOutOfBoundsException(start + ":" + length);
+        try {
+            
+            writeLock();
+            
+            if (start < 0 || length < 0 || start + length > m_content.getLength()) {
+                throw new ArrayIndexOutOfBoundsException(start + ":" + length);
+            }
+            
+            //if the document is well formed we go by the DOM
+            //if it's not we go by the source text.
+            if (m_parsedMode) {
+                syncContentWithDOM();
+            }
+            Segment seg = new Segment();
+            m_content.getText(start, length, seg);
+            return seg;
+        } finally {
+            writeUnlock();
         }
-        
-        //if the document is well formed we go by the DOM
-        //if it's not we go by the source text.
-        if (m_parsedMode) {
-            syncContentWithDOM();
-        }
-        Segment seg = new Segment();
-        m_content.getText(start, length, seg);
-        return seg;
     }//}}}
     
     //{{{ getLength()
@@ -503,10 +526,17 @@ public class XMLDocument {
      * @return the length of the document
      */
     public int getLength() {
-        
-        syncContentWithDOM();
-        
-        return m_content.getLength();
+        try {
+            writeLock();
+            
+            syncContentWithDOM();
+            
+            // no need to lock since this just returns a value and that's it
+            return m_content.getLength();
+        } finally {
+            Log.log(Log.DEBUG, this, "writeUnlock()");
+            writeUnlock();
+        }
     }//}}}
     
     //{{{ insertText()
@@ -517,16 +547,27 @@ public class XMLDocument {
      * @throws IOException if the text could not be inserted
      */
     public void insertText(int offset, String text) throws IOException {
-        if (text.length() > 0) {
-            Log.log(Log.DEBUG, this, "insertText: "+offset+": "+text);
-            syncContentWithDOM();
-            m_content.insert(offset, text);
-            m_parsedMode = false;
-            m_adapterNode = null;
-            if (!getFlag(UNDO_IN_PROGRESS)) {
-                addUndoableEdit(new InsertEdit(this, offset, text));
+        
+        try {
+            writeLock();
+        
+            if (offset < 0 || offset > m_content.getLength()) {
+                throw new ArrayIndexOutOfBoundsException(offset);
             }
-            fireStructureChanged(null);
+            
+            if (text.length() > 0) {
+               // Log.log(Log.DEBUG, this, "insertText: "+offset+": "+text);
+                syncContentWithDOM();
+                m_content.insert(offset, text);
+                m_parsedMode = false;
+                m_adapterNode = null;
+                if (!getFlag(UNDO_IN_PROGRESS)) {
+                    addUndoableEdit(new InsertEdit(this, offset, text));
+                }
+                fireStructureChanged(null);
+            } 
+        } finally {
+            writeUnlock();
         }
     }//}}}
     
@@ -538,20 +579,34 @@ public class XMLDocument {
      * @throws IOException if the text could not be removed
      */
     public void removeText(int offset, int length) throws IOException {
-        if (length > 0) {
-            String text = getText(offset,length);
-            Log.log(Log.DEBUG, this, "removeText: "+offset+": "+text);
-            m_content.remove(offset, length);
-            m_parsedMode = false;
-            m_adapterNode = null;
-            if (!getFlag(UNDO_IN_PROGRESS)) {
-                addUndoableEdit(new RemoveEdit(this, offset, text));
+        
+        try {
+            
+            writeLock();
+            
+            if (offset < 0 || length < 0 || offset + length > m_content.getLength()) {
+                throw new ArrayIndexOutOfBoundsException(offset + ":" + length);
             }
-            fireStructureChanged(null);
+            
+            if (length > 0) {
+                String text = getText(offset,length);
+                Log.log(Log.DEBUG, this, "removeText: "+offset+": "+text);
+                m_content.remove(offset, length);
+                m_parsedMode = false;
+                m_adapterNode = null;
+                if (!getFlag(UNDO_IN_PROGRESS)) {
+                    addUndoableEdit(new RemoveEdit(this, offset, text));
+                }
+                fireStructureChanged(null);
+            }
+        } finally {
+            writeUnlock();
         }
     }//}}}
     
     //}}}
+    
+    //{{{ XML Document Methods
     
     //{{{ checkWellFormedness()
     /**
@@ -564,14 +619,18 @@ public class XMLDocument {
      * @throws IOException if there was a problem reading the document
      */
     public boolean checkWellFormedness() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
-        if (!m_parsedMode) {
-            parseDocument();
-            m_adapterNode = new AdapterNode(this, m_document);
-           // m_adapterNode.addAdapterNodeListener(docAdapterListener);
-           // m_syncedWithContent = true;
-            m_parsedMode=true;
+        try {
+            readLock();
+            
+            if (!m_parsedMode) {
+                parseDocument();
+                m_adapterNode = new AdapterNode(this, m_document);
+                m_parsedMode=true;
+            }
+            return m_parsedMode;
+        } finally {
+            readUnlock();
         }
-        return m_parsedMode;
     }//}}}
     
     //{{{ getDocType()
@@ -700,9 +759,14 @@ public class XMLDocument {
      * @since jsXe 0.4 pre3
      */
     public List getErrors() {
-        syncContentWithDOM();
-        parseWithoutUpdate();
-        return m_parseErrors;
+        try {
+            writeLock();
+            syncContentWithDOM();
+            parseWithoutUpdate();
+            return m_parseErrors;
+        } finally {
+            writeUnlock();
+        }
     }//}}}
     
     //{{{ isWellFormed()
@@ -735,16 +799,21 @@ public class XMLDocument {
      */
     public boolean isValid() throws IOException {
         if (Boolean.valueOf(getProperty(IS_VALIDATING)).booleanValue()) {
-            /*
-            This needs to be done every time we check for validity even
-            if this document hasn't changed since the DTD or Schema document
-            we are validating against may have changed in the meantime.
-            */
-            
-            syncContentWithDOM();
-            parseWithoutUpdate();
-            
-            return (m_parseErrors.size() == 0 && m_parseFatalErrors.size() == 0);
+            try {
+                writeLock();
+                 /*
+                This needs to be done every time we check for validity even
+                if this document hasn't changed since the DTD or Schema document
+                we are validating against may have changed in the meantime.
+                */
+                
+                syncContentWithDOM();
+                parseWithoutUpdate();
+                
+                return (m_parseErrors.size() == 0 && m_parseFatalErrors.size() == 0);
+            } finally {
+                writeUnlock();
+            }
         } else {
             return false;
         }
@@ -813,6 +882,20 @@ public class XMLDocument {
         return getNoNamespaceCompletionInfo().getEntities();
     }//}}}
     
+    //{{{ setEntityResolver()
+    /**
+     * Sets the EntityResolver object that is used when resolving external
+     * entities.
+     * @param resolver the entity resolver
+     */
+    public void setEntityResolver(EntityResolver resolver) {
+        m_entityResolver = resolver;
+    }//}}}
+    
+    //}}}
+    
+    //{{{ I/O Methods
+    
     //{{{ serialize()
     /**
      * Writes the XML document to the output stream specified.
@@ -823,79 +906,86 @@ public class XMLDocument {
      */
     public void serialize(OutputStream out) throws IOException, UnsupportedEncodingException {
         
-        boolean parsedBeforeSerialization = m_parsedMode;
-        
-        String newLine = getProperty(LINE_SEPARATOR);
-        
-        syncContentWithDOM();
-        
-        String encoding = getProperty(ENCODING);
-        if (encoding.equals(MiscUtilities.UTF_8_Y)) {
-            // not supported by Java...
-            out.write(UTF8_MAGIC_1);
-            out.write(UTF8_MAGIC_2);
-            out.write(UTF8_MAGIC_3);
-            out.flush();
-            encoding = "UTF-8";
-        }
-        
-        //now just write out the text.
-        int length = m_content.getLength();
-        int index = 0;
-        BufferedWriter outbuf = new BufferedWriter(new OutputStreamWriter(out, encoding), IO_BUFFER_SIZE);
-        Segment seg = new Segment();
-        
-        while (index < length) {
-            int size = WRITE_SIZE;
-            try {
-                size = Math.min(length - index, WRITE_SIZE);
-            } catch(NumberFormatException nf) {
-                Log.log(Log.ERROR, this, nf);
+        try {
+            
+            writeLock();
+            
+            boolean parsedBeforeSerialization = m_parsedMode;
+            
+            String newLine = getProperty(LINE_SEPARATOR);
+            
+            syncContentWithDOM();
+            
+            String encoding = getProperty(ENCODING);
+            if (encoding.equals(MiscUtilities.UTF_8_Y)) {
+                // not supported by Java...
+                out.write(UTF8_MAGIC_1);
+                out.write(UTF8_MAGIC_2);
+                out.write(UTF8_MAGIC_3);
+                out.flush();
+                encoding = "UTF-8";
             }
             
-           // out.write(m_content.getText(index, size).getBytes(getProperty(ENCODING)), index, size);
-            m_content.getText(index, size, seg);
+            //now just write out the text.
+            int length = m_content.getLength();
+            int index = 0;
+            BufferedWriter outbuf = new BufferedWriter(new OutputStreamWriter(out, encoding), IO_BUFFER_SIZE);
+            Segment seg = new Segment();
             
-            int startOffset = seg.offset;
-            int endOffset = size + seg.offset;
+            while (index < length) {
+                int size = WRITE_SIZE;
+                try {
+                    size = Math.min(length - index, WRITE_SIZE);
+                } catch(NumberFormatException nf) {
+                    Log.log(Log.ERROR, this, nf);
+                }
+                
+               // out.write(m_content.getText(index, size).getBytes(getProperty(ENCODING)), index, size);
+                m_content.getText(index, size, seg);
+                
+                int startOffset = seg.offset;
+                int endOffset = size + seg.offset;
+                
+                for (int i=startOffset; i<endOffset; i++) {
+                    if (seg.array[i]=='\n') {
+                        outbuf.write(seg.array, seg.offset, i - seg.offset);
+                        outbuf.write(newLine.toCharArray(), 0, newLine.length());
+                        
+                        //add 1 because of \n character,
+                        seg.count -= i-seg.offset+1;
+                        seg.offset += i-seg.offset+1;
+                    }
+                }
+                
+                //write the rest
+                outbuf.write(seg.array, seg.offset, seg.count);
+                index += size;
+            }
             
-            for (int i=startOffset; i<endOffset; i++) {
-                if (seg.array[i]=='\n') {
-                    outbuf.write(seg.array, seg.offset, i - seg.offset);
-                    outbuf.write(newLine.toCharArray(), 0, newLine.length());
-                    
-                    //add 1 because of \n character,
-                    seg.count -= i-seg.offset+1;
-                    seg.offset += i-seg.offset+1;
+            outbuf.close();
+            
+            //if something changed in the structure while serializing
+            //basically we don't want serialize() to cause the XMLDocument
+            //to go from parsed mode to non-parsed mode
+            if (!m_parsedMode && parsedBeforeSerialization) {
+                try {
+                    checkWellFormedness();
+                } catch (SAXException saxe) {
+                    throw new IOException(saxe.getMessage());
+                } catch (ParserConfigurationException pce) {
+                    throw new IOException(pce.getMessage());
+                } finally {
+                    /*
+                    if there is an error parsing we want to be in parsed mode
+                    using the old DOM before serializing.
+                    if there is no error, we want to be in parsed mode with the
+                    new DOM.
+                    */
+                    m_parsedMode = true;
                 }
             }
-            
-            //write the rest
-            outbuf.write(seg.array, seg.offset, seg.count);
-            index += size;
-        }
-        
-        outbuf.close();
-        
-        //if something changed in the structure while serializing
-        //basically we don't want serialize() to cause the XMLDocument
-        //to go from parsed mode to non-parsed mode
-        if (!m_parsedMode && parsedBeforeSerialization) {
-            try {
-                checkWellFormedness();
-            } catch (SAXException saxe) {
-                throw new IOException(saxe.getMessage());
-            } catch (ParserConfigurationException pce) {
-                throw new IOException(pce.getMessage());
-            } finally {
-                /*
-                if there is an error parsing we want to be in parsed mode
-                using the old DOM before serializing.
-                if there is no error, we want to be in parsed mode with the
-                new DOM.
-                */
-                m_parsedMode = true;
-            }
+        } finally {
+            writeUnlock();
         }
         
     }//}}}
@@ -914,36 +1004,6 @@ public class XMLDocument {
             value = serializer.writeToString(node.getNode());
         } catch (DOMException e) {}
         return value;
-    }//}}}
-    
-    //{{{ setEntityResolver()
-    /**
-     * Sets the EntityResolver object that is used when resolving external
-     * entities.
-     * @param resolver the entity resolver
-     */
-    public void setEntityResolver(EntityResolver resolver) {
-        m_entityResolver = resolver;
-    }//}}}
-    
-    //{{{ setURI()
-    /**
-     * Sets the URI for the location of this document.
-     * @param uri the uri specifying the location of this document. Can be null.
-     * @since jsXe 0.4 pre4
-     */
-    public void setURI(URI uri) {
-        m_uri = uri;
-    }//}}}
-    
-    //{{{ getURI()
-    /**
-     * Gets the URI for the location of this document.
-     * @return the uri specifying the location of this document. Can be null.
-     * @since jsXe 0.4 pre4
-     */
-    public URI getURI() {
-        return m_uri;
     }//}}}
     
     //{{{ setModel()
@@ -1115,6 +1175,68 @@ public class XMLDocument {
        // }
     }//}}}
     
+    //}}}
+    
+    //{{{ Thread safety
+    
+	//{{{ readLock() method
+	/**
+	 * The buffer is guaranteed not to change between calls to
+	 * {@link #readLock()} and {@link #readUnlock()}.
+	 */
+	public void readLock() {
+		lock.readLock();
+	} //}}}
+    
+	//{{{ readUnlock() method
+	/**
+	 * The buffer is guaranteed not to change between calls to
+	 * {@link #readLock()} and {@link #readUnlock()}.
+	 */
+	public void readUnlock() {
+		lock.readUnlock();
+	} //}}}
+    
+	//{{{ writeLock() method
+	/**
+	 * Attempting to obtain read lock will block between calls to
+	 * {@link #writeLock()} and {@link #writeUnlock()}.
+	 */
+	public void writeLock() {
+		lock.writeLock();
+	} //}}}
+    
+	//{{{ writeUnlock() method
+	/**
+	 * Attempting to obtain read lock will block between calls to
+	 * {@link #writeLock()} and {@link #writeUnlock()}.
+	 */
+	public void writeUnlock() {
+		lock.writeUnlock();
+	} //}}}
+    
+	//}}}
+    
+    //{{{ setURI()
+    /**
+     * Sets the URI for the location of this document.
+     * @param uri the uri specifying the location of this document. Can be null.
+     * @since jsXe 0.4 pre4
+     */
+    public void setURI(URI uri) {
+        m_uri = uri;
+    }//}}}
+    
+    //{{{ getURI()
+    /**
+     * Gets the URI for the location of this document.
+     * @return the uri specifying the location of this document. Can be null.
+     * @since jsXe 0.4 pre4
+     */
+    public URI getURI() {
+        return m_uri;
+    }//}}}
+    
     //{{{ addXMLDocumentListener()
     /**
      * Registers a change listener with the XMLDocument
@@ -1222,11 +1344,13 @@ public class XMLDocument {
     //{{{ syncContentWithDOM()
     /**
      * Write the DOM to the content manager given the current serialization and
-     * formatting options.
+     * formatting options. This method is not thread safe. You should call
+     * writeLock() before and writeUnlock() after calling this method.
      */
     private void syncContentWithDOM() {
         if (m_parsedMode) {
             if (!m_syncedWithContent) {
+                
                 try {
                     Log.log(Log.MESSAGE, this, "Serializing document");
                     //since we are in parsed mode let's serialize to the content
@@ -1256,6 +1380,9 @@ public class XMLDocument {
                         m_parsedMode = false;
                         
                         try {
+                            
+                            readLock();
+                            
                             parseDocument();
                             //Why was this set to false? why would we want to
                             //serialize the document again since nothing's changed?
@@ -1267,6 +1394,8 @@ public class XMLDocument {
                         } catch (Exception e) {
                             //If an error occurs then we're in trouble
                             jsXe.exiterror(this, e, 1);
+                        } finally {
+                            readUnlock();
                         }
                         fireStructureChanged(null);
                     }
@@ -1302,7 +1431,8 @@ public class XMLDocument {
     //{{{ parseDocument()
     /**
      * Parses the document with the current options. After this is called
-     * m_adapterNode and m_parsedMode must be updated.
+     * m_adapterNode and m_parsedMode must be updated. The document text content
+     * should be up to date compared to the document structure.
      * @since jsXe 0.4 pre1
      */
     public void parseDocument() throws SAXParseException, SAXException, ParserConfigurationException, IOException {
@@ -1330,9 +1460,7 @@ public class XMLDocument {
             builder.setEntityResolver(m_entityResolver);
         }
         
-        //Temporary fix to allow parsing of documnts with multi-byte characters
-       // Document doc = builder.parse(new ContentManagerInputStream(m_content));
-        String text = getText(0, getLength());
+        String text = m_content.getText(0,m_content.getLength());
         Document doc = builder.parse(new InputSource(new StringReader(text)));
         doc.getDocumentElement().normalize();
         //}}}
@@ -1352,7 +1480,8 @@ public class XMLDocument {
     //{{{ parseWithoutUpdate()
     /**
      * Parses the document without updating the DOM. This method does, however,
-     * update completion info and parse errors.
+     * update completion info and parse errors. The document text content should
+     * be up to date compared to the document structure.
      */
     public void parseWithoutUpdate() {
         Log.log(Log.MESSAGE, this, (m_uri != null ? "Validating Document: "+m_uri.toString() : "Validating Document"));
@@ -1387,7 +1516,7 @@ public class XMLDocument {
         try {
             //Temporary fix to allow parsing of documnts with multi-byte characters
            // reader.parse(new InputSource(new ContentManagerInputStream(m_content)));
-            String text = getText(0, getLength());
+            String text = m_content.getText(0,m_content.getLength());
             reader.parse(new InputSource(new StringReader(text)));
         } catch(SAXException se) {
             //validation errors
@@ -2091,6 +2220,12 @@ public class XMLDocument {
     private CompoundEdit m_compoundEdit = null;
     private boolean m_addedToCompoundEdits = false;
     private int m_compoundEditCount = 0;
+    
+    /**
+     * I/O lock.
+     */
+    private ReadWriteLock lock = new ReadWriteLock();
+    private Object propertyLock = new Object();
     
    // private XMLDocAdapterListener docAdapterListener = new XMLDocAdapterListener();
     
