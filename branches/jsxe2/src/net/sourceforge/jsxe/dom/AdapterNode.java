@@ -1100,9 +1100,7 @@ public class AdapterNode {
      * should only be called on an element node.
      */
     private void renameElementNode(String prefix, String localName) throws DOMException {
-        //get the nodes needed
-        Node parent = m_domNode.getParentNode();
-        NodeList children = m_domNode.getChildNodes();
+        
         Document document = m_domNode.getOwnerDocument();
         
         //replace the changed node; maintain the namespace URI;
@@ -1113,23 +1111,7 @@ public class AdapterNode {
         
         String nsURI = lookupNamespaceURI(prefix);;
         
-        Element newNode = document.createElementNS(nsURI, qualifiedName);
-        NamedNodeMap attrs = m_domNode.getAttributes();
-        int attrlength = attrs.getLength();
-        
-        for(int i = 0; i < attrlength; i++) {
-            Node attr = attrs.item(i);
-            newNode.setAttributeNS(attr.getNamespaceURI(), attr.getNodeName(), attr.getNodeValue());
-        }
-        
-        int length = children.getLength();
-        for (int i = 0; i < length; i++ ) {
-            Node child = children.item(0);
-            m_domNode.removeChild(child);
-            newNode.appendChild(child);
-        }
-        parent.replaceChild(newNode, m_domNode);
-        m_domNode = newNode;
+        m_domNode = document.renameNode(m_domNode, nsURI, qualifiedName);
     }//}}}
     
     //{{{ renamePINode()
