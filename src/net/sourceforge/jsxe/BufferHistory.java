@@ -55,9 +55,9 @@ import javax.xml.parsers.ParserConfigurationException;
 //}}}
 
 //{{{ jsXe classes
-import net.sourceforge.jsxe.dom.DOMOutput;
-import net.sourceforge.jsxe.dom.DOMSerializer;
-import net.sourceforge.jsxe.dom.DOMSerializerConfiguration;
+import net.sourceforge.jsxe.dom.ls.DOMOutput;
+import net.sourceforge.jsxe.dom.ls.DOMSerializer;
+import net.sourceforge.jsxe.dom.ls.DOMSerializerConfiguration;
 import net.sourceforge.jsxe.util.Log;
 //}}}
 

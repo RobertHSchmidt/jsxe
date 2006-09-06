@@ -22,7 +22,7 @@ Optionally, you may find a copy of the GNU General Public License
 from http://www.fsf.org/copyleft/gpl.txt
 */
 
-package net.sourceforge.jsxe.dom;
+package net.sourceforge.jsxe.dom.ls;
 
 //{{{ imports
 /*
