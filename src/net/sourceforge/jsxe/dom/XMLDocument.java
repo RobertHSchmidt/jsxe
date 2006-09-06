@@ -1183,6 +1183,7 @@ public class XMLDocument {
 	/**
 	 * The buffer is guaranteed not to change between calls to
 	 * {@link #readLock()} and {@link #readUnlock()}.
+     * @since jsXe XX.XX
 	 */
 	public void readLock() {
 		lock.readLock();
@@ -1192,6 +1193,7 @@ public class XMLDocument {
 	/**
 	 * The buffer is guaranteed not to change between calls to
 	 * {@link #readLock()} and {@link #readUnlock()}.
+     * @since jsXe XX.XX
 	 */
 	public void readUnlock() {
 		lock.readUnlock();
@@ -1201,6 +1203,7 @@ public class XMLDocument {
 	/**
 	 * Attempting to obtain read lock will block between calls to
 	 * {@link #writeLock()} and {@link #writeUnlock()}.
+     * @since jsXe XX.XX
 	 */
 	public void writeLock() {
 		lock.writeLock();
@@ -1210,6 +1213,7 @@ public class XMLDocument {
 	/**
 	 * Attempting to obtain read lock will block between calls to
 	 * {@link #writeLock()} and {@link #writeUnlock()}.
+     * @since jsXe XX.XX
 	 */
 	public void writeUnlock() {
 		lock.writeUnlock();
