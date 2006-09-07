@@ -101,7 +101,7 @@ public class EditNodeAction extends LocalizedAction {
                                                                      new ArrayList(), //don't support IDs for now.
                                                                      selectedNode.getOwnerDocument(),
                                                                      selectedNode);
-                            dialog.show();
+                            dialog.setVisible(true);
                         } finally {
                             document.endCompoundEdit();
                         }
