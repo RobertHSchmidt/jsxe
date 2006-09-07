@@ -1,3 +1,7 @@
+09/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Updated to not use show() method since it's deprecated.
+
 08/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated the sourceview actions to use the new ContextSpecificActions in

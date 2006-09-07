@@ -329,7 +329,7 @@ public class SourceViewOptionPane extends AbstractOptionPane {
             setLocationRelativeTo(getParentDialog(comp));
     
             setResizable(false);
-            show();
+            setVisible(true);
         } //}}}
     
         //{{{ actionPerformed() method
@@ -604,7 +604,7 @@ public class SourceViewOptionPane extends AbstractOptionPane {
                         true);
                 }
                 dialog.pack();
-                dialog.show();
+                dialog.setVisible(true);
             }
         } //}}}
     
