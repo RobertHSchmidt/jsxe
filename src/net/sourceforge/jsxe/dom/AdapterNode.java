@@ -158,7 +158,9 @@ public class AdapterNode {
      * @return the value of the property for the given key.
      */
     public String getProperty(String key) {
-        return m_props.getProperty(key);
+        synchronized(propertyLock) {
+            return m_props.getProperty(key);
+        }
     }//}}}
     
     //{{{ getProperty()
@@ -170,7 +172,9 @@ public class AdapterNode {
      * @return the value of the property for the given key.
      */
     public String getProperty(String key, String defaultValue) {
-        return m_props.getProperty(key, defaultValue);
+        synchronized(propertyLock) {
+            return m_props.getProperty(key, defaultValue);
+        }
     }//}}}
     
     //{{{ setProperty()
@@ -1162,5 +1166,7 @@ public class AdapterNode {
     private Node m_domNode;
     private ArrayList m_listeners = new ArrayList();
     private Properties m_props = new Properties();
+    
+    private Object propertyLock = new Object();
     //}}}
 }
