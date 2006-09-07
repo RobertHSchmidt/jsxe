@@ -289,7 +289,7 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
         m_textarea.setDocument(new SourceViewDocument(m_document));
         m_textarea.setTokenMarker(new XMLTokenMarker());
         try {
-            m_textarea.getDocument().putProperty(PlainDocument.tabSizeAttribute, Integer.valueOf(document.getProperty(XMLDocument.INDENT, "4")));
+            m_textarea.getDocument().putProperty(PlainDocument.tabSizeAttribute, new Integer(document.getIntegerProperty(XMLDocument.INDENT, 4)));
         } catch (NumberFormatException e) {
             Log.log(Log.WARNING, this, e.getMessage());
         }
@@ -314,7 +314,7 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
         public void propertyChanged(XMLDocument source, String key, String oldValue) {
             if (key.equals(XMLDocument.INDENT)) {
                 try {
-                    m_textarea.getDocument().putProperty(PlainDocument.tabSizeAttribute, Integer.valueOf(source.getProperty(XMLDocument.INDENT, "4")));
+                    m_textarea.getDocument().putProperty(PlainDocument.tabSizeAttribute, new Integer(source.getIntegerProperty(XMLDocument.INDENT, 4)));
                     m_textarea.updateUI();
                 } catch (NumberFormatException e) {
                     Log.log(Log.WARNING, this, e.getMessage());
@@ -355,7 +355,7 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
         //{{{ getLastIndent()
         
         private String getLastIndent() {
-            boolean softTabs = Boolean.valueOf(m_document.getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
+            boolean softTabs = m_document.getBooleanProperty(XMLDocument.IS_USING_SOFT_TABS);
             int tabWidth = Integer.parseInt(m_document.getProperty(XMLDocument.INDENT));
             
             int line = m_textarea.getCaretLine();
@@ -393,7 +393,7 @@ public class SourceView extends JPanel implements DocumentView, EBListener {
             }
             
             
-            boolean softTabs = Boolean.valueOf(m_document.getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
+            boolean softTabs = m_document.getBooleanProperty(XMLDocument.IS_USING_SOFT_TABS);
             if (softTabs) {
                 try {
                     int indent = Integer.parseInt(m_document.getProperty(XMLDocument.INDENT));
