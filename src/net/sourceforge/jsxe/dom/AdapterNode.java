@@ -225,7 +225,7 @@ public class AdapterNode {
     
     //{{{ child()
     /**
-     * <p>Gets the child node at the given index.</p>
+     * <p>Gets the child node at the given index. This method is thread safe.</p>
      * @param index the index of the requested node
      * @return an AdapterNode representing the node at the given index,
      *         null if the index is out of bounds
@@ -238,40 +238,54 @@ public class AdapterNode {
         */
         XMLDocument rootDocument = getOwnerDocument();
         AdapterNode child = null;
-        if (index < m_domNode.getChildNodes().getLength()) {
-            if (index < m_children.size()) {
-                try {
-                    child = (AdapterNode)m_children.get(index);
-                    if (child == null) {
-                        //the size was ok but no AdapterNode was at this index
-                        child = rootDocument.newAdapterNode(this, m_domNode.getChildNodes().item(index));
-                        m_children.set(index, child);
-                    }
-                } catch (IndexOutOfBoundsException ioobe) {}
-            } else {
-                /*
-                Populate the other elements with null until we
-                have the correct size.
-                */
-                ensureChildrenSize(index+1);
-                child = rootDocument.newAdapterNode(this, m_domNode.getChildNodes().item(index));
-                m_children.set(index, child);
+        
+        synchronized(childrenLock) {
+        
+            
+            if (index < childCount()) {
+                if (index < m_children.size()) {
+                    try {
+                        child = (AdapterNode)m_children.get(index);
+                        if (child == null) {
+                            //the size was ok but no AdapterNode was at this index
+                            child = rootDocument.newAdapterNode(this, m_domNode.getChildNodes().item(index));
+                            m_children.set(index, child);
+                        }
+                    } catch (IndexOutOfBoundsException ioobe) {}
+                } else {
+                    /*
+                    Populate the other elements with null until we
+                    have the correct size.
+                    */
+                    ensureChildrenSize(index+1);
+                    child = rootDocument.newAdapterNode(this, m_domNode.getChildNodes().item(index));
+                    m_children.set(index, child);
+                }
             }
+           return child;
         }
-       return child;
     }//}}}
     
     //{{{ childCount()
     /**
-     * <p>Gets the number of children that this node has.</p>
+     * <p>Gets the number of children that this node has. This method is thread
+     *    safe.</p>
      * @return the number of children of this node
      */
     public int childCount() {
-        NodeList childNodes = m_domNode.getChildNodes();
-        if (childNodes != null) {
-            return childNodes.getLength();
-        } else {
-            return 0;
+        Object lock = getLock();
+        
+        /*
+        Accesses to the underlying DOM should be synchronized on
+        the root XMLDocument
+        */
+        synchronized (lock) {
+            NodeList childNodes = m_domNode.getChildNodes();
+            if (childNodes != null) {
+                return childNodes.getLength();
+            } else {
+                return 0;
+            }
         }
     }//}}}
     
@@ -282,7 +296,14 @@ public class AdapterNode {
      * @return the namespace prefix for this node. null if no namespace
      */
     public String getNSPrefix() {
-        return m_domNode.getPrefix();
+        Object lock = getLock();
+        /*
+        Accesses to the underlying DOM should be synchronized on
+        the root XMLDocument
+        */
+        synchronized (lock) {
+            return m_domNode.getPrefix();
+        }
     }//}}}
     
     //{{{ setNSPrefix()
@@ -296,23 +317,25 @@ public class AdapterNode {
      * NAMESPACE_ERR: Raised if the specified prefix is malformed per the Namespaces in XML specification, if the namespaceURI of this node is null, if the specified prefix is "xml" and the namespaceURI of this node is different from "http://www.w3.org/XML/1998/namespace", if this node is an attribute and the specified prefix is "xmlns" and the namespaceURI of this node is different from " http://www.w3.org/2000/xmlns/", or if this node is an attribute and the qualifiedName of this node is "xmlns" .
      */
     public void setNSPrefix(String prefix) throws DOMException {
-        XMLDocument doc = getOwnerDocument();
-        try {
-            doc.beginCompoundEdit();
-            String oldPrefix = getNSPrefix();
-            /*
-            for whatever reason if I set a prefix on an node with no prefix
-            you get DOMException.NAMESPACE_ERRs. If we are adding a NS then
-            just rename the node.
-            */
-            if (oldPrefix != null && !oldPrefix.equals("")) {
-                m_domNode.setPrefix(prefix);
-            } else {
-                renameElementNode(prefix, getLocalName());
+        Object lock = getLock();
+        synchronized(lock) {
+            try {
+                beginCompoundEdit();
+                String oldPrefix = getNSPrefix();
+                /*
+                for whatever reason if I set a prefix on an node with no prefix
+                you get DOMException.NAMESPACE_ERRs. If we are adding a NS then
+                just rename the node.
+                */
+                if (oldPrefix != null && !oldPrefix.equals("")) {
+                    m_domNode.setPrefix(prefix);
+                } else {
+                    renameElementNode(prefix, getLocalName());
+                }
+                fireNamespaceChanged(this, oldPrefix, prefix);
+            } finally {
+                endCompoundEdit();
             }
-            fireNamespaceChanged(this, oldPrefix, prefix);
-        } finally {
-            doc.endCompoundEdit();
         }
     }//}}}
     
@@ -323,7 +346,10 @@ public class AdapterNode {
      * @return the full qualified name of this node
      */
     public String getNodeName() {
-        return m_domNode.getNodeName();
+        Object lock = getLock();
+        synchronized(lock) {
+            return m_domNode.getNodeName();
+        }
     }//}}}
     
     //{{{ setNodeName()
@@ -332,29 +358,37 @@ public class AdapterNode {
      * @param qualifiedName the new qualified name
      */
     public void setNodeName(String qualifiedName) throws DOMException {
-        String oldPrefix = getNSPrefix();
-        String oldLocalName = getLocalName();
+        Object lock = getLock();
         
-        String prefix = MiscUtilities.getNSPrefixFromQualifiedName(qualifiedName);
-        String localName = MiscUtilities.getLocalNameFromQualifiedName(qualifiedName);
-        if (getNodeType() == ELEMENT_NODE) {
-            renameElementNode(prefix, localName);
-        } else {
-            if (getNodeType() == PROCESSING_INSTRUCTION_NODE) {
-                renamePINode(localName);
+        synchronized(lock) {
+            
+            String oldPrefix = getNSPrefix();
+            String oldLocalName = getLocalName();
+            
+            String prefix = MiscUtilities.getNSPrefixFromQualifiedName(qualifiedName);
+            String localName = MiscUtilities.getLocalNameFromQualifiedName(qualifiedName);
+            
+            beginCompoundEdit();
+            
+            if (getNodeType() == ELEMENT_NODE) {
+                renameElementNode(prefix, localName);
             } else {
-                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "An attempt was made to rename a node that is not supported.");
+                if (getNodeType() == PROCESSING_INSTRUCTION_NODE) {
+                    renamePINode(localName);
+                } else {
+                    throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "An attempt was made to rename a node that is not supported.");
+                }
             }
+            
+            if (!MiscUtilities.equals(oldPrefix, prefix)) {
+                fireNamespaceChanged(this, oldPrefix, prefix);
+            }
+            if (!MiscUtilities.equals(oldLocalName, localName)) {
+                fireLocalNameChanged(this, oldLocalName, localName);
+            }
+            
+            endCompoundEdit();
         }
-        XMLDocument doc = getOwnerDocument();
-        doc.beginCompoundEdit();
-        if (!MiscUtilities.equals(oldPrefix, prefix)) {
-            fireNamespaceChanged(this, oldPrefix, prefix);
-        }
-        if (!MiscUtilities.equals(oldLocalName, localName)) {
-            fireLocalNameChanged(this, oldLocalName, localName);
-        }
-        doc.endCompoundEdit();
     }//}}}
     
     //{{{ getLocalName()
@@ -363,7 +397,10 @@ public class AdapterNode {
      * @return the local name of the node
      */
     public String getLocalName() {
-        return m_domNode.getLocalName();
+        Object lock = getLock();
+        synchronized(lock) {
+            return m_domNode.getLocalName();
+        }
     }//}}}
     
     //{{{ setLocalName()
@@ -374,36 +411,41 @@ public class AdapterNode {
      *                      contains an illegal character.
      */
     public void setLocalName(String localName) throws DOMException {
+        Object lock = getLock();
         
-        if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
-            //Verify that this really is a change
-            String oldLocalName = m_domNode.getLocalName();
-            if (!oldLocalName.equals(localName)) {
-                
-                renameElementNode(getNSPrefix(), localName);
-                
-                fireLocalNameChanged(this, oldLocalName, localName);
-            }
-        } else {
-            if (m_domNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
-                if (m_domNode.getNodeName() != localName) {
-                    Node newNode = m_domNode.getOwnerDocument().createProcessingInstruction(localName, m_domNode.getNodeValue());
-                    m_domNode.getParentNode().replaceChild(newNode, m_domNode);
-                    m_domNode = newNode;
+        synchronized(lock) {
+        
+            if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
+                //Verify that this really is a change
+                String oldLocalName = m_domNode.getLocalName();
+                if (!oldLocalName.equals(localName)) {
+                    
+                    renameElementNode(getNSPrefix(), localName);
+                    
+                    fireLocalNameChanged(this, oldLocalName, localName);
                 }
             } else {
-                if (m_domNode.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
+                if (m_domNode.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
                     if (m_domNode.getNodeName() != localName) {
-                        if (getOwnerDocument().entityDeclared(localName)) {
-                            Node newNode = m_domNode.getOwnerDocument().createEntityReference(localName);
-                            m_domNode.getParentNode().replaceChild(newNode, m_domNode);
-                            m_domNode = newNode;
-                        } else {
-                            throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+localName+"\""+" is not declared in the Schema");
-                        }
+                        Node newNode = m_domNode.getOwnerDocument().createProcessingInstruction(localName, m_domNode.getNodeValue());
+                        m_domNode.getParentNode().replaceChild(newNode, m_domNode);
+                        m_domNode = newNode;
                     }
                 } else {
-                    throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Renaming this node type is not supported.");
+                    if (m_domNode.getNodeType() == Node.ENTITY_REFERENCE_NODE) {
+                        if (m_domNode.getNodeName() != localName) {
+                            XMLDocument doc = getOwnerDocument();
+                            if (doc != null && doc.entityDeclared(localName)) {
+                                Node newNode = m_domNode.getOwnerDocument().createEntityReference(localName);
+                                m_domNode.getParentNode().replaceChild(newNode, m_domNode);
+                                m_domNode = newNode;
+                            } else {
+                                throw new DOMException(DOMException.SYNTAX_ERR, "Entity "+"\""+localName+"\""+" is not declared in the Schema");
+                            }
+                        }
+                    } else {
+                        throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Renaming this node type is not supported.");
+                    }
                 }
             }
         }
@@ -415,7 +457,10 @@ public class AdapterNode {
      * @return the current value associated with this node
      */
     public String getNodeValue() {
-        return m_domNode.getNodeValue();
+        Object lock = getLock();
+        synchronized(lock) {
+            return m_domNode.getNodeValue();
+        }
     }//}}}
     
     //{{{ setNodeValue()
@@ -429,11 +474,15 @@ public class AdapterNode {
      *                      the implementation platform.
      */
     public void setNodeValue(String str) throws DOMException {
-        // Make sure there is a change.
-        if (!MiscUtilities.equals(str, m_domNode.getNodeValue())) {
-            String oldValue = getNodeValue();
-            m_domNode.setNodeValue(str);
-            fireNodeValueChanged(this, oldValue, str);
+        Object lock = getLock();
+        
+        synchronized(lock) {
+            // Make sure there is a change.
+            if (!MiscUtilities.equals(str, m_domNode.getNodeValue())) {
+                String oldValue = getNodeValue();
+                m_domNode.setNodeValue(str);
+                fireNodeValueChanged(this, oldValue, str);
+            }
         }
     }//}}}
     
@@ -443,7 +492,11 @@ public class AdapterNode {
      * @return the node type
      */
     public short getNodeType() {
-        return m_domNode.getNodeType();
+        Object lock = getLock();
+        
+        synchronized(lock) {
+            return m_domNode.getNodeType();
+        }
     }//}}}
     
     //{{{ getParentNode()
@@ -462,7 +515,11 @@ public class AdapterNode {
      *         <code>null</code> if this is not an element node
      */
     public NamedNodeMap getAttributes() {
-        return m_domNode.getAttributes();
+        Object lock = getLock();
+        
+        synchronized(lock) {
+            return m_domNode.getAttributes();
+        }
     }//}}}
     
     //{{{ addAdapterNode()
@@ -529,63 +586,68 @@ public class AdapterNode {
      *                      location is invalid.
      */
     public AdapterNode addAdapterNodeAt(AdapterNode node, int location) throws DOMException {
-        if (node != null) {
-            if (location >= 0 && location <= childCount()) {
-                if (m_children.indexOf(node) == location) {
-                    //node is already in the location specified
-                    return node;
-                }
-                
-                XMLDocument doc = getOwnerDocument();
-                try {
-                    
-                    doc.beginCompoundEdit();
-                    //add to this AdapterNode and the DOM.
-                    if (node.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE) {
-                        //Add all children of the document fragment
-                        for (int i=0; i<node.childCount(); i++) {
-                            addAdapterNodeAt(node.child(i), location+i);
-                        }
-                    } else {
-                        
-                        
-                        /*
-                        if the node is already contained in this node
-                        then we are effectively moving the node.
-                        */
-                        if (m_children.contains(node)) {
-                            if (location > m_children.indexOf(node)) {
-                                location -= 1;
-                            }
-                            int index = index(node);
-                            m_children.remove(node);
-                            addUndoableEdit(new RemoveNodeChange(this, node, index));
-                        } else {
-                            //Remove from previous parent
-                            AdapterNode previousParent = node.getParentNode();
-                            if (previousParent != this) {
-                                if (previousParent != null) {
-                                    previousParent.removeChild(node);
-                                }
-                            }
-                        }
-                        if (location >= m_children.size()) {
-                            m_domNode.appendChild(node.getNode());
-                            ensureChildrenSize(location);
-                            m_children.add(node);
-                        } else {
-                            m_domNode.insertBefore(node.getNode(), child(location).getNode());
-                            m_children.add(location, node);
-                        }
-                        
-                        node.setParent(this);
-                        fireNodeAdded(this, node, location);
+        
+        synchronized(childrenLock) {
+            if (node != null) {
+                if (location >= 0 && location <= childCount()) {
+                    if (m_children.indexOf(node) == location) {
+                        //node is already in the location specified
+                        return node;
                     }
-                } finally {
-                    doc.endCompoundEdit();
+                    
+                        
+                    Object lock = getLock();
+                    synchronized(lock) {
+                        
+                        try {
+                            beginCompoundEdit();
+                            //add to this AdapterNode and the DOM.
+                            if (node.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE) {
+                                //Add all children of the document fragment
+                                for (int i=0; i<node.childCount(); i++) {
+                                    addAdapterNodeAt(node.child(i), location+i);
+                                }
+                            } else {
+                                
+                                /*
+                                if the node is already contained in this node
+                                then we are effectively moving the node.
+                                */
+                                if (m_children.contains(node)) {
+                                    if (location > m_children.indexOf(node)) {
+                                        location -= 1;
+                                    }
+                                    int index = index(node);
+                                    m_children.remove(node);
+                                    addUndoableEdit(new RemoveNodeChange(this, node, index));
+                                } else {
+                                    //Remove from previous parent
+                                    AdapterNode previousParent = node.getParentNode();
+                                    if (previousParent != this) {
+                                        if (previousParent != null) {
+                                            previousParent.removeChild(node);
+                                        }
+                                    }
+                                }
+                                if (location >= m_children.size()) {
+                                    m_domNode.appendChild(node.getNode());
+                                    ensureChildrenSize(location);
+                                    m_children.add(node);
+                                } else {
+                                    m_domNode.insertBefore(node.getNode(), child(location).getNode());
+                                    m_children.add(location, node);
+                                }
+                                
+                                node.setParent(this);
+                                fireNodeAdded(this, node, location);
+                            }
+                        } finally {
+                            endCompoundEdit();
+                        }
+                    }
+                } else {
+                    throw new DOMException(DOMException.INDEX_SIZE_ERR, "The location to insert this node is invalid.");
                 }
-            } else {
-                throw new DOMException(DOMException.INDEX_SIZE_ERR, "The location to insert this node is invalid.");
             }
         }
         return node;
@@ -601,18 +663,25 @@ public class AdapterNode {
      *                      a child of this node.
      */
     public void remove(AdapterNode child) throws DOMException {
-        if (child != null) {
-            if (getNodeType() == Node.DOCUMENT_NODE && child.getNodeType() == Node.ELEMENT_NODE) {
-                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "You cannot remove the root element node.");
-            }
-            if (child.getNodeType() != Node.DOCUMENT_TYPE_NODE) {
-                int index = index(child);
-                m_domNode.removeChild(child.getNode());
-                m_children.remove(child);
-                child.setParent(null);
-                fireNodeRemoved(this, child, index);
-            } else {
-                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Cannot remove Document Type Nodes");
+        
+        synchronized(childrenLock) {
+            Object lock = getLock();
+            synchronized(lock) {
+                
+                if (child != null) {
+                    if (getNodeType() == Node.DOCUMENT_NODE && child.getNodeType() == Node.ELEMENT_NODE) {
+                        throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "You cannot remove the root element node.");
+                    }
+                    if (child.getNodeType() != Node.DOCUMENT_TYPE_NODE) {
+                        int index = index(child);
+                        m_domNode.removeChild(child.getNode());
+                        m_children.remove(child);
+                        child.setParent(null);
+                        fireNodeRemoved(this, child, index);
+                    } else {
+                        throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Cannot remove Document Type Nodes");
+                    }
+                }
             }
         }
     }//}}}
@@ -631,43 +700,48 @@ public class AdapterNode {
      *                      readonly
      */
     public void setAttribute(String name, String value) throws DOMException {
-        if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
-            
-            Element element = (Element)m_domNode;
-            String prefix    = MiscUtilities.getNSPrefixFromQualifiedName(name);
-            
-            String oldValue = getAttribute(name);
-            
-            if (!MiscUtilities.equals(oldValue, value)) {
-                //check if we are setting a namespace declaration
-                if ("xmlns".equals(prefix)) {
-                    //if so then make sure the value is valid
-                    if (value != null && value.equals("")) {
-                        throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to create an empty namespace declaration");
-                    }
-                }
+        Object lock = getLock();
+        
+        synchronized(lock) {
+        
+            if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
                 
-                /*
-                If the attribute did not have a prefix to begin with then
-                using setAttributeNS may add a new attribute node to the element
-                even though the attribute already exists.
-                */
-                if (prefix != null && !prefix.equals("")) {
-                    element.setAttributeNS(lookupNamespaceURI(prefix),name,value);
-                } else {
-                    /*
-                    setAttribute doesn't throw an error if the first character
-                    is a ":"
-                    */
-                    if (name != null && !name.equals("") && name.charAt(0)==':') {
-                        throw new DOMException(DOMException.NAMESPACE_ERR, "An attribute name cannot have a ':' as the first character");
+                Element element = (Element)m_domNode;
+                String prefix    = MiscUtilities.getNSPrefixFromQualifiedName(name);
+                
+                String oldValue = getAttribute(name);
+                
+                if (!MiscUtilities.equals(oldValue, value)) {
+                    //check if we are setting a namespace declaration
+                    if ("xmlns".equals(prefix)) {
+                        //if so then make sure the value is valid
+                        if (value != null && value.equals("")) {
+                            throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to create an empty namespace declaration");
+                        }
                     }
-                    element.setAttribute(name, value);
+                    
+                    /*
+                    If the attribute did not have a prefix to begin with then
+                    using setAttributeNS may add a new attribute node to the element
+                    even though the attribute already exists.
+                    */
+                    if (prefix != null && !prefix.equals("")) {
+                        element.setAttributeNS(lookupNamespaceURI(prefix),name,value);
+                    } else {
+                        /*
+                        setAttribute doesn't throw an error if the first character
+                        is a ":"
+                        */
+                        if (name != null && !name.equals("") && name.charAt(0)==':') {
+                            throw new DOMException(DOMException.NAMESPACE_ERR, "An attribute name cannot have a ':' as the first character");
+                        }
+                        element.setAttribute(name, value);
+                    }
+                    fireAttributeChanged(this, name, oldValue, value);
                 }
-                fireAttributeChanged(this, name, oldValue, value);
+            } else {
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
             }
-        } else {
-            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
         }
     }//}}}
     
@@ -678,28 +752,33 @@ public class AdapterNode {
      * @throws DOMException NOT_SUPPORTED_ERR: if this is not an element node
      */
     public String getAttribute(String name) throws DOMException {
-        if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
-            String localName = MiscUtilities.getLocalNameFromQualifiedName(name);
-            String prefix    = MiscUtilities.getNSPrefixFromQualifiedName(name);
-            
-            Element element = (Element)m_domNode;
-            if (prefix != null && !prefix.equals("")) {
-                //getAttributeNS returns "" even if the attribute isn't in the
-                //element.
-                if (element.getAttributeNodeNS(lookupNamespaceURI(prefix),localName) == null) {
-                    return null;
+        
+        Object lock = getLock();
+        
+        synchronized(lock) {
+            if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
+                String localName = MiscUtilities.getLocalNameFromQualifiedName(name);
+                String prefix    = MiscUtilities.getNSPrefixFromQualifiedName(name);
+                
+                Element element = (Element)m_domNode;
+                if (prefix != null && !prefix.equals("")) {
+                    //getAttributeNS returns "" even if the attribute isn't in the
+                    //element.
+                    if (element.getAttributeNodeNS(lookupNamespaceURI(prefix),localName) == null) {
+                        return null;
+                    }
+                    return element.getAttributeNS(lookupNamespaceURI(prefix),localName);
+                } else {
+                    //getAttribute returns "" even if the attribute isn't in the
+                    //element.
+                    if (element.getAttributeNode(name) == null) {
+                        return null;
+                    }
+                    return element.getAttribute(name);
                 }
-                return element.getAttributeNS(lookupNamespaceURI(prefix),localName);
             } else {
-                //getAttribute returns "" even if the attribute isn't in the
-                //element.
-                if (element.getAttributeNode(name) == null) {
-                    return null;
-                }
-                return element.getAttribute(name);
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
             }
-        } else {
-            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
         }
     }//}}}
     
@@ -713,14 +792,19 @@ public class AdapterNode {
      *                      readonly
      */
     public void removeAttributeAt(int index) throws DOMException {
-        if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
-            Element element = (Element)m_domNode;
-            NamedNodeMap attrs = element.getAttributes();
-            if (attrs != null) {
-                removeAttribute(attrs.item(index).getNodeName());
+        Object lock = getLock();
+        
+        synchronized(lock) {
+            
+            if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element)m_domNode;
+                NamedNodeMap attrs = element.getAttributes();
+                if (attrs != null) {
+                    removeAttribute(attrs.item(index).getNodeName());
+                }
+            } else {
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
             }
-        } else {
-            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
         }
     }//}}}
     
@@ -733,52 +817,57 @@ public class AdapterNode {
      *                      readonly
      */
     public void removeAttribute(String attr) throws DOMException {
-        if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
-            Element element = (Element)m_domNode;
-            String prefix = MiscUtilities.getNSPrefixFromQualifiedName(attr);
-            String localName = MiscUtilities.getLocalNameFromQualifiedName(attr);
-            String oldValue = getAttribute(attr);
-            
-            //make sure we are actually removing an attribute.
-            if (oldValue != null) {
-                //Check if we are removing a namespace declaration
-                //This is a somewhat expensive operation, may need to
-                //optimize in the future
-                if ("xmlns".equals(prefix)) {
-                    //check if there are nodes using the namespace
-                    String uri = lookupNamespaceURI(localName);
-                    //check this element's namespace
-                    if (!uri.equals(element.getNamespaceURI())) {
-                        //check for decendent elements with this namespace
-                        NodeList list = element.getElementsByTagName("*");
-                        //check if an attribute with this NS is used
-                        for (int i=0; i<list.getLength(); i++) {
-                            Node ele = list.item(i);
-                            if (uri.equals(ele.getNamespaceURI())) {
-                                throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to remove a namespace declaration when nodes exist that use it");
-                            }
-                            //now check the attributes
-                            NamedNodeMap attrs = ele.getAttributes();
-                            for (int j=0; j<attrs.getLength(); j++) {
-                                Node foundAttr = attrs.item(i);
-                                if (uri.equals(foundAttr.getNamespaceURI())) {
+        Object lock = getLock();
+        
+        synchronized(lock) {
+        
+            if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element)m_domNode;
+                String prefix = MiscUtilities.getNSPrefixFromQualifiedName(attr);
+                String localName = MiscUtilities.getLocalNameFromQualifiedName(attr);
+                String oldValue = getAttribute(attr);
+                
+                //make sure we are actually removing an attribute.
+                if (oldValue != null) {
+                    //Check if we are removing a namespace declaration
+                    //This is a somewhat expensive operation, may need to
+                    //optimize in the future
+                    if ("xmlns".equals(prefix)) {
+                        //check if there are nodes using the namespace
+                        String uri = lookupNamespaceURI(localName);
+                        //check this element's namespace
+                        if (!uri.equals(element.getNamespaceURI())) {
+                            //check for decendent elements with this namespace
+                            NodeList list = element.getElementsByTagName("*");
+                            //check if an attribute with this NS is used
+                            for (int i=0; i<list.getLength(); i++) {
+                                Node ele = list.item(i);
+                                if (uri.equals(ele.getNamespaceURI())) {
                                     throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to remove a namespace declaration when nodes exist that use it");
                                 }
+                                //now check the attributes
+                                NamedNodeMap attrs = ele.getAttributes();
+                                for (int j=0; j<attrs.getLength(); j++) {
+                                    Node foundAttr = attrs.item(i);
+                                    if (uri.equals(foundAttr.getNamespaceURI())) {
+                                        throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to remove a namespace declaration when nodes exist that use it");
+                                    }
+                                }
                             }
+                        } else {
+                            throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to remove a namespace declaration when nodes exist that use it");
                         }
-                    } else {
-                        throw new DOMException(DOMException.NAMESPACE_ERR, "An attempt was made to remove a namespace declaration when nodes exist that use it");
                     }
+                    if (prefix != null && !prefix.equals("")) {
+                        element.removeAttributeNS(lookupNamespaceURI(prefix),localName);
+                    } else {
+                        element.removeAttribute(localName);
+                    }
+                    fireAttributeChanged(this, attr, oldValue, null);
                 }
-                if (prefix != null && !prefix.equals("")) {
-                    element.removeAttributeNS(lookupNamespaceURI(prefix),localName);
-                } else {
-                    element.removeAttribute(localName);
-                }
-                fireAttributeChanged(this, attr, oldValue, null);
+            } else {
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
             }
-        } else {
-            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
         }
     }//}}}
     
@@ -791,13 +880,18 @@ public class AdapterNode {
      * @throws DOMException NOT_SUPPORTED_ERR: if this is not an element node
      */
     public String getAttributeNameAt(int index) throws DOMException {
-        if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
-            Element element = (Element)m_domNode;
-            NamedNodeMap attrs = element.getAttributes();
-            Node attr = attrs.item(index);
-            return attr.getNodeName();
-        } else {
-            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
+        Object lock = getLock();
+        
+        synchronized(lock) {
+        
+            if (m_domNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element)m_domNode;
+                NamedNodeMap attrs = element.getAttributes();
+                Node attr = attrs.item(index);
+                return attr.getNodeName();
+            } else {
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, "Only Element Nodes can have attributes");
+            }
         }
     }//}}}
     
@@ -810,7 +904,11 @@ public class AdapterNode {
      * @throws DOMException NOT_SUPPORTED_ERR: if this is not an element node
      */
     public String getAttributeAt(int index) throws DOMException {
-        return getAttribute(getAttributeNameAt(index));
+        Object lock = getLock();
+        
+        synchronized(lock) {
+            return getAttribute(getAttributeNameAt(index));
+        }
     }//}}}
     
     //{{{ getAllowedElements()
@@ -823,31 +921,38 @@ public class AdapterNode {
     public List getAllowedElements() {
         
         XMLDocument rootDocument = getOwnerDocument();
-        HashMap mappings = rootDocument.getCompletionInfoMappings();
-        ElementDecl thisDecl = rootDocument.getElementDecl(getNodeName());
-        
-        ArrayList allowedElements = new ArrayList();
-        
-        if (thisDecl != null) {
-            allowedElements.addAll(thisDecl.getChildElements(getNSPrefix()));
-        }
-        
-        // add everything but the parent's prefix now
-        Iterator iter = mappings.entrySet().iterator();
-        while(iter.hasNext()) {
-            Map.Entry entry = (Map.Entry)iter.next();
-            String prefix = entry.getKey().toString();
-            String myprefix = getNSPrefix();
-            if (myprefix == null) {
-                myprefix = "";
+        if (rootDocument != null) {
+            Object lock = getLock();
+            synchronized(lock) {
+                HashMap mappings = rootDocument.getCompletionInfoMappings();
+                ElementDecl thisDecl = rootDocument.getElementDecl(getNodeName());
+                
+                ArrayList allowedElements = new ArrayList();
+                
+                if (thisDecl != null) {
+                    allowedElements.addAll(thisDecl.getChildElements(getNSPrefix()));
+                }
+                
+                // add everything but the parent's prefix now
+                Iterator iter = mappings.entrySet().iterator();
+                while(iter.hasNext()) {
+                    Map.Entry entry = (Map.Entry)iter.next();
+                    String prefix = entry.getKey().toString();
+                    String myprefix = getNSPrefix();
+                    if (myprefix == null) {
+                        myprefix = "";
+                    }
+                    if (!prefix.equals(myprefix)) {
+                        CompletionInfo info = (CompletionInfo)entry.getValue();
+                        info.getAllElements(prefix, allowedElements);
+                    }
+                }
+                MiscUtilities.quicksort(allowedElements, new ElementDecl.Compare());
+                return allowedElements;
             }
-            if (!prefix.equals(myprefix)) {
-                CompletionInfo info = (CompletionInfo)entry.getValue();
-                info.getAllElements(prefix, allowedElements);
-            }
+        } else {
+            return new ArrayList();
         }
-        MiscUtilities.quicksort(allowedElements, new ElementDecl.Compare());
-        return allowedElements;
     }//}}}
     
     //{{{ getElementDecl()
@@ -855,10 +960,15 @@ public class AdapterNode {
      * Gets the Element declaration that defines this element
      */
     public ElementDecl getElementDecl() {
-        if (getOwnerDocument() != null) {
-            return getOwnerDocument().getElementDecl(getNodeName());
-        } else {
-            return null;
+        Object lock = getLock();
+        
+        synchronized(lock) {
+            XMLDocument doc = getOwnerDocument();
+            if (doc != null) {
+                return doc.getElementDecl(getNodeName());
+            } else {
+                return null;
+            }
         }
     }//}}}
     
@@ -879,7 +989,9 @@ public class AdapterNode {
      * @param listener the listener to add
      */
     public void addAdapterNodeListener(AdapterNodeListener listener) {
-        m_listeners.add(listener);
+        if (listener != null) {
+            m_listeners.add(listener);
+        }
     }//}}}
     
     //{{{ removeAdapterNodeListener()
@@ -898,23 +1010,28 @@ public class AdapterNode {
      * @return the string representation of this node.
      */
     public String serializeToString() {
-        XMLDocument owner = getOwnerDocument();
-        if (owner != null) {
-            return owner.serializeNodeToString(this);
-        } else {
-            if (m_lastRootDocument != null) {
-                return m_lastRootDocument.serializeNodeToString(this);
+        
+        Object lock = getLock();
+        
+        synchronized(lock) {
+            XMLDocument owner = getOwnerDocument();
+            if (owner != null) {
+                return owner.serializeNodeToString(this);
             } else {
-                //node was never owned? write it out using the default config
-                String value = null;
-                try {
-                    DOMSerializer serializer = new DOMSerializer();
-                    serializer.setNewLine("\n");
-                    value = serializer.writeToString(m_domNode);
-                } catch (DOMException e) {
-                    Log.log(Log.WARNING, this, "Could not write node to string");
+                if (m_lastRootDocument != null) {
+                    return m_lastRootDocument.serializeNodeToString(this);
+                } else {
+                    //node was never owned? write it out using the default config
+                    String value = null;
+                    try {
+                        DOMSerializer serializer = new DOMSerializer();
+                        serializer.setNewLine("\n");
+                        value = serializer.writeToString(m_domNode);
+                    } catch (DOMException e) {
+                        Log.log(Log.WARNING, this, "Could not write node to string");
+                    }
+                    return value;
                 }
-                return value;
             }
         }
     }//}}}
@@ -957,11 +1074,17 @@ public class AdapterNode {
     This is required to help maintain sync between the AdapterNode tree
     */
     void removeChild(AdapterNode node) {
-        if (node != null) {
-            int index = index(node);
-            m_children.remove(node);
-            if (index != -1) {
-                addUndoableEdit(new RemoveNodeChange(this, node, index));
+        synchronized(childrenLock) {
+            Object lock = getLock();
+            synchronized(lock) {
+        
+                if (node != null) {
+                    int index = index(node);
+                    m_children.remove(node);
+                    if (index != -1) {
+                        addUndoableEdit(new RemoveNodeChange(this, node, index));
+                    }
+                }
             }
         }
     }//}}}
@@ -972,39 +1095,19 @@ public class AdapterNode {
      * @param parent the new parent for this AdapterNode
      */
     void setParent(AdapterNode parent) {
-        m_parentNode = parent;
-        if (parent != null) {
-            m_lastRootDocument = m_rootDocument;
-            m_rootDocument = m_parentNode.getOwnerDocument();
-        } else {
-            m_lastRootDocument = m_rootDocument;
-            m_rootDocument = null;
+        Object lock = getLock();
+        
+        synchronized(lock) {
+            m_parentNode = parent;
+            if (parent != null) {
+                m_lastRootDocument = m_rootDocument;
+                m_rootDocument = m_parentNode.getOwnerDocument();
+            } else {
+                m_lastRootDocument = m_rootDocument;
+                m_rootDocument = null;
+            }
         }
     }//}}}
-    
-   // //{{{ updateNode()
-   // /**
-   //  * Sets the node that this AdapterNode wraps. And
-   //  * updates the AdapterNode children. This should only
-   //  * be used when no change in document structure has
-   //  * been made. Only a change that requires reparsing.
-   //  */
-   // protected void updateNode(Node node) {
-   //     Iterator itr = m_children.iterator();
-   //     int index = 0;
-   //     while (itr.hasNext()) {
-   //         AdapterNode child = (AdapterNode)itr.next();
-   //         //node could be null if we haven't needed it yet.
-   //         //It's ok to do nothing in this case since the
-   //         //AdapterNode object will be created when it is
-   //         //needed.
-   //         if (child != null) {
-   //             child.updateNode(node.getChildNodes().item(index));
-   //         }
-   //         ++index;
-   //     }
-   //     m_domNode = node;
-   // }//}}}
     
     //}}}
     
@@ -1157,6 +1260,35 @@ public class AdapterNode {
         }
     }//}}}
     
+    //{{{ getLock()
+    
+    private synchronized Object getLock() {
+        XMLDocument doc = getOwnerDocument();
+        if (doc != null) {
+            return doc;
+        } else {
+            return this;
+        }
+    }//}}}
+    
+    //{{{ beginCompoundEdit()
+    
+    private void beginCompoundEdit() {
+        XMLDocument doc = getOwnerDocument();
+        if (doc != null) {
+            doc.beginCompoundEdit();
+        }
+    }//}}}
+    
+    //{{{ endCompoundEdit()
+    
+    private void endCompoundEdit() {
+        XMLDocument doc = getOwnerDocument();
+        if (doc != null) {
+            doc.endCompoundEdit();
+        }
+    }//}}}
+    
     private AdapterNode m_parentNode;
     private XMLDocument m_rootDocument;
     private XMLDocument m_lastRootDocument;
@@ -1168,5 +1300,9 @@ public class AdapterNode {
     private Properties m_props = new Properties();
     
     private Object propertyLock = new Object();
+    /**
+     * Children lock for when adding AdapterNodes to the children.
+     */
+    private Object childrenLock = new Object();
     //}}}
 }
