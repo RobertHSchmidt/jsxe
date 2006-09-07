@@ -130,7 +130,7 @@ public class AddNodeAction extends LocalizedAction {
                                                                          m_element.completionInfo.getEntityHash(),
                                                                          new ArrayList(), //don't support IDs for now.
                                                                          document);
-                                dialog.show();
+                                dialog.setVisible(true);
                                 isOk = (dialog.getNewNode() != null);
                                 if (isOk) {
                                     addedNode = selectedNode.addAdapterNode(dialog.getNewNode());

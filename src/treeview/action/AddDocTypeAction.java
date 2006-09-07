@@ -223,7 +223,7 @@ public class AddDocTypeAction extends LocalizedAction {
             
             updateSize();
             
-            show();
+            setVisible(true);
             
         }//}}}
         
@@ -326,6 +326,5 @@ public class AddDocTypeAction extends LocalizedAction {
         
     }//}}}
     
-    //}}}
 }
 
