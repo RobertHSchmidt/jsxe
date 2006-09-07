@@ -318,19 +318,9 @@ public class XMLDocument {
      * @return the value of the property for the given key.
      */
     public String getProperty(String key) {
-        return props.getProperty(key);
-    }//}}}
-    
-    //{{{ getProperty()
-    /**
-     * Gets a property for the key given or returns the default value
-     * if there is no property for the given key.
-     * @param key the key to the properties list
-     * @param defaultValue the default value for the property requested
-     * @return the value of the property for the given key.
-     */
-    public String getProperty(String key, String defaultValue) {
-        return props.getProperty(key, defaultValue);
+        synchronized(propertyLock) {
+            return props.getProperty(key, jsXe.getProperty("xml.document." + key));
+        }
     }//}}}
     
     //{{{ setProperty()

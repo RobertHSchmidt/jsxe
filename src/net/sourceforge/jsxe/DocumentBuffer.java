@@ -643,21 +643,21 @@ public class DocumentBuffer extends XMLDocument {
             //}}}
             
             //{{{ format output
-            boolean formatOutput = Boolean.valueOf(getProperty(XMLDocument.FORMAT_XML, "false")).booleanValue();
+            boolean formatOutput = getBooleanProperty(XMLDocument.FORMAT_XML);
             formatCheckBox = new JCheckBox(Messages.getMessage("Document.Options.Format.XML"), formatOutput);
             
             addComponent(formatCheckBox, Messages.getMessage("Document.Options.Format.XML.ToolTip"));
             //}}}
             
             //{{{ validate
-            boolean validating = Boolean.valueOf(getProperty(XMLDocument.IS_VALIDATING, "false")).booleanValue();
+            boolean validating = getBooleanProperty(XMLDocument.IS_VALIDATING);
             m_m_validatingCheckBox = new JCheckBox(Messages.getMessage("Document.Options.Validate"), validating);
             
             addComponent(m_m_validatingCheckBox, Messages.getMessage("Document.Options.Validate.ToolTip"));
             //}}}
             
             //{{{ soft tabs
-            boolean softTabs = Boolean.valueOf(getProperty(XMLDocument.IS_USING_SOFT_TABS, "false")).booleanValue();
+            boolean softTabs = getBooleanProperty(XMLDocument.IS_USING_SOFT_TABS);
             m_m_softTabsCheckBox = new JCheckBox(Messages.getMessage("Document.Options.Soft.Tabs"), softTabs);
             
             addComponent(m_m_softTabsCheckBox, Messages.getMessage("Document.Options.Soft.Tabs.ToolTip"));
