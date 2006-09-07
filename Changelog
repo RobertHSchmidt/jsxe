@@ -1,6 +1,7 @@
 09/06/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Updated to not use show() method since it's deprecated.
+    * Updated to use new XMLDocument property methods.
 
 08/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
