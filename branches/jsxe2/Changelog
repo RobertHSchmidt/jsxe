@@ -5,6 +5,7 @@
     * AdapterNode now uses the DOM3 renameNode() method to rename element nodes.
     * Made property methods on AdapterNodes thread safe.
     * Updated property methods on XMLDocuments
+    * Made AdapterNode thread safe
 
 08/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
 

@@ -1276,7 +1276,12 @@ public class XMLDocument {
      * Gets the namespace uri to CompletionInfo Mappings for this document.
      */
     protected HashMap getCompletionInfoMappings() {
-        return m_mappings;
+        try {
+            readLock();
+            return (HashMap)m_mappings.clone();
+        } finally {
+            readUnlock();
+        }
     }//}}}
     
     //}}}
