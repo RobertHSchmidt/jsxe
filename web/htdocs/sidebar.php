@@ -20,5 +20,6 @@
   <ul>
     <li><?php echo get_image('us.png');?> <?php echo create_language_link('en-us', 'English'); ?></li>
     <li><?php echo get_image('jp.png');?> <?php echo create_language_link('ja-jp', '日本語'); ?></li>
+    <li><?php echo get_image('ru.png');?> <?php echo create_language_link('ru-ru', 'Русский Язык'); ?></li>
   </ul>
 </div>
