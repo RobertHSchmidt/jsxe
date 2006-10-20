@@ -13,7 +13,7 @@ Show.Attributes.None=なし
 Show.Attributes.ID.Only=IDだけ
 Show.Attributes.All=全て
 
-treeview.rename.node.label=ノードの名前を変更する
+treeview.rename.node.label=ノードの名前を変更
 treeview.remove.node.label=ノードを削除
 treeview.add.attribute.label=属性を追加
 treeview.remove.attribute.label=属性を削除
