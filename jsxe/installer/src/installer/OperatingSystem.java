@@ -327,7 +327,7 @@ public abstract class OperatingSystem
             return "C:\\Program Files\\" + name + " " + version;
         }
 
-        public class JEditLauncherOSTask extends OSTask
+        /*public class JEditLauncherOSTask extends OSTask
         {
             public JEditLauncherOSTask(Install installer)
             {
@@ -367,7 +367,7 @@ public abstract class OperatingSystem
                 {
                 }
             }
-        }
+        }*/
 
         public OSTask[] getOSTasks(Install installer)
         {
