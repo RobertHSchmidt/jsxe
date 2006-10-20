@@ -351,7 +351,7 @@ function get_stable_download_link() {
 //{{{ get_devel_version()
 
 function get_devel_version() {
-    return "0.4 beta";
+    return "0.5 pre2";
 }//}}}
 
 //{{{ get_stable_version()
