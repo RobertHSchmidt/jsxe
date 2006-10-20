@@ -55,11 +55,11 @@ required. These should be placed in a directory called lib in jsXe's root folder
 JVM. These jar files will be included with jsXe distributions for convenience.
 
 In order to build jsXe's installer or a windows distribution of jsXe you will
-need to install launch4j (http://launch4j.sourceforge.net/). You can install it
-in the buildlib directory or change the launch4j.dir property in the build.xml
-file. You will also need to put the js.jar and bsf.jar in your classpath. These
-files are found in the 'buildlib' directory. They are used in scripts for
-calculating file sizes.
+need to install launch4j 3.0.0pre1 (http://launch4j.sourceforge.net/). You can
+install it in the buildlib directory or change the launch4j.dir property in the
+build.xml file. You will also need to put the js.jar and bsf.jar in your
+classpath. These files are found in the 'buildlib' directory. They are used in
+scripts for calculating file sizes.
 
 ** Building **
 
