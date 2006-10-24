@@ -16,7 +16,7 @@
 <a href="http://sourceforge.net/"><img alt="SourceForge Logo" src="http://sourceforge.net/sflogo.php?group_id=58584"/></a>
 <a href="http://sourceforge.jp/"><img alt="SourceForge.jp" src="http://sourceforge.jp/sflogo.php?group_id=2456"/></a>
 
-<div id="languages"/>
+<div id="languages">
   <ul>
     <li><?php echo get_image('us.png');?> <?php echo create_language_link('en-us', 'English'); ?></li>
     <li><?php echo get_image('jp.png');?> <?php echo create_language_link('ja-jp', '日本語'); ?></li>
