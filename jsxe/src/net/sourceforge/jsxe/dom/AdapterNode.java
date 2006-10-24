@@ -530,11 +530,11 @@ public class AdapterNode {
                         }
                     } else {
                         
-                        
                         /*
                         if the node is already contained in this node
                         then we are effectively moving the node.
                         */
+                        boolean differentParent = false;
                         if (m_children.contains(node)) {
                             if (location > m_children.indexOf(node)) {
                                 location -= 1;
@@ -543,13 +543,7 @@ public class AdapterNode {
                             m_children.remove(node);
                             addUndoableEdit(new RemoveNodeChange(this, node, index));
                         } else {
-                            //Remove from previous parent
-                            AdapterNode previousParent = node.getParentNode();
-                            if (previousParent != this) {
-                                if (previousParent != null) {
-                                    previousParent.removeChild(node);
-                                }
-                            }
+                            differentParent = true;
                         }
                         if (location >= m_children.size()) {
                             m_domNode.appendChild(node.getNode());
@@ -558,6 +552,19 @@ public class AdapterNode {
                         } else {
                             m_domNode.insertBefore(node.getNode(), child(location).getNode());
                             m_children.add(location, node);
+                        }
+                        
+                        /*
+                        Only remove from previous parent if the previous parent
+                        is different from the new one.
+                        */
+                        if (differentParent) {
+                            AdapterNode previousParent = node.getParentNode();
+                            if (previousParent != this) {
+                                if (previousParent != null) {
+                                    previousParent.removeChild(node);
+                                }
+                            }
                         }
                         
                         node.setParent(this);
