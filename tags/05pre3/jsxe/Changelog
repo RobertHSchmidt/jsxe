@@ -1,3 +1,8 @@
+10/24/2006  Ian Lewis   <IanLewis@member.fsf.org>
+
+    * Fixed bug 1582667. Now if you drag and drop a node onto itself it doesn't
+      delete the node.
+
 08/31/2006  Ian Lewis   <IanLewis@member.fsf.org>
 
     * Added new ContextSpecificActions to replace ViewSpecificActions. Now
