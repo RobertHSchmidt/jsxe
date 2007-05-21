@@ -14,8 +14,15 @@
 <h3>Download</h3>
 
 <ul>
-  <li>The latest stable version of jsXe is <?php echo get_stable_download_link(); ?></li>
-  <li>The latest development version of jsXe is <?php echo get_devel_download_link(); ?></li>
+  <li>The latest stable version of jsXe is <?php echo get_stable_download_link(); ?>
+    <ul>
+      <li></li>
+  <li>The latest development version of jsXe is <?php echo get_devel_download_link(); ?>
+    <ul>
+      <li>Windows Installer: <?php echo get_devel_windows_download_link(); ?></li>
+      <li>Java Installer: <?php echo get_devel_jar_download_link(); ?></li>
+    </ul>
+  </li>
 </ul>
 
 <h3>Install</h3>
