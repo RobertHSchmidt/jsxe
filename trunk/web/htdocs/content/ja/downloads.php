@@ -1,4 +1,4 @@
-<h3>Requirements</h3>
+<h3>システム条件</h3>
 
 <ul>
 <li>Java 2 バージョン 1.4.2は必要です。</li>
@@ -8,14 +8,14 @@
     ダウンロードできもす。</li>
 </ul>
 
-<h3>Download</h3>
+<h3>ダウンロード</h3>
 
 <ul>
-  <li>The latest stable version of jsXe is <?php echo get_stable_download_link(); ?></li>
-  <li>The latest development version of jsXe is <?php echo get_devel_download_link(); ?></li>
+  <li>jsXeの最新ヴァージョンは <?php echo get_stable_download_link(); ?></li>
+  <li>jsXeの最新開発ヴァージョンは <?php echo get_devel_download_link(); ?></li>
 </ul>
 
-<h3>Install</h3>
+<h3>インストール</h3>
 
 <ul>
     <li><b>0.4 beta</b>
