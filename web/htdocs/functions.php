@@ -348,7 +348,7 @@ function get_devel_windows_download_link() {
 }//}}}
 
 //{{{ get_devel_jar_download_link()
-function get_jar_download_link() {
+function get_devel_jar_download_link() {
     return '<a href="http://downloads.sourceforge.net/jsxe/jsXe-05_pre3-install.jar">'.T_("Java Installer").'</a>';
 }//}}}
 
